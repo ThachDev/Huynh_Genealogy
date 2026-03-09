@@ -197,7 +197,11 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                             'assets/images/logo.png',
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.park, color: AppColors.gold, size: 40),
+                                const Icon(
+                                  Icons.park,
+                                  color: AppColors.gold,
+                                  size: 40,
+                                ),
                           ),
                         ),
                       ),
@@ -232,74 +236,122 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _searchController,
-                                decoration: InputDecoration(
-                                  hintText: 'Tìm tên, chi tộc, năm sinh...',
-                                  hintStyle: GoogleFonts.inter(
-                                    color: Colors.white54,
-                                    fontSize: 13,
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.search,
-                                    color: AppColors.gold,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.black.withValues(
-                                    alpha: 0.24,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 0,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                                style: GoogleFonts.inter(color: Colors.white),
-                              ),
+                        // Search and Filter Premium Unified
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.35),
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              color: AppColors.gold.withValues(alpha: 0.3),
+                              width: 0.8,
                             ),
-                            const SizedBox(width: 10),
-                            // Filter Dropdown
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.24),
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: DropdownButton<String>(
-                                value: _selectedGender,
-                                underline: const SizedBox(),
-                                icon: const Icon(
-                                  Icons.filter_list,
-                                  color: AppColors.gold,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _searchController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Tìm kiếm người thân...',
+                                    hintStyle: GoogleFonts.inter(
+                                      color: Colors.white38,
+                                      fontSize: 13,
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.search_rounded,
+                                      color: AppColors.gold,
+                                      size: 22,
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
                                 ),
-                                dropdownColor: AppColors.wood,
-                                style: GoogleFonts.inter(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                ),
-                                items: ['Tất cả', 'Nam', 'Nữ'].map((
-                                  String val,
-                                ) {
-                                  return DropdownMenuItem<String>(
-                                    value: val,
-                                    child: Text(val),
-                                  );
-                                }).toList(),
-                                onChanged: (val) {
-                                  if (val != null) {
-                                    setState(() => _selectedGender = val);
-                                  }
-                                },
                               ),
-                            ),
-                          ],
+                              Container(
+                                width: 1.2,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      AppColors.gold.withValues(alpha: 0.4),
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Theme(
+                                data: Theme.of(
+                                  context,
+                                ).copyWith(canvasColor: AppColors.wood),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                  ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      value: _selectedGender,
+                                      icon: const Padding(
+                                        padding: EdgeInsets.only(left: 4),
+                                        child: Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: AppColors.gold,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      dropdownColor: const Color(0xFF3E2723),
+                                      borderRadius: BorderRadius.circular(15),
+                                      style: GoogleFonts.inter(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      items:
+                                          [
+                                            ['Tất cả', Icons.all_inclusive],
+                                            ['Nam', Icons.male_rounded],
+                                            ['Nữ', Icons.female_rounded],
+                                          ].map((item) {
+                                            final label = item[0] as String;
+                                            final icon = item[1] as IconData;
+                                            return DropdownMenuItem<String>(
+                                              value: label,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Icon(
+                                                    icon,
+                                                    size: 16,
+                                                    color: AppColors.gold
+                                                        .withValues(alpha: 0.8),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(label),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
+                                      onChanged: (val) {
+                                        if (val != null) {
+                                          setState(() => _selectedGender = val);
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 12),
                         // Add Button

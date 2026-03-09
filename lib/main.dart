@@ -17,11 +17,7 @@ class FamilyTreeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<TreeBloc>(
-          create: (_) => di.sl<TreeBloc>(),
-        ),
-      ],
+      providers: [BlocProvider<TreeBloc>(create: (_) => di.sl<TreeBloc>())],
       child: MaterialApp(
         title: 'Gia Phả',
         debugShowCheckedModeBanner: false,

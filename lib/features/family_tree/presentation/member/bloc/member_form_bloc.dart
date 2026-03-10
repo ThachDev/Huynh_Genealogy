@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/delete_member.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/get_members.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/save_member.dart';
@@ -24,7 +24,9 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
   }
 
   Future<void> _onLoad(
-      LoadMemberFormEvent event, Emitter<MemberFormState> emit) async {
+    LoadMemberFormEvent event,
+    Emitter<MemberFormState> emit,
+  ) async {
     emit(MemberFormLoading());
     if (event.memberId == null) {
       // Create mode
@@ -33,19 +35,19 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
     }
     // Edit mode – fetch member
     final result = await getMembers(const GetMembersParams());
-    result.fold(
-      (failure) => emit(MemberFormError(failure.message)),
-      (members) {
-        final member = members
-            .cast<MemberEntity?>()
-            .firstWhere((m) => m?.id == event.memberId, orElse: () => null);
-        emit(MemberFormReady(member: member));
-      },
-    );
+    result.fold((failure) => emit(MemberFormError(failure.message)), (members) {
+      final member = members.cast<MemberEntity?>().firstWhere(
+        (m) => m?.id == event.memberId,
+        orElse: () => null,
+      );
+      emit(MemberFormReady(member: member));
+    });
   }
 
   Future<void> _onSubmit(
-      SubmitMemberFormEvent event, Emitter<MemberFormState> emit) async {
+    SubmitMemberFormEvent event,
+    Emitter<MemberFormState> emit,
+  ) async {
     emit(MemberFormSubmitting());
     final result = await saveMember(SaveMemberParams(member: event.member));
     result.fold(
@@ -55,21 +57,16 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
   }
 
   Future<void> _onDelete(
-      DeleteMemberFormEvent event, Emitter<MemberFormState> emit) async {
+    DeleteMemberFormEvent event,
+    Emitter<MemberFormState> emit,
+  ) async {
     emit(MemberFormSubmitting());
     final result = await deleteMember(DeleteMemberParams(id: event.memberId));
-    result.fold(
-      (failure) => emit(MemberFormError(failure.message)),
-      (_) {
-        // Tạo một entity dummy để trả về khi xoá
-        const dummy = MemberEntity(
-          id: 0,
-          fullName: '',
-          gender: Gender.unknown,
-        );
-        emit(MemberFormSuccess(member: dummy, isDeleted: true));
-      },
-    );
+    result.fold((failure) => emit(MemberFormError(failure.message)), (_) {
+      // Tạo một entity dummy để trả về khi xoá
+      const dummy = MemberEntity(id: 0, fullName: '', gender: Gender.unknown);
+      emit(MemberFormSuccess(member: dummy, isDeleted: true));
+    });
   }
 
   void _onReset(ResetMemberFormEvent event, Emitter<MemberFormState> emit) {

@@ -1,6 +1,9 @@
 part of 'tree_bloc.dart';
 
-abstract class TreeState {}
+abstract class TreeState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class TreeInitial extends TreeState {}
 
@@ -23,6 +26,15 @@ class TreeLoaded extends TreeState {
     this.selectedMemberId,
     this.filterBranchId,
   });
+
+  @override
+  List<Object?> get props => [
+    members,
+    allMembers,
+    branches,
+    selectedMemberId,
+    filterBranchId,
+  ];
 
   TreeLoaded copyWith({
     List<MemberEntity>? members,
@@ -50,4 +62,7 @@ class TreeLoaded extends TreeState {
 class TreeError extends TreeState {
   final String message;
   TreeError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

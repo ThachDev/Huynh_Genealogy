@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
-import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 
 class MemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
@@ -164,9 +164,3 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
     );
   }
 }
-
-
-
-
-
-

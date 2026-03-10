@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
-import 'package:app_family_tree/features/family_tree/application/bloc/tree_bloc.dart';
-import 'package:app_family_tree/features/family_tree/presentation/widgets/branch_card.dart';
-import 'package:app_family_tree/features/family_tree/presentation/widgets/dashboard_skeleton.dart';
-import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
-import 'package:app_family_tree/features/family_tree/presentation/pages/member_detail_page.dart';
+import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
+import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/branch_card.dart';
+import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
+import 'package:app_family_tree/features/family_tree/presentation/member/pages/member_detail_page.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -40,7 +40,8 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
               else
                 _buildHeader(context, 0, 0),
 
-              if (state is TreeLoading) const SliverDashboardSkeleton(),
+              if (state is TreeLoading || state is TreeInitial)
+                const SliverDashboardSkeleton(),
 
               if (state is TreeError)
                 SliverFillRemaining(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/utils/date_formatter.dart';
-import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 
 class MemberDetailPage extends StatefulWidget {
   final MemberEntity member;

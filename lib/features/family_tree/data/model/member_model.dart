@@ -1,4 +1,4 @@
-import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 
 class MemberModel extends MemberEntity {
   const MemberModel({
@@ -104,9 +104,3 @@ class MemberModel extends MemberEntity {
     }
   }
 }
-
-
-
-
-
-

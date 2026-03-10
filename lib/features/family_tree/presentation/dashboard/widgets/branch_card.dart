@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
-import 'package:app_family_tree/features/family_tree/domain/entity/branch_entity.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 
 class BranchCard extends StatelessWidget {
   final BranchEntity branch;
@@ -141,9 +141,3 @@ class BranchCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-

@@ -187,6 +187,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
+                            fontSize: 12,
                           ),
                         ),
                       ),
@@ -214,6 +215,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
+                            fontSize: 12,
                           ),
                         ),
                       ),

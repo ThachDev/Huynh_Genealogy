@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:app_family_tree/exception_handler/exceptions.dart';
 import 'package:app_family_tree/exception_handler/failures.dart';
-import 'package:app_family_tree/features/family_tree/domain/entity/branch_entity.dart';
-import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
-import 'package:app_family_tree/features/family_tree/domain/repository/family_repository.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
+import 'package:app_family_tree/features/family_tree/domain/repositories/family_repository.dart';
 import 'package:app_family_tree/features/family_tree/data/source/family_remote_data_source.dart';
 import 'package:app_family_tree/features/family_tree/data/model/branch_model.dart';
 import 'package:app_family_tree/features/family_tree/data/model/member_model.dart';
@@ -16,8 +16,9 @@ class FamilyRepositoryImpl implements FamilyRepository {
   // ─── Members ──────────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, List<MemberEntity>>> getMembers(
-      {int? branchId}) async {
+  Future<Either<Failure, List<MemberEntity>>> getMembers({
+    int? branchId,
+  }) async {
     try {
       final models = await remoteDataSource.getMembers(branchId: branchId);
       // Return as Entity list (models are already entities via inheritance)
@@ -121,9 +122,3 @@ class FamilyRepositoryImpl implements FamilyRepository {
     }
   }
 }
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-import 'package:app_family_tree/features/family_tree/domain/entity/branch_entity.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 
 class BranchModel extends BranchEntity {
   const BranchModel({
@@ -43,9 +43,3 @@ class BranchModel extends BranchEntity {
     );
   }
 }
-
-
-
-
-
-

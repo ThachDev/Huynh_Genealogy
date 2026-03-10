@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
-import 'package:app_family_tree/features/family_tree/presentation/pages/family_dashboard_page.dart';
-import 'package:app_family_tree/features/family_tree/presentation/pages/tree_view_page.dart';
-import 'package:app_family_tree/features/family_tree/presentation/widgets/add_member_dialog.dart';
+import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/family_dashboard_page.dart';
+import 'package:app_family_tree/features/family_tree/presentation/tree/pages/tree_view_page.dart';
+import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 
 class MainShellPage extends StatefulWidget {
   const MainShellPage({super.key});
@@ -25,6 +25,7 @@ class _MainShellPageState extends State<MainShellPage> {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'main_fab',
         onPressed: () {
           showDialog(
             context: context,
@@ -35,17 +36,14 @@ class _MainShellPageState extends State<MainShellPage> {
         backgroundColor: AppColors.crimson,
         foregroundColor: Colors.white,
         elevation: 8,
-        shape: CircleBorder(
-          side: BorderSide(
-            color: AppColors.gold.withValues(alpha: 0.5),
-            width: 1.5,
-          ),
+        shape: const CircleBorder(
+          side: BorderSide(color: AppColors.gold, width: 1.5),
         ),
         child: const Icon(Icons.person_add_rounded, size: 28),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Container(
-        height: 60 + MediaQuery.of(context).padding.bottom,
+        height: 70 + MediaQuery.of(context).padding.bottom,
         decoration: BoxDecoration(
           color: AppColors.wood,
           borderRadius: const BorderRadius.only(
@@ -84,13 +82,18 @@ class _MainShellPageState extends State<MainShellPage> {
               ),
             ),
             // Navigation Items
-            SafeArea(
-              child: Row(
-                children: [
-                  _buildNavItem(0, Icons.home_rounded, 'Trang chủ'),
-                  const SizedBox(width: 56),
-                  _buildNavItem(1, Icons.account_tree_rounded, 'Sơ đồ'),
-                ],
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom,
+                ),
+                child: Row(
+                  children: [
+                    _buildNavItem(0, Icons.home_rounded, 'Trang chủ'),
+                    const SizedBox(width: 56),
+                    _buildNavItem(1, Icons.account_tree_rounded, 'Sơ đồ'),
+                  ],
+                ),
               ),
             ),
           ],
@@ -117,7 +120,7 @@ class _MainShellPageState extends State<MainShellPage> {
                 size: 24,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               label,
               style: GoogleFonts.inter(

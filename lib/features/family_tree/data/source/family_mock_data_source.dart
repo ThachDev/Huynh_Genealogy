@@ -1,4 +1,4 @@
-import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
+import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/data/model/branch_model.dart';
 import 'package:app_family_tree/features/family_tree/data/model/member_model.dart';
 import 'family_remote_data_source.dart';
@@ -169,7 +169,9 @@ class FamilyMockDataSourceImpl implements FamilyRemoteDataSource {
     await Future.delayed(const Duration(milliseconds: 500));
     if (member.id == 0) {
       final newMember = MemberModel(
-        id: _members.isEmpty ? 1 : _members.map((m) => m.id).reduce((a, b) => a > b ? a : b) + 1,
+        id: _members.isEmpty
+            ? 1
+            : _members.map((m) => m.id).reduce((a, b) => a > b ? a : b) + 1,
         fullName: member.fullName,
         gender: member.gender,
         dateOfBirth: member.dateOfBirth,
@@ -179,7 +181,12 @@ class FamilyMockDataSourceImpl implements FamilyRemoteDataSource {
         maritalStatus: member.maritalStatus,
         generation: member.generation,
         branchId: member.branchId,
-        branchName: _branches.firstWhere((b) => b.id == member.branchId, orElse: () => _branches[0]).name,
+        branchName: _branches
+            .firstWhere(
+              (b) => b.id == member.branchId,
+              orElse: () => _branches[0],
+            )
+            .name,
         parentId: member.parentId,
         spouseId: member.spouseId,
         notes: member.notes,
@@ -221,7 +228,9 @@ class FamilyMockDataSourceImpl implements FamilyRemoteDataSource {
     await Future.delayed(const Duration(milliseconds: 500));
     if (branch.id == 0) {
       final newBranch = BranchModel(
-        id: _branches.isEmpty ? 1 : _branches.map((b) => b.id).reduce((a, b) => a > b ? a : b) + 1,
+        id: _branches.isEmpty
+            ? 1
+            : _branches.map((b) => b.id).reduce((a, b) => a > b ? a : b) + 1,
         name: branch.name,
         description: branch.description,
         founderName: branch.founderName,
@@ -247,9 +256,3 @@ class FamilyMockDataSourceImpl implements FamilyRemoteDataSource {
     return true;
   }
 }
-
-
-
-
-
-

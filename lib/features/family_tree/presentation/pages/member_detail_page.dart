@@ -14,8 +14,6 @@ class MemberDetailPage extends StatefulWidget {
 }
 
 class _MemberDetailPageState extends State<MemberDetailPage> {
-  int _spiritualCount = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,44 +22,19 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         slivers: [
           // ── Header Modal with Ancient Clouds ──
           SliverAppBar(
-            expandedHeight: 200,
-            pinned: true,
-            backgroundColor: AppColors.crimson,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.asset(
-                      'assets/images/clouds.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Container(color: AppColors.crimson),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withValues(alpha: 0.5),
-                            Colors.transparent,
-                            Colors.black.withValues(alpha: 0.3),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            pinned: false,
+            backgroundColor: AppColors.parchment,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.crimson),
+              onPressed: () => Navigator.pop(context),
             ),
           ),
 
           // ── Avatar Overlay and Basic Info ──
           SliverToBoxAdapter(
-            child: Transform.translate(
-              offset: const Offset(0, -50),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20),
               child: Column(
                 children: [
                   // Large Avatar
@@ -86,12 +59,16 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                           ? NetworkImage(widget.member.avatarUrl!)
                           : null,
                       child: widget.member.avatarUrl == null
-                          ? Icon(
-                              widget.member.gender == Gender.male
-                                  ? Icons.man
-                                  : Icons.woman,
-                              size: 60,
-                              color: AppColors.crimson,
+                          ? Center(
+                              child: Icon(
+                                widget.member.gender == Gender.female
+                                    ? Icons.person_2_rounded
+                                    : Icons.person_rounded,
+                                size: 70,
+                                color: AppColors.textSecondary.withValues(
+                                  alpha: 0.5,
+                                ),
+                              ),
                             )
                           : null,
                     ),
@@ -127,8 +104,6 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  // Spiritual Interaction
-                  _buildSpiritualButton(),
                 ],
               ),
             ),
@@ -196,45 +171,6 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           fontWeight: FontWeight.bold,
           color: color,
         ),
-      ),
-    );
-  }
-
-  Widget _buildSpiritualButton() {
-    final bool isDeceased = !widget.member.isAlive;
-    return ElevatedButton.icon(
-      onPressed: () {
-        setState(() => _spiritualCount++);
-        // Show lottie effect here if available
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              isDeceased
-                  ? 'Bạn đã thắp một nén nhang thành tâm.'
-                  : 'Bạn đã gửi một lời chúc mừng.',
-            ),
-            duration: const Duration(seconds: 1),
-            backgroundColor: AppColors.crimson,
-          ),
-        );
-      },
-      icon: Icon(
-        isDeceased ? Icons.local_fire_department : Icons.card_giftcard,
-      ),
-      label: Text(
-        isDeceased
-            ? 'ĐỐT NHANG ($_spiritualCount)'
-            : 'CHÚC MỪNG ($_spiritualCount)',
-        style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: AppColors.crimson,
-        side: const BorderSide(color: AppColors.gold, width: 2),
-        elevation: 8,
-        shadowColor: AppColors.gold.withValues(alpha: 0.3),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
     );
   }

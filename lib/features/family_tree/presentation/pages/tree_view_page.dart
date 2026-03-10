@@ -16,8 +16,7 @@ class TreeViewPage extends StatefulWidget {
 }
 
 class _TreeViewPageState extends State<TreeViewPage> {
-  final BuchheimWalkerConfiguration _algorithm =
-      BuchheimWalkerConfiguration();
+  final BuchheimWalkerConfiguration _algorithm = BuchheimWalkerConfiguration();
 
   @override
   void initState() {
@@ -64,19 +63,7 @@ class _TreeViewPageState extends State<TreeViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: AppBar(
-        title: Text(
-          'Bản Đồ Phả Hệ',
-          style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            tooltip: 'Hướng dẫn',
-            onPressed: () => _showHelp(context),
-          ),
-        ],
-      ),
+
       body: Stack(
         children: [
           // Background pattern/texture could go here if available
@@ -84,7 +71,8 @@ class _TreeViewPageState extends State<TreeViewPage> {
             builder: (context, state) {
               if (state is TreeLoading) {
                 return const Center(
-                    child: CircularProgressIndicator(color: AppColors.crimson));
+                  child: CircularProgressIndicator(color: AppColors.crimson),
+                );
               }
 
               if (state is TreeError) {
@@ -129,7 +117,9 @@ class _TreeViewPageState extends State<TreeViewPage> {
                       ..style = PaintingStyle.stroke,
                     builder: (Node node) {
                       final memberId = node.key?.value as int?;
-                      final member = memberId != null ? memberMap[memberId] : null;
+                      final member = memberId != null
+                          ? memberMap[memberId]
+                          : null;
 
                       if (member == null) {
                         return const SizedBox(width: 80, height: 40);
@@ -139,14 +129,13 @@ class _TreeViewPageState extends State<TreeViewPage> {
                         member: member,
                         isSelected: state.selectedMemberId == member.id,
                         onTap: () {
-                          context
-                              .read<TreeBloc>()
-                              .add(SelectMemberEvent(member.id));
+                          context.read<TreeBloc>().add(
+                            SelectMemberEvent(member.id),
+                          );
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) =>
-                                  MemberDetailPage(member: member),
+                              builder: (_) => MemberDetailPage(member: member),
                             ),
                           );
                         },
@@ -232,16 +221,13 @@ class _TreeViewPageState extends State<TreeViewPage> {
           const SizedBox(width: 8),
           Text(
             label,
-            style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: AppColors.textPrimary,
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-
-
-
-
-

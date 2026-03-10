@@ -30,13 +30,19 @@ class TreeLoaded extends TreeState {
     List<BranchEntity>? branches,
     int? selectedMemberId,
     int? filterBranchId,
+    bool resetSelectedMember = false,
+    bool resetFilter = false,
   }) {
     return TreeLoaded(
       members: members ?? this.members,
       allMembers: allMembers ?? this.allMembers,
       branches: branches ?? this.branches,
-      selectedMemberId: selectedMemberId ?? this.selectedMemberId,
-      filterBranchId: filterBranchId ?? this.filterBranchId,
+      selectedMemberId: resetSelectedMember
+          ? null
+          : (selectedMemberId ?? this.selectedMemberId),
+      filterBranchId: resetFilter
+          ? null
+          : (filterBranchId ?? this.filterBranchId),
     );
   }
 }

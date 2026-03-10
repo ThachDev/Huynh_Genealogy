@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/application/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/widgets/branch_card.dart';
+import 'package:app_family_tree/features/family_tree/presentation/widgets/dashboard_skeleton.dart';
 import 'package:app_family_tree/features/family_tree/domain/entity/member_entity.dart';
+import 'package:app_family_tree/features/family_tree/presentation/pages/member_detail_page.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -38,12 +40,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
               else
                 _buildHeader(context, 0, 0),
 
-              if (state is TreeLoading)
-                const SliverFillRemaining(
-                  child: Center(
-                    child: CircularProgressIndicator(color: AppColors.crimson),
-                  ),
-                ),
+              if (state is TreeLoading) const SliverDashboardSkeleton(),
 
               if (state is TreeError)
                 SliverFillRemaining(
@@ -150,7 +147,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
   Widget _buildHeader(BuildContext context, int memberCount, int branchCount) {
     return SliverAppBar(
       expandedHeight: 190,
-      pinned: true,
+      pinned: false,
       backgroundColor: AppColors.wood,
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
@@ -381,7 +378,12 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         ),
         trailing: const Icon(Icons.chevron_right, color: AppColors.gold),
         onTap: () {
-          // Navigate to detail
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MemberDetailPage(member: m),
+            ),
+          );
         },
       ),
     );

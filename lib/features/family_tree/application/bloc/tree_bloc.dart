@@ -61,6 +61,12 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
               .where((m) => m.branchId == event.branchId)
               .toList();
 
-    emit(current.copyWith(members: filtered, filterBranchId: event.branchId));
+    emit(
+      current.copyWith(
+        members: filtered,
+        filterBranchId: event.branchId,
+        resetFilter: event.branchId == null,
+      ),
+    );
   }
 }

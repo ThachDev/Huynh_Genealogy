@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
 
-class DashboardSkeleton extends StatefulWidget {
-  const DashboardSkeleton({super.key});
+class SliverDashboardSkeleton extends StatefulWidget {
+  const SliverDashboardSkeleton({super.key});
 
   @override
-  State<DashboardSkeleton> createState() => _DashboardSkeletonState();
+  State<SliverDashboardSkeleton> createState() =>
+      _SliverDashboardSkeletonState();
 }
 
-class _DashboardSkeletonState extends State<DashboardSkeleton>
+class _SliverDashboardSkeletonState extends State<SliverDashboardSkeleton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -37,115 +37,108 @@ class _DashboardSkeletonState extends State<DashboardSkeleton>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        return Opacity(
-          opacity: _animation.value,
-          child: CustomScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            slivers: [
-              // Header Skeleton
-              SliverToBoxAdapter(
-                child: Container(
-                  height: 190,
-                  decoration: const BoxDecoration(
-                    color: AppColors.wood,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
+        return SliverMainAxisGroup(
+          slivers: [
+            SliverOpacity(
+              opacity: _animation.value,
+              sliver: SliverMainAxisGroup(
+                slivers: [
+                  // Branches Section Title
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 26, 16, 12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 4,
+                            height: 18,
+                            color: Colors.grey[300],
+                          ),
+                          const SizedBox(width: 10),
+                          Container(
+                            width: 100,
+                            height: 14,
+                            color: Colors.grey[300],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
 
-              // Branches Section Title
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 26, 16, 12),
-                  child: Row(
-                    children: [
-                      Container(width: 4, height: 18, color: Colors.grey[300]),
-                      const SizedBox(width: 10),
-                      Container(
-                        width: 100,
-                        height: 14,
-                        color: Colors.grey[300],
+                  // Branches Cards
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 140,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: 3,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (_, _) {
+                          return Container(
+                            width: 350,
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey[200]!),
+                            ),
+                          );
+                        },
                       ),
-                      const Spacer(),
-                      Container(width: 60, height: 12, color: Colors.grey[300]),
-                    ],
+                    ),
                   ),
-                ),
-              ),
 
-              // Branches Cards
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 140,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    itemCount: 3,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (_, __) {
-                      return Container(
-                        width: 350,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey[200]!),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-
-              // Members Section Title
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 26, 16, 12),
-                  child: Row(
-                    children: [
-                      Container(width: 4, height: 18, color: Colors.grey[300]),
-                      const SizedBox(width: 10),
-                      Container(
-                        width: 120,
-                        height: 14,
-                        color: Colors.grey[300],
+                  // Members Section Title
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 26, 16, 12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 4,
+                            height: 18,
+                            color: Colors.grey[300],
+                          ),
+                          const SizedBox(width: 10),
+                          Container(
+                            width: 120,
+                            height: 14,
+                            color: Colors.grey[300],
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      Container(width: 60, height: 12, color: Colors.grey[300]),
-                    ],
+                    ),
                   ),
-                ),
-              ),
 
-              // Members Grid
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverGrid(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    mainAxisExtent: 90,
-                    mainAxisSpacing: 10,
+                  // Members Grid
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            mainAxisExtent: 90,
+                            mainAxisSpacing: 10,
+                          ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey[200]!),
+                          ),
+                        );
+                      }, childCount: 5),
+                    ),
                   ),
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[200]!),
-                      ),
-                    );
-                  }, childCount: 5),
-                ),
+                ],
               ),
-              const SliverToBoxAdapter(child: SizedBox(height: 50)),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

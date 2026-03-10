@@ -12,37 +12,36 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   final GetMembers getMembers;
   final GetBranches getBranches;
 
-  TreeBloc({
-    required this.getMembers,
-    required this.getBranches,
-  }) : super(TreeInitial()) {
+  TreeBloc({required this.getMembers, required this.getBranches})
+    : super(TreeInitial()) {
     on<LoadTreeEvent>(_onLoadTree);
     on<SelectMemberEvent>(_onSelectMember);
     on<FilterByBranchEvent>(_onFilterByBranch);
   }
 
-  Future<void> _onLoadTree(
-      LoadTreeEvent event, Emitter<TreeState> emit) async {
+  Future<void> _onLoadTree(LoadTreeEvent event, Emitter<TreeState> emit) async {
     emit(TreeLoading());
 
     final membersResult = await getMembers(
-      GetMembersParams(branchId: event.branchId),
+      GetMembersParams(branchId: null), // Load tất cả thành viên
     );
     final branchesResult = await getBranches(NoParams());
 
-    membersResult.fold(
-      (failure) => emit(TreeError(failure.message)),
-      (members) {
-        branchesResult.fold(
-          (failure) => emit(TreeError(failure.message)),
-          (branches) => emit(TreeLoaded(
-            members: members,
-            branches: branches,
-            filterBranchId: event.branchId,
-          )),
-        );
-      },
-    );
+    membersResult.fold((failure) => emit(TreeError(failure.message)), (
+      allMembers,
+    ) {
+      branchesResult.fold(
+        (failure) => emit(TreeError(failure.message)),
+        (branches) => emit(
+          TreeLoaded(
+            allMembers: allMembers.cast<MemberEntity>(),
+            members: allMembers.cast<MemberEntity>(),
+            branches: branches.cast<BranchEntity>(),
+            filterBranchId: null,
+          ),
+        ),
+      );
+    });
   }
 
   void _onSelectMember(SelectMemberEvent event, Emitter<TreeState> emit) {
@@ -51,14 +50,17 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
     }
   }
 
-  Future<void> _onFilterByBranch(
-      FilterByBranchEvent event, Emitter<TreeState> emit) async {
-    add(LoadTreeEvent(branchId: event.branchId));
+  /// Filter tức thì từ allMembers đã cache — không cần async, không emit TreeLoading
+  void _onFilterByBranch(FilterByBranchEvent event, Emitter<TreeState> emit) {
+    if (state is! TreeLoaded) return;
+    final current = state as TreeLoaded;
+
+    final filtered = event.branchId == null
+        ? current.allMembers
+        : current.allMembers
+              .where((m) => m.branchId == event.branchId)
+              .toList();
+
+    emit(current.copyWith(members: filtered, filterBranchId: event.branchId));
   }
 }
-
-
-
-
-
-

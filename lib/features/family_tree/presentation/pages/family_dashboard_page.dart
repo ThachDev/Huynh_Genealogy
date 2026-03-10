@@ -14,10 +14,6 @@ class FamilyDashboardPage extends StatefulWidget {
 }
 
 class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
-  int? _selectedBranchId;
-  final TextEditingController _searchController = TextEditingController();
-  String _selectedGender = 'Tất cả';
-
   @override
   void initState() {
     super.initState();
@@ -33,7 +29,14 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
           return CustomScrollView(
             slivers: [
               // ── Wooden Header with Dragon Patterns ──
-              _buildHeader(context),
+              if (state is TreeLoaded)
+                _buildHeader(
+                  context,
+                  state.members.length,
+                  state.branches.length,
+                )
+              else
+                _buildHeader(context, 0, 0),
 
               if (state is TreeLoading)
                 const SliverFillRemaining(
@@ -66,20 +69,14 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                 ),
 
               if (state is TreeLoaded) ...[
-                // ── Today's Events Banner ──
-                _buildEventsBanner(),
-
-                // ── Stats Section ──
-                SliverToBoxAdapter(
-                  child: _buildStats(
-                    state.members.length,
-                    state.branches.length,
-                  ),
-                ),
-
+                // ── Search & Filter ──
+                // SliverToBoxAdapter(child: _buildSearchAndFilter()),
                 // ── Branches Section ──
                 SliverToBoxAdapter(
-                  child: _buildSectionTitle('Chi Tộc / Nhánh'),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: _buildSectionTitle('Chi Tộc', 'Xem tất cả'),
+                  ),
                 ),
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -90,15 +87,17 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       itemCount: state.branches.length,
                       itemBuilder: (_, index) {
                         final branch = state.branches[index];
+                        final isSelected = state.filterBranchId == branch.id;
                         return SizedBox(
-                          width: 220,
+                          width: 350,
                           child: BranchCard(
                             branch: branch,
-                            isSelected: _selectedBranchId == branch.id,
+                            isSelected: isSelected,
                             onTap: () {
-                              setState(() => _selectedBranchId = branch.id);
+                              // Toggle filter nhanh chóng thông qua Bloc
+                              final newId = isSelected ? null : branch.id;
                               context.read<TreeBloc>().add(
-                                FilterByBranchEvent(branch.id),
+                                FilterByBranchEvent(newId),
                               );
                             },
                           ),
@@ -109,7 +108,21 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                 ),
 
                 // ── Members Grid ──
-                SliverToBoxAdapter(child: _buildSectionTitle('Thành Viên')),
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle(
+                    state.filterBranchId == null
+                        ? 'Thành Viên'
+                        : 'Thành Viên • ${state.branches.where((b) => b.id == state.filterBranchId).first.name}',
+                    state.filterBranchId != null ? 'Tất cả' : 'Xem tất cả',
+                    onAction: state.filterBranchId != null
+                        ? () {
+                            context.read<TreeBloc>().add(
+                              FilterByBranchEvent(null),
+                            );
+                          }
+                        : null,
+                  ),
+                ),
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   sliver: SliverGrid(
@@ -125,7 +138,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                     }, childCount: state.members.length),
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: 80)),
+                const SliverToBoxAdapter(child: SizedBox(height: 50)),
               ],
             ],
           );
@@ -134,9 +147,9 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, int memberCount, int branchCount) {
     return SliverAppBar(
-      expandedHeight: 220,
+      expandedHeight: 190,
       pinned: true,
       backgroundColor: AppColors.wood,
       flexibleSpace: FlexibleSpaceBar(
@@ -158,6 +171,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
             // Content
             SafeArea(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 10),
                   // Logo and Title
@@ -211,158 +225,29 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       ),
                     ],
                   ),
-                  const Spacer(),
-                  // Search and Filter
+                  const SizedBox(height: 25),
+                  // Stats Row
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        // Search and Filter Premium Unified
-                        Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.35),
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(
-                              color: AppColors.gold.withValues(alpha: 0.3),
-                              width: 0.8,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _searchController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Tìm kiếm người thân...',
-                                    hintStyle: GoogleFonts.inter(
-                                      color: Colors.white38,
-                                      fontSize: 13,
-                                    ),
-                                    prefixIcon: const Icon(
-                                      Icons.search_rounded,
-                                      color: AppColors.gold,
-                                      size: 22,
-                                    ),
-                                    border: InputBorder.none,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                  ),
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 1.2,
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      AppColors.gold.withValues(alpha: 0.4),
-                                      Colors.transparent,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Theme(
-                                data: Theme.of(
-                                  context,
-                                ).copyWith(canvasColor: AppColors.wood),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                  ),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: _selectedGender,
-                                      icon: const Padding(
-                                        padding: EdgeInsets.only(left: 4),
-                                        child: Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: AppColors.gold,
-                                          size: 20,
-                                        ),
-                                      ),
-                                      dropdownColor: const Color(0xFF3E2723),
-                                      borderRadius: BorderRadius.circular(15),
-                                      style: GoogleFonts.inter(
-                                        color: Colors.white,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      items:
-                                          [
-                                            ['Tất cả', Icons.all_inclusive],
-                                            ['Nam', Icons.male_rounded],
-                                            ['Nữ', Icons.female_rounded],
-                                          ].map((item) {
-                                            final label = item[0] as String;
-                                            final icon = item[1] as IconData;
-                                            return DropdownMenuItem<String>(
-                                              value: label,
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Icon(
-                                                    icon,
-                                                    size: 16,
-                                                    color: AppColors.gold
-                                                        .withValues(alpha: 0.8),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Text(label),
-                                                ],
-                                              ),
-                                            );
-                                          }).toList(),
-                                      onChanged: (val) {
-                                        if (val != null) {
-                                          setState(() => _selectedGender = val);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                            ],
-                          ),
+                        _statItem(
+                          'Thành viên',
+                          memberCount.toString(),
+                          Icons.people_alt_rounded,
+                          light: true,
                         ),
-                        const SizedBox(height: 12),
-                        // Add Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.add_circle_outline,
-                              size: 20,
-                            ),
-                            label: Text(
-                              'THÊM THÀNH VIÊN',
-                              style: GoogleFonts.inter(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.crimson,
-                              foregroundColor: Colors.white,
-                              elevation: 5,
-                              shadowColor: AppColors.gold,
-                            ),
-                          ),
+                        Container(width: 1, height: 30, color: Colors.white24),
+                        _statItem(
+                          'Chi tộc',
+                          branchCount.toString(),
+                          Icons.park_rounded,
+                          light: true,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -372,118 +257,29 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
     );
   }
 
-  Widget _buildEventsBanner() {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.crimson.withValues(alpha: 0.05),
-          border: Border.all(color: AppColors.gold, width: 1.5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Icon(
-                  Icons.auto_awesome,
-                  color: AppColors.crimson,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'SỰ KIỆN HÔM NAY',
-                  style: GoogleFonts.playfairDisplay(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.crimson,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.local_fire_department,
-                        color: Colors.orange,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'Giỗ cụ Huỳnh Công Minh',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 0,
-                    ),
-                    backgroundColor: AppColors.crimson,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text(
-                    'Đốt Nhang',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStats(int memberCount, int branchCount) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.wood,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _statItem('Thành viên', memberCount.toString(), Icons.people),
-          Container(width: 1, height: 30, color: Colors.white24),
-          _statItem('Chi tộc', branchCount.toString(), Icons.park),
-        ],
-      ),
-    );
-  }
-
-  Widget _statItem(String label, String value, IconData icon) {
+  Widget _statItem(
+    String label,
+    String value,
+    IconData icon, {
+    bool light = false,
+  }) {
     return Column(
       children: [
         Row(
           children: [
-            Icon(icon, color: AppColors.gold, size: 16),
+            Icon(
+              icon,
+              color: light ? AppColors.gold : AppColors.crimson,
+              size: 16,
+            ),
             const SizedBox(width: 6),
             Text(
               label,
-              style: GoogleFonts.inter(color: Colors.white70, fontSize: 11),
+              style: GoogleFonts.inter(
+                color: light ? Colors.white70 : AppColors.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -491,29 +287,49 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         Text(
           value,
           style: GoogleFonts.playfairDisplay(
-            fontSize: 22,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: light ? Colors.white : AppColors.textPrimary,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(
+    String title,
+    String description, {
+    VoidCallback? onAction,
+  }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: Row(
         children: [
           Container(width: 4, height: 18, color: AppColors.crimson),
           const SizedBox(width: 10),
-          Text(
-            title.toUpperCase(),
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-              letterSpacing: 1,
+          Expanded(
+            child: Text(
+              title.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: onAction ?? () {},
+            child: Text(
+              description,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+                letterSpacing: 1,
+              ),
             ),
           ),
         ],

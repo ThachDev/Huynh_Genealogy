@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/pages/family_dashboard_page.dart';
 import 'package:app_family_tree/features/family_tree/presentation/pages/tree_view_page.dart';
+import 'package:app_family_tree/features/family_tree/presentation/widgets/add_member_dialog.dart';
 
 class MainShellPage extends StatefulWidget {
   const MainShellPage({super.key});
@@ -23,13 +24,33 @@ class _MainShellPageState extends State<MainShellPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            barrierColor: Colors.black.withValues(alpha: 0.6),
+            builder: (context) => const AddMemberDialog(),
+          );
+        },
+        backgroundColor: AppColors.crimson,
+        foregroundColor: Colors.white,
+        elevation: 8,
+        shape: CircleBorder(
+          side: BorderSide(
+            color: AppColors.gold.withValues(alpha: 0.5),
+            width: 1.5,
+          ),
+        ),
+        child: const Icon(Icons.person_add_rounded, size: 28),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Container(
         height: 60 + MediaQuery.of(context).padding.bottom,
         decoration: BoxDecoration(
           color: AppColors.wood,
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
           boxShadow: [
             BoxShadow(
@@ -49,8 +70,8 @@ class _MainShellPageState extends State<MainShellPage> {
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(25),
-                  topRight: Radius.circular(25),
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
                 child: Image.asset(
                   'assets/images/wood_dragon.png',
@@ -67,6 +88,7 @@ class _MainShellPageState extends State<MainShellPage> {
               child: Row(
                 children: [
                   _buildNavItem(0, Icons.home_rounded, 'Trang chủ'),
+                  const SizedBox(width: 56),
                   _buildNavItem(1, Icons.account_tree_rounded, 'Sơ đồ'),
                 ],
               ),

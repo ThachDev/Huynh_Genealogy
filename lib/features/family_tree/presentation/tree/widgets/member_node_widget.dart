@@ -43,18 +43,6 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
     super.dispose();
   }
 
-  Color get _nodeColor {
-    if (!widget.member.isAlive) return AppColors.nodeDeceased;
-    switch (widget.member.gender) {
-      case Gender.male:
-        return AppColors.nodeMale;
-      case Gender.female:
-        return AppColors.nodeFemale;
-      case Gender.unknown:
-        return AppColors.parchment;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -66,99 +54,132 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
       onTapCancel: () => _controller.reverse(),
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          width: 140,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: _nodeColor,
-            border: Border.all(
-              color: widget.isSelected ? AppColors.crimson : AppColors.gold,
-              width: widget.isSelected ? 2.5 : 1.5,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Avatar Circle with Border
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(
+                      color: widget.member.gender == Gender.female
+                          ? AppColors.femaleBorder
+                          : AppColors.maleBorder,
+                      width: 3.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(
+                      2,
+                    ), // Space between border and image
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: widget.member.avatarUrl == null
+                            ? (widget.member.gender == Gender.female
+                                  ? AppColors.nodeFemale
+                                  : AppColors.nodeMale)
+                            : Colors.white,
+                        image: widget.member.avatarUrl != null
+                            ? DecorationImage(
+                                image: NetworkImage(widget.member.avatarUrl!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: widget.member.avatarUrl == null
+                          ? Center(
+                              child: Icon(
+                                widget.member.gender == Gender.female
+                                    ? Icons.woman
+                                    : Icons.man,
+                                color: widget.member.gender == Gender.female
+                                    ? AppColors.femaleBorder
+                                    : AppColors.maleBorder,
+                                size: 40,
+                              ),
+                            )
+                          : null,
+                    ),
+                  ),
+                ),
+                // Status Badge (Green/Gray Dot)
+                Positioned(
+                  top: 2,
+                  right: 2,
+                  child: Container(
+                    width: 16,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: widget.member.isAlive
+                          ? const Color(0xFF2ECC71)
+                          : AppColors.nodeDeceased,
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Connector Point (Small circle at the bottom)
+                Positioned(
+                  bottom: -6,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        border: Border.all(
+                          color: widget.member.gender == Gender.female
+                              ? AppColors.femaleBorder
+                              : AppColors.maleBorder,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Avatar
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.gold, width: 2),
-                ),
-                child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: AppColors.parchment,
-                  backgroundImage: widget.member.avatarUrl != null
-                      ? NetworkImage(widget.member.avatarUrl!)
-                      : null,
-                  child: widget.member.avatarUrl == null
-                      ? Icon(
-                          widget.member.gender == Gender.female
-                              ? Icons.woman
-                              : Icons.man,
-                          color: AppColors.crimson,
-                          size: 36,
-                        )
-                      : null,
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Name
-              Text(
+            const SizedBox(height: 8),
+            // Member Name
+            SizedBox(
+              width: 140, // Expanded slightly for single line
+              child: Text(
                 widget.member.fullName,
                 textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+                maxLines: 1, // Single line only
+                overflow: TextOverflow.ellipsis, // Use ellipsis if too long
                 style: GoogleFonts.inter(
                   fontSize: 14,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900, // Extra bold like in the image
                   color: AppColors.textPrimary,
+                  letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(height: 6),
-              // Generation label
-              if (widget.member.generation != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.crimson,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Đời thứ ${widget.member.generation}',
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              if (!widget.member.isAlive)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(
-                    '✝ Đã mất',
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      color: AppColors.textSecondary,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

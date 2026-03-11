@@ -15,7 +15,11 @@ class TreeViewPage extends StatefulWidget {
   State<TreeViewPage> createState() => _TreeViewPageState();
 }
 
-class _TreeViewPageState extends State<TreeViewPage> {
+class _TreeViewPageState extends State<TreeViewPage>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _animationController;
+  Animation<Matrix4>? _animation;
+  final GlobalKey _graphKey = GlobalKey();
   final BuchheimWalkerConfiguration _algorithm = BuchheimWalkerConfiguration();
   final TransformationController _transformationController =
       TransformationController();
@@ -25,25 +29,76 @@ class _TreeViewPageState extends State<TreeViewPage> {
   @override
   void initState() {
     super.initState();
+    // Khởi tạo controller ngay lập tức
+    _animationController =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 600),
+        )..addListener(() {
+          if (_animation != null) {
+            _transformationController.value = _animation!.value;
+          }
+        });
+
     final state = context.read<TreeBloc>().state;
     if (state is TreeInitial) {
       context.read<TreeBloc>().add(LoadTreeEvent());
     }
     _algorithm
-      ..siblingSeparation = 60
+      ..siblingSeparation =
+          70 // Tăng khoảng cách ngang một chút cho thoáng
       ..levelSeparation = 100
-      ..subtreeSeparation = 60
+      ..subtreeSeparation = 70
       ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
   }
 
   @override
   void dispose() {
+    _animationController?.dispose();
     _transformationController.dispose();
     super.dispose();
   }
 
   void _resetView() {
-    _transformationController.value = Matrix4.identity();
+    if (_animationController == null) return;
+
+    final RenderBox? renderBox =
+        _graphKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) {
+      _transformationController.value = Matrix4.identity();
+      return;
+    }
+
+    // Lấy kích thước của toàn bộ cây và viewport
+    final graphSize = renderBox.size;
+    final viewportSize = MediaQuery.of(context).size;
+
+    // Tính toán tỷ lệ scale để vừa khít màn hình (có padding 10%)
+    double scaleX = viewportSize.width / (graphSize.width + 100);
+    double scaleY = (viewportSize.height - 150) / (graphSize.height + 100);
+    double scale = (scaleX < scaleY ? scaleX : scaleY).clamp(0.2, 1.0);
+
+    // Tính toán vị trí để căn giữa
+    final x = (viewportSize.width - graphSize.width * scale) / 2;
+    final y = 40.0; // Khoảng cách nhỏ từ đỉnh màn hình
+
+    final targetMatrix = Matrix4.identity();
+    targetMatrix.translateByDouble(x, y, 0.0, 1.0);
+    targetMatrix.scaleByDouble(scale, scale, 1.0, 1.0);
+
+    // Tạo animation từ trạng thái hiện tại đến đích
+    _animation =
+        Matrix4Tween(
+          begin: _transformationController.value,
+          end: targetMatrix,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController!,
+            curve: Curves.easeInOutCubic,
+          ),
+        );
+
+    _animationController?.forward(from: 0);
   }
 
   void _ensureGraph(List<MemberEntity> members) {
@@ -93,6 +148,13 @@ class _TreeViewPageState extends State<TreeViewPage> {
             fontSize: 18,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline, color: AppColors.gold),
+            onPressed: () => _showLegendDialog(context),
+          ),
+          const SizedBox(width: 8),
+        ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -185,6 +247,7 @@ class _TreeViewPageState extends State<TreeViewPage> {
                   minScale: 0.1,
                   maxScale: 2.5,
                   child: GraphView(
+                    key: _graphKey,
                     graph: _graph!,
                     algorithm: BuchheimWalkerAlgorithm(
                       _algorithm,
@@ -229,6 +292,109 @@ class _TreeViewPageState extends State<TreeViewPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showLegendDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.parchment,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Chú thích ký hiệu',
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.bold,
+            color: AppColors.crimson,
+          ),
+        ),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildLegendItem(
+                  color: AppColors.nodeMale,
+                  label: 'Nam',
+                  isCircle: false,
+                ),
+                const SizedBox(height: 12),
+                _buildLegendItem(
+                  color: AppColors.nodeFemale,
+                  label: 'Nữ',
+                  isCircle: false,
+                ),
+              ],
+            ),
+            SizedBox(width: 20),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildLegendItem(
+                  color: const Color(0xFF2ECC71),
+                  label: 'Còn sống',
+                  isCircle: true,
+                ),
+                const SizedBox(height: 12),
+                _buildLegendItem(
+                  color: AppColors.nodeDeceased,
+                  label: 'Đã mất',
+                  isCircle: true,
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Đã hiểu',
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                color: AppColors.crimson,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegendItem({
+    required Color color,
+    required String label,
+    required bool isCircle,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: isCircle ? 12 : 16,
+          height: 12,
+          decoration: BoxDecoration(
+            color: isCircle ? color : Colors.white,
+            shape: isCircle ? BoxShape.circle : BoxShape.rectangle,
+            borderRadius: isCircle ? null : BorderRadius.circular(2),
+            border: isCircle
+                ? Border.all(color: Colors.white, width: 1.5)
+                : Border.all(color: color, width: 2.5),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -22,11 +22,13 @@ class AppColors {
   static const Color textOnPrimary = Colors.white;
 
   // Tree node colors
-  static const Color nodeMale = Color(0xFFE8F1F8); // Sang trọng hơn xanh nhạt
-  static const Color nodeFemale = Color(0xFFF9E8EE); // Sang trọng hơn hồng nhạt
-  static const Color nodeDeceased = Color(0xFFCFD8DC);
+  static const Color nodeMale = Color(0xFFE8F1F8);
+  static const Color nodeFemale = Color(0xFFF9E8EE);
+  static const Color maleBorder = Color(0xFF1F3A5F);
+  static const Color femaleBorder = Color(0xFF7B3F61);
+  static const Color nodeDeceased = Color(0xFF9E9E9E);
   static const Color nodeBorder = gold;
-  static const Color connectionLine = wood;
+  static const Color connectionLine = crimson;
 
   // Status Colors
   static const Color success = Color(0xFF4CAF50);
@@ -106,9 +108,3 @@ class AppTheme {
     return baseTheme;
   }
 }
-
-
-
-
-
-

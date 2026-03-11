@@ -64,18 +64,19 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: true
-  image_path: "assets/images/logo.png"
+  image_path: "assets/images/logo_app.png"
+  adaptive_icon_background: "#5D0E11"
+  adaptive_icon_foreground: "assets/images/logo_app.png"
   min_sdk_android: 21
 
 flutter_native_splash:
   color: "#5D0E11"
-  background_image: assets/images/splash_bg.png
   image: assets/images/logo.png
   android_12:
     image: assets/images/logo.png
     color: "#5D0E11"
   android: true
-  ios: false
+  ios: true
   web: false
   fullscreen: true
   android_gravity: center

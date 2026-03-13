@@ -4,14 +4,14 @@ import 'package:app_family_tree/exception_handler/failures.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/domain/repositories/family_repository.dart';
-import 'package:app_family_tree/features/family_tree/data/source/family_remote_data_source.dart';
+import 'package:app_family_tree/features/family_tree/data/source/family_data_source.dart';
 import 'package:app_family_tree/features/family_tree/data/model/branch_model.dart';
 import 'package:app_family_tree/features/family_tree/data/model/member_model.dart';
 
 class FamilyRepositoryImpl implements FamilyRepository {
-  final FamilyRemoteDataSource remoteDataSource;
+  final FamilyDataSource dataSource;
 
-  FamilyRepositoryImpl({required this.remoteDataSource});
+  FamilyRepositoryImpl({required this.dataSource});
 
   // ─── Members ──────────────────────────────────────────────────────────────
 
@@ -20,27 +20,22 @@ class FamilyRepositoryImpl implements FamilyRepository {
     int? branchId,
   }) async {
     try {
-      final models = await remoteDataSource.getMembers(branchId: branchId);
-      // Return as Entity list (models are already entities via inheritance)
+      final models = await dataSource.getMembers(branchId: branchId);
       return Right(models);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, MemberEntity>> getMemberById(int id) async {
     try {
-      final model = await remoteDataSource.getMemberById(id);
+      final model = await dataSource.getMemberById(id);
       return Right(model);
     } on NotFoundException catch (e) {
       return Left(NotFoundFailure(message: e.message));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -48,24 +43,20 @@ class FamilyRepositoryImpl implements FamilyRepository {
   Future<Either<Failure, MemberEntity>> saveMember(MemberEntity member) async {
     try {
       final model = MemberModel.fromEntity(member);
-      final saved = await remoteDataSource.saveMember(model);
+      final saved = await dataSource.saveMember(model);
       return Right(saved);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, bool>> deleteMember(int id) async {
     try {
-      final result = await remoteDataSource.deleteMember(id);
+      final result = await dataSource.deleteMember(id);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -74,26 +65,22 @@ class FamilyRepositoryImpl implements FamilyRepository {
   @override
   Future<Either<Failure, List<BranchEntity>>> getBranches() async {
     try {
-      final models = await remoteDataSource.getBranches();
+      final models = await dataSource.getBranches();
       return Right(models);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, BranchEntity>> getBranchById(int id) async {
     try {
-      final model = await remoteDataSource.getBranchById(id);
+      final model = await dataSource.getBranchById(id);
       return Right(model);
     } on NotFoundException catch (e) {
       return Left(NotFoundFailure(message: e.message));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -101,24 +88,20 @@ class FamilyRepositoryImpl implements FamilyRepository {
   Future<Either<Failure, BranchEntity>> saveBranch(BranchEntity branch) async {
     try {
       final model = BranchModel.fromEntity(branch);
-      final saved = await remoteDataSource.saveBranch(model);
+      final saved = await dataSource.saveBranch(model);
       return Right(saved);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, bool>> deleteBranch(int id) async {
     try {
-      final result = await remoteDataSource.deleteBranch(id);
+      final result = await dataSource.deleteBranch(id);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 }

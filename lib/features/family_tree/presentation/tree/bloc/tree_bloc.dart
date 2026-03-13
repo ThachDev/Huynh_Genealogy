@@ -2,18 +2,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/get_branches.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/get_members.dart';
-import 'package:app_family_tree/base/usecase.dart';
+import 'package:app_family_tree/features/family_tree/domain/repositories/family_repository.dart';
 
 part 'tree_event.dart';
 part 'tree_state.dart';
 
 class TreeBloc extends Bloc<TreeEvent, TreeState> {
-  final GetMembers getMembers;
-  final GetBranches getBranches;
+  final FamilyRepository repository;
 
-  TreeBloc({required this.getMembers, required this.getBranches})
+  TreeBloc({required this.repository})
     : super(TreeInitial()) {
     on<LoadTreeEvent>(_onLoadTree);
     on<SelectMemberEvent>(_onSelectMember);
@@ -28,12 +25,13 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
     // thì không cần load lại để tránh UI giật lag khi chuyển tab
     if (state is TreeLoaded && event.branchId == null) return;
 
+    // Chỉ emit loading nếu thực sự cần load mới hoặc reload
     emit(TreeLoading());
 
-    final membersResult = await getMembers(
-      GetMembersParams(branchId: null), // Load tất cả thành viên
+    final membersResult = await repository.getMembers(
+      branchId: event.branchId,
     );
-    final branchesResult = await getBranches(NoParams());
+    final branchesResult = await repository.getBranches();
 
     membersResult.fold((failure) => emit(TreeError(failure.message)), (
       allMembers,
@@ -42,10 +40,10 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
         (failure) => emit(TreeError(failure.message)),
         (branches) => emit(
           TreeLoaded(
-            allMembers: allMembers.cast<MemberEntity>(),
-            members: allMembers.cast<MemberEntity>(),
-            branches: branches.cast<BranchEntity>(),
-            filterBranchId: null,
+            allMembers: List<MemberEntity>.from(allMembers),
+            members: List<MemberEntity>.from(allMembers),
+            branches: List<BranchEntity>.from(branches),
+            filterBranchId: event.branchId,
           ),
         ),
       );

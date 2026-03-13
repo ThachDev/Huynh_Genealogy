@@ -2,10 +2,7 @@ class ServerException implements Exception {
   final String message;
   final int? statusCode;
 
-  const ServerException({
-    this.message = 'Lỗi máy chủ',
-    this.statusCode,
-  });
+  const ServerException({this.message = 'Lỗi máy chủ', this.statusCode});
 
   @override
   String toString() => 'ServerException: $message (status: $statusCode)';
@@ -34,9 +31,3 @@ class NotFoundException implements Exception {
   @override
   String toString() => 'NotFoundException: $message';
 }
-
-
-
-
-
-

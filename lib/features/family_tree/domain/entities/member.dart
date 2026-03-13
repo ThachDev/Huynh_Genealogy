@@ -15,11 +15,11 @@ class MemberEntity extends Equatable {
   final bool isAlive;
   final String? dateOfDeath;
   final MaritalStatus maritalStatus;
-  final int? generation;          // Thế hệ (1, 2, 3,...)
-  final int? branchId;            // Chi/Nhánh
+  final int? generation; // Thế hệ (1, 2, 3,...)
+  final int? branchId; // Chi/Nhánh
   final String? branchName;
-  final int? parentId;            // ID cha
-  final int? spouseId;            // ID vợ/chồng
+  final int? parentId; // ID cha
+  final int? spouseId; // ID vợ/chồng
   final String? notes;
   final String? avatarUrl;
 
@@ -43,26 +43,20 @@ class MemberEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        fullName,
-        gender,
-        dateOfBirth,
-        placeOfBirth,
-        isAlive,
-        dateOfDeath,
-        maritalStatus,
-        generation,
-        branchId,
-        branchName,
-        parentId,
-        spouseId,
-        notes,
-        avatarUrl,
-      ];
+    id,
+    fullName,
+    gender,
+    dateOfBirth,
+    placeOfBirth,
+    isAlive,
+    dateOfDeath,
+    maritalStatus,
+    generation,
+    branchId,
+    branchName,
+    parentId,
+    spouseId,
+    notes,
+    avatarUrl,
+  ];
 }
-
-
-
-
-
-

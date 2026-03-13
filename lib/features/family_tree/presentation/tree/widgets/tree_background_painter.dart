@@ -74,8 +74,16 @@ class TreeBackgroundPainter extends CustomPainter {
     final diag = math.sqrt(size.width * size.width + size.height * size.height);
 
     for (double offset = -diag; offset < diag * 2; offset += step) {
-      canvas.drawLine(Offset(offset, 0), Offset(offset + size.height, size.height), paint);
-      canvas.drawLine(Offset(offset + size.height, 0), Offset(offset, size.height), paint);
+      canvas.drawLine(
+        Offset(offset, 0),
+        Offset(offset + size.height, size.height),
+        paint,
+      );
+      canvas.drawLine(
+        Offset(offset + size.height, 0),
+        Offset(offset, size.height),
+        paint,
+      );
     }
   }
 
@@ -166,7 +174,14 @@ class TreeBackgroundPainter extends CustomPainter {
       );
       final path = Path()
         ..moveTo(centre.dx, centre.dy)
-        ..cubicTo(ctrl.dx, ctrl.dy, ctrl2.dx, ctrl2.dy, petalTip.dx, petalTip.dy)
+        ..cubicTo(
+          ctrl.dx,
+          ctrl.dy,
+          ctrl2.dx,
+          ctrl2.dy,
+          petalTip.dx,
+          petalTip.dy,
+        )
         ..close();
       canvas.drawPath(path, petalFill);
       canvas.drawPath(path, petalStroke);
@@ -207,9 +222,9 @@ class TreeBackgroundPainter extends CustomPainter {
     final sinR = math.sin(rotation);
 
     Offset rotate(Offset p) => Offset(
-          p.dx * cosR - p.dy * sinR + origin.dx,
-          p.dx * sinR + p.dy * cosR + origin.dy,
-        );
+      p.dx * cosR - p.dy * sinR + origin.dx,
+      p.dx * sinR + p.dy * cosR + origin.dy,
+    );
 
     const turns = 2.5;
     const steps = 20;
@@ -222,10 +237,12 @@ class TreeBackgroundPainter extends CustomPainter {
 
       final p0 = rotate(Offset(r0 * math.cos(t0), r0 * math.sin(t0)));
       final p1 = rotate(Offset(r1 * math.cos(t1), r1 * math.sin(t1)));
-      final ctrl = rotate(Offset(
-        (r0 + r1) / 2 * math.cos((t0 + t1) / 2),
-        (r0 + r1) / 2 * math.sin((t0 + t1) / 2),
-      ));
+      final ctrl = rotate(
+        Offset(
+          (r0 + r1) / 2 * math.cos((t0 + t1) / 2),
+          (r0 + r1) / 2 * math.sin((t0 + t1) / 2),
+        ),
+      );
 
       if (i == 0) path.moveTo(p0.dx, p0.dy);
       path.quadraticBezierTo(ctrl.dx, ctrl.dy, p1.dx, p1.dy);
@@ -240,10 +257,7 @@ class TreeBackgroundPainter extends CustomPainter {
       ..shader = RadialGradient(
         center: Alignment.center,
         radius: 0.85,
-        colors: [
-          Colors.transparent,
-          _wood.withValues(alpha: 0.10),
-        ],
+        colors: [Colors.transparent, _wood.withValues(alpha: 0.10)],
         stops: const [0.55, 1.0],
       ).createShader(rect);
 

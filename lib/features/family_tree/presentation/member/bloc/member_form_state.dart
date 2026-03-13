@@ -23,9 +23,3 @@ class MemberFormError extends MemberFormState {
   final String message;
   MemberFormError(this.message);
 }
-
-
-
-
-
-

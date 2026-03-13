@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/branch_card.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
+import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
 import 'package:go_router/go_router.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
@@ -26,121 +28,195 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      body: BlocBuilder<TreeBloc, TreeState>(
-        builder: (context, state) {
-          return CustomScrollView(
-            slivers: [
-              // ── Wooden Header with Dragon Patterns ──
-              if (state is TreeLoaded)
-                _buildHeader(
-                  context,
-                  state.members.length,
-                  state.branches.length,
-                )
-              else
-                _buildHeader(context, 0, 0),
+      body: Stack(
+        children: [
+          // Elegant East-Asian Background Painter
+          const Positioned.fill(
+            child: CustomPaint(
+              painter: TreeBackgroundPainter(),
+            ),
+          ),
+          BlocBuilder<TreeBloc, TreeState>(
+            builder: (context, state) {
+              return CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  // ── Wooden Header with Dragon Patterns ──
+                  if (state is TreeLoaded)
+                    _buildHeader(
+                      context,
+                      state.members.length,
+                      state.branches.length,
+                    )
+                  else
+                    _buildHeader(context, 0, 0),
 
-              if (state is TreeLoading || state is TreeInitial)
-                const SliverDashboardSkeleton(),
+                  if (state is TreeLoading || state is TreeInitial)
+                    const SliverDashboardSkeleton(),
 
-              if (state is TreeError)
-                SliverFillRemaining(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color: AppColors.crimson,
+                  if (state is TreeError)
+                    SliverFillRemaining(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              size: 64,
+                              color: AppColors.crimson,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(state.message, style: GoogleFonts.inter()),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  context.read<TreeBloc>().add(LoadTreeEvent()),
+                              child: const Text('Thử lại'),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        Text(state.message, style: GoogleFonts.inter()),
-                        ElevatedButton(
-                          onPressed: () =>
-                              context.read<TreeBloc>().add(LoadTreeEvent()),
-                          child: const Text('Thử lại'),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
 
-              if (state is TreeLoaded) ...[
-                // ── Search & Filter ──
-                // SliverToBoxAdapter(child: _buildSearchAndFilter()),
-                // ── Branches Section ──
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: _buildSectionTitle('Chi Tộc', 'Xem tất cả'),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 140,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      itemCount: state.branches.length,
-                      itemBuilder: (_, index) {
-                        final branch = state.branches[index];
-                        final isSelected = state.filterBranchId == branch.id;
-                        return SizedBox(
-                          width: 350,
-                          child: BranchCard(
-                            branch: branch,
-                            isSelected: isSelected,
-                            onTap: () {
-                              // Toggle filter nhanh chóng thông qua Bloc
-                              final newId = isSelected ? null : branch.id;
-                              context.read<TreeBloc>().add(
-                                FilterByBranchEvent(newId),
-                              );
-                            },
-                          ),
-                        );
-                      },
+                  if (state is TreeLoaded) ...[
+                    // ── Branches Section ──
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: _buildSectionTitle('Chi Tộc', 'Xem tất cả',
+                            onAction: () => context.push('/branches')),
+                      ),
                     ),
-                  ),
-                ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 140,
+                        child: state.branches.length == 1
+                            ? Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width - 32,
+                                    child: BranchCard(
+                                      branch: state.branches.first,
+                                      isSelected:
+                                          state.filterBranchId == state.branches.first.id,
+                                      onTap: () {
+                                        final isSelected =
+                                            state.filterBranchId == state.branches.first.id;
+                                        final newId = isSelected ? null : state.branches.first.id;
+                                        context.read<TreeBloc>().add(
+                                              FilterByBranchEvent(newId),
+                                            );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                itemCount: state.branches.length,
+                                itemBuilder: (_, index) {
+                                  final branch = state.branches[index];
+                                  final isSelected = state.filterBranchId == branch.id;
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    duration: const Duration(milliseconds: 400),
+                                    child: SlideAnimation(
+                                      horizontalOffset: 50.0,
+                                      child: FadeInAnimation(
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width * 0.85,
+                                          child: BranchCard(
+                                            branch: branch,
+                                            isSelected: isSelected,
+                                            onTap: () {
+                                              final newId = isSelected ? null : branch.id;
+                                              context.read<TreeBloc>().add(
+                                                    FilterByBranchEvent(newId),
+                                                  );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                      ),
+                    ),
 
-                // ── Members Grid ──
-                SliverToBoxAdapter(
-                  child: _buildSectionTitle(
-                    state.filterBranchId == null
-                        ? 'Thành Viên'
-                        : 'Thành Viên • ${state.branches.where((b) => b.id == state.filterBranchId).first.name}',
-                    state.filterBranchId != null ? 'Tất cả' : 'Xem tất cả',
-                    onAction: state.filterBranchId != null
-                        ? () {
+                    // ── Members Grid ──
+                    SliverToBoxAdapter(
+                      child: _buildSectionTitle(
+                        state.filterBranchId == null
+                            ? 'Thành Viên'
+                            : 'Thành Viên • ${state.branches.where((b) => b.id == state.filterBranchId).first.name}',
+                        state.filterBranchId != null ? 'Tất cả' : 'Xem tất cả',
+                        onAction: () {
+                          if (state.filterBranchId != null) {
                             context.read<TreeBloc>().add(
-                              FilterByBranchEvent(null),
-                            );
+                                  FilterByBranchEvent(null),
+                                );
+                          } else {
+                            context.push('/members');
                           }
-                        : null,
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  sliver: SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1,
-                          mainAxisExtent: 90,
-                          mainAxisSpacing: 10,
+                        },
+                      ),
+                    ),
+                    if (state.members.isEmpty)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.group_off_rounded,
+                                  size: 48,
+                                  color: AppColors.gold.withValues(alpha: 0.5),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Không tìm thấy thành viên nào',
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.textSecondary,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final member = state.members[index];
-                      return _buildMemberCard(member);
-                    }, childCount: state.members.length),
-                  ),
-                ),
-                const SliverToBoxAdapter(child: SizedBox(height: 50)),
-              ],
-            ],
-          );
-        },
+                      )
+                    else
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            final member = state.members[index];
+                            return AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 500),
+                              child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: _buildMemberCard(member),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }, childCount: state.members.length),
+                        ),
+                      ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                  ],
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -153,7 +229,6 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           children: [
-            // Wood Background
             Positioned.fill(
               child: Image.asset(
                 'assets/images/wood_dragon.png',
@@ -162,17 +237,14 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                     Container(color: AppColors.wood),
               ),
             ),
-            // Wood Overlay to darken
             Positioned.fill(
               child: Container(color: Colors.black.withValues(alpha: 0.3)),
             ),
-            // Content
             SafeArea(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 10),
-                  // Logo and Title
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -224,7 +296,6 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                     ],
                   ),
                   const SizedBox(height: 25),
-                  // Stats Row
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32),
                     child: Row(
@@ -379,7 +450,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         ),
         trailing: const Icon(Icons.chevron_right, color: AppColors.gold),
         onTap: () {
-          context.push('/member/detail', extra: m);
+          context.push('/members/${m.id}', extra: m);
         },
       ),
     );

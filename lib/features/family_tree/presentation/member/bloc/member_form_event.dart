@@ -18,9 +18,3 @@ class DeleteMemberFormEvent extends MemberFormEvent {
 }
 
 class ResetMemberFormEvent extends MemberFormEvent {}
-
-
-
-
-
-

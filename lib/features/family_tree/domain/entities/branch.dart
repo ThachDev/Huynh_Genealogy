@@ -18,11 +18,12 @@ class BranchEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, description, founderName, foundingYear, region];
+  List<Object?> get props => [
+    id,
+    name,
+    description,
+    founderName,
+    foundingYear,
+    region,
+  ];
 }
-
-
-
-
-
-

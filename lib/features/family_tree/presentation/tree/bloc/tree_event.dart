@@ -21,9 +21,3 @@ class FilterByBranchEvent extends TreeEvent {
   final int? branchId;
   FilterByBranchEvent(this.branchId);
 }
-
-
-
-
-
-

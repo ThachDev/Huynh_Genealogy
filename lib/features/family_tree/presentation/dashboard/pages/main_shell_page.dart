@@ -15,7 +15,10 @@ class ShellIndexProvider extends InheritedWidget {
   });
 
   static int of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ShellIndexProvider>()?.currentIndex ?? 0;
+    return context
+            .dependOnInheritedWidgetOfExactType<ShellIndexProvider>()
+            ?.currentIndex ??
+        0;
   }
 
   @override
@@ -49,10 +52,7 @@ class _MainShellPageState extends State<MainShellPage> {
         currentIndex: _currentIndex,
         child: IndexedStack(
           index: _currentIndex,
-          children: const [
-            FamilyDashboardPage(),
-            TreeViewPage(),
-          ],
+          children: const [FamilyDashboardPage(), TreeViewPage()],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -122,7 +122,12 @@ class _MainShellPageState extends State<MainShellPage> {
                   children: [
                     _buildNavItem(context, 0, Icons.home_rounded, 'Trang chủ'),
                     const SizedBox(width: 56),
-                    _buildNavItem(context, 1, Icons.account_tree_rounded, 'Sơ đồ'),
+                    _buildNavItem(
+                      context,
+                      1,
+                      Icons.account_tree_rounded,
+                      'Sơ đồ',
+                    ),
                   ],
                 ),
               ),
@@ -133,7 +138,12 @@ class _MainShellPageState extends State<MainShellPage> {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, int index, IconData icon, String label) {
+  Widget _buildNavItem(
+    BuildContext context,
+    int index,
+    IconData icon,
+    String label,
+  ) {
     final isSelected = _currentIndex == index;
     return Expanded(
       child: GestureDetector(

@@ -79,12 +79,8 @@ class _TreeViewPageState extends State<TreeViewPage>
     // Nếu chưa load hoặc đang lỗi thì mới load lại
     if (state is TreeInitial || state is TreeError) {
       context.read<TreeBloc>().add(LoadTreeEvent());
-    } else if (state is TreeLoaded) {
-      // Nếu đã có dữ liệu rồi, đợi một chút để UI ổn định rồi căn giữa
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(const Duration(milliseconds: 500), () => _resetView());
-      });
     }
+    // BỎ đoạn gọi _resetView tự động ở đây để giữ vị trí cũ khi quay lại từ MemberDetail
     _algorithm
       ..siblingSeparation =
           70 // Tăng khoảng cách ngang một chút cho thoáng
@@ -113,39 +109,49 @@ class _TreeViewPageState extends State<TreeViewPage>
 
     final RenderBox? renderBox =
         _graphKey.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null || renderBox.size.width <= 0 || renderBox.size.height <= 0) {
+    if (renderBox == null ||
+        renderBox.size.width <= 0 ||
+        renderBox.size.height <= 0) {
       _transformationController.value = Matrix4.identity();
       return;
     }
 
-    // Lấy kích thước của toàn bộ cây và viewport
+    // Get graph and viewport sizes
     final graphSize = renderBox.size;
     final viewportSize = MediaQuery.of(context).size;
+    final appBarHeight = AppBar().preferredSize.height;
+    final safeTop = MediaQuery.of(context).padding.top;
 
-    // Tính toán tỷ lệ scale để vừa khít màn hình (có padding 10%)
-    double scaleX = viewportSize.width / (graphSize.width + 100);
-    double scaleY = (viewportSize.height - 150) / (graphSize.height + 100);
-    double scale = (scaleX < scaleY ? scaleX : scaleY).clamp(0.2, 1.0);
+    // Available height for the tree
+    final availableHeight = viewportSize.height - appBarHeight - safeTop - 100;
 
-    // Tính toán vị trí để căn giữa
+    // Calculate scale to fit width (with 40px padding)
+    double scale = (viewportSize.width / (graphSize.width + 40)).clamp(0.4, 1.0);
+    
+    // Check if height also needs to be constrained
+    if (graphSize.height * scale > availableHeight) {
+      scale = (availableHeight / graphSize.height).clamp(0.4, 1.0);
+    }
+
+    // Calculate x to center horizontally
     final x = (viewportSize.width - graphSize.width * scale) / 2;
-    final y = 40.0; // Khoảng cách nhỏ từ đỉnh màn hình
+    // Set y to place tree slightly below the top
+    final y = 60.0;
 
-    final targetMatrix = Matrix4.identity();
-    targetMatrix.translateByDouble(x, y, 0.0, 1.0);
-    targetMatrix.scaleByDouble(scale, scale, 1.0, 1.0);
+    final targetMatrix = Matrix4.identity()
+      ..translate(x, y)
+      ..scale(scale, scale, 1.0);
 
-    // Tạo animation từ trạng thái hiện tại đến đích
-    _animation =
-        Matrix4Tween(
-          begin: _transformationController.value,
-          end: targetMatrix,
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController!,
-            curve: Curves.easeInOutCubic,
-          ),
-        );
+    // Create animation from current state to target
+    _animation = Matrix4Tween(
+      begin: _transformationController.value,
+      end: targetMatrix,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController!,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
 
     _animationController?.forward(from: 0);
   }
@@ -218,6 +224,7 @@ class _TreeViewPageState extends State<TreeViewPage>
         padding: const EdgeInsets.only(bottom: 20, right: 10),
         child: FloatingActionButton(
           heroTag: 'tree_reset_fab',
+          tooltip: 'Căn giữa gốc cây',
           onPressed: _resetView,
           backgroundColor: AppColors.crimson,
           mini: true,
@@ -333,7 +340,7 @@ class _TreeViewPageState extends State<TreeViewPage>
                             context.read<TreeBloc>().add(
                               SelectMemberEvent(member.id),
                             );
-                            context.push('/member/detail', extra: member);
+                            context.push('/members/${member.id}', extra: member);
                           },
                         );
                       },

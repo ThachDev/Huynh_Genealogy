@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/utils/date_formatter.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
+import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 
 class MemberDetailPage extends StatefulWidget {
   final MemberEntity member;
@@ -17,145 +19,171 @@ class MemberDetailPage extends StatefulWidget {
 class _MemberDetailPageState extends State<MemberDetailPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.parchment,
-      body: CustomScrollView(
-        slivers: [
-          // ── Header Modal with Ancient Clouds ──
-          SliverAppBar(
-            pinned: false,
-            backgroundColor: AppColors.parchment,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.crimson),
-              onPressed: () => context.pop(),
-            ),
-          ),
+    return BlocBuilder<TreeBloc, TreeState>(
+      builder: (context, state) {
+        // Lấy danh sách thành viên để tìm tên người thân
+        final allMembers = state is TreeLoaded ? state.allMembers : <MemberEntity>[];
+        final memberMap = {for (final m in allMembers) m.id: m};
 
-            // ── Avatar Overlay and Basic Info ──
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Column(
-                  children: [
-                    // Large Avatar
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.gold, width: 4),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 15,
-                            offset: const Offset(0, 5),
+        return Scaffold(
+          backgroundColor: AppColors.parchment,
+          body: CustomScrollView(
+            slivers: [
+              // ── Header Modal with Ancient Clouds ──
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: AppColors.parchment,
+                surfaceTintColor: Colors.transparent,
+                elevation: 0,
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: AppColors.crimson),
+                      onPressed: () => context.pop(),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ── Avatar Overlay and Basic Info ──
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Column(
+                    children: [
+                      // Large Avatar
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.gold, width: 4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 56,
+                          backgroundColor: AppColors.parchment,
+                          backgroundImage: widget.member.avatarUrl != null
+                              ? NetworkImage(widget.member.avatarUrl!)
+                              : null,
+                          child: widget.member.avatarUrl == null
+                              ? Center(
+                                  child: Icon(
+                                    widget.member.gender == Gender.female
+                                        ? Icons.person_2_rounded
+                                        : Icons.person_rounded,
+                                    size: 70,
+                                    color: AppColors.textSecondary.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Name
+                      Text(
+                        widget.member.fullName.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.crimson,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // Badges
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildBadge(
+                            'Đời thứ ${widget.member.generation ?? "?"}',
+                            AppColors.gold,
+                          ),
+                          const SizedBox(width: 8),
+                          _buildBadge(
+                            widget.member.isAlive ? "CÒN SỐNG" : "ĐÃ MẤT",
+                            widget.member.isAlive
+                                ? Colors.green
+                                : AppColors.textSecondary,
                           ),
                         ],
                       ),
-                      child: CircleAvatar(
-                        radius: 56,
-                        backgroundColor: AppColors.parchment,
-                        backgroundImage: widget.member.avatarUrl != null
-                            ? NetworkImage(widget.member.avatarUrl!)
-                            : null,
-                        child: widget.member.avatarUrl == null
-                            ? Center(
-                                child: Icon(
-                                  widget.member.gender == Gender.female
-                                      ? Icons.person_2_rounded
-                                      : Icons.person_rounded,
-                                  size: 70,
-                                  color: AppColors.textSecondary.withValues(
-                                    alpha: 0.5,
-                                  ),
-                                ),
-                              )
-                            : null,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Name
-                    Text(
-                      widget.member.fullName.toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.crimson,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Badges
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildBadge(
-                          'Đời thứ ${widget.member.generation ?? "?"}',
-                          AppColors.gold,
-                        ),
-                        const SizedBox(width: 8),
-                        _buildBadge(
-                          widget.member.isAlive ? "CÒN SỐNG" : "ĐÃ MẤT",
-                          widget.member.isAlive
-                              ? Colors.green
-                              : AppColors.textSecondary,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // ── Detailed Information ──
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  _buildInfoSection('THÔNG TIN CÁ NHÂN', [
-                    _buildInfoRow(
-                      Icons.cake,
-                      'Ngày sinh',
-                      DateFormatter.formatForDisplay(
-                            widget.member.dateOfBirth,
-                          ) ??
-                          'Chưa rõ',
-                    ),
-                    if (!widget.member.isAlive)
+              // ── Detailed Information ──
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _buildInfoSection('THÔNG TIN CÁ NHÂN', [
                       _buildInfoRow(
-                        Icons.event_note,
-                        'Ngày mất',
-                        DateFormatter.formatForDisplay(
-                              widget.member.dateOfDeath,
-                            ) ??
+                        Icons.cake,
+                        'Ngày sinh',
+                        DateFormatter.formatForDisplay(widget.member.dateOfBirth) ??
                             'Chưa rõ',
                       ),
-                    _buildInfoRow(
-                      Icons.place,
-                      'Nơi sinh',
-                      widget.member.placeOfBirth ?? 'Chưa rõ',
-                    ),
-                    _buildInfoRow(
-                      Icons.park,
-                      'Chi tộc',
-                      widget.member.branchName ?? 'Họ Huỳnh',
-                    ),
+                      if (!widget.member.isAlive)
+                        _buildInfoRow(
+                          Icons.event_note,
+                          'Ngày mất',
+                          DateFormatter.formatForDisplay(
+                                widget.member.dateOfDeath,
+                              ) ??
+                              'Chưa rõ',
+                        ),
+                      _buildInfoRow(
+                        Icons.place,
+                        'Nơi sinh',
+                        widget.member.placeOfBirth ?? 'Chưa rõ',
+                      ),
+                      _buildInfoRow(
+                        Icons.park,
+                        'Chi tộc',
+                        widget.member.branchName ?? 'Họ Huỳnh',
+                      ),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildInfoSection('QUAN HỆ GIA ĐÌNH', [
+                      _buildRelationshipRow(
+                        context,
+                        'Cha/Mẹ',
+                        widget.member.parentId,
+                        memberMap,
+                      ),
+                      _buildRelationshipRow(
+                        context,
+                        'Vợ/Chồng',
+                        widget.member.spouseId,
+                        memberMap,
+                      ),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildBioSection(),
                   ]),
-                  const SizedBox(height: 24),
-                  _buildInfoSection('QUAN HỆ GIA ĐÌNH', [
-                    _buildRelationshipRow('Cha/Mẹ', widget.member.parentId),
-                    _buildRelationshipRow('Vợ/Chồng', widget.member.spouseId),
-                  ]),
-                  const SizedBox(height: 24),
-                  _buildBioSection(),
-                ]),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -238,7 +266,14 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     );
   }
 
-  Widget _buildRelationshipRow(String label, int? memberId) {
+  Widget _buildRelationshipRow(
+    BuildContext context,
+    String label,
+    int? memberId,
+    Map<int, MemberEntity> memberMap,
+  ) {
+    final relatedMember = memberId != null ? memberMap[memberId] : null;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -253,19 +288,33 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             ),
           ),
           const Spacer(),
-          if (memberId == null)
+          if (memberId == null || relatedMember == null)
             Text(
               'Không rõ',
-              style: GoogleFonts.inter(fontStyle: FontStyle.italic),
+              style: GoogleFonts.inter(
+                fontStyle: FontStyle.italic,
+                color: AppColors.textSecondary.withValues(alpha: 0.5),
+              ),
             )
           else
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                // Điều hướng sang trang chi tiết của người thân
+                context.pushReplacement('/members/${relatedMember.id}', extra: relatedMember);
+              },
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                backgroundColor: AppColors.gold.withValues(alpha: 0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               child: Text(
-                'Thành viên #$memberId',
+                relatedMember.fullName,
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.bold,
                   color: AppColors.crimson,
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -273,6 +322,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       ),
     );
   }
+
 
   Widget _buildBioSection() {
     return Column(

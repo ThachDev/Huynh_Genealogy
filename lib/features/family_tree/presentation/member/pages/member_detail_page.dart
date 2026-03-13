@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/utils/date_formatter.dart';
@@ -27,132 +28,134 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: AppColors.crimson),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             ),
           ),
 
-          // ── Avatar Overlay and Basic Info ──
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Column(
-                children: [
-                  // Large Avatar
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.gold, width: 4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
+            // ── Avatar Overlay and Basic Info ──
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Column(
+                  children: [
+                    // Large Avatar
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.gold, width: 4),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 56,
+                        backgroundColor: AppColors.parchment,
+                        backgroundImage: widget.member.avatarUrl != null
+                            ? NetworkImage(widget.member.avatarUrl!)
+                            : null,
+                        child: widget.member.avatarUrl == null
+                            ? Center(
+                                child: Icon(
+                                  widget.member.gender == Gender.female
+                                      ? Icons.person_2_rounded
+                                      : Icons.person_rounded,
+                                  size: 70,
+                                  color: AppColors.textSecondary.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Name
+                    Text(
+                      widget.member.fullName.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.crimson,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Badges
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildBadge(
+                          'Đời thứ ${widget.member.generation ?? "?"}',
+                          AppColors.gold,
+                        ),
+                        const SizedBox(width: 8),
+                        _buildBadge(
+                          widget.member.isAlive ? "CÒN SỐNG" : "ĐÃ MẤT",
+                          widget.member.isAlive
+                              ? Colors.green
+                              : AppColors.textSecondary,
                         ),
                       ],
                     ),
-                    child: CircleAvatar(
-                      radius: 56,
-                      backgroundColor: AppColors.parchment,
-                      backgroundImage: widget.member.avatarUrl != null
-                          ? NetworkImage(widget.member.avatarUrl!)
-                          : null,
-                      child: widget.member.avatarUrl == null
-                          ? Center(
-                              child: Icon(
-                                widget.member.gender == Gender.female
-                                    ? Icons.person_2_rounded
-                                    : Icons.person_rounded,
-                                size: 70,
-                                color: AppColors.textSecondary.withValues(
-                                  alpha: 0.5,
-                                ),
-                              ),
-                            )
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Name
-                  Text(
-                    widget.member.fullName.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.crimson,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Badges
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildBadge(
-                        'Đời thứ ${widget.member.generation ?? "?"}',
-                        AppColors.gold,
-                      ),
-                      const SizedBox(width: 8),
-                      _buildBadge(
-                        widget.member.isAlive ? "CÒN SỐNG" : "ĐÃ MẤT",
-                        widget.member.isAlive
-                            ? Colors.green
-                            : AppColors.textSecondary,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                ],
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          // ── Detailed Information ──
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _buildInfoSection('THÔNG TIN CÁ NHÂN', [
-                  _buildInfoRow(
-                    Icons.cake,
-                    'Ngày sinh',
-                    DateFormatter.formatForDisplay(widget.member.dateOfBirth) ??
-                        'Chưa rõ',
-                  ),
-                  if (!widget.member.isAlive)
+            // ── Detailed Information ──
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  _buildInfoSection('THÔNG TIN CÁ NHÂN', [
                     _buildInfoRow(
-                      Icons.event_note,
-                      'Ngày mất',
+                      Icons.cake,
+                      'Ngày sinh',
                       DateFormatter.formatForDisplay(
-                            widget.member.dateOfDeath,
+                            widget.member.dateOfBirth,
                           ) ??
                           'Chưa rõ',
                     ),
-                  _buildInfoRow(
-                    Icons.place,
-                    'Nơi sinh',
-                    widget.member.placeOfBirth ?? 'Chưa rõ',
-                  ),
-                  _buildInfoRow(
-                    Icons.park,
-                    'Chi tộc',
-                    widget.member.branchName ?? 'Họ Huỳnh',
-                  ),
+                    if (!widget.member.isAlive)
+                      _buildInfoRow(
+                        Icons.event_note,
+                        'Ngày mất',
+                        DateFormatter.formatForDisplay(
+                              widget.member.dateOfDeath,
+                            ) ??
+                            'Chưa rõ',
+                      ),
+                    _buildInfoRow(
+                      Icons.place,
+                      'Nơi sinh',
+                      widget.member.placeOfBirth ?? 'Chưa rõ',
+                    ),
+                    _buildInfoRow(
+                      Icons.park,
+                      'Chi tộc',
+                      widget.member.branchName ?? 'Họ Huỳnh',
+                    ),
+                  ]),
+                  const SizedBox(height: 24),
+                  _buildInfoSection('QUAN HỆ GIA ĐÌNH', [
+                    _buildRelationshipRow('Cha/Mẹ', widget.member.parentId),
+                    _buildRelationshipRow('Vợ/Chồng', widget.member.spouseId),
+                  ]),
+                  const SizedBox(height: 24),
+                  _buildBioSection(),
                 ]),
-                const SizedBox(height: 24),
-                _buildInfoSection('QUAN HỆ GIA ĐÌNH', [
-                  _buildRelationshipRow('Cha/Mẹ', widget.member.parentId),
-                  _buildRelationshipRow('Vợ/Chồng', widget.member.spouseId),
-                ]),
-                const SizedBox(height: 24),
-                _buildBioSection(),
-              ]),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 

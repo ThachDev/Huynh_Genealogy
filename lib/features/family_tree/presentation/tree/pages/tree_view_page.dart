@@ -6,7 +6,9 @@ import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/member_node_widget.dart';
-import 'package:app_family_tree/features/family_tree/presentation/member/pages/member_detail_page.dart';
+import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
+import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/main_shell_page.dart';
+import 'package:go_router/go_router.dart';
 
 class TreeViewPage extends StatefulWidget {
   const TreeViewPage({super.key});
@@ -16,20 +18,53 @@ class TreeViewPage extends StatefulWidget {
 }
 
 class _TreeViewPageState extends State<TreeViewPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   AnimationController? _animationController;
   Animation<Matrix4>? _animation;
+  late final AnimationController _bgController;
+  late final Animation<double> _bgAnimation;
   final GlobalKey _graphKey = GlobalKey();
   final BuchheimWalkerConfiguration _algorithm = BuchheimWalkerConfiguration();
+  late final BuchheimWalkerAlgorithm _buchheimWalkerAlgorithm;
   final TransformationController _transformationController =
       TransformationController();
   Graph? _graph;
   List<MemberEntity>? _memoizedMembers;
+  bool _wasActive = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final isActive = ShellIndexProvider.of(context) == 1;
+    if (isActive && !_wasActive) {
+      if (context.read<TreeBloc>().state is TreeLoaded) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Future.delayed(
+              const Duration(milliseconds: 100),
+              () => _resetView(),
+            );
+          }
+        });
+      }
+    }
+    _wasActive = isActive;
+  }
 
   @override
   void initState() {
     super.initState();
-    // Khởi tạo controller ngay lập tức
+    // Background subtle breathing animation
+    _bgController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat(reverse: true);
+    _bgAnimation = CurvedAnimation(
+      parent: _bgController,
+      curve: Curves.easeInOut,
+    );
+
+    // Zoom/reset animation controller
     _animationController =
         AnimationController(
           vsync: this,
@@ -41,8 +76,14 @@ class _TreeViewPageState extends State<TreeViewPage>
         });
 
     final state = context.read<TreeBloc>().state;
-    if (state is TreeInitial) {
+    // Nếu chưa load hoặc đang lỗi thì mới load lại
+    if (state is TreeInitial || state is TreeError) {
       context.read<TreeBloc>().add(LoadTreeEvent());
+    } else if (state is TreeLoaded) {
+      // Nếu đã có dữ liệu rồi, đợi một chút để UI ổn định rồi căn giữa
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(const Duration(milliseconds: 500), () => _resetView());
+      });
     }
     _algorithm
       ..siblingSeparation =
@@ -50,21 +91,29 @@ class _TreeViewPageState extends State<TreeViewPage>
       ..levelSeparation = 100
       ..subtreeSeparation = 70
       ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
+
+    _buchheimWalkerAlgorithm = BuchheimWalkerAlgorithm(
+      _algorithm,
+      TreeEdgeRenderer(_algorithm),
+    );
   }
 
   @override
   void dispose() {
+    _bgController.dispose();
     _animationController?.dispose();
     _transformationController.dispose();
     super.dispose();
   }
 
   void _resetView() {
+    if (!mounted) return;
+    if (ShellIndexProvider.of(context) != 1) return;
     if (_animationController == null) return;
 
     final RenderBox? renderBox =
         _graphKey.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null) {
+    if (renderBox == null || renderBox.size.width <= 0 || renderBox.size.height <= 0) {
       _transformationController.value = Matrix4.identity();
       return;
     }
@@ -180,115 +229,121 @@ class _TreeViewPageState extends State<TreeViewPage>
       ),
       body: Stack(
         children: [
-          // Background pattern
+          // ── Animated background ──────────────────────────────────────────
           Positioned.fill(
-            child: Opacity(
-              opacity: 0.05,
-              child: Image.asset(
-                'assets/images/clouds.png',
-                repeat: ImageRepeat.repeat,
+            child: AnimatedBuilder(
+              animation: _bgAnimation,
+              builder: (context, _) => CustomPaint(
+                painter: TreeBackgroundPainter(
+                  animationValue: _bgAnimation.value,
+                ),
               ),
             ),
           ),
-          BlocBuilder<TreeBloc, TreeState>(
-            builder: (context, state) {
-              if (state is TreeLoading || state is TreeInitial) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.crimson),
+          BlocListener<TreeBloc, TreeState>(
+            listenWhen: (prev, curr) =>
+                prev is! TreeLoaded && curr is TreeLoaded,
+            listener: (context, state) {
+              // Khi dữ liệu vừa load xong, tự động căn giữa cây sau khi build xong UI
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Future.delayed(
+                  const Duration(milliseconds: 400),
+                  () => _resetView(),
                 );
-              }
+              });
+            },
+            child: BlocBuilder<TreeBloc, TreeState>(
+              builder: (context, state) {
+                if (state is TreeLoading || state is TreeInitial) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.crimson),
+                  );
+                }
 
-              if (state is TreeError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: AppColors.crimson,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        state.message,
-                        style: GoogleFonts.inter(color: AppColors.crimson),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () =>
-                            context.read<TreeBloc>().add(LoadTreeEvent()),
-                        child: const Text('Thử lại'),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              if (state is TreeLoaded) {
-                if (state.allMembers.isEmpty) {
+                if (state is TreeError) {
                   return Center(
-                    child: Text(
-                      'Chưa có dữ liệu gia phả',
-                      style: GoogleFonts.inter(
-                        color: AppColors.textSecondary,
-                        fontSize: 16,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: AppColors.crimson,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          state.message,
+                          style: GoogleFonts.inter(color: AppColors.crimson),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () =>
+                              context.read<TreeBloc>().add(LoadTreeEvent()),
+                          child: const Text('Thử lại'),
+                        ),
+                      ],
                     ),
                   );
                 }
 
-                _ensureGraph(state.allMembers);
-                final memberMap = {for (final m in state.allMembers) m.id: m};
+                if (state is TreeLoaded) {
+                  if (state.allMembers.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'Chưa có dữ liệu gia phả',
+                        style: GoogleFonts.inter(
+                          color: AppColors.textSecondary,
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  }
 
-                return InteractiveViewer(
-                  transformationController: _transformationController,
-                  constrained: false,
-                  boundaryMargin: const EdgeInsets.all(1000),
-                  minScale: 0.1,
-                  maxScale: 2.5,
-                  child: GraphView(
-                    key: _graphKey,
-                    graph: _graph!,
-                    algorithm: BuchheimWalkerAlgorithm(
-                      _algorithm,
-                      TreeEdgeRenderer(_algorithm),
+                  _ensureGraph(state.allMembers);
+                  final memberMap = {for (final m in state.allMembers) m.id: m};
+
+                  return InteractiveViewer(
+                    transformationController: _transformationController,
+                    constrained: false,
+                    boundaryMargin: const EdgeInsets.all(1000),
+                    minScale: 0.1,
+                    maxScale: 2.5,
+                    child: GraphView(
+                      key: _graphKey,
+                      graph: _graph!,
+                      algorithm: _buchheimWalkerAlgorithm,
+                      paint: Paint()
+                        ..color = AppColors.connectionLine
+                        ..strokeWidth = 2.0
+                        ..style = PaintingStyle.stroke,
+                      builder: (Node node) {
+                        final memberId = node.key?.value as int?;
+                        final member = memberId != null
+                            ? memberMap[memberId]
+                            : null;
+
+                        if (member == null) {
+                          return const SizedBox(width: 80, height: 40);
+                        }
+
+                        return MemberNodeWidget(
+                          member: member,
+                          isSelected: state.selectedMemberId == member.id,
+                          onTap: () {
+                            context.read<TreeBloc>().add(
+                              SelectMemberEvent(member.id),
+                            );
+                            context.push('/member/detail', extra: member);
+                          },
+                        );
+                      },
                     ),
-                    paint: Paint()
-                      ..color = AppColors.connectionLine
-                      ..strokeWidth = 2.0
-                      ..style = PaintingStyle.stroke,
-                    builder: (Node node) {
-                      final memberId = node.key?.value as int?;
-                      final member = memberId != null
-                          ? memberMap[memberId]
-                          : null;
+                  );
+                }
 
-                      if (member == null) {
-                        return const SizedBox(width: 80, height: 40);
-                      }
-
-                      return MemberNodeWidget(
-                        member: member,
-                        isSelected: state.selectedMemberId == member.id,
-                        onTap: () {
-                          context.read<TreeBloc>().add(
-                            SelectMemberEvent(member.id),
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => MemberDetailPage(member: member),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
+                return const SizedBox.shrink();
+              },
+            ),
           ),
         ],
       ),

@@ -21,6 +21,13 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   }
 
   Future<void> _onLoadTree(LoadTreeEvent event, Emitter<TreeState> emit) async {
+    // Nếu đang load thì bỏ qua để tránh conflict
+    if (state is TreeLoading) return;
+
+    // Nếu đã load rồi và không yêu cầu branch cụ thể (trường hợp load all mặc định)
+    // thì không cần load lại để tránh UI giật lag khi chuyển tab
+    if (state is TreeLoaded && event.branchId == null) return;
+
     emit(TreeLoading());
 
     final membersResult = await getMembers(

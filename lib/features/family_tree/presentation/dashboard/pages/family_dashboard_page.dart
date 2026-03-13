@@ -6,7 +6,7 @@ import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/branch_card.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
-import 'package:app_family_tree/features/family_tree/presentation/member/pages/member_detail_page.dart';
+import 'package:go_router/go_router.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -379,12 +379,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         ),
         trailing: const Icon(Icons.chevron_right, color: AppColors.gold),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MemberDetailPage(member: m),
-            ),
-          );
+          context.push('/member/detail', extra: m);
         },
       ),
     );

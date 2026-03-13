@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/family_dashboard_page.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/pages/tree_view_page.dart';
-import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
+
+class ShellIndexProvider extends InheritedWidget {
+  final int currentIndex;
+
+  const ShellIndexProvider({
+    super.key,
+    required this.currentIndex,
+    required super.child,
+  });
+
+  static int of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ShellIndexProvider>()?.currentIndex ?? 0;
+  }
+
+  @override
+  bool updateShouldNotify(ShellIndexProvider oldWidget) {
+    return currentIndex != oldWidget.currentIndex;
+  }
+}
 
 class MainShellPage extends StatefulWidget {
   const MainShellPage({super.key});
@@ -15,15 +34,27 @@ class MainShellPage extends StatefulWidget {
 class _MainShellPageState extends State<MainShellPage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const FamilyDashboardPage(),
-    const TreeViewPage(),
-  ];
+  void _onTap(BuildContext context, int index) {
+    if (_currentIndex != index) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      body: ShellIndexProvider(
+        currentIndex: _currentIndex,
+        child: IndexedStack(
+          index: _currentIndex,
+          children: const [
+            FamilyDashboardPage(),
+            TreeViewPage(),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'main_fab',
         onPressed: () {
@@ -89,9 +120,9 @@ class _MainShellPageState extends State<MainShellPage> {
                 ),
                 child: Row(
                   children: [
-                    _buildNavItem(0, Icons.home_rounded, 'Trang chủ'),
+                    _buildNavItem(context, 0, Icons.home_rounded, 'Trang chủ'),
                     const SizedBox(width: 56),
-                    _buildNavItem(1, Icons.account_tree_rounded, 'Sơ đồ'),
+                    _buildNavItem(context, 1, Icons.account_tree_rounded, 'Sơ đồ'),
                   ],
                 ),
               ),
@@ -102,11 +133,11 @@ class _MainShellPageState extends State<MainShellPage> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(BuildContext context, int index, IconData icon, String label) {
     final isSelected = _currentIndex == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _currentIndex = index),
+        onTap: () => _onTap(context, index),
         behavior: HitTestBehavior.opaque,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

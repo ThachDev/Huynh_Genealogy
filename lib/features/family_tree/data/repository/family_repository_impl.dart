@@ -9,6 +9,7 @@ import 'package:app_family_tree/features/family_tree/data/model/branch_model.dar
 import 'package:app_family_tree/features/family_tree/data/model/member_model.dart';
 
 class FamilyRepositoryImpl implements FamilyRepository {
+  /// Có thể là FamilyLocalDataSourceImpl hoặc FamilyRemoteDataSourceImpl
   final FamilyDataSource dataSource;
 
   FamilyRepositoryImpl({required this.dataSource});

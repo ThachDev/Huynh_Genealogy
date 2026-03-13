@@ -1,15 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
-import 'package:app_family_tree/features/family_tree/domain/repositories/family_repository.dart';
+import 'package:app_family_tree/features/family_tree/domain/usecase/delete_member_usecase.dart';
+import 'package:app_family_tree/features/family_tree/domain/usecase/get_member_by_id_usecase.dart';
+import 'package:app_family_tree/features/family_tree/domain/usecase/save_member_usecase.dart';
 
 part 'member_form_event.dart';
 part 'member_form_state.dart';
 
 class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
-  final FamilyRepository repository;
+  final GetMemberByIdUseCase getMemberByIdUseCase;
+  final SaveMemberUseCase saveMemberUseCase;
+  final DeleteMemberUseCase deleteMemberUseCase;
 
   MemberFormBloc({
-    required this.repository,
+    required this.getMemberByIdUseCase,
+    required this.saveMemberUseCase,
+    required this.deleteMemberUseCase,
   }) : super(MemberFormInitial()) {
     on<LoadMemberFormEvent>(_onLoad);
     on<SubmitMemberFormEvent>(_onSubmit);
@@ -28,7 +34,7 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
       return;
     }
     // Edit mode – fetch member
-    final result = await repository.getMemberById(event.memberId!);
+    final result = await getMemberByIdUseCase(event.memberId!);
     result.fold(
       (failure) => emit(MemberFormError(failure.message)),
       (member) => emit(MemberFormReady(member: member)),
@@ -40,7 +46,7 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
     Emitter<MemberFormState> emit,
   ) async {
     emit(MemberFormSubmitting());
-    final result = await repository.saveMember(event.member);
+    final result = await saveMemberUseCase(event.member);
     result.fold(
       (failure) => emit(MemberFormError(failure.message)),
       (saved) => emit(MemberFormSuccess(member: saved)),
@@ -52,7 +58,7 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
     Emitter<MemberFormState> emit,
   ) async {
     emit(MemberFormSubmitting());
-    final result = await repository.deleteMember(event.memberId);
+    final result = await deleteMemberUseCase(event.memberId);
     result.fold((failure) => emit(MemberFormError(failure.message)), (_) {
       // Tạo một entity dummy để trả về khi xoá
       const dummy = MemberEntity(id: 0, fullName: '', gender: Gender.unknown);

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:app_family_tree/exception_handler/failures.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
@@ -7,7 +8,7 @@ abstract class FamilyRepository {
   // ---------- Members ----------
   Future<Either<Failure, List<MemberEntity>>> getMembers({int? branchId});
   Future<Either<Failure, MemberEntity>> getMemberById(int id);
-  Future<Either<Failure, MemberEntity>> saveMember(MemberEntity member);
+  Future<Either<Failure, MemberEntity>> saveMember(MemberEntity member, {File? imageFile});
   Future<Either<Failure, bool>> deleteMember(int id);
 
   // ---------- Branches ----------

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/data/model/branch_model.dart';
 import 'package:app_family_tree/features/family_tree/data/model/member_model.dart';
@@ -5,7 +6,7 @@ import 'package:app_family_tree/features/family_tree/data/model/member_model.dar
 abstract class FamilyDataSource {
   Future<List<MemberModel>> getMembers({int? branchId});
   Future<MemberModel> getMemberById(int id);
-  Future<MemberModel> saveMember(MemberModel member);
+  Future<MemberModel> saveMember(MemberModel member, {File? imageFile});
   Future<bool> deleteMember(int id);
 
   Future<List<BranchModel>> getBranches();
@@ -56,7 +57,7 @@ class FamilyLocalDataSourceImpl implements FamilyDataSource {
   }
 
   @override
-  Future<MemberModel> saveMember(MemberModel member) async {
+  Future<MemberModel> saveMember(MemberModel member, {File? imageFile}) async {
     await Future.delayed(const Duration(milliseconds: 400));
     if (member.id == 0) {
       final newId = _members.isEmpty
@@ -89,7 +90,7 @@ class FamilyLocalDataSourceImpl implements FamilyDataSource {
         _members[index] = member;
         return member;
       }
-      throw Exception('Không tìm thấy thành viên');
+      throw Exception('Chưa có dữ liệu thành viên');
     }
   }
 

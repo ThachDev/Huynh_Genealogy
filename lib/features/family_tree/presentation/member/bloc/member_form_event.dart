@@ -9,7 +9,8 @@ class LoadMemberFormEvent extends MemberFormEvent {
 
 class SubmitMemberFormEvent extends MemberFormEvent {
   final MemberEntity member;
-  SubmitMemberFormEvent(this.member);
+  final File? imageFile;
+  SubmitMemberFormEvent(this.member, {this.imageFile});
 }
 
 class DeleteMemberFormEvent extends MemberFormEvent {

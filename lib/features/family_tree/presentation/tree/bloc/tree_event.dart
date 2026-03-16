@@ -4,7 +4,8 @@ abstract class TreeEvent {}
 
 class LoadTreeEvent extends TreeEvent {
   final int? branchId;
-  LoadTreeEvent({this.branchId});
+  final bool force;
+  LoadTreeEvent({this.branchId, this.force = false});
 }
 
 class SelectMemberEvent extends TreeEvent {

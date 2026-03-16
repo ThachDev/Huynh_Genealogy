@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app_family_tree/di/injection_container.dart' as di;
 import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
+import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/family_dashboard_page.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/pages/tree_view_page.dart';
@@ -58,10 +62,19 @@ class _MainShellPageState extends State<MainShellPage> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'main_fab',
         onPressed: () {
+          final treeBloc = context.read<TreeBloc>();
           showDialog(
             context: context,
             barrierColor: Colors.black.withValues(alpha: 0.6),
-            builder: (context) => const AddMemberDialog(),
+            builder: (ctx) => MultiBlocProvider(
+              providers: [
+                BlocProvider<MemberFormBloc>(
+                  create: (_) => di.sl<MemberFormBloc>(),
+                ),
+                BlocProvider.value(value: treeBloc),
+              ],
+              child: const AddMemberDialog(),
+            ),
           );
         },
         backgroundColor: AppColors.crimson,

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:app_family_tree/exception_handler/exceptions.dart';
 import 'package:app_family_tree/exception_handler/failures.dart';
@@ -41,10 +42,13 @@ class FamilyRepositoryImpl implements FamilyRepository {
   }
 
   @override
-  Future<Either<Failure, MemberEntity>> saveMember(MemberEntity member) async {
+  Future<Either<Failure, MemberEntity>> saveMember(
+    MemberEntity member, {
+    File? imageFile,
+  }) async {
     try {
       final model = MemberModel.fromEntity(member);
-      final saved = await dataSource.saveMember(model);
+      final saved = await dataSource.saveMember(model, imageFile: imageFile);
       return Right(saved);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

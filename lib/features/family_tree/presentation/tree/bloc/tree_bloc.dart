@@ -26,7 +26,8 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
 
     // Nếu đã load rồi và không yêu cầu branch cụ thể (trường hợp load all mặc định)
     // thì không cần load lại để tránh UI giật lag khi chuyển tab
-    if (state is TreeLoaded && event.branchId == null) return;
+    // TRỪ KHI: yêu cầu force reload (sau khi thêm/sửa thành viên)
+    if (state is TreeLoaded && event.branchId == null && !event.force) return;
 
     // Chỉ emit loading nếu thực sự cần load mới hoặc reload
     emit(TreeLoading());

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/resource/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
+import 'package:app_family_tree/utils/member_utils.dart';
 
 class MemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
@@ -93,14 +94,14 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
                                   ? AppColors.nodeFemale
                                   : AppColors.nodeMale)
                             : Colors.white,
-                        image: widget.member.avatarUrl != null
+                        image: widget.member.fullAvatarUrl != null
                             ? DecorationImage(
-                                image: NetworkImage(widget.member.avatarUrl!),
+                                image: NetworkImage(widget.member.fullAvatarUrl!),
                                 fit: BoxFit.cover,
                               )
                             : null,
                       ),
-                      child: widget.member.avatarUrl == null
+                      child: widget.member.fullAvatarUrl == null
                           ? Center(
                               child: Icon(
                                 widget.member.gender == Gender.female

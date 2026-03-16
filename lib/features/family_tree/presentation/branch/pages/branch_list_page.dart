@@ -8,8 +8,22 @@ import 'package:app_family_tree/features/family_tree/presentation/dashboard/widg
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:go_router/go_router.dart';
 
-class BranchListPage extends StatelessWidget {
+class BranchListPage extends StatefulWidget {
   const BranchListPage({super.key});
+
+  @override
+  State<BranchListPage> createState() => _BranchListPageState();
+}
+
+class _BranchListPageState extends State<BranchListPage> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +36,7 @@ class BranchListPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,
             color: AppColors.gold,
+            fontSize: 20,
           ),
         ),
         centerTitle: true,
@@ -45,6 +60,10 @@ class BranchListPage extends StatelessWidget {
             ],
           ),
         ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: _buildSearchAndFilter(),
+        ),
       ),
       body: BlocBuilder<TreeBloc, TreeState>(
         builder: (context, state) {
@@ -57,11 +76,16 @@ class BranchListPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 64, color: AppColors.crimson),
+                  const Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: AppColors.crimson,
+                  ),
                   const SizedBox(height: 16),
                   Text(state.message, style: GoogleFonts.inter()),
                   ElevatedButton(
-                    onPressed: () => context.read<TreeBloc>().add(LoadTreeEvent()),
+                    onPressed: () =>
+                        context.read<TreeBloc>().add(LoadTreeEvent()),
                     child: const Text('Thử lại'),
                   ),
                 ],
@@ -70,21 +94,47 @@ class BranchListPage extends StatelessWidget {
           }
 
           if (state is TreeLoaded) {
-            if (state.branches.isEmpty) {
+            final filteredBranches = state.branches.where((b) {
+              return b.name.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ) ||
+                  (b.founderName?.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      ) ??
+                      false);
+            }).toList();
+
+            if (filteredBranches.isEmpty) {
               return Center(
-                child: Text(
-                  'Chưa có dữ liệu chi tộc',
-                  style: GoogleFonts.inter(color: AppColors.textSecondary),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.search_off_rounded,
+                      size: 48,
+                      color: AppColors.gold.withValues(alpha: 0.5),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _searchQuery.isEmpty
+                          ? 'Chưa có dữ liệu chi tộc'
+                          : 'Không tìm thấy chi tộc phù hợp',
+                      style: GoogleFonts.inter(color: AppColors.textSecondary),
+                    ),
+                  ],
                 ),
               );
             }
 
             return AnimationLimiter(
               child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: state.branches.length,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                itemCount: filteredBranches.length,
                 itemBuilder: (context, index) {
-                  final branch = state.branches[index];
+                  final branch = filteredBranches[index];
                   return AnimationConfiguration.staggeredList(
                     position: index,
                     duration: const Duration(milliseconds: 500),
@@ -92,12 +142,15 @@ class BranchListPage extends StatelessWidget {
                       verticalOffset: 50.0,
                       child: FadeInAnimation(
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.only(bottom: 12),
                           child: BranchCard(
                             branch: branch,
                             isSelected: false,
                             onTap: () {
-                              context.push('/branches/${branch.id}', extra: branch);
+                              context.push(
+                                '/branches/${branch.id}',
+                                extra: branch,
+                              );
                             },
                           ),
                         ),
@@ -111,6 +164,82 @@ class BranchListPage extends StatelessWidget {
 
           return const SizedBox.shrink();
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Tính năng thêm chi tộc đang được phát triển'),
+            ),
+          );
+        },
+        backgroundColor: AppColors.crimson,
+        child: const Icon(Icons.add_rounded, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildSearchAndFilter() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Container(
+        height: 48,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 12),
+            const Icon(Icons.search, color: AppColors.crimson, size: 20),
+            Expanded(
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+                style: GoogleFonts.inter(
+                  color: AppColors.textPrimary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Tìm kiếm chi tộc...',
+                  hintStyle: GoogleFonts.inter(
+                    color: AppColors.textSecondary.withValues(alpha: 0.5),
+                    fontSize: 14,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+              ),
+            ),
+            if (_searchQuery.isNotEmpty)
+              IconButton(
+                icon: const Icon(
+                  Icons.close,
+                  size: 16,
+                  color: AppColors.textSecondary,
+                ),
+                onPressed: () {
+                  _searchController.clear();
+                  setState(() {
+                    _searchQuery = '';
+                  });
+                },
+              ),
+            const SizedBox(width: 8),
+          ],
+        ),
       ),
     );
   }

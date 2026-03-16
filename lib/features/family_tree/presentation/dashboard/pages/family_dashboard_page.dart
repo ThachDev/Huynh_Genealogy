@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_family_tree/di/injection_container.dart' as di;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -8,7 +9,10 @@ import 'package:app_family_tree/features/family_tree/presentation/dashboard/widg
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
+import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
+import 'package:app_family_tree/utils/member_utils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -32,9 +36,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         children: [
           // Elegant East-Asian Background Painter
           const Positioned.fill(
-            child: CustomPaint(
-              painter: TreeBackgroundPainter(),
-            ),
+            child: CustomPaint(painter: TreeBackgroundPainter()),
           ),
           BlocBuilder<TreeBloc, TreeState>(
             builder: (context, state) {
@@ -82,30 +84,64 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 10),
-                        child: _buildSectionTitle('Chi Tộc', 'Xem tất cả',
-                            onAction: () => context.push('/branches')),
+                        child: _buildSectionTitle(
+                          'Chi Tộc',
+                          'Xem tất cả',
+                          onAction: () => context.push('/branches'),
+                        ),
                       ),
                     ),
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: 140,
-                        child: state.branches.length == 1
+                        child: state.branches.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      size: 40,
+                                      color: AppColors.gold.withValues(
+                                        alpha: 0.5,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      'Chưa có dữ liệu chi tộc',
+                                      style: GoogleFonts.inter(
+                                        color: AppColors.textSecondary,
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : state.branches.length == 1
                             ? Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
                                   child: SizedBox(
-                                    width: MediaQuery.of(context).size.width - 32,
+                                    width:
+                                        MediaQuery.of(context).size.width - 32,
                                     child: BranchCard(
                                       branch: state.branches.first,
                                       isSelected:
-                                          state.filterBranchId == state.branches.first.id,
+                                          state.filterBranchId ==
+                                          state.branches.first.id,
                                       onTap: () {
                                         final isSelected =
-                                            state.filterBranchId == state.branches.first.id;
-                                        final newId = isSelected ? null : state.branches.first.id;
+                                            state.filterBranchId ==
+                                            state.branches.first.id;
+                                        final newId = isSelected
+                                            ? null
+                                            : state.branches.first.id;
                                         context.read<TreeBloc>().add(
-                                              FilterByBranchEvent(newId),
-                                            );
+                                          FilterByBranchEvent(newId),
+                                        );
                                       },
                                     ),
                                   ),
@@ -113,11 +149,14 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                               )
                             : ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
                                 itemCount: state.branches.length,
                                 itemBuilder: (_, index) {
                                   final branch = state.branches[index];
-                                  final isSelected = state.filterBranchId == branch.id;
+                                  final isSelected =
+                                      state.filterBranchId == branch.id;
                                   return AnimationConfiguration.staggeredList(
                                     position: index,
                                     duration: const Duration(milliseconds: 400),
@@ -125,15 +164,21 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                       horizontalOffset: 50.0,
                                       child: FadeInAnimation(
                                         child: SizedBox(
-                                          width: MediaQuery.of(context).size.width * 0.85,
+                                          width:
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.width *
+                                              0.85,
                                           child: BranchCard(
                                             branch: branch,
                                             isSelected: isSelected,
                                             onTap: () {
-                                              final newId = isSelected ? null : branch.id;
+                                              final newId = isSelected
+                                                  ? null
+                                                  : branch.id;
                                               context.read<TreeBloc>().add(
-                                                    FilterByBranchEvent(newId),
-                                                  );
+                                                FilterByBranchEvent(newId),
+                                              );
                                             },
                                           ),
                                         ),
@@ -155,8 +200,8 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                         onAction: () {
                           if (state.filterBranchId != null) {
                             context.read<TreeBloc>().add(
-                                  FilterByBranchEvent(null),
-                                );
+                              FilterByBranchEvent(null),
+                            );
                           } else {
                             context.push('/members');
                           }
@@ -177,7 +222,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  'Không tìm thấy thành viên nào',
+                                  'Chưa có dữ liệu thành viên',
                                   style: GoogleFonts.inter(
                                     color: AppColors.textSecondary,
                                     fontStyle: FontStyle.italic,
@@ -192,7 +237,10 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       SliverPadding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate((context, index) {
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
                             final member = state.members[index];
                             return AnimationConfiguration.staggeredList(
                               position: index,
@@ -202,7 +250,10 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                 child: FadeInAnimation(
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
-                                    child: _buildMemberCard(member),
+                                    child: _buildSlidableMemberCard(
+                                      context,
+                                      member,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -409,6 +460,9 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
   Widget _buildMemberCard(MemberEntity m) {
     return Card(
       elevation: 0,
+      margin: const EdgeInsets.only(
+        right: 8,
+      ), // Thêm margin bên phải để tạo khoảng cách với nút xóa
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -426,10 +480,10 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                 ? AppColors.nodeMale
                 : AppColors.nodeFemale,
             radius: 24,
-            backgroundImage: m.avatarUrl != null
-                ? NetworkImage(m.avatarUrl!)
+            backgroundImage: m.fullAvatarUrl != null
+                ? NetworkImage(m.fullAvatarUrl!)
                 : null,
-            child: m.avatarUrl == null
+            child: m.fullAvatarUrl == null
                 ? Icon(
                     m.gender == Gender.male ? Icons.man : Icons.woman,
                     color: AppColors.crimson,
@@ -452,6 +506,116 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         onTap: () {
           context.push('/members/${m.id}', extra: m);
         },
+      ),
+    );
+  }
+
+  Widget _buildSlidableMemberCard(BuildContext context, MemberEntity m) {
+    return BlocProvider(
+      create: (context) => di.sl<MemberFormBloc>(),
+      child: BlocListener<MemberFormBloc, MemberFormState>(
+        listener: (context, state) {
+          if (state is MemberFormSuccess && state.isDeleted) {
+            context.read<TreeBloc>().add(LoadTreeEvent(force: true));
+          } else if (state is MemberFormError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Lỗi: ${state.message}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: Builder(
+          builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 0),
+              child: Slidable(
+                key: Key('member_${m.id}'),
+                endActionPane: ActionPane(
+                  motion:
+                      const ScrollMotion(), // Đổi lại ScrollMotion để thấy rõ khoảng cách
+                  extentRatio: 0.22,
+                  children: [
+                    CustomSlidableAction(
+                      onPressed: (_) async {
+                        // Sử dụng context từ Builder để đảm bảo tìm thấy Bloc và Navigator
+                        final confirm = await _showDeleteConfirmDialog(
+                          context,
+                          m.fullName,
+                        );
+                        if (confirm == true && context.mounted) {
+                          context.read<MemberFormBloc>().add(
+                            DeleteMemberFormEvent(m.id),
+                          );
+                        }
+                      },
+                      backgroundColor: Colors.transparent, // Nền trong suốt
+                      foregroundColor: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 6,
+                          horizontal: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.delete_outline, size: 28),
+                      ),
+                    ),
+                  ],
+                ),
+                child: _buildMemberCard(m),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<bool?> _showDeleteConfirmDialog(BuildContext context, String name) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.parchment,
+        title: Text(
+          'Xác nhận xóa',
+          style: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.bold,
+            color: AppColors.crimson,
+          ),
+        ),
+        content: Text(
+          'Bạn có chắc muốn xóa thành viên $name khỏi gia phả không?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Hủy',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson),
+            child: const Text(
+              'Xóa ngay',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,8 @@
+import 'package:app_family_tree/config/app_constants.dart';
 import 'package:app_family_tree/features/family_tree/data/source/family_remote_data_source_impl.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/get_branches_usecase.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
 // Features
@@ -53,8 +56,19 @@ Future<void> init() async {
   sl.registerLazySingleton<FamilyDataSource>(
     // Thay đổi ở đây để chuyển đổi giữa Local và Remote
     // () => FamilyLocalDataSourceImpl(),
-    () => FamilyRemoteDataSourceImpl(),
+    () => FamilyRemoteDataSourceImpl(dio: sl()),
   );
 
   // ─── External ─────────────────────────────────────────────────────────────
+  sl.registerLazySingleton(() => Dio(
+        BaseOptions(
+          baseUrl: AppConstants.baseUrl,
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 3),
+        ),
+      )..interceptors.add(LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          logPrint: (obj) => debugPrint(obj.toString()),
+        )));
 }

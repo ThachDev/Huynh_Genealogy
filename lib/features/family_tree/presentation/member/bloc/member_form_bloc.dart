@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/delete_member_usecase.dart';
@@ -46,7 +47,9 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
     Emitter<MemberFormState> emit,
   ) async {
     emit(MemberFormSubmitting());
-    final result = await saveMemberUseCase(event.member);
+    final result = await saveMemberUseCase(
+      SaveMemberParams(member: event.member, imageFile: event.imageFile),
+    );
     result.fold(
       (failure) => emit(MemberFormError(failure.message)),
       (saved) => emit(MemberFormSuccess(member: saved)),

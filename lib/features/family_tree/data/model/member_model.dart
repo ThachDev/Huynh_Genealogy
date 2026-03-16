@@ -20,28 +20,30 @@ class MemberModel extends MemberEntity {
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
+    int? asInt(dynamic v) => v is int ? v : (v is String ? int.tryParse(v) : null);
+
     return MemberModel(
-      id: json['id'] as int,
-      fullName: json['fullName'] as String,
-      gender: _parseGender(json['gender'] as String?),
-      dateOfBirth: json['dateOfBirth'] as String?,
-      placeOfBirth: json['placeOfBirth'] as String?,
-      isAlive: json['isAlive'] as bool? ?? true,
-      dateOfDeath: json['dateOfDeath'] as String?,
-      maritalStatus: _parseMaritalStatus(json['maritalStatus'] as String?),
-      generation: json['generation'] as int?,
-      branchId: json['branchId'] as int?,
-      branchName: json['branchName'] as String?,
-      parentId: json['parentId'] as int?,
-      spouseId: json['spouseId'] as int?,
-      notes: json['notes'] as String?,
-      avatarUrl: json['avatarUrl'] as String?,
+      id: asInt(json['id']) ?? 0,
+      fullName: json['fullName'] ?? '',
+      gender: _parseGender(json['gender']),
+      dateOfBirth: json['dateOfBirth']?.toString().split('T')[0],
+      placeOfBirth: json['placeOfBirth'],
+      isAlive: json['isAlive'] ?? true,
+      dateOfDeath: json['dateOfDeath']?.toString().split('T')[0],
+      maritalStatus: _parseMaritalStatus(json['maritalStatus']),
+      generation: asInt(json['generation']),
+      branchId: asInt(json['branchId']),
+      branchName: json['branchName'],
+      parentId: asInt(json['parentId']) ?? asInt(json['parent']?['id']),
+      spouseId: asInt(json['spouseId']) ?? asInt(json['spouse']?['id']),
+      notes: json['notes'],
+      avatarUrl: json['avatarUrl'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
+    final Map<String, dynamic> data = {
+      if (id != 0) 'id': id,
       'fullName': fullName,
       'gender': gender.name,
       'dateOfBirth': dateOfBirth,
@@ -49,13 +51,15 @@ class MemberModel extends MemberEntity {
       'isAlive': isAlive,
       'dateOfDeath': dateOfDeath,
       'maritalStatus': maritalStatus.name,
-      'generation': generation,
-      'branchId': branchId,
+      'generation': generation ?? 1,
       'parentId': parentId,
       'spouseId': spouseId,
+      'branchId': branchId,
       'notes': notes,
-      'avatarUrl': avatarUrl,
     };
+
+    // Filter null values for Multipart compatibility
+    return data..removeWhere((_, value) => value == null);
   }
 
   factory MemberModel.fromEntity(MemberEntity entity) {

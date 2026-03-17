@@ -91,7 +91,12 @@ class _MemberListPageState extends State<MemberListPage> {
                   (_selectedGender == 'Nam' && m.gender == Gender.male) ||
                   (_selectedGender == 'Nữ' && m.gender == Gender.female);
               return matchesSearch && matchesGender;
-            }).toList();
+            }).toList()
+              ..sort((a, b) {
+                final genComp = (a.generation ?? 0).compareTo(b.generation ?? 0);
+                if (genComp != 0) return genComp;
+                return a.fullName.compareTo(b.fullName);
+              });
 
             if (filteredMembers.isEmpty) {
               return Center(

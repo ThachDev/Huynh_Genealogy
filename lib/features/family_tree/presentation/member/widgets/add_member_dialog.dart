@@ -683,7 +683,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                     _buildLabel('LỌC THÔNG MINH'),
                     Switch(
                       value: _isSmartFilter,
-                      activeColor: AppColors.crimson,
+                      activeThumbColor: AppColors.crimson,
                       onChanged: (val) => setState(() => _isSmartFilter = val),
                     ),
                   ],

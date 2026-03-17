@@ -52,6 +52,7 @@ class _MainShellPageState extends State<MainShellPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: ShellIndexProvider(
         currentIndex: _currentIndex,
         child: IndexedStack(
@@ -87,7 +88,7 @@ class _MainShellPageState extends State<MainShellPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Container(
-        height: 70 + MediaQuery.of(context).padding.bottom,
+        height: 60 + MediaQuery.of(context).padding.bottom,
         decoration: BoxDecoration(
           color: AppColors.wood,
           borderRadius: const BorderRadius.only(
@@ -98,7 +99,7 @@ class _MainShellPageState extends State<MainShellPage> {
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.4),
               blurRadius: 20,
-              offset: const Offset(0, -5),
+              offset: const Offset(0, -2),
             ),
           ],
           border: Border.all(
@@ -115,13 +116,17 @@ class _MainShellPageState extends State<MainShellPage> {
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                 ),
-                child: Image.asset(
-                  'assets/images/wood_dragon.png',
-                  fit: BoxFit.cover,
-                  color: Colors.black.withValues(alpha: 0.4),
-                  colorBlendMode: BlendMode.darken,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const SizedBox(),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      'assets/images/wood_dragon.png',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox(),
+                    ),
+                    Container(color: Colors.black.withValues(alpha: 0.3)),
+                  ],
                 ),
               ),
             ),
@@ -129,7 +134,7 @@ class _MainShellPageState extends State<MainShellPage> {
             Positioned.fill(
               child: Padding(
                 padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom,
+                  bottom: MediaQuery.of(context).padding.bottom - 15,
                 ),
                 child: Row(
                   children: [

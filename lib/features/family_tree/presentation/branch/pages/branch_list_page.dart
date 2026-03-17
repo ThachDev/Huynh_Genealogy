@@ -7,6 +7,9 @@ import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/branch_card.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:go_router/go_router.dart';
+import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
+import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
+import 'package:app_family_tree/di/injection_container.dart' as di;
 
 class BranchListPage extends StatefulWidget {
   const BranchListPage({super.key});
@@ -102,7 +105,8 @@ class _BranchListPageState extends State<BranchListPage> {
                         _searchQuery.toLowerCase(),
                       ) ??
                       false);
-            }).toList();
+            }).toList()
+              ..sort((a, b) => a.name.compareTo(b.name));
 
             if (filteredBranches.isEmpty) {
               return Center(
@@ -167,14 +171,24 @@ class _BranchListPageState extends State<BranchListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Tính năng thêm chi tộc đang được phát triển'),
+          final treeBloc = context.read<TreeBloc>();
+          showDialog(
+            context: context,
+            barrierColor: Colors.black.withValues(alpha: 0.6),
+            builder: (ctx) => MultiBlocProvider(
+              providers: [
+                BlocProvider<BranchFormBloc>(
+                  create: (_) => di.sl<BranchFormBloc>(),
+                ),
+                BlocProvider.value(value: treeBloc),
+              ],
+              child: const AddBranchDialog(),
             ),
           );
         },
         backgroundColor: AppColors.crimson,
-        child: const Icon(Icons.add_rounded, color: Colors.white),
+        elevation: 4,
+        child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
       ),
     );
   }

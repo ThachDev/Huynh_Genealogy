@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dartz/dartz.dart';
-import 'package:app_family_tree/exception_handler/exceptions.dart';
 import 'package:app_family_tree/exception_handler/failures.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
@@ -8,6 +7,7 @@ import 'package:app_family_tree/features/family_tree/domain/repositories/family_
 import 'package:app_family_tree/features/family_tree/data/source/family_data_source.dart';
 import 'package:app_family_tree/features/family_tree/data/model/branch_model.dart';
 import 'package:app_family_tree/features/family_tree/data/model/member_model.dart';
+import 'package:app_family_tree/exception_handler/app_error_handler.dart';
 
 class FamilyRepositoryImpl implements FamilyRepository {
   /// Có thể là FamilyLocalDataSourceImpl hoặc FamilyRemoteDataSourceImpl
@@ -25,7 +25,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
       final models = await dataSource.getMembers(branchId: branchId);
       return Right(models);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 
@@ -34,10 +34,8 @@ class FamilyRepositoryImpl implements FamilyRepository {
     try {
       final model = await dataSource.getMemberById(id);
       return Right(model);
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 
@@ -51,7 +49,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
       final saved = await dataSource.saveMember(model, imageFile: imageFile);
       return Right(saved);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 
@@ -61,7 +59,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
       final result = await dataSource.deleteMember(id);
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 
@@ -73,7 +71,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
       final models = await dataSource.getBranches();
       return Right(models);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 
@@ -82,10 +80,8 @@ class FamilyRepositoryImpl implements FamilyRepository {
     try {
       final model = await dataSource.getBranchById(id);
       return Right(model);
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 
@@ -96,7 +92,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
       final saved = await dataSource.saveBranch(model);
       return Right(saved);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 
@@ -106,7 +102,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
       final result = await dataSource.deleteBranch(id);
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(AppErrorHandler.handle(e));
     }
   }
 }

@@ -7,12 +7,14 @@ import 'package:app_family_tree/utils/member_utils.dart';
 class MemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
   final bool isSelected;
+  final bool isHighlighted;
   final VoidCallback? onTap;
 
   const MemberNodeWidget({
     super.key,
     required this.member,
     this.isSelected = false,
+    this.isHighlighted = false,
     this.onTap,
   });
 
@@ -75,6 +77,12 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
                       width: 3.5,
                     ),
                     boxShadow: [
+                      if (widget.isHighlighted)
+                        BoxShadow(
+                          color: AppColors.gold.withValues(alpha: 0.6),
+                          blurRadius: 15,
+                          spreadRadius: 4,
+                        ),
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 8,

@@ -21,6 +21,7 @@ import '../features/family_tree/domain/usecase/save_branch_usecase.dart';
 
 // Application
 import '../features/family_tree/presentation/member/bloc/member_form_bloc.dart';
+import '../features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import '../features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
@@ -36,6 +37,12 @@ Future<void> init() async {
       getMemberByIdUseCase: sl(),
       saveMemberUseCase: sl(),
       deleteMemberUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => BranchFormBloc(
+      saveBranchUseCase: sl(),
     ),
   );
 

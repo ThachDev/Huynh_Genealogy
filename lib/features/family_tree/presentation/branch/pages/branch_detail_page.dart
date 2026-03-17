@@ -11,6 +11,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:app_family_tree/utils/member_utils.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
+import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
+import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
 import 'package:app_family_tree/di/injection_container.dart' as di;
 
 class BranchDetailPage extends StatefulWidget {
@@ -27,21 +29,28 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<TreeBloc, TreeState>(
       builder: (context, state) {
+        final stateBranch = state is TreeLoaded
+            ? state.branches.firstWhere(
+                (b) => b.id == widget.branch.id,
+                orElse: () => widget.branch,
+              )
+            : widget.branch;
+
         final members = state is TreeLoaded
             ? state.allMembers
-                  .where((m) => m.branchId == widget.branch.id)
+                  .where((m) => m.branchId == stateBranch.id)
                   .toList()
             : <MemberEntity>[];
 
         return Scaffold(
           backgroundColor: AppColors.parchment,
-          appBar: _buildAppBar(context),
+          appBar: _buildAppBar(context, stateBranch),
           body: ListView(
             padding: EdgeInsets.zero,
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: _buildBranchInfo(),
+                child: _buildBranchInfo(stateBranch),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
@@ -136,7 +145,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, BranchEntity stateBranch) {
     return AppBar(
       backgroundColor: AppColors.wood,
       elevation: 0,
@@ -162,7 +171,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
           ),
           const SizedBox(width: 12),
           Text(
-            widget.branch.name.toUpperCase(),
+            stateBranch.name.toUpperCase(),
             style: GoogleFonts.playfairDisplay(
               fontWeight: FontWeight.bold,
               color: AppColors.gold,
@@ -176,10 +185,19 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
         IconButton(
           icon: const Icon(Icons.edit_note_rounded, color: AppColors.gold),
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Tính năng chỉnh sửa chi tộc đang được phát triển',
+            final treeBloc = context.read<TreeBloc>();
+            showDialog(
+              context: context,
+              barrierColor: Colors.black.withValues(alpha: 0.6),
+              builder: (ctx) => MultiBlocProvider(
+                providers: [
+                  BlocProvider<BranchFormBloc>(
+                    create: (_) => di.sl<BranchFormBloc>(),
+                  ),
+                  BlocProvider.value(value: treeBloc),
+                ],
+                child: AddBranchDialog(
+                  branchToEdit: stateBranch,
                 ),
               ),
             );
@@ -201,7 +219,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  Widget _buildBranchInfo() {
+  Widget _buildBranchInfo(BranchEntity branch) {
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -217,19 +235,19 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
             _buildInfoRow(
               Icons.person,
               'Người sáng lập',
-              widget.branch.founderName ?? 'Chưa rõ',
+              branch.founderName ?? 'Chưa rõ',
             ),
             const Divider(height: 24),
             _buildInfoRow(
               Icons.calendar_today,
               'Năm thành lập',
-              widget.branch.foundingYear?.toString() ?? 'Chưa rõ',
+              branch.foundingYear?.toString() ?? 'Chưa rõ',
             ),
             const Divider(height: 24),
             _buildInfoRow(
               Icons.location_on,
               'Vùng miền',
-              widget.branch.region ?? 'Chưa rõ',
+              branch.region ?? 'Chưa rõ',
             ),
             const Divider(height: 24),
             Text(
@@ -242,7 +260,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.branch.description ?? 'Chưa có mô tả cho chi tộc này.',
+              branch.description ?? 'Chưa có mô tả cho chi tộc này.',
               style: GoogleFonts.inter(
                 fontSize: 14,
                 color: AppColors.textPrimary,

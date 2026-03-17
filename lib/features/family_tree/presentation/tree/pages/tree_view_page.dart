@@ -31,6 +31,10 @@ class _TreeViewPageState extends State<TreeViewPage>
   Graph? _graph;
   List<MemberEntity>? _memoizedMembers;
   bool _wasActive = false;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  bool _isSearching = false;
+  final Map<int, GlobalKey> _nodeKeys = {};
 
   @override
   void didChangeDependencies() {
@@ -99,6 +103,7 @@ class _TreeViewPageState extends State<TreeViewPage>
     _bgController.dispose();
     _animationController?.dispose();
     _transformationController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -126,8 +131,11 @@ class _TreeViewPageState extends State<TreeViewPage>
     final availableHeight = viewportSize.height - appBarHeight - safeTop - 100;
 
     // Calculate scale to fit width (with 40px padding)
-    double scale = (viewportSize.width / (graphSize.width + 40)).clamp(0.4, 1.0);
-    
+    double scale = (viewportSize.width / (graphSize.width + 40)).clamp(
+      0.4,
+      1.0,
+    );
+
     // Check if height also needs to be constrained
     if (graphSize.height * scale > availableHeight) {
       scale = (availableHeight / graphSize.height).clamp(0.4, 1.0);
@@ -139,19 +147,69 @@ class _TreeViewPageState extends State<TreeViewPage>
     final y = 60.0;
 
     final targetMatrix = Matrix4.identity()
-      ..translate(x, y)
-      ..scale(scale, scale, 1.0);
+      ..setEntry(0, 0, scale)
+      ..setEntry(1, 1, scale)
+      ..setEntry(0, 3, x)
+      ..setEntry(1, 3, y);
 
     // Create animation from current state to target
-    _animation = Matrix4Tween(
-      begin: _transformationController.value,
-      end: targetMatrix,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController!,
-        curve: Curves.fastOutSlowIn,
-      ),
-    );
+    _animation =
+        Matrix4Tween(
+          begin: _transformationController.value,
+          end: targetMatrix,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController!,
+            curve: Curves.fastOutSlowIn,
+          ),
+        );
+
+    _animationController?.forward(from: 0);
+  }
+
+  void _centerNode(int memberId) {
+    final key = _nodeKeys[memberId];
+    if (key == null) return;
+
+    final RenderBox? nodeBox =
+        key.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? graphBox =
+        _graphKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (nodeBox == null || graphBox == null) return;
+
+    final viewportSize = MediaQuery.of(context).size;
+
+    // Position of node in graph coordinates
+    final nodeOffset = nodeBox.localToGlobal(Offset.zero, ancestor: graphBox);
+    final nodeSize = nodeBox.size;
+
+    final targetScale = 1.0;
+
+    // Calculate x/y to center the node in viewport
+    final x =
+        (viewportSize.width / 2) -
+        (nodeOffset.dx + nodeSize.width / 2) * targetScale;
+    final y =
+        (viewportSize.height / 2) -
+        (nodeOffset.dy + nodeSize.height / 2) * targetScale;
+
+    final targetMatrix = Matrix4.identity()
+      ..setEntry(0, 0, targetScale)
+      ..setEntry(1, 1, targetScale)
+      ..setEntry(0, 3, x)
+      ..setEntry(1, 3, y);
+
+    _animation =
+        Matrix4Tween(
+          begin: _transformationController.value,
+          end: targetMatrix,
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController!,
+            curve: Curves.fastOutSlowIn,
+          ),
+        );
 
     _animationController?.forward(from: 0);
   }
@@ -193,30 +251,29 @@ class _TreeViewPageState extends State<TreeViewPage>
       appBar: AppBar(
         backgroundColor: AppColors.wood,
         elevation: 10,
-        centerTitle: true,
-        title: Text(
-          'GIA PHẢ HỌ HUỲNH',
-          style: GoogleFonts.playfairDisplay(
-            fontWeight: FontWeight.bold,
-            color: AppColors.gold,
-            letterSpacing: 2,
-            fontSize: 18,
-          ),
-        ),
+        centerTitle: false,
+        title: _buildAppBarTitle(),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline, color: AppColors.gold),
-            onPressed: () => _showLegendDialog(context),
-          ),
+          if (!_isSearching) ...[
+            IconButton(
+              icon: const Icon(Icons.search, color: AppColors.gold),
+              onPressed: () => setState(() => _isSearching = true),
+            ),
+            IconButton(
+              icon: const Icon(Icons.help_outline, color: AppColors.gold),
+              onPressed: () => _showLegendDialog(context),
+            ),
+          ],
           const SizedBox(width: 8),
         ],
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/wood_dragon.png'),
-              fit: BoxFit.cover,
-              opacity: 0.4,
-            ),
+          decoration: const BoxDecoration(color: AppColors.wood),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset('assets/images/wood_dragon.png', fit: BoxFit.cover),
+              Container(color: Colors.black.withValues(alpha: 0.3)),
+            ],
           ),
         ),
       ),
@@ -269,26 +326,37 @@ class _TreeViewPageState extends State<TreeViewPage>
 
                 if (state is TreeError) {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.error_outline,
-                          size: 48,
-                          color: AppColors.crimson,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          state.message,
-                          style: GoogleFonts.inter(color: AppColors.crimson),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () =>
-                              context.read<TreeBloc>().add(LoadTreeEvent()),
-                          child: const Text('Thử lại'),
-                        ),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error,
+                            size: 60,
+                            color: AppColors.crimson,
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            state.message,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              color: AppColors.textPrimary,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: 160,
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: () =>
+                                  context.read<TreeBloc>().add(LoadTreeEvent()),
+                              child: const Text('Thử lại'),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
@@ -308,43 +376,124 @@ class _TreeViewPageState extends State<TreeViewPage>
 
                   _ensureGraph(state.allMembers);
                   final memberMap = {for (final m in state.allMembers) m.id: m};
+                  final filteredMembers = _searchQuery.isEmpty
+                      ? []
+                      : state.allMembers.where((m) {
+                          return m.fullName.toLowerCase().contains(
+                            _searchQuery.toLowerCase(),
+                          );
+                        }).toList();
 
-                  return InteractiveViewer(
-                    transformationController: _transformationController,
-                    constrained: false,
-                    boundaryMargin: const EdgeInsets.all(1000),
-                    minScale: 0.1,
-                    maxScale: 2.5,
-                    child: GraphView(
-                      key: _graphKey,
-                      graph: _graph!,
-                      algorithm: _buchheimWalkerAlgorithm,
-                      paint: Paint()
-                        ..color = AppColors.connectionLine
-                        ..strokeWidth = 2.0
-                        ..style = PaintingStyle.stroke,
-                      builder: (Node node) {
-                        final memberId = node.key?.value as int?;
-                        final member = memberId != null
-                            ? memberMap[memberId]
-                            : null;
+                  return Stack(
+                    children: [
+                      InteractiveViewer(
+                        transformationController: _transformationController,
+                        constrained: false,
+                        boundaryMargin: const EdgeInsets.all(1000),
+                        minScale: 0.1,
+                        maxScale: 2.5,
+                        child: GraphView(
+                          key: _graphKey,
+                          graph: _graph!,
+                          algorithm: _buchheimWalkerAlgorithm,
+                          paint: Paint()
+                            ..color = AppColors.connectionLine
+                            ..strokeWidth = 2.0
+                            ..style = PaintingStyle.stroke,
+                          builder: (Node node) {
+                            final memberId = node.key?.value as int?;
+                            final member = memberId != null
+                                ? memberMap[memberId]
+                                : null;
 
-                        if (member == null) {
-                          return const SizedBox(width: 80, height: 40);
-                        }
+                            if (member == null) {
+                              return const SizedBox(width: 80, height: 40);
+                            }
 
-                        return MemberNodeWidget(
-                          member: member,
-                          isSelected: state.selectedMemberId == member.id,
-                          onTap: () {
-                            context.read<TreeBloc>().add(
-                              SelectMemberEvent(member.id),
+                            final isHighlighted =
+                                _searchQuery.isNotEmpty &&
+                                member.fullName.toLowerCase().contains(
+                                  _searchQuery.toLowerCase(),
+                                );
+
+                            return MemberNodeWidget(
+                              key: _nodeKeys.putIfAbsent(
+                                member.id,
+                                () => GlobalKey(),
+                              ),
+                              member: member,
+                              isSelected: state.selectedMemberId == member.id,
+                              isHighlighted: isHighlighted,
+                              onTap: () {
+                                context.read<TreeBloc>().add(
+                                  SelectMemberEvent(member.id),
+                                );
+                                context.push(
+                                  '/members/${member.id}',
+                                  extra: member,
+                                );
+                              },
                             );
-                            context.push('/members/${member.id}', extra: member);
                           },
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                      if (filteredMembers.isNotEmpty)
+                        Positioned(
+                          top: 10,
+                          left: 16,
+                          right: 16,
+                          child: Material(
+                            elevation: 8,
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white,
+                            child: Container(
+                              constraints: const BoxConstraints(maxHeight: 250),
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                itemCount: filteredMembers.length,
+                                separatorBuilder: (_, _) =>
+                                    const Divider(height: 1),
+                                itemBuilder: (context, index) {
+                                  final m = filteredMembers[index];
+                                  return ListTile(
+                                    dense: true,
+                                    leading: CircleAvatar(
+                                      radius: 14,
+                                      backgroundColor: m.gender == Gender.male
+                                          ? AppColors.nodeMale
+                                          : AppColors.nodeFemale,
+                                      child: Icon(
+                                        m.gender == Gender.male
+                                            ? Icons.man
+                                            : Icons.woman,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      m.fullName,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      'Đời ${m.generation ?? "?"}',
+                                      style: GoogleFonts.inter(fontSize: 11),
+                                    ),
+                                    onTap: () {
+                                      _searchController.clear();
+                                      setState(() => _searchQuery = '');
+                                      _centerNode(m.id);
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   );
                 }
 
@@ -354,6 +503,75 @@ class _TreeViewPageState extends State<TreeViewPage>
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAppBarTitle() {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.2, 0.0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        );
+      },
+      child: _isSearching
+          ? Container(
+              key: const ValueKey('search_bar'),
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: TextField(
+                controller: _searchController,
+                autofocus: true,
+                onChanged: (value) => setState(() => _searchQuery = value),
+                textAlignVertical: TextAlignVertical.center,
+                style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: 'Tìm người thân...',
+                  hintStyle:
+                      GoogleFonts.inter(color: Colors.white60, fontSize: 12),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: AppColors.gold,
+                    size: 18,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.only(bottom: 2),
+                  suffixIcon: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(Icons.close, color: Colors.white, size: 14),
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() {
+                        _searchQuery = '';
+                        _isSearching = false;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            )
+          : Text(
+              'SƠ ĐỒ GIA PHẢ',
+              key: const ValueKey('app_title'),
+              style: GoogleFonts.playfairDisplay(
+                fontWeight: FontWeight.bold,
+                color: AppColors.gold,
+                fontSize: 18,
+                letterSpacing: 1.2,
+              ),
+            ),
     );
   }
 

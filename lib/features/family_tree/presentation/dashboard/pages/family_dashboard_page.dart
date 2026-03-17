@@ -13,6 +13,9 @@ import 'package:app_family_tree/features/family_tree/presentation/member/bloc/me
 import 'package:app_family_tree/utils/member_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
+import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
+import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -58,23 +61,40 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
 
                   if (state is TreeError)
                     SliverFillRemaining(
+                      hasScrollBody: false,
                       child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              size: 64,
-                              color: AppColors.crimson,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(state.message, style: GoogleFonts.inter()),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  context.read<TreeBloc>().add(LoadTreeEvent()),
-                              child: const Text('Thử lại'),
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error,
+                                size: 60,
+                                color: AppColors.crimson,
+                              ),
+                              const SizedBox(height: 24),
+                              Text(
+                                state.message,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              SizedBox(
+                                width: 160,
+                                height: 48,
+                                child: ElevatedButton(
+                                  onPressed: () => context.read<TreeBloc>().add(
+                                    LoadTreeEvent(),
+                                  ),
+                                  child: const Text('Thử lại'),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -88,6 +108,22 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                           'Chi Tộc',
                           'Xem tất cả',
                           onAction: () => context.push('/branches'),
+                          onAdd: () {
+                            final treeBloc = context.read<TreeBloc>();
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.black.withValues(alpha: 0.6),
+                              builder: (ctx) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider<BranchFormBloc>(
+                                    create: (_) => di.sl<BranchFormBloc>(),
+                                  ),
+                                  BlocProvider.value(value: treeBloc),
+                                ],
+                                child: const AddBranchDialog(),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -205,6 +241,24 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                           } else {
                             context.push('/members');
                           }
+                        },
+                        onAdd: () {
+                          final treeBloc = context.read<TreeBloc>();
+                          showDialog(
+                            context: context,
+                            barrierColor: Colors.black.withValues(alpha: 0.6),
+                            builder: (ctx) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider<MemberFormBloc>(
+                                  create: (_) => di.sl<MemberFormBloc>(),
+                                ),
+                                BlocProvider.value(value: treeBloc),
+                              ],
+                              child: AddMemberDialog(
+                                initialBranchId: state.filterBranchId,
+                              ),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -420,6 +474,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
     String title,
     String description, {
     VoidCallback? onAction,
+    VoidCallback? onAdd,
   }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
@@ -452,6 +507,19 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
               ),
             ),
           ),
+          if (onAdd != null) ...[
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(
+                Icons.add_circle_outline,
+                color: AppColors.crimson,
+                size: 20,
+              ),
+              onPressed: onAdd,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+          ],
         ],
       ),
     );

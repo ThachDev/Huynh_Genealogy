@@ -9,6 +9,7 @@ import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/m
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/main_shell_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:resources/resources.dart';
 
 class TreeViewPage extends StatefulWidget {
   const TreeViewPage({super.key});
@@ -246,13 +247,14 @@ class _TreeViewPageState extends State<TreeViewPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: AppColors.parchment,
       appBar: AppBar(
         backgroundColor: AppColors.wood,
         elevation: 10,
         centerTitle: false,
-        title: _buildAppBarTitle(),
+        title: _buildAppBarTitle(l10n),
         actions: [
           if (!_isSearching) ...[
             IconButton(
@@ -281,7 +283,7 @@ class _TreeViewPageState extends State<TreeViewPage>
         padding: const EdgeInsets.only(bottom: 20, right: 10),
         child: FloatingActionButton(
           heroTag: 'tree_reset_fab',
-          tooltip: 'Căn giữa gốc cây',
+          tooltip: l10n.familyTreeDiagram,
           onPressed: _resetView,
           backgroundColor: AppColors.crimson,
           mini: true,
@@ -352,7 +354,7 @@ class _TreeViewPageState extends State<TreeViewPage>
                             child: ElevatedButton(
                               onPressed: () =>
                                   context.read<TreeBloc>().add(LoadTreeEvent()),
-                              child: const Text('Thử lại'),
+                                  child: Text(l10n.retry),
                             ),
                           ),
                         ],
@@ -365,7 +367,7 @@ class _TreeViewPageState extends State<TreeViewPage>
                   if (state.allMembers.isEmpty) {
                     return Center(
                       child: Text(
-                        'Chưa có dữ liệu gia phả',
+                        l10n.familyTreeDiagram, // Or maybe l10n.noMemberData? Let's use noMemberData here as it was empty data case
                         style: GoogleFonts.inter(
                           color: AppColors.textSecondary,
                           fontSize: 16,
@@ -479,7 +481,7 @@ class _TreeViewPageState extends State<TreeViewPage>
                                       ),
                                     ),
                                     subtitle: Text(
-                                      'Đời ${m.generation ?? "?"}',
+                                      '${l10n.generation} ${m.generation ?? "?"}',
                                       style: GoogleFonts.inter(fontSize: 11),
                                     ),
                                     onTap: () {
@@ -506,7 +508,7 @@ class _TreeViewPageState extends State<TreeViewPage>
     );
   }
 
-  Widget _buildAppBarTitle() {
+  Widget _buildAppBarTitle(S l10n) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (Widget child, Animation<double> animation) {
@@ -537,7 +539,7 @@ class _TreeViewPageState extends State<TreeViewPage>
                 style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
                 decoration: InputDecoration(
                   isDense: true,
-                  hintText: 'Tìm người thân...',
+                  hintText: l10n.searchHint,
                   hintStyle:
                       GoogleFonts.inter(color: Colors.white60, fontSize: 12),
                   prefixIcon: const Icon(
@@ -563,7 +565,7 @@ class _TreeViewPageState extends State<TreeViewPage>
               ),
             )
           : Text(
-              'SƠ ĐỒ GIA PHẢ',
+              l10n.familyTreeDiagram.toUpperCase(),
               key: const ValueKey('app_title'),
               style: GoogleFonts.playfairDisplay(
                 fontWeight: FontWeight.bold,
@@ -576,6 +578,7 @@ class _TreeViewPageState extends State<TreeViewPage>
   }
 
   void _showLegendDialog(BuildContext context) {
+    final l10n = S.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -583,7 +586,7 @@ class _TreeViewPageState extends State<TreeViewPage>
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
-          'Chú thích ký hiệu',
+          l10n.legend,
           style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
             color: AppColors.crimson,
@@ -598,13 +601,13 @@ class _TreeViewPageState extends State<TreeViewPage>
               children: [
                 _buildLegendItem(
                   color: AppColors.nodeMale,
-                  label: 'Nam',
+                  label: l10n.male,
                   isCircle: false,
                 ),
                 const SizedBox(height: 12),
                 _buildLegendItem(
                   color: AppColors.nodeFemale,
-                  label: 'Nữ',
+                  label: l10n.female,
                   isCircle: false,
                 ),
               ],
@@ -616,13 +619,13 @@ class _TreeViewPageState extends State<TreeViewPage>
               children: [
                 _buildLegendItem(
                   color: const Color(0xFF2ECC71),
-                  label: 'Còn sống',
+                  label: l10n.stillAlive,
                   isCircle: true,
                 ),
                 const SizedBox(height: 12),
                 _buildLegendItem(
                   color: AppColors.nodeDeceased,
-                  label: 'Đã mất',
+                  label: l10n.deceased,
                   isCircle: true,
                 ),
               ],
@@ -633,7 +636,7 @@ class _TreeViewPageState extends State<TreeViewPage>
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'Đã hiểu',
+              l10n.understand,
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
                 color: AppColors.crimson,

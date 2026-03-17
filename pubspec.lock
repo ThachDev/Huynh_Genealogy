@@ -254,6 +254,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_native_splash:
     dependency: "direct dev"
     description:
@@ -680,6 +685,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  resources:
+    dependency: "direct main"
+    description:
+      path: "packages/resources"
+      relative: true
+    source: path
+    version: "1.0.0"
   sky_engine:
     dependency: transitive
     description: flutter

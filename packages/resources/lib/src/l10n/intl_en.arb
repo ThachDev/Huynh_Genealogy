@@ -1,0 +1,34 @@
+{
+  "@@locale": "en",
+  "appTitle": "Huynh Family Tree",
+  "motto": "SPIRITUAL ROOTS • ETERNAL PRESERVATION",
+  "home": "Home",
+  "diagram": "Diagram",
+  "member": "Member",
+  "branch": "Branch",
+  "generation": "Gen",
+  "stillAlive": "Alive",
+  "deceased": "Deceased",
+  "retry": "Retry",
+  "errorOccurred": "An error occurred",
+  "noMemberData": "No member data available",
+  "noBranchData": "No branch data available",
+  "viewAll": "View all",
+  "confirmDelete": "Confirm Delete",
+  "deleteMemberConfirm": "Are you sure you want to delete {name} from the family tree?",
+  "@deleteMemberConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancel": "Cancel",
+  "deleteNow": "Delete Now",
+  "searchHint": "Search relative...",
+  "legend": "Legend",
+  "male": "Male",
+  "female": "Female",
+  "understand": "Got it",
+  "familyTreeDiagram": "FAMILY TREE DIAGRAM"
+}

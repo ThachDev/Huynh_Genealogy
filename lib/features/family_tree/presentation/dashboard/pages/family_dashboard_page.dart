@@ -16,6 +16,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
+import 'package:resources/resources.dart';
+import 'package:app_family_tree/features/language/presentation/widgets/language_selector.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -33,6 +35,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: AppColors.parchment,
       body: Stack(
@@ -90,7 +93,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                   onPressed: () => context.read<TreeBloc>().add(
                                     LoadTreeEvent(),
                                   ),
-                                  child: const Text('Thử lại'),
+                                  child: Text(l10n.retry),
                                 ),
                               ),
                             ],
@@ -105,8 +108,8 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: _buildSectionTitle(
-                          'Chi Tộc',
-                          'Xem tất cả',
+                          l10n.branch,
+                          l10n.viewAll,
                           onAction: () => context.push('/branches'),
                           onAdd: () {
                             final treeBloc = context.read<TreeBloc>();
@@ -144,7 +147,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                     ),
                                     const SizedBox(height: 12),
                                     Text(
-                                      'Chưa có dữ liệu chi tộc',
+                                      l10n.noBranchData,
                                       style: GoogleFonts.inter(
                                         color: AppColors.textSecondary,
                                         fontStyle: FontStyle.italic,
@@ -230,9 +233,9 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                     SliverToBoxAdapter(
                       child: _buildSectionTitle(
                         state.filterBranchId == null
-                            ? 'Thành Viên'
-                            : 'Thành Viên • ${state.branches.where((b) => b.id == state.filterBranchId).first.name}',
-                        state.filterBranchId != null ? 'Tất cả' : 'Xem tất cả',
+                            ? l10n.member
+                            : '${l10n.member} • ${state.branches.where((b) => b.id == state.filterBranchId).first.name}',
+                        state.filterBranchId != null ? l10n.viewAll : l10n.viewAll,
                         onAction: () {
                           if (state.filterBranchId != null) {
                             context.read<TreeBloc>().add(
@@ -276,7 +279,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  'Chưa có dữ liệu thành viên',
+                                  l10n.noMemberData,
                                   style: GoogleFonts.inter(
                                     color: AppColors.textSecondary,
                                     fontStyle: FontStyle.italic,
@@ -327,6 +330,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
   }
 
   Widget _buildHeader(BuildContext context, int memberCount, int branchCount) {
+    final l10n = S.of(context);
     return SliverAppBar(
       expandedHeight: 190,
       pinned: false,
@@ -344,6 +348,11 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
             ),
             Positioned.fill(
               child: Container(color: Colors.black.withValues(alpha: 0.3)),
+            ),
+            const Positioned(
+              top: 40,
+              right: 16,
+              child: LanguageSelector(),
             ),
             SafeArea(
               child: Column(
@@ -380,7 +389,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'GIA PHẢ HỌ HUỲNH',
+                            l10n.appTitle.toUpperCase(),
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -389,7 +398,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                             ),
                           ),
                           Text(
-                            'CỘI NGUỒN TÂM LINH • VẠN ĐẠI TRƯỜNG TỒN',
+                            l10n.motto,
                             style: GoogleFonts.inter(
                               fontSize: 8,
                               color: Colors.white70,
@@ -407,14 +416,14 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _statItem(
-                          'Thành viên',
+                          l10n.member,
                           memberCount.toString(),
                           Icons.people_alt_rounded,
                           light: true,
                         ),
                         Container(width: 1, height: 30, color: Colors.white24),
                         _statItem(
-                          'Chi tộc',
+                          l10n.branch,
                           branchCount.toString(),
                           Icons.park_rounded,
                           light: true,

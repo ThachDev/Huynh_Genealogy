@@ -22,7 +22,7 @@ import 'package:app_family_tree/features/family_tree/domain/usecase/save_branch_
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
-import 'package:app_family_tree/features/language/presentation/bloc/language_bloc.dart';
+import 'package:app_family_tree/features/settings/presentation/language/bloc/language_bloc.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 

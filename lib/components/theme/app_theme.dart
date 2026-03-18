@@ -5,10 +5,10 @@ class AppColors {
   AppColors._();
 
   // Primary palette – "Warm Organic / Cultural"
-  static const Color crimson = Color(0xFF8B0000); // Crimson - #8B0000
-  static const Color gold = Color(0xFFD4AF37); // Gold - #D4AF37
-  static const Color parchment = Color(0xFFF4EBD0); // Parchment - #F4EBD0
-  static const Color wood = Color(0xFF4B2E1E); // Wood - #4B2E1E
+  static const Color crimson = Color(0xFF8B0000);
+  static const Color gold = Color(0xFFD4AF37);
+  static const Color parchment = Color(0xFFF4EBD0);
+  static const Color wood = Color(0xFF4B2E1E);
 
   // Compatibility names (if used elsewhere)
   static const Color primary = crimson;

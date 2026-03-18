@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/core/di/injection_container.dart' as di;
 import 'package:app_family_tree/components/theme/app_theme.dart';
-import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
-import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
-import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/family_dashboard_page.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/pages/tree_view_page.dart';
 import 'package:app_family_tree/features/events/presentation/pages/events_page.dart';
-import 'package:app_family_tree/features/settings/presentation/pages/settings_page.dart';
+import 'package:app_family_tree/features/settings/presentation/settings_page.dart';
 
 class ShellIndexProvider extends InheritedWidget {
   final int currentIndex;
@@ -67,33 +62,6 @@ class _MainShellPageState extends State<MainShellPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'main_fab',
-        onPressed: () {
-          final treeBloc = context.read<TreeBloc>();
-          showDialog(
-            context: context,
-            barrierColor: Colors.black.withValues(alpha: 0.6),
-            builder: (ctx) => MultiBlocProvider(
-              providers: [
-                BlocProvider<MemberFormBloc>(
-                  create: (_) => di.sl<MemberFormBloc>(),
-                ),
-                BlocProvider.value(value: treeBloc),
-              ],
-              child: const AddMemberDialog(),
-            ),
-          );
-        },
-        backgroundColor: AppColors.crimson,
-        foregroundColor: Colors.white,
-        elevation: 8,
-        shape: const CircleBorder(
-          side: BorderSide(color: AppColors.gold, width: 1.5),
-        ),
-        child: const Icon(Icons.person_add_rounded, size: 28),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Container(
         height: 60 + MediaQuery.of(context).padding.bottom,
         decoration: BoxDecoration(
@@ -152,7 +120,6 @@ class _MainShellPageState extends State<MainShellPage> {
                       Icons.account_tree_rounded,
                       'Sơ đồ',
                     ),
-                    const SizedBox(width: 48),
                     _buildNavItem(
                       context,
                       2,

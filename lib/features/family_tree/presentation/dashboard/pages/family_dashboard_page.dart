@@ -13,9 +13,6 @@ import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/t
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
-import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
-import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:resources/resources.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
@@ -110,22 +107,6 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                           l10n.branch,
                           l10n.viewAll,
                           onAction: () => context.push('/branches'),
-                          onAdd: () {
-                            final treeBloc = context.read<TreeBloc>();
-                            showDialog(
-                              context: context,
-                              barrierColor: Colors.black.withValues(alpha: 0.6),
-                              builder: (ctx) => MultiBlocProvider(
-                                providers: [
-                                  BlocProvider<BranchFormBloc>(
-                                    create: (_) => di.sl<BranchFormBloc>(),
-                                  ),
-                                  BlocProvider.value(value: treeBloc),
-                                ],
-                                child: const AddBranchDialog(),
-                              ),
-                            );
-                          },
                         ),
                       ),
                     ),
@@ -245,24 +226,6 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                           } else {
                             context.push('/members');
                           }
-                        },
-                        onAdd: () {
-                          final treeBloc = context.read<TreeBloc>();
-                          showDialog(
-                            context: context,
-                            barrierColor: Colors.black.withValues(alpha: 0.6),
-                            builder: (ctx) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider<MemberFormBloc>(
-                                  create: (_) => di.sl<MemberFormBloc>(),
-                                ),
-                                BlocProvider.value(value: treeBloc),
-                              ],
-                              child: AddMemberDialog(
-                                initialBranchId: state.filterBranchId,
-                              ),
-                            ),
-                          );
                         },
                       ),
                     ),

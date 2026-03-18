@@ -7,6 +7,9 @@ import '../../features/family_tree/presentation/branch/pages/branch_detail_page.
 import '../../features/family_tree/domain/entities/member.dart';
 import '../../features/family_tree/domain/entities/branch.dart';
 import '../../features/family_tree/presentation/tree/bloc/tree_bloc.dart';
+import '../../features/settings/presentation/about/pages/about_page.dart';
+import '../../features/settings/presentation/security_policy/pages/security_policy_page.dart';
+import '../../features/settings/presentation/support/pages/support_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'logging_navigator_observer.dart';
@@ -86,6 +89,21 @@ class AppRouter {
           final member = state.extra as MemberEntity;
           return MemberDetailPage(member: member);
         },
+      ),
+      GoRoute(
+        path: '/about',
+        name: 'about',
+        builder: (context, state) => const AboutPage(),
+      ),
+      GoRoute(
+        path: '/security_policy',
+        name: 'security_policy',
+        builder: (context, state) => const SecurityPolicyPage(),
+      ),
+      GoRoute(
+        path: '/support',
+        name: 'support',
+        builder: (context, state) => const SupportPage(),
       ),
     ],
   );

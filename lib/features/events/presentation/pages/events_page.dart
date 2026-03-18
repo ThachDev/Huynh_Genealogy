@@ -28,7 +28,7 @@ class EventsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Lịch & Sự Kiện',
+                  'Sự kiện',
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

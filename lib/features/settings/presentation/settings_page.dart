@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
-import 'package:app_family_tree/features/language/presentation/widgets/language_selector.dart';
+import 'package:app_family_tree/features/settings/presentation/language/widgets/language_selector.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/components/card/common_settings_card.dart';
@@ -29,11 +30,17 @@ class SettingsPage extends StatelessWidget {
                     leading: _buildIconContainer(Icons.language),
                     title: Text(
                       'Ngôn ngữ',
-                      style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                     subtitle: Text(
                       'Thay đổi ngôn ngữ hiển thị',
-                      style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                     trailing: const LanguageSelector(),
                   ),
@@ -44,11 +51,23 @@ class SettingsPage extends StatelessWidget {
               CommonSettingsCard(
                 padding: EdgeInsets.zero,
                 children: [
-                  _buildMenuItem(icon: Icons.info_outline, title: 'Về ứng dụng', onTap: () {}),
+                  _buildMenuItem(
+                    icon: Icons.info_outline,
+                    title: 'Về ứng dụng',
+                    onTap: () => context.push('/about'),
+                  ),
                   _buildDivider(),
-                  _buildMenuItem(icon: Icons.privacy_tip_outlined, title: 'Chính sách bảo mật', onTap: () {}),
+                  _buildMenuItem(
+                    icon: Icons.privacy_tip_outlined,
+                    title: 'Chính sách bảo mật',
+                    onTap: () => context.push('/security_policy'),
+                  ),
                   _buildDivider(),
-                  _buildMenuItem(icon: Icons.help_outline, title: 'Trợ giúp & Hỗ trợ', onTap: () {}),
+                  _buildMenuItem(
+                    icon: Icons.help_outline,
+                    title: 'Trợ giúp & Hỗ trợ',
+                    onTap: () => context.push('/support'),
+                  ),
                 ],
               ),
               const SizedBox(height: 100),
@@ -91,10 +110,20 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem({required IconData icon, required String title, required VoidCallback onTap}) {
+  Widget _buildMenuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
     return ListTile(
       leading: _buildIconContainer(icon),
-      title: Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+      title: Text(
+        title,
+        style: GoogleFonts.inter(
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimary,
+        ),
+      ),
       trailing: const Icon(Icons.chevron_right, color: AppColors.gold),
       onTap: onTap,
     );

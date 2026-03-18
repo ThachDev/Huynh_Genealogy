@@ -35,12 +35,15 @@ class AddMemberDialog extends StatefulWidget {
 
 class _AddMemberDialogState extends State<AddMemberDialog> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _generationController = TextEditingController(text: '1');
+  final TextEditingController _generationController = TextEditingController(
+    text: '1',
+  );
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _dodController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _placeOfBirthController = TextEditingController();
-  final TextEditingController _deathAnniversaryController = TextEditingController();
+  final TextEditingController _deathAnniversaryController =
+      TextEditingController();
 
   String _selectedGender = 'Nam';
   String _selectedMaritalStatus = 'unknown';
@@ -70,7 +73,9 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
       _generationController.text = (m.generation ?? 1).toString();
       _placeOfBirthController.text = m.placeOfBirth ?? '';
       _noteController.text = m.notes ?? '';
-      _selectedGender = m.gender == Gender.male ? 'Nam' : (m.gender == Gender.female ? 'Nữ' : 'Khác');
+      _selectedGender = m.gender == Gender.male
+          ? 'Nam'
+          : (m.gender == Gender.female ? 'Nữ' : 'Khác');
       _selectedMaritalStatus = m.maritalStatus.name;
       _selectedParentId = m.parentId;
       _selectedSpouseId = m.spouseId;
@@ -118,7 +123,10 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectDate(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -135,7 +143,8 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         child: child!,
       ),
     );
-    if (picked != null) setState(() => controller.text = DateFormat('dd/MM/yyyy').format(picked));
+    if (picked != null)
+      setState(() => controller.text = DateFormat('dd/MM/yyyy').format(picked));
   }
 
   @override
@@ -153,12 +162,17 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
           context.read<TreeBloc>().add(LoadTreeEvent(force: true));
         } else if (state is MemberFormError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Lỗi: ${state.message}'), backgroundColor: Colors.redAccent),
+            SnackBar(
+              content: Text('Lỗi: ${state.message}'),
+              backgroundColor: Colors.redAccent,
+            ),
           );
         }
       },
       child: CommonDialogContainer(
-        title: widget.memberToEdit != null ? 'CHỈNH SỬA THÀNH VIÊN' : 'THÊM THÀNH VIÊN',
+        title: widget.memberToEdit != null
+            ? 'CHỈNH SỬA THÀNH VIÊN'
+            : 'THÊM THÀNH VIÊN',
         icon: Icons.person_add_rounded,
         statusLabel: widget.memberToEdit != null ? 'SỬA' : 'MỚI',
         isDesktop: isDesktop,
@@ -278,7 +292,10 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SectionLabel('QUÊ QUÁN'),
-        CommonTextField(controller: _placeOfBirthController, hintText: 'Hà Nội, Việt Nam'),
+        CommonTextField(
+          controller: _placeOfBirthController,
+          hintText: 'Gia Lai, Việt Nam',
+        ),
         const SizedBox(height: 20),
         const SectionLabel('HÔN NHÂN'),
         CommonDropdown<String>(
@@ -293,7 +310,11 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         _buildRelationSelectors(),
         const SizedBox(height: 20),
         const SectionLabel('GHI CHÚ / TIỂU SỬ'),
-        CommonTextField(controller: _noteController, maxLines: 5, hintText: 'Thông tin thêm...'),
+        CommonTextField(
+          controller: _noteController,
+          maxLines: 5,
+          hintText: 'Thông tin thêm...',
+        ),
       ],
     );
   }
@@ -315,10 +336,23 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
               clipBehavior: Clip.antiAlias,
               child: _imageFile != null
                   ? Image.file(_imageFile!, fit: BoxFit.cover)
-                  : const Center(child: Icon(Icons.add_a_photo_outlined, size: 40, color: AppColors.gold)),
+                  : const Center(
+                      child: Icon(
+                        Icons.add_a_photo_outlined,
+                        size: 40,
+                        color: AppColors.gold,
+                      ),
+                    ),
             ),
             const SizedBox(height: 12),
-            const Text('CHỌN ẢNH CHÂN DUNG', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.crimson)),
+            const Text(
+              'CHỌN ẢNH CHÂN DUNG',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: AppColors.crimson,
+              ),
+            ),
           ],
         ),
       ),
@@ -328,8 +362,12 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
   Widget _buildRelationSelectors() {
     return BlocBuilder<TreeBloc, TreeState>(
       builder: (context, state) {
-        final allMembers = state is TreeLoaded ? state.allMembers : <MemberEntity>[];
-        final branches = state is TreeLoaded ? state.branches : <BranchEntity>[];
+        final allMembers = state is TreeLoaded
+            ? state.allMembers
+            : <MemberEntity>[];
+        final branches = state is TreeLoaded
+            ? state.branches
+            : <BranchEntity>[];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,8 +375,12 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
             const SectionLabel('CHA / MẸ (Người trực hệ)'),
             CommonDropdown<int>(
               value: _selectedParentId,
-              items: allMembers.where((m) => m.id != widget.memberToEdit?.id).map((m) => m.id).toList(),
-              itemLabel: (id) => allMembers.firstWhere((m) => m.id == id).fullName,
+              items: allMembers
+                  .where((m) => m.id != widget.memberToEdit?.id)
+                  .map((m) => m.id)
+                  .toList(),
+              itemLabel: (id) =>
+                  allMembers.firstWhere((m) => m.id == id).fullName,
               hint: 'Chọn người đời trước',
               onChanged: (val) => setState(() => _selectedParentId = val),
             ),
@@ -346,8 +388,12 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
             const SectionLabel('VỢ / CHỒNG'),
             CommonDropdown<int>(
               value: _selectedSpouseId,
-              items: allMembers.where((m) => m.id != widget.memberToEdit?.id).map((m) => m.id).toList(),
-              itemLabel: (id) => allMembers.firstWhere((m) => m.id == id).fullName,
+              items: allMembers
+                  .where((m) => m.id != widget.memberToEdit?.id)
+                  .map((m) => m.id)
+                  .toList(),
+              itemLabel: (id) =>
+                  allMembers.firstWhere((m) => m.id == id).fullName,
               hint: 'Chọn người phối ngẫu',
               onChanged: (val) => setState(() => _selectedSpouseId = val),
             ),
@@ -372,7 +418,10 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        SecondaryButton(text: 'HỦY BỎ', onPressed: () => Navigator.of(context).pop()),
+        SecondaryButton(
+          text: 'HỦY BỎ',
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         const SizedBox(width: 16),
         BlocBuilder<MemberFormBloc, MemberFormState>(
           builder: (context, state) => PrimaryButton(
@@ -387,26 +436,37 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
   void _submit() {
     if (_nameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Vui lòng nhập họ tên')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Vui lòng nhập họ tên')));
       return;
     }
 
     String? formatToBE(String uiDate) {
       if (uiDate.isEmpty) return null;
       try {
-        return DateFormat('yyyy-MM-dd').format(DateFormat('dd/MM/yyyy').parse(uiDate));
-      } catch (e) { return null; }
+        return DateFormat(
+          'yyyy-MM-dd',
+        ).format(DateFormat('dd/MM/yyyy').parse(uiDate));
+      } catch (e) {
+        return null;
+      }
     }
 
     final member = MemberEntity(
       id: widget.memberToEdit?.id ?? 0,
       fullName: _nameController.text,
-      gender: _selectedGender == 'Nam' ? Gender.male : (_selectedGender == 'Nữ' ? Gender.female : Gender.unknown),
+      gender: _selectedGender == 'Nam'
+          ? Gender.male
+          : (_selectedGender == 'Nữ' ? Gender.female : Gender.unknown),
       generation: int.tryParse(_generationController.text) ?? 1,
       dateOfBirth: formatToBE(_dobController.text),
       dateOfDeath: formatToBE(_dodController.text),
       placeOfBirth: _placeOfBirthController.text,
-      maritalStatus: MaritalStatus.values.firstWhere((e) => e.name == _selectedMaritalStatus, orElse: () => MaritalStatus.unknown),
+      maritalStatus: MaritalStatus.values.firstWhere(
+        (e) => e.name == _selectedMaritalStatus,
+        orElse: () => MaritalStatus.unknown,
+      ),
       notes: _noteController.text,
       isAlive: _dodController.text.isEmpty,
       parentId: _selectedParentId,
@@ -415,6 +475,8 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
       avatarUrl: widget.memberToEdit?.avatarUrl,
     );
 
-    context.read<MemberFormBloc>().add(SubmitMemberFormEvent(member, imageFile: _imageFile));
+    context.read<MemberFormBloc>().add(
+      SubmitMemberFormEvent(member, imageFile: _imageFile),
+    );
   }
 }

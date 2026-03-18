@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
@@ -74,7 +75,10 @@ class MemberSearchOverlay extends StatelessWidget {
                         '${l10n.generation} ${m.generation ?? "?"}',
                         style: GoogleFonts.inter(fontSize: 11),
                       ),
-                      onTap: () => onMemberTap(m),
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        onMemberTap(m);
+                      },
                     );
                   },
                 ),

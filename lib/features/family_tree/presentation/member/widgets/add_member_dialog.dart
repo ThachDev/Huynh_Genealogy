@@ -143,8 +143,9 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         child: child!,
       ),
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() => controller.text = DateFormat('dd/MM/yyyy').format(picked));
+    }
   }
 
   @override

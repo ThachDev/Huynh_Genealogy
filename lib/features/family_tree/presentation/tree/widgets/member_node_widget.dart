@@ -1,5 +1,5 @@
-import 'package:app_family_tree/core/utils/member_utils.dart'
-    show MemberImageExtension;
+import 'package:app_family_tree/core/utils/member_utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
@@ -10,6 +10,8 @@ class MemberNodeWidget extends StatefulWidget {
   final bool isSelected;
   final bool isHighlighted;
   final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
 
   const MemberNodeWidget({
     super.key,
@@ -17,6 +19,8 @@ class MemberNodeWidget extends StatefulWidget {
     this.isSelected = false,
     this.isHighlighted = false,
     this.onTap,
+    this.onDoubleTap,
+    this.onLongPress,
   });
 
   @override
@@ -51,11 +55,11 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
-      onTapUp: (_) {
-        _controller.reverse();
-        widget.onTap?.call();
-      },
+      onTapUp: (_) => _controller.reverse(),
       onTapCancel: () => _controller.reverse(),
+      onTap: widget.onTap,
+      onDoubleTap: widget.onDoubleTap,
+      onLongPress: widget.onLongPress,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Column(
@@ -105,7 +109,7 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
                             : Colors.white,
                         image: widget.member.fullAvatarUrl != null
                             ? DecorationImage(
-                                image: NetworkImage(
+                                image: CachedNetworkImageProvider(
                                   widget.member.fullAvatarUrl!,
                                 ),
                                 fit: BoxFit.cover,

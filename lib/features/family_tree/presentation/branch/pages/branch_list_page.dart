@@ -50,13 +50,20 @@ class _BranchListPageState extends State<BranchListPage> {
       ),
       body: BlocBuilder<TreeBloc, TreeState>(
         builder: (context, state) {
-          if (state is TreeLoading || state is TreeInitial) return const BranchListSkeleton();
+          if (state is TreeLoading || state is TreeInitial) {
+            return const BranchListSkeleton();
+          }
           if (state is TreeError) return Center(child: Text(state.message));
 
           if (state is TreeLoaded) {
             final filteredBranches = state.branches.where((b) {
-              return b.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                  (b.founderName?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false);
+              return b.name.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ) ||
+                  (b.founderName?.toLowerCase().contains(
+                        _searchQuery.toLowerCase(),
+                      ) ??
+                      false);
             }).toList()..sort((a, b) => a.name.compareTo(b.name));
 
             if (filteredBranches.isEmpty) {
@@ -64,9 +71,18 @@ class _BranchListPageState extends State<BranchListPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.search_off_rounded, size: 48, color: AppColors.gold.withValues(alpha: 0.5)),
+                    Icon(
+                      Icons.search_off_rounded,
+                      size: 48,
+                      color: AppColors.gold.withValues(alpha: 0.5),
+                    ),
                     const SizedBox(height: 16),
-                    Text(_searchQuery.isEmpty ? 'Chưa có dữ liệu chi tộc' : 'Không tìm thấy chi tộc phù hợp', style: GoogleFonts.inter(color: AppColors.textSecondary)),
+                    Text(
+                      _searchQuery.isEmpty
+                          ? 'Chưa có dữ liệu chi tộc'
+                          : 'Không tìm thấy chi tộc phù hợp',
+                      style: GoogleFonts.inter(color: AppColors.textSecondary),
+                    ),
                   ],
                 ),
               );
@@ -74,7 +90,10 @@ class _BranchListPageState extends State<BranchListPage> {
 
             return AnimationLimiter(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 itemCount: filteredBranches.length,
                 itemBuilder: (context, index) {
                   final branch = filteredBranches[index];
@@ -89,7 +108,10 @@ class _BranchListPageState extends State<BranchListPage> {
                           child: BranchCard(
                             branch: branch,
                             isSelected: false,
-                            onTap: () => context.push('/branches/${branch.id}', extra: branch),
+                            onTap: () => context.push(
+                              '/branches/${branch.id}',
+                              extra: branch,
+                            ),
                           ),
                         ),
                       ),
@@ -110,7 +132,9 @@ class _BranchListPageState extends State<BranchListPage> {
             barrierColor: Colors.black.withValues(alpha: 0.6),
             builder: (ctx) => MultiBlocProvider(
               providers: [
-                BlocProvider<BranchFormBloc>(create: (_) => di.sl<BranchFormBloc>()),
+                BlocProvider<BranchFormBloc>(
+                  create: (_) => di.sl<BranchFormBloc>(),
+                ),
                 BlocProvider.value(value: treeBloc),
               ],
               child: const AddBranchDialog(),

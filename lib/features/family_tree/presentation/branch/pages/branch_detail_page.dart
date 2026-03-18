@@ -51,7 +51,9 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
             : widget.branch;
 
         final members = state is TreeLoaded
-            ? state.allMembers.where((m) => m.branchId == stateBranch.id).toList()
+            ? state.allMembers
+                  .where((m) => m.branchId == stateBranch.id)
+                  .toList()
             : <MemberEntity>[];
 
         return Scaffold(
@@ -72,7 +74,10 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
             },
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit_note_rounded, color: AppColors.gold),
+                icon: const Icon(
+                  Icons.edit_note_rounded,
+                  color: AppColors.gold,
+                ),
                 onPressed: () {
                   final treeBloc = context.read<TreeBloc>();
                   showDialog(
@@ -80,7 +85,9 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
                     barrierColor: Colors.black.withValues(alpha: 0.6),
                     builder: (ctx) => MultiBlocProvider(
                       providers: [
-                        BlocProvider<BranchFormBloc>(create: (_) => di.sl<BranchFormBloc>()),
+                        BlocProvider<BranchFormBloc>(
+                          create: (_) => di.sl<BranchFormBloc>(),
+                        ),
                         BlocProvider.value(value: treeBloc),
                       ],
                       child: AddBranchDialog(branchToEdit: stateBranch),
@@ -159,7 +166,11 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
           ),
           const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.add_circle_outline, color: AppColors.crimson, size: 20),
+            icon: const Icon(
+              Icons.add_circle_outline,
+              color: AppColors.crimson,
+              size: 20,
+            ),
             onPressed: () {
               final treeBloc = context.read<TreeBloc>();
               showDialog(
@@ -167,7 +178,9 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
                 barrierColor: Colors.black.withValues(alpha: 0.6),
                 builder: (ctx) => MultiBlocProvider(
                   providers: [
-                    BlocProvider<MemberFormBloc>(create: (_) => di.sl<MemberFormBloc>()),
+                    BlocProvider<MemberFormBloc>(
+                      create: (_) => di.sl<MemberFormBloc>(),
+                    ),
                     BlocProvider.value(value: treeBloc),
                   ],
                   child: AddMemberDialog(initialBranchId: widget.branch.id),
@@ -230,15 +243,41 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildInfoRow(Icons.person, 'Người sáng lập', branch.founderName ?? 'Chưa rõ'),
+            _buildInfoRow(
+              Icons.person,
+              'Người sáng lập',
+              branch.founderName ?? 'Chưa rõ',
+            ),
             const Divider(height: 24),
-            _buildInfoRow(Icons.calendar_today, 'Năm thành lập', branch.foundingYear?.toString() ?? 'Chưa rõ'),
+            _buildInfoRow(
+              Icons.calendar_today,
+              'Năm thành lập',
+              branch.foundingYear?.toString() ?? 'Chưa rõ',
+            ),
             const Divider(height: 24),
-            _buildInfoRow(Icons.location_on, 'Vùng miền', branch.region ?? 'Chưa rõ'),
+            _buildInfoRow(
+              Icons.location_on,
+              'Vùng miền',
+              branch.region ?? 'Chưa rõ',
+            ),
             const Divider(height: 24),
-            Text('Mô tả', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.gold)),
+            Text(
+              'Mô tả',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.gold,
+              ),
+            ),
             const SizedBox(height: 8),
-            Text(branch.description ?? 'Chưa có mô tả cho chi tộc này.', style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary, height: 1.5)),
+            Text(
+              branch.description ?? 'Chưa có mô tả cho chi tộc này.',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
       ),
@@ -253,8 +292,21 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary)),
-            Text(value, style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            Text(
+              value,
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
           ],
         ),
       ],
@@ -269,7 +321,12 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
           if (state is MemberFormSuccess && state.isDeleted) {
             context.read<TreeBloc>().add(LoadTreeEvent(force: true));
           } else if (state is MemberFormError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Lỗi: ${state.message}'), backgroundColor: Colors.red));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Lỗi: ${state.message}'),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         },
         child: Builder(
@@ -281,9 +338,14 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
               children: [
                 CustomSlidableAction(
                   onPressed: (_) async {
-                    final confirm = await _showDeleteConfirmDialog(context, m.fullName);
+                    final confirm = await _showDeleteConfirmDialog(
+                      context,
+                      m.fullName,
+                    );
                     if (confirm == true && context.mounted) {
-                      context.read<MemberFormBloc>().add(DeleteMemberFormEvent(m.id));
+                      context.read<MemberFormBloc>().add(
+                        DeleteMemberFormEvent(m.id),
+                      );
                     }
                   },
                   backgroundColor: AppColors.parchment,
@@ -291,8 +353,21 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
                   child: Container(
                     width: double.infinity,
                     height: double.infinity,
-                    margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                    decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(12), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4, offset: const Offset(0, 2))]),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
                     child: const Icon(Icons.delete_outline, size: 28),
                   ),
                 ),
@@ -311,15 +386,45 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
       shadowColor: Colors.black12,
       margin: const EdgeInsets.only(right: 8),
       color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: AppColors.gold.withValues(alpha: 0.2))),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: AppColors.gold.withValues(alpha: 0.2)),
+      ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         leading: Container(
-          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColors.gold, width: 1.5)),
-          child: CircleAvatar(backgroundColor: m.gender == Gender.male ? AppColors.nodeMale : AppColors.nodeFemale, radius: 20, backgroundImage: m.fullAvatarUrl != null ? NetworkImage(m.fullAvatarUrl!) : null, child: m.fullAvatarUrl == null ? Icon(m.gender == Gender.male ? Icons.man : Icons.woman, color: AppColors.crimson, size: 20) : null),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.gold, width: 1.5),
+          ),
+          child: CircleAvatar(
+            backgroundColor: m.gender == Gender.male
+                ? AppColors.nodeMale
+                : AppColors.nodeFemale,
+            radius: 20,
+            backgroundImage: m.fullAvatarUrl != null
+                ? NetworkImage(m.fullAvatarUrl!)
+                : null,
+            child: m.fullAvatarUrl == null
+                ? Icon(
+                    m.gender == Gender.male ? Icons.man : Icons.woman,
+                    color: AppColors.crimson,
+                    size: 20,
+                  )
+                : null,
+          ),
         ),
-        title: Text(m.fullName, style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 15)),
-        subtitle: Text('Đời ${m.generation ?? "?"} • ${m.isAlive ? "Còn sống" : "Đã mất"}', style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
+        title: Text(
+          m.fullName,
+          style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        subtitle: Text(
+          'Đời ${m.generation ?? "?"} • ${m.isAlive ? "Còn sống" : "Đã mất"}',
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppColors.textSecondary,
+          ),
+        ),
         trailing: const Icon(Icons.chevron_right, color: AppColors.gold),
         onTap: () => context.push('/members/${m.id}', extra: m),
       ),
@@ -327,6 +432,38 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
   }
 
   Future<bool?> _showDeleteConfirmDialog(BuildContext context, String name) {
-    return showDialog<bool>(context: context, builder: (context) => AlertDialog(backgroundColor: AppColors.parchment, title: Text('Xác nhận xóa', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold, color: AppColors.crimson)), content: Text('Bạn có chắc muốn xóa thành viên $name khỏi gia phả không?'), actions: [TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Hủy', style: TextStyle(color: AppColors.textSecondary))), ElevatedButton(onPressed: () => Navigator.pop(context, true), style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson), child: const Text('Xóa ngay', style: TextStyle(color: Colors.white)))]));
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.parchment,
+        title: Text(
+          'Xác nhận xóa',
+          style: GoogleFonts.playfairDisplay(
+            fontWeight: FontWeight.bold,
+            color: AppColors.crimson,
+          ),
+        ),
+        content: Text(
+          'Bạn có chắc muốn xóa thành viên $name khỏi gia phả không?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              'Hủy',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson),
+            child: const Text(
+              'Xóa ngay',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

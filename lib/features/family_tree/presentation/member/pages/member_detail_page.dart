@@ -9,8 +9,12 @@ import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree
 import 'package:go_router/go_router.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
+import 'package:app_family_tree/features/family_tree/presentation/member/widgets/member_detail_skeleton.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/components/search/member_search_overlay.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:resources/resources.dart';
 
 class MemberDetailPage extends StatefulWidget {
@@ -39,7 +43,10 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     return BlocBuilder<TreeBloc, TreeState>(
       builder: (context, state) {
         final member = state is TreeLoaded
-            ? state.allMembers.firstWhere((m) => m.id == widget.member.id, orElse: () => widget.member)
+            ? state.allMembers.firstWhere(
+                (m) => m.id == widget.member.id,
+                orElse: () => widget.member,
+              )
             : widget.member;
 
         return Scaffold(
@@ -60,7 +67,10 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             },
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit_note_rounded, color: AppColors.gold),
+                icon: const Icon(
+                  Icons.edit_note_rounded,
+                  color: AppColors.gold,
+                ),
                 onPressed: () {
                   final treeBloc = context.read<TreeBloc>();
                   showDialog(
@@ -68,7 +78,9 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                     barrierColor: Colors.black.withValues(alpha: 0.6),
                     builder: (ctx) => MultiBlocProvider(
                       providers: [
-                        BlocProvider<MemberFormBloc>(create: (_) => di.sl<MemberFormBloc>()),
+                        BlocProvider<MemberFormBloc>(
+                          create: (_) => di.sl<MemberFormBloc>(),
+                        ),
                         BlocProvider.value(value: treeBloc),
                       ],
                       child: AddMemberDialog(memberToEdit: member),
@@ -80,23 +92,36 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           ),
           body: Stack(
             children: [
-              CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: _buildHeader(member),
+              state is TreeLoading || state is TreeInitial
+                  ? const MemberDetailSkeleton()
+                  : AnimationConfiguration.synchronized(
+                      child: SlideAnimation(
+                        verticalOffset: 30.0,
+                        child: FadeInAnimation(
+                          child: CustomScrollView(
+                            slivers: [
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: _buildHeader(member),
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: _buildMainInfo(member),
+                                ),
+                              ),
+                              const SliverPadding(
+                                padding: EdgeInsets.only(bottom: 32),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _buildMainInfo(member),
-                    ),
-                  ),
-                  const SliverPadding(padding: EdgeInsets.only(bottom: 32)),
-                ],
-              ),
               MemberSearchOverlay(
                 searchQuery: _searchQuery,
                 allMembers: state is TreeLoaded ? state.allMembers : [],
@@ -139,19 +164,30 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
               ),
             ],
           ),
-          child: Hero(
-            tag: 'member_avatar_${member.id}',
-            child: CircleAvatar(
-              radius: 60,
-              backgroundColor: member.gender == Gender.male ? AppColors.nodeMale : AppColors.nodeFemale,
-              backgroundImage: member.fullAvatarUrl != null ? NetworkImage(member.fullAvatarUrl!) : null,
-              child: member.fullAvatarUrl == null
-                  ? Icon(
-                      member.gender == Gender.male ? Icons.man : Icons.woman,
-                      size: 60,
-                      color: AppColors.crimson.withValues(alpha: 0.5),
-                    )
-                  : null,
+          child: GestureDetector(
+            onTap: () {
+              if (member.fullAvatarUrl != null) {
+                _showImagePreview(context, member.fullAvatarUrl!);
+              }
+            },
+            child: Hero(
+              tag: 'member_avatar_${member.id}',
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: member.gender == Gender.male
+                    ? AppColors.nodeMale
+                    : AppColors.nodeFemale,
+                backgroundImage: member.fullAvatarUrl != null
+                    ? CachedNetworkImageProvider(member.fullAvatarUrl!)
+                    : null,
+                child: member.fullAvatarUrl == null
+                    ? Icon(
+                        member.gender == Gender.male ? Icons.man : Icons.woman,
+                        size: 60,
+                        color: AppColors.crimson.withValues(alpha: 0.5),
+                      )
+                    : null,
+              ),
             ),
           ),
         ),
@@ -199,14 +235,30 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            _buildInfoRow(Icons.account_tree_outlined, 'Chi tộc', member.branchName ?? 'Họ Huỳnh'),
+            _buildInfoRow(
+              Icons.account_tree_outlined,
+              'Chi tộc',
+              member.branchName ?? 'Họ Huỳnh',
+            ),
             const Divider(height: 32),
-            _buildInfoRow(Icons.cake_outlined, 'Ngày sinh', member.dateOfBirth ?? 'Chưa rõ'),
+            _buildInfoRow(
+              Icons.cake_outlined,
+              'Ngày sinh',
+              member.dateOfBirth ?? 'Chưa rõ',
+            ),
             const Divider(height: 32),
-            _buildInfoRow(Icons.favorite_border, 'Trạng thái', member.isAlive ? 'Còn sống' : 'Đã mất'),
+            _buildInfoRow(
+              Icons.favorite_border,
+              'Trạng thái',
+              member.isAlive ? 'Còn sống' : 'Đã mất',
+            ),
             if (!member.isAlive && member.dateOfDeath != null) ...[
               const Divider(height: 32),
-              _buildInfoRow(Icons.event_available, 'Ngày mất', member.dateOfDeath!),
+              _buildInfoRow(
+                Icons.event_available,
+                'Ngày mất',
+                member.dateOfDeath!,
+              ),
             ],
             if (member.notes != null) ...[
               const Divider(height: 32),
@@ -254,6 +306,33 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showImagePreview(BuildContext context, String imageUrl) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white, size: 30),
+              onPressed: () => Navigator.pop(ctx),
+            ),
+          ),
+          body: PhotoView(
+            imageProvider: CachedNetworkImageProvider(imageUrl),
+            minScale: PhotoViewComputedScale.contained,
+            maxScale: PhotoViewComputedScale.covered * 2,
+            initialScale: PhotoViewComputedScale.contained,
+            heroAttributes: const PhotoViewHeroAttributes(
+              tag: "member_avatar_preview",
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

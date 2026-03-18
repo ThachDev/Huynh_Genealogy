@@ -1,4 +1,4 @@
-import 'package:app_family_tree/config/app_constants.dart';
+import 'package:app_family_tree/constants/app_constants.dart';
 import 'package:app_family_tree/features/family_tree/data/source/family_remote_data_source_impl.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/get_branches_usecase.dart';
 import 'package:dio/dio.dart';
@@ -40,11 +40,7 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(
-    () => BranchFormBloc(
-      saveBranchUseCase: sl(),
-    ),
-  );
+  sl.registerFactory(() => BranchFormBloc(saveBranchUseCase: sl()));
 
   sl.registerLazySingleton(() => LanguageBloc());
 
@@ -69,15 +65,21 @@ Future<void> init() async {
   );
 
   // ─── External ─────────────────────────────────────────────────────────────
-  sl.registerLazySingleton(() => Dio(
-        BaseOptions(
-          baseUrl: AppConstants.baseUrl,
-          connectTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 3),
-        ),
-      )..interceptors.add(LogInterceptor(
-          requestBody: true,
-          responseBody: true,
-          logPrint: (obj) => debugPrint(obj.toString()),
-        )));
+  sl.registerLazySingleton(
+    () =>
+        Dio(
+            BaseOptions(
+              baseUrl: AppConstants.baseUrl,
+              connectTimeout: const Duration(seconds: 5),
+              receiveTimeout: const Duration(seconds: 3),
+            ),
+          )
+          ..interceptors.add(
+            LogInterceptor(
+              requestBody: true,
+              responseBody: true,
+              logPrint: (obj) => debugPrint(obj.toString()),
+            ),
+          ),
+  );
 }

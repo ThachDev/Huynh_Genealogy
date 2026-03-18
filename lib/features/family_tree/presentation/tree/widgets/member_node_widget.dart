@@ -2,7 +2,7 @@ import 'package:app_family_tree/core/utils/member_utils.dart'
     show MemberImageExtension;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/app/app_theme.dart';
+import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 
 class MemberNodeWidget extends StatefulWidget {

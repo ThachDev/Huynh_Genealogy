@@ -1,15 +1,16 @@
-import 'package:app_family_tree/resources/lib/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/app/app_theme.dart';
+import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/member_node_widget.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
 import 'package:app_family_tree/shell/main_shell_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:app_family_tree/components/app_bar/app_bar.dart';
+import 'package:resources/resources.dart';
 
 class TreeViewPage extends StatefulWidget {
   const TreeViewPage({super.key});
@@ -250,8 +251,7 @@ class _TreeViewPageState extends State<TreeViewPage>
     final l10n = S.of(context);
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: AppBar(
-        backgroundColor: AppColors.wood,
+      appBar: CommonAppBar(
         elevation: 10,
         centerTitle: false,
         title: _buildAppBarTitle(l10n),
@@ -268,16 +268,6 @@ class _TreeViewPageState extends State<TreeViewPage>
           ],
           const SizedBox(width: 8),
         ],
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(color: AppColors.wood),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset('assets/images/wood_dragon.png', fit: BoxFit.cover),
-              Container(color: Colors.black.withValues(alpha: 0.3)),
-            ],
-          ),
-        ),
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 20, right: 10),

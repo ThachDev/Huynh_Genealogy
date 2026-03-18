@@ -20,6 +20,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'vi';
 
+  // ignore: strict_top_level_inference
   static String m0(name) =>
       "Bạn có chắc muốn xóa thành viên ${name} khỏi gia phả không?";
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:app_family_tree/app/app_theme.dart';
+import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';

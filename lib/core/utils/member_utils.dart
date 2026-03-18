@@ -1,4 +1,4 @@
-import 'package:app_family_tree/config/app_constants.dart';
+import 'package:app_family_tree/constants/app_constants.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 
 extension MemberImageExtension on MemberEntity {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/app/app_theme.dart';
+import 'package:app_family_tree/components/theme/app_theme.dart';
+import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
 
 class EventsPage extends StatelessWidget {
@@ -10,19 +11,7 @@ class EventsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: AppBar(
-        title: Text(
-          'SỰ KIỆN',
-          style: GoogleFonts.playfairDisplay(
-            fontWeight: FontWeight.bold,
-            color: AppColors.gold,
-            letterSpacing: 1.5,
-          ),
-        ),
-        backgroundColor: AppColors.wood,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: const CommonAppBar(titleText: 'SỰ KIỆN', centerTitle: true),
       body: Stack(
         children: [
           const Positioned.fill(

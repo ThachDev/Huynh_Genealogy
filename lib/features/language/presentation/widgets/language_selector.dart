@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:app_family_tree/app/app_theme.dart';
+import 'package:app_family_tree/components/theme/app_theme.dart';
 import '../bloc/language_bloc.dart';
 import '../bloc/language_event.dart';
 import '../bloc/language_state.dart';

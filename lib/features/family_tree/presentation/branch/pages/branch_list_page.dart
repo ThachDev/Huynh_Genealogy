@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:app_family_tree/app/app_theme.dart';
+import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/branch_card.dart';
-import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
+import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/branch_list_skeleton.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
@@ -71,7 +71,7 @@ class _BranchListPageState extends State<BranchListPage> {
       body: BlocBuilder<TreeBloc, TreeState>(
         builder: (context, state) {
           if (state is TreeLoading || state is TreeInitial) {
-            return const SliverDashboardSkeleton();
+            return const BranchListSkeleton();
           }
 
           if (state is TreeError) {

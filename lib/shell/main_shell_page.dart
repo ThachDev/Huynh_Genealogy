@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/core/di/injection_container.dart' as di;
-import 'package:app_family_tree/app/app_theme.dart';
+import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
@@ -146,9 +146,19 @@ class _MainShellPageState extends State<MainShellPage> {
                 child: Row(
                   children: [
                     _buildNavItem(context, 0, Icons.home_rounded, 'Trang chủ'),
-                    _buildNavItem(context, 1, Icons.account_tree_rounded, 'Sơ đồ'),
+                    _buildNavItem(
+                      context,
+                      1,
+                      Icons.account_tree_rounded,
+                      'Sơ đồ',
+                    ),
                     const SizedBox(width: 48),
-                    _buildNavItem(context, 2, Icons.event_note_rounded, 'Sự kiện'),
+                    _buildNavItem(
+                      context,
+                      2,
+                      Icons.event_note_rounded,
+                      'Sự kiện',
+                    ),
                     _buildNavItem(context, 3, Icons.menu_rounded, 'Menu'),
                   ],
                 ),

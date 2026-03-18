@@ -1,13 +1,13 @@
 import 'package:app_family_tree/core/di/injection_container.dart' as di;
-import 'package:app_family_tree/resources/lib/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:resources/resources.dart';
 import '../features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import '../features/language/presentation/bloc/language_bloc.dart';
 import '../features/language/presentation/bloc/language_state.dart';
-import 'app_theme.dart';
-import '../config/routes/app_router.dart';
+import '../components/theme/app_theme.dart';
+import '../navigation/routes/app_router.dart';
 
 class FamilyTreeApp extends StatelessWidget {
   const FamilyTreeApp({super.key});

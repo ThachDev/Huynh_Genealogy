@@ -18,7 +18,6 @@ class AppErrorHandler {
     } else if (error is NotFoundException) {
       return const NotFoundFailure();
     } else if (error is Exception) {
-      // Handle generic Exception(message)
       final message = error.toString().replaceFirst('Exception: ', '');
       return ServerFailure(message: message);
     } else {

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
-import 'package:app_family_tree/base/usecase.dart';
+import 'package:app_family_tree/core/usecase/usecase.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/get_branches_usecase.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/get_members_usecase.dart';
 

@@ -1,15 +1,15 @@
+import 'package:app_family_tree/core/di/injection_container.dart' as di;
+import 'package:app_family_tree/core/utils/member_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:go_router/go_router.dart';
-import 'package:app_family_tree/utils/member_utils.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
-import 'package:app_family_tree/di/injection_container.dart' as di;
 
 class MemberListPage extends StatefulWidget {
   const MemberListPage({super.key});
@@ -82,21 +82,23 @@ class _MemberListPageState extends State<MemberListPage> {
           }
 
           if (state is TreeLoaded) {
-            final filteredMembers = state.allMembers.where((m) {
-              final matchesSearch = m.fullName.toLowerCase().contains(
-                _searchQuery.toLowerCase(),
-              );
-              final matchesGender =
-                  _selectedGender == 'Tất cả' ||
-                  (_selectedGender == 'Nam' && m.gender == Gender.male) ||
-                  (_selectedGender == 'Nữ' && m.gender == Gender.female);
-              return matchesSearch && matchesGender;
-            }).toList()
-              ..sort((a, b) {
-                final genComp = (a.generation ?? 0).compareTo(b.generation ?? 0);
-                if (genComp != 0) return genComp;
-                return a.fullName.compareTo(b.fullName);
-              });
+            final filteredMembers =
+                state.allMembers.where((m) {
+                  final matchesSearch = m.fullName.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  );
+                  final matchesGender =
+                      _selectedGender == 'Tất cả' ||
+                      (_selectedGender == 'Nam' && m.gender == Gender.male) ||
+                      (_selectedGender == 'Nữ' && m.gender == Gender.female);
+                  return matchesSearch && matchesGender;
+                }).toList()..sort((a, b) {
+                  final genComp = (a.generation ?? 0).compareTo(
+                    b.generation ?? 0,
+                  );
+                  if (genComp != 0) return genComp;
+                  return a.fullName.compareTo(b.fullName);
+                });
 
             if (filteredMembers.isEmpty) {
               return Center(
@@ -350,19 +352,23 @@ class _MemberListPageState extends State<MemberListPage> {
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson),
-            child: const Text('Xóa ngay', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Xóa ngay',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
     );
   }
 
-
   Widget _buildMemberTile(BuildContext context, MemberEntity m) {
     return Card(
       elevation: 2,
       shadowColor: Colors.black12,
-      margin: const EdgeInsets.only(right: 8), // Thêm margin để tạo gap với nút xóa
+      margin: const EdgeInsets.only(
+        right: 8,
+      ), // Thêm margin để tạo gap với nút xóa
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),

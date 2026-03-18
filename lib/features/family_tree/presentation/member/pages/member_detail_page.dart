@@ -1,15 +1,15 @@
+import 'package:app_family_tree/core/di/injection_container.dart' as di;
+import 'package:app_family_tree/core/utils/date_formatter.dart';
+import 'package:app_family_tree/core/utils/member_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
-import 'package:app_family_tree/utils/date_formatter.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
-import 'package:app_family_tree/utils/member_utils.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
-import 'package:app_family_tree/di/injection_container.dart' as di;
 
 class MemberDetailPage extends StatefulWidget {
   final MemberEntity member;
@@ -30,7 +30,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             ? state.allMembers
             : <MemberEntity>[];
         final memberMap = {for (final m in allMembers) m.id: m};
-        
+
         // Luôn lấy dữ liệu mới nhất từ Bloc nếu có (đề phòng vừa sửa xong)
         final member = memberMap[widget.member.id] ?? widget.member;
 
@@ -95,7 +95,9 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                               final treeBloc = context.read<TreeBloc>();
                               showDialog(
                                 context: context,
-                                barrierColor: Colors.black.withValues(alpha: 0.6),
+                                barrierColor: Colors.black.withValues(
+                                  alpha: 0.6,
+                                ),
                                 builder: (ctx) => MultiBlocProvider(
                                   providers: [
                                     BlocProvider<MemberFormBloc>(
@@ -103,9 +105,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                                     ),
                                     BlocProvider.value(value: treeBloc),
                                   ],
-                                  child: AddMemberDialog(
-                                    memberToEdit: member,
-                                  ),
+                                  child: AddMemberDialog(memberToEdit: member),
                                 ),
                               );
                             },
@@ -143,8 +143,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                             child: CircleAvatar(
                               radius: 56,
                               backgroundColor: AppColors.parchment,
-                              backgroundImage:
-                                  member.fullAvatarUrl != null
+                              backgroundImage: member.fullAvatarUrl != null
                                   ? NetworkImage(member.fullAvatarUrl!)
                                   : null,
                               child: member.fullAvatarUrl == null
@@ -434,8 +433,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     MemberEntity member,
     List<MemberEntity> allMembers,
   ) {
-    final children =
-        allMembers.where((m) => m.parentId == member.id).toList();
+    final children = allMembers.where((m) => m.parentId == member.id).toList();
 
     return _buildInfoSection('CON CÁI', [
       if (children.isEmpty)
@@ -483,10 +481,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                 const SizedBox(width: 8),
                 TextButton(
                   onPressed: () {
-                    context.push(
-                      '/members/${child.id}',
-                      extra: child,
-                    );
+                    context.push('/members/${child.id}', extra: child);
                   },
                   child: Text(
                     child.fullName,
@@ -570,8 +565,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
           ),
           child: Text(
-            member.notes ??
-                'Chưa có thông tin tiểu sử cho thành viên này.',
+            member.notes ?? 'Chưa có thông tin tiểu sử cho thành viên này.',
             style: GoogleFonts.playfairDisplay(
               fontSize: 16,
               height: 1.6,

@@ -1,23 +1,22 @@
+import 'package:app_family_tree/core/di/injection_container.dart' as di;
+import 'package:app_family_tree/core/utils/member_utils.dart';
+import 'package:app_family_tree/resources/lib/resources.dart';
 import 'package:flutter/material.dart';
-import 'package:app_family_tree/di/injection_container.dart' as di;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/branch_card.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
-import 'package:app_family_tree/utils/member_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
-import 'package:resources/resources.dart';
-import 'package:app_family_tree/features/language/presentation/widgets/language_selector.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -235,7 +234,9 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                         state.filterBranchId == null
                             ? l10n.member
                             : '${l10n.member} • ${state.branches.where((b) => b.id == state.filterBranchId).first.name}',
-                        state.filterBranchId != null ? l10n.viewAll : l10n.viewAll,
+                        state.filterBranchId != null
+                            ? l10n.viewAll
+                            : l10n.viewAll,
                         onAction: () {
                           if (state.filterBranchId != null) {
                             context.read<TreeBloc>().add(
@@ -348,11 +349,6 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
             ),
             Positioned.fill(
               child: Container(color: Colors.black.withValues(alpha: 0.3)),
-            ),
-            const Positioned(
-              top: 40,
-              right: 16,
-              child: LanguageSelector(),
             ),
             SafeArea(
               child: Column(

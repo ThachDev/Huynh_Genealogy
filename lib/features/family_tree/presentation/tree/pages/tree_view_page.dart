@@ -1,15 +1,15 @@
+import 'package:app_family_tree/resources/lib/resources.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/member_node_widget.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
-import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/main_shell_page.dart';
+import 'package:app_family_tree/shell/main_shell_page.dart';
 import 'package:go_router/go_router.dart';
-import 'package:resources/resources.dart';
 
 class TreeViewPage extends StatefulWidget {
   const TreeViewPage({super.key});
@@ -354,7 +354,7 @@ class _TreeViewPageState extends State<TreeViewPage>
                             child: ElevatedButton(
                               onPressed: () =>
                                   context.read<TreeBloc>().add(LoadTreeEvent()),
-                                  child: Text(l10n.retry),
+                              child: Text(l10n.retry),
                             ),
                           ),
                         ],
@@ -540,8 +540,10 @@ class _TreeViewPageState extends State<TreeViewPage>
                 decoration: InputDecoration(
                   isDense: true,
                   hintText: l10n.searchHint,
-                  hintStyle:
-                      GoogleFonts.inter(color: Colors.white60, fontSize: 12),
+                  hintStyle: GoogleFonts.inter(
+                    color: Colors.white60,
+                    fontSize: 12,
+                  ),
                   prefixIcon: const Icon(
                     Icons.search,
                     color: AppColors.gold,
@@ -552,7 +554,11 @@ class _TreeViewPageState extends State<TreeViewPage>
                   suffixIcon: IconButton(
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    icon: const Icon(Icons.close, color: Colors.white, size: 14),
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 14,
+                    ),
                     onPressed: () {
                       _searchController.clear();
                       setState(() {

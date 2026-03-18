@@ -1,15 +1,15 @@
+import 'package:app_family_tree/core/di/injection_container.dart' as di;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/branch_card.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
-import 'package:app_family_tree/di/injection_container.dart' as di;
 
 class BranchListPage extends StatefulWidget {
   const BranchListPage({super.key});
@@ -105,8 +105,7 @@ class _BranchListPageState extends State<BranchListPage> {
                         _searchQuery.toLowerCase(),
                       ) ??
                       false);
-            }).toList()
-              ..sort((a, b) => a.name.compareTo(b.name));
+            }).toList()..sort((a, b) => a.name.compareTo(b.name));
 
             if (filteredBranches.isEmpty) {
               return Center(

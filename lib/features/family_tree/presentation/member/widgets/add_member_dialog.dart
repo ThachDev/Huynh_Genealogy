@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -74,12 +74,14 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
       _generationController.text = (m.generation ?? 1).toString();
       _placeOfBirthController.text = m.placeOfBirth ?? '';
       _noteController.text = m.notes ?? '';
-      _selectedGender = m.gender == Gender.male ? 'Nam' : (m.gender == Gender.female ? 'Nữ' : 'Khác');
+      _selectedGender = m.gender == Gender.male
+          ? 'Nam'
+          : (m.gender == Gender.female ? 'Nữ' : 'Khác');
       _selectedMaritalStatus = _maritalStatusToKey(m.maritalStatus);
       _selectedParentId = m.parentId;
       _selectedSpouseId = m.spouseId;
       _selectedBranchId = m.branchId;
-      
+
       // Định dạng ngày cho UI
       if (m.dateOfBirth != null) {
         try {
@@ -103,11 +105,16 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
   String _maritalStatusToKey(MaritalStatus status) {
     switch (status) {
-      case MaritalStatus.single: return 'single';
-      case MaritalStatus.married: return 'married';
-      case MaritalStatus.divorced: return 'divorced';
-      case MaritalStatus.widowed: return 'widowed';
-      case MaritalStatus.unknown: return 'unknown';
+      case MaritalStatus.single:
+        return 'single';
+      case MaritalStatus.married:
+        return 'married';
+      case MaritalStatus.divorced:
+        return 'divorced';
+      case MaritalStatus.widowed:
+        return 'widowed';
+      case MaritalStatus.unknown:
+        return 'unknown';
     }
   }
 
@@ -367,7 +374,8 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                                         parentId: _selectedParentId,
                                         spouseId: _selectedSpouseId,
                                         branchId: _selectedBranchId,
-                                        avatarUrl: widget.memberToEdit?.avatarUrl,
+                                        avatarUrl:
+                                            widget.memberToEdit?.avatarUrl,
                                       );
 
                                       context.read<MemberFormBloc>().add(
@@ -646,17 +654,26 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         // Parent & Spouse selection
         BlocBuilder<TreeBloc, TreeState>(
           builder: (context, state) {
-            final allMembers = state is TreeLoaded ? state.allMembers : <MemberEntity>[];
-            final branches = state is TreeLoaded ? state.branches : <BranchEntity>[];
+            final allMembers = state is TreeLoaded
+                ? state.allMembers
+                : <MemberEntity>[];
+            final branches = state is TreeLoaded
+                ? state.branches
+                : <BranchEntity>[];
 
             // Common filters
             final availableMembers = allMembers.where((m) {
-              if (widget.memberToEdit != null && m.id == widget.memberToEdit!.id) return false;
+              if (widget.memberToEdit != null &&
+                  m.id == widget.memberToEdit!.id) {
+                return false;
+              }
               return true;
             }).toList();
 
             final currentGen = int.tryParse(_generationController.text) ?? 1;
-            final currentGender = _selectedGender == 'Nam' ? Gender.male : Gender.female;
+            final currentGender = _selectedGender == 'Nam'
+                ? Gender.male
+                : Gender.female;
 
             // Parents filtering
             final parentItems = availableMembers.where((m) {
@@ -669,7 +686,8 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
             final spouseItems = availableMembers.where((m) {
               if (!_isSmartFilter) return true;
               // Spouse should be opposite gender (if known) and similar generation
-              bool genderMatch = m.gender != currentGender && m.gender != Gender.unknown;
+              bool genderMatch =
+                  m.gender != currentGender && m.gender != Gender.unknown;
               bool genMatch = m.generation == currentGen;
               return genderMatch && genMatch;
             }).toList();
@@ -698,14 +716,19 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                     final m = allMembers.firstWhere((m) => m.id == id);
                     return '${m.fullName} (Đời ${m.generation ?? "?"})';
                   },
-                  hint: parentItems.isEmpty ? 'Không tìm thấy người phù hợp' : 'Chọn người đời trước',
+                  hint: parentItems.isEmpty
+                      ? 'Không tìm thấy người phù hợp'
+                      : 'Chọn người đời trước',
                   onChanged: (val) {
                     setState(() {
                       _selectedParentId = val;
                       if (val != null) {
-                        final parent = allMembers.firstWhere((m) => m.id == val);
+                        final parent = allMembers.firstWhere(
+                          (m) => m.id == val,
+                        );
                         if (parent.generation != null) {
-                          _generationController.text = (parent.generation! + 1).toString();
+                          _generationController.text = (parent.generation! + 1)
+                              .toString();
                         }
                         if (parent.branchId != null) {
                           _selectedBranchId = parent.branchId;
@@ -724,7 +747,9 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                     final m = allMembers.firstWhere((m) => m.id == id);
                     return '${m.fullName} (Đời ${m.generation ?? "?"})';
                   },
-                  hint: spouseItems.isEmpty ? 'Không tìm thấy người phù hợp' : 'Chọn người phối ngẫu',
+                  hint: spouseItems.isEmpty
+                      ? 'Không tìm thấy người phù hợp'
+                      : 'Chọn người phối ngẫu',
                   onChanged: (val) => setState(() => _selectedSpouseId = val),
                 ),
                 if (branches.isNotEmpty) ...[
@@ -734,7 +759,8 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                   _buildDropdown<int>(
                     value: _selectedBranchId,
                     items: branches.map((b) => b.id).toList(),
-                    itemLabel: (id) => branches.firstWhere((m) => m.id == id).name,
+                    itemLabel: (id) =>
+                        branches.firstWhere((m) => m.id == id).name,
                     hint: 'Mặc định (Dòng họ chính)',
                     onChanged: (val) => setState(() => _selectedBranchId = val),
                   ),

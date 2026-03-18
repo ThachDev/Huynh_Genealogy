@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import '../bloc/language_bloc.dart';
 import '../bloc/language_event.dart';
 import '../bloc/language_state.dart';
@@ -16,7 +16,7 @@ class LanguageSelector extends StatelessWidget {
 
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.15),
+            color: Colors.grey.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
           ),
@@ -64,7 +64,7 @@ class LanguageSelector extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? AppColors.wood : Colors.white70,
+            color: isSelected ? AppColors.wood : AppColors.textSecondary,
             fontSize: 10,
             fontWeight: FontWeight.bold,
           ),

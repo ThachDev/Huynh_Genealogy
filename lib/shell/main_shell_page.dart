@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/di/injection_container.dart' as di;
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/core/di/injection_container.dart' as di;
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/family_dashboard_page.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/pages/tree_view_page.dart';
+import 'package:app_family_tree/features/events/presentation/pages/events_page.dart';
+import 'package:app_family_tree/features/settings/presentation/pages/settings_page.dart';
 
 class ShellIndexProvider extends InheritedWidget {
   final int currentIndex;
@@ -57,7 +59,12 @@ class _MainShellPageState extends State<MainShellPage> {
         currentIndex: _currentIndex,
         child: IndexedStack(
           index: _currentIndex,
-          children: const [FamilyDashboardPage(), TreeViewPage()],
+          children: const [
+            FamilyDashboardPage(),
+            TreeViewPage(),
+            EventsPage(),
+            SettingsPage(),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -139,13 +146,10 @@ class _MainShellPageState extends State<MainShellPage> {
                 child: Row(
                   children: [
                     _buildNavItem(context, 0, Icons.home_rounded, 'Trang chủ'),
-                    const SizedBox(width: 56),
-                    _buildNavItem(
-                      context,
-                      1,
-                      Icons.account_tree_rounded,
-                      'Sơ đồ',
-                    ),
+                    _buildNavItem(context, 1, Icons.account_tree_rounded, 'Sơ đồ'),
+                    const SizedBox(width: 48),
+                    _buildNavItem(context, 2, Icons.event_note_rounded, 'Sự kiện'),
+                    _buildNavItem(context, 3, Icons.menu_rounded, 'Menu'),
                   ],
                 ),
               ),

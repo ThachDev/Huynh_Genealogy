@@ -1,19 +1,19 @@
+import 'package:app_family_tree/core/di/injection_container.dart' as di;
+import 'package:app_family_tree/core/utils/member_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:app_family_tree/utils/member_utils.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
-import 'package:app_family_tree/di/injection_container.dart' as di;
 
 class BranchDetailPage extends StatefulWidget {
   final BranchEntity branch;
@@ -145,7 +145,10 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, BranchEntity stateBranch) {
+  PreferredSizeWidget _buildAppBar(
+    BuildContext context,
+    BranchEntity stateBranch,
+  ) {
     return AppBar(
       backgroundColor: AppColors.wood,
       elevation: 0,
@@ -196,9 +199,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
                   ),
                   BlocProvider.value(value: treeBloc),
                 ],
-                child: AddBranchDialog(
-                  branchToEdit: stateBranch,
-                ),
+                child: AddBranchDialog(branchToEdit: stateBranch),
               ),
             );
           },

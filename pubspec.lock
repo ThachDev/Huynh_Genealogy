@@ -688,7 +688,7 @@ packages:
   resources:
     dependency: "direct main"
     description:
-      path: "packages/resources"
+      path: "lib/resources"
       relative: true
     source: path
     version: "1.0.0"

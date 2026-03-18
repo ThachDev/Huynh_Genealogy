@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
@@ -65,7 +65,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
               constraints: const BoxConstraints(maxWidth: 500),
               child: Stack(
                 children: [
-                   // Decorative corner
+                  // Decorative corner
                   Positioned(
                     top: -20,
                     right: -20,
@@ -97,7 +97,10 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.park_rounded, color: AppColors.crimson),
+                            const Icon(
+                              Icons.park_rounded,
+                              color: AppColors.crimson,
+                            ),
                             const SizedBox(width: 12),
                             Text(
                               widget.branchToEdit != null
@@ -112,10 +115,17 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                             ),
                           ],
                         ),
-                        const Divider(height: 32, thickness: 1, color: AppColors.gold),
+                        const Divider(
+                          height: 32,
+                          thickness: 1,
+                          color: AppColors.gold,
+                        ),
 
                         _buildLabel('TÊN CHI TỘC'),
-                        _buildTextField(_nameController, hintText: 'Chi tộc Huỳnh Văn...'),
+                        _buildTextField(
+                          _nameController,
+                          hintText: 'Chi tộc Huỳnh Văn...',
+                        ),
                         const SizedBox(height: 16),
 
                         Row(
@@ -125,7 +135,10 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _buildLabel('NGƯỜI SÁNG LẬP'),
-                                  _buildTextField(_founderController, hintText: 'Tên cụ tổ...'),
+                                  _buildTextField(
+                                    _founderController,
+                                    hintText: 'Tên cụ tổ...',
+                                  ),
                                 ],
                               ),
                             ),
@@ -148,11 +161,18 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                         const SizedBox(height: 16),
 
                         _buildLabel('VÙNG MIỀN / ĐỊA DANH'),
-                        _buildTextField(_regionController, hintText: 'Quảng Ngãi, Bình Định...'),
+                        _buildTextField(
+                          _regionController,
+                          hintText: 'Quảng Ngãi, Bình Định...',
+                        ),
                         const SizedBox(height: 16),
 
                         _buildLabel('MÔ TẢ / TIỂU SỬ CHI TỘC'),
-                        _buildTextField(_descriptionController, hintText: 'Đôi nét về lịch sử chi tộc...', maxLines: 4),
+                        _buildTextField(
+                          _descriptionController,
+                          hintText: 'Đôi nét về lịch sử chi tộc...',
+                          maxLines: 4,
+                        ),
 
                         const SizedBox(height: 32),
                         Row(
@@ -161,32 +181,68 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                               child: OutlinedButton(
                                 onPressed: () => Navigator.pop(context),
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: AppColors.textSecondary),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  side: const BorderSide(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
-                                child: Text('HỦY', style: GoogleFonts.inter(color: AppColors.textSecondary, fontWeight: FontWeight.bold)),
+                                child: Text(
+                                  'HỦY',
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.textSecondary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: BlocBuilder<BranchFormBloc, BranchFormState>(
-                                builder: (context, state) {
-                                  final isSubmitting = state is BranchFormSubmitting;
-                                  return ElevatedButton(
-                                    onPressed: isSubmitting ? null : _submit,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.crimson,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                      elevation: 4,
-                                    ),
-                                    child: isSubmitting
-                                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                                        : Text('LƯU LẠI', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
-                                  );
-                                },
-                              ),
+                              child:
+                                  BlocBuilder<BranchFormBloc, BranchFormState>(
+                                    builder: (context, state) {
+                                      final isSubmitting =
+                                          state is BranchFormSubmitting;
+                                      return ElevatedButton(
+                                        onPressed: isSubmitting
+                                            ? null
+                                            : _submit,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.crimson,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          elevation: 4,
+                                        ),
+                                        child: isSubmitting
+                                            ? const SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      color: Colors.white,
+                                                      strokeWidth: 2,
+                                                    ),
+                                              )
+                                            : Text(
+                                                'LƯU LẠI',
+                                                style: GoogleFonts.inter(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                      );
+                                    },
+                                  ),
                             ),
                           ],
                         ),
@@ -213,10 +269,14 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
     final branch = BranchEntity(
       id: widget.branchToEdit?.id ?? 0,
       name: _nameController.text,
-      founderName: _founderController.text.isNotEmpty ? _founderController.text : null,
+      founderName: _founderController.text.isNotEmpty
+          ? _founderController.text
+          : null,
       foundingYear: int.tryParse(_yearController.text),
       region: _regionController.text.isNotEmpty ? _regionController.text : null,
-      description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+      description: _descriptionController.text.isNotEmpty
+          ? _descriptionController.text
+          : null,
     );
 
     context.read<BranchFormBloc>().add(SubmitBranchFormEvent(branch));
@@ -250,7 +310,10 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
       style: GoogleFonts.inter(fontSize: 14),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: GoogleFonts.inter(color: Colors.grey.withValues(alpha: 0.5), fontSize: 13),
+        hintStyle: GoogleFonts.inter(
+          color: Colors.grey.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -276,8 +339,8 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
       pageBuilder: (context, anim1, anim2) {
         Future.delayed(const Duration(milliseconds: 1500), () {
           if (context.mounted) {
-             Navigator.of(context).pop(); // Close Success
-             Navigator.of(context).pop(); // Close Form
+            Navigator.of(context).pop(); // Close Success
+            Navigator.of(context).pop(); // Close Form
           }
         });
 
@@ -295,7 +358,11 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.check_circle_rounded, color: Colors.green, size: 64),
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.green,
+                    size: 64,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'LƯU THÀNH CÔNG!',

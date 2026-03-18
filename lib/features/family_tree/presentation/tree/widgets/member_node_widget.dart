@@ -1,8 +1,9 @@
+import 'package:app_family_tree/core/utils/member_utils.dart'
+    show MemberImageExtension;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app_family_tree/resource/app_theme.dart';
+import 'package:app_family_tree/app/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
-import 'package:app_family_tree/utils/member_utils.dart';
 
 class MemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
@@ -104,7 +105,9 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
                             : Colors.white,
                         image: widget.member.fullAvatarUrl != null
                             ? DecorationImage(
-                                image: NetworkImage(widget.member.fullAvatarUrl!),
+                                image: NetworkImage(
+                                  widget.member.fullAvatarUrl!,
+                                ),
                                 fit: BoxFit.cover,
                               )
                             : null,

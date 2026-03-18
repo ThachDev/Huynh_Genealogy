@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import '../../features/family_tree/presentation/dashboard/pages/main_shell_page.dart';
+import '../../shell/main_shell_page.dart';
 import '../../features/family_tree/presentation/member/pages/member_detail_page.dart';
 import '../../features/family_tree/presentation/member/pages/member_list_page.dart';
 import '../../features/family_tree/presentation/branch/pages/branch_list_page.dart';

@@ -11,7 +11,7 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - "packages/resources/lib/src/generated/**"
+    - "lib/resources/lib/src/generated/**"
 
 
 linter:

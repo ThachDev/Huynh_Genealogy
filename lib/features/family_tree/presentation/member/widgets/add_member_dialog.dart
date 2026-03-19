@@ -14,6 +14,7 @@ import 'package:app_family_tree/components/input/common_dropdown.dart';
 import 'package:app_family_tree/components/dialog/common_dialog_container.dart';
 import 'package:app_family_tree/components/dialog/success_dialog.dart';
 import 'package:app_family_tree/components/button/common_buttons.dart';
+import 'package:resources/resources.dart';
 
 class AddMemberDialog extends StatefulWidget {
   final int? initialParentId;
@@ -48,13 +49,16 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
   String _selectedGender = 'Nam';
   String _selectedMaritalStatus = 'unknown';
 
-  final Map<String, String> _maritalStatusMap = {
-    'single': 'Độc thân',
-    'married': 'Đã kết hôn',
-    'divorced': 'Ly hôn',
-    'widowed': 'Góa',
-    'unknown': 'Không rõ',
-  };
+  Map<String, String> get _maritalStatusMap {
+    final l10n = S.of(context);
+    return {
+      'single': l10n.maritalSingle,
+      'married': l10n.maritalMarried,
+      'divorced': l10n.maritalDivorced,
+      'widowed': l10n.maritalWidowed,
+      'unknown': l10n.maritalUnknown,
+    };
+  }
 
   int? _selectedParentId;
   int? _selectedSpouseId;
@@ -157,8 +161,10 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         if (state is MemberFormSuccess) {
           SuccessDialog.show(
             context,
-            title: 'LƯU THÀNH CÔNG!',
-            message: 'Đã lưu thông tin thành viên ${state.member.fullName}.',
+            title: S.of(context).saveSuccessTitle,
+            message: S
+                .of(context)
+                .saveMemberSuccessMessage(state.member.fullName),
           );
           context.read<TreeBloc>().add(LoadTreeEvent(force: true));
         } else if (state is MemberFormError) {
@@ -172,10 +178,11 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
       },
       child: CommonDialogContainer(
         title: widget.memberToEdit != null
-            ? 'CHỈNH SỬA THÀNH VIÊN'
-            : 'THÊM THÀNH VIÊN',
-        icon: Icons.person_add_rounded,
-        statusLabel: widget.memberToEdit != null ? 'SỬA' : 'MỚI',
+            ? S.of(context).editMemberTitle
+            : S.of(context).addMemberTitle,
+        statusLabel: widget.memberToEdit != null
+            ? S.of(context).statusEdit
+            : S.of(context).statusNew,
         isDesktop: isDesktop,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -211,9 +218,9 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildAvatarPicker(),
+        _buildAvatarPicker(S.of(context)),
         const SizedBox(height: 24),
-        const SectionLabel('HỌ VÀ TÊN'),
+        SectionLabel(S.of(context).fullNameLabel),
         CommonTextField(controller: _nameController, hintText: 'Nguyễn Văn A'),
         const SizedBox(height: 20),
         Row(
@@ -222,10 +229,10 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionLabel('GIỚI TÍNH'),
+                  SectionLabel(S.of(context).genderLabel),
                   CommonDropdown<String>(
                     value: _selectedGender,
-                    items: const ['Nam', 'Nữ'],
+                    items: [S.of(context).male, S.of(context).female],
                     onChanged: (val) {
                       if (val != null) setState(() => _selectedGender = val);
                     },
@@ -238,7 +245,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionLabel('ĐỜI THỨ'),
+                  SectionLabel(S.of(context).generationLabel),
                   CommonTextField(
                     controller: _generationController,
                     keyboardType: TextInputType.number,
@@ -255,7 +262,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionLabel('NGÀY SINH'),
+                  SectionLabel(S.of(context).dobLabel),
                   CommonTextField(
                     controller: _dobController,
                     hintText: 'dd/mm/yyyy',
@@ -271,7 +278,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionLabel('NGÀY MẤT'),
+                  SectionLabel(S.of(context).dodLabel),
                   CommonTextField(
                     controller: _dodController,
                     hintText: 'dd/mm/yyyy',
@@ -292,13 +299,13 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SectionLabel('QUÊ QUÁN'),
+        SectionLabel(S.of(context).birthPlaceLabel),
         CommonTextField(
           controller: _placeOfBirthController,
           hintText: 'Gia Lai, Việt Nam',
         ),
         const SizedBox(height: 20),
-        const SectionLabel('HÔN NHÂN'),
+        SectionLabel(S.of(context).maritalStatusLabel),
         CommonDropdown<String>(
           value: _selectedMaritalStatus,
           items: _maritalStatusMap.keys.toList(),
@@ -310,17 +317,17 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         const SizedBox(height: 20),
         _buildRelationSelectors(),
         const SizedBox(height: 20),
-        const SectionLabel('GHI CHÚ / TIỂU SỬ'),
+        SectionLabel(S.of(context).notesLabel),
         CommonTextField(
           controller: _noteController,
           maxLines: 5,
-          hintText: 'Thông tin thêm...',
+          hintText: '${S.of(context).aboutCopyrightTitle}...',
         ),
       ],
     );
   }
 
-  Widget _buildAvatarPicker() {
+  Widget _buildAvatarPicker(S l10n) {
     return Center(
       child: GestureDetector(
         onTap: _pickImage,
@@ -346,9 +353,9 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                     ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'CHỌN ẢNH CHÂN DUNG',
-              style: TextStyle(
+            Text(
+              l10n.pickAvatarLabel,
+              style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
                 color: AppColors.crimson,
@@ -373,7 +380,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionLabel('CHA / MẸ (Người trực hệ)'),
+            SectionLabel(S.of(context).parentRelationLabel),
             CommonDropdown<int>(
               value: _selectedParentId,
               items: allMembers
@@ -382,11 +389,11 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                   .toList(),
               itemLabel: (id) =>
                   allMembers.firstWhere((m) => m.id == id).fullName,
-              hint: 'Chọn người đời trước',
+              hint: S.of(context).parentDropdownHint,
               onChanged: (val) => setState(() => _selectedParentId = val),
             ),
             const SizedBox(height: 20),
-            const SectionLabel('VỢ / CHỒNG'),
+            SectionLabel(S.of(context).spouseRelationLabel),
             CommonDropdown<int>(
               value: _selectedSpouseId,
               items: allMembers
@@ -395,17 +402,17 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                   .toList(),
               itemLabel: (id) =>
                   allMembers.firstWhere((m) => m.id == id).fullName,
-              hint: 'Chọn người phối ngẫu',
+              hint: S.of(context).spouseDropdownHint,
               onChanged: (val) => setState(() => _selectedSpouseId = val),
             ),
             if (branches.isNotEmpty) ...[
               const SizedBox(height: 20),
-              const SectionLabel('CHI / NHÁNH GIA PHẢ'),
+              SectionLabel(S.of(context).branchRelationLabel),
               CommonDropdown<int>(
                 value: _selectedBranchId,
                 items: branches.map((b) => b.id).toList(),
                 itemLabel: (id) => branches.firstWhere((b) => b.id == id).name,
-                hint: 'Dòng họ chính',
+                hint: S.of(context).branchDropdownHint,
                 onChanged: (val) => setState(() => _selectedBranchId = val),
               ),
             ],
@@ -420,13 +427,13 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         SecondaryButton(
-          text: 'HỦY BỎ',
+          text: S.of(context).cancelButton,
           onPressed: () => Navigator.of(context).pop(),
         ),
         const SizedBox(width: 16),
         BlocBuilder<MemberFormBloc, MemberFormState>(
           builder: (context, state) => PrimaryButton(
-            text: 'LƯU THÔNG TIN',
+            text: S.of(context).saveButton,
             isLoading: state is MemberFormSubmitting,
             onPressed: _submit,
           ),
@@ -439,7 +446,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Vui lòng nhập họ tên')));
+      ).showSnackBar(SnackBar(content: Text(S.of(context).errorEnterName)));
       return;
     }
 

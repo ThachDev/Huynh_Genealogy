@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
+import 'package:resources/resources.dart';
 
 class BranchListPage extends StatefulWidget {
   const BranchListPage({super.key});
@@ -35,7 +36,7 @@ class _BranchListPageState extends State<BranchListPage> {
     return Scaffold(
       backgroundColor: AppColors.parchment,
       appBar: CommonAppBar(
-        titleText: 'DANH SÁCH CHI TỘC',
+        titleText: S.of(context).branchListTitle,
         isSearching: _isSearching,
         searchController: _searchController,
         onSearchChanged: (val) => setState(() => _searchQuery = val),
@@ -79,8 +80,8 @@ class _BranchListPageState extends State<BranchListPage> {
                     const SizedBox(height: 16),
                     Text(
                       _searchQuery.isEmpty
-                          ? 'Chưa có dữ liệu chi tộc'
-                          : 'Không tìm thấy chi tộc phù hợp',
+                          ? S.of(context).noBranchData
+                          : S.of(context).branchNotFound,
                       style: GoogleFonts.inter(color: AppColors.textSecondary),
                     ),
                   ],

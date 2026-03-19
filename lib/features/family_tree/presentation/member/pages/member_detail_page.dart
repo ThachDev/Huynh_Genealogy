@@ -6,12 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/member_detail_skeleton.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
-import 'package:app_family_tree/components/search/member_search_overlay.dart';
+import 'package:app_family_tree/components/dialog/delete_confirm_dialog.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,126 +26,166 @@ class MemberDetailPage extends StatefulWidget {
 }
 
 class _MemberDetailPageState extends State<MemberDetailPage> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-  bool _isSearching = false;
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final l10n = S.of(context);
-    return BlocBuilder<TreeBloc, TreeState>(
-      builder: (context, state) {
-        final member = state is TreeLoaded
-            ? state.allMembers.firstWhere(
-                (m) => m.id == widget.member.id,
-                orElse: () => widget.member,
-              )
-            : widget.member;
-
-        return Scaffold(
-          backgroundColor: AppColors.parchment,
-          appBar: CommonAppBar(
-            titleText: member.fullName,
-            isSearching: _isSearching,
-            searchController: _searchController,
-            searchHint: l10n.searchHint,
-            onSearchChanged: (val) => setState(() => _searchQuery = val),
-            onSearchToggle: () => setState(() => _isSearching = true),
-            onSearchClear: () {
-              _searchController.clear();
-              setState(() {
-                _searchQuery = '';
-                _isSearching = false;
-              });
-            },
-            actions: [
-              IconButton(
-                icon: const Icon(
-                  Icons.edit_note_rounded,
-                  color: AppColors.gold,
-                ),
-                onPressed: () {
-                  final treeBloc = context.read<TreeBloc>();
-                  showDialog(
-                    context: context,
-                    barrierColor: Colors.black.withValues(alpha: 0.6),
-                    builder: (ctx) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider<MemberFormBloc>(
-                          create: (_) => di.sl<MemberFormBloc>(),
-                        ),
-                        BlocProvider.value(value: treeBloc),
-                      ],
-                      child: AddMemberDialog(memberToEdit: member),
-                    ),
-                  );
-                },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MemberFormBloc>(
+          create: (context) => di.sl<MemberFormBloc>(),
+        ),
+      ],
+      child: BlocListener<MemberFormBloc, MemberFormState>(
+        listener: (context, state) {
+          if (state is MemberFormSuccess && state.isDeleted) {
+            context.read<TreeBloc>().add(LoadTreeEvent(force: true));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(S.of(context).deleteMemberSuccess),
+                backgroundColor: Colors.green,
               ),
-            ],
-          ),
-          body: Stack(
-            children: [
-              state is TreeLoading || state is TreeInitial
-                  ? const MemberDetailSkeleton()
-                  : AnimationConfiguration.synchronized(
-                      child: SlideAnimation(
-                        verticalOffset: 30.0,
-                        child: FadeInAnimation(
-                          child: CustomScrollView(
-                            slivers: [
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: _buildHeader(member),
+            );
+            Navigator.of(context).pop();
+          } else if (state is MemberFormError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Lỗi: ${state.message}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<TreeBloc, TreeState>(
+          builder: (context, state) {
+            final member =
+                state is TreeLoaded
+                    ? state.allMembers.firstWhere(
+                      (m) => m.id == widget.member.id,
+                      orElse: () => widget.member,
+                    )
+                    : widget.member;
+
+            return Scaffold(
+              backgroundColor: AppColors.parchment,
+              appBar: CommonAppBar(
+                titleText: member.fullName,
+                actions: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.edit_note_rounded,
+                      color: AppColors.gold,
+                    ),
+                    onPressed: () {
+                      final treeBloc = context.read<TreeBloc>();
+                      showDialog(
+                        context: context,
+                        barrierColor: Colors.black.withValues(alpha: 0.6),
+                        builder:
+                            (ctx) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider<MemberFormBloc>(
+                                  create: (_) => di.sl<MemberFormBloc>(),
                                 ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
+                                BlocProvider.value(value: treeBloc),
+                              ],
+                              child: AddMemberDialog(memberToEdit: member),
+                            ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              body:
+                  state is TreeLoading || state is TreeInitial
+                      ? const MemberDetailSkeleton()
+                      : AnimationConfiguration.synchronized(
+                        child: SlideAnimation(
+                          verticalOffset: 30.0,
+                          child: FadeInAnimation(
+                            child: CustomScrollView(
+                              slivers: [
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: _buildHeader(member),
                                   ),
-                                  child: _buildMainInfo(member),
                                 ),
-                              ),
-                              const SliverPadding(
-                                padding: EdgeInsets.only(bottom: 32),
-                              ),
-                            ],
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: _buildMainInfo(member),
+                                  ),
+                                ),
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: _buildDeleteButton(context, member),
+                                  ),
+                                ),
+                                const SliverPadding(
+                                  padding: EdgeInsets.only(bottom: 32),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-              MemberSearchOverlay(
-                searchQuery: _searchQuery,
-                allMembers: state is TreeLoaded ? state.allMembers : [],
-                onMemberTap: (m) {
-                  _searchController.clear();
-                  setState(() {
-                    _searchQuery = '';
-                    _isSearching = false;
-                  });
-                  context.pushReplacement('/members/${m.id}', extra: m);
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton(BuildContext context, MemberEntity member) {
+    return BlocBuilder<MemberFormBloc, MemberFormState>(
+      builder: (context, state) {
+        return OutlinedButton.icon(
+          onPressed: state is MemberFormLoading
+              ? null
+              : () async {
+                  final confirm = await showDeleteConfirmDialog(
+                    context: context,
+                    title: S.of(context).confirmDelete,
+                    content: S.of(context).confirmDeleteContent(member.fullName),
+                  );
+                  if (confirm == true && context.mounted) {
+                    context.read<MemberFormBloc>().add(
+                      DeleteMemberFormEvent(member.id),
+                    );
+                  }
                 },
-                onClose: () {
-                  _searchController.clear();
-                  setState(() {
-                    _searchQuery = '';
-                    _isSearching = false;
-                  });
-                },
-              ),
-            ],
+          icon: state is MemberFormLoading
+              ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.crimson,
+                ),
+              )
+              : const Icon(Icons.delete_outline, color: AppColors.crimson),
+          label: Text(
+            S.of(context).deleteMemberButton,
+            style: GoogleFonts.inter(
+              color: AppColors.crimson,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+            ),
+          ),
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            side: const BorderSide(color: AppColors.crimson, width: 1.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       },
     );
   }
+
 
   Widget _buildHeader(MemberEntity member) {
     return Column(
@@ -211,7 +250,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
           ),
           child: Text(
-            'Đời thứ ${member.generation ?? "?"}',
+            S.of(context).generationLabelShort(member.generation?.toString() ?? "?"),
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.bold,
@@ -237,32 +276,32 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           children: [
             _buildInfoRow(
               Icons.account_tree_outlined,
-              'Chi tộc',
+              S.of(context).branch,
               member.branchName ?? 'Họ Huỳnh',
             ),
             const Divider(height: 32),
             _buildInfoRow(
               Icons.cake_outlined,
-              'Ngày sinh',
-              member.dateOfBirth ?? 'Chưa rõ',
+              S.of(context).dobLabel,
+              member.dateOfBirth ?? S.of(context).maritalUnknown,
             ),
             const Divider(height: 32),
             _buildInfoRow(
               Icons.favorite_border,
-              'Trạng thái',
-              member.isAlive ? 'Còn sống' : 'Đã mất',
+              S.of(context).legend,
+              member.isAlive ? S.of(context).stillAlive : S.of(context).deceased,
             ),
             if (!member.isAlive && member.dateOfDeath != null) ...[
               const Divider(height: 32),
               _buildInfoRow(
                 Icons.event_available,
-                'Ngày mất',
+                S.of(context).dodLabel,
                 member.dateOfDeath!,
               ),
             ],
             if (member.notes != null) ...[
               const Divider(height: 32),
-              _buildInfoRow(Icons.notes_outlined, 'Ghi chú', member.notes!),
+              _buildInfoRow(Icons.notes_outlined, S.of(context).notesLabel, member.notes!),
             ],
           ],
         ),

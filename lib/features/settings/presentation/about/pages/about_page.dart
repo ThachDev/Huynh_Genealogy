@@ -3,15 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
+import 'package:resources/resources.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: const CommonAppBar(titleText: 'VỀ ỨNG DỤNG', centerTitle: true),
+      appBar: CommonAppBar(titleText: l10n.aboutTitle, centerTitle: true),
       body: Stack(
         children: [
           const Positioned.fill(
@@ -23,7 +25,7 @@ class AboutPage extends StatelessWidget {
               children: [
                 const SizedBox(height: 15),
                 Text(
-                  'Gia Phả Họ Huỳnh',
+                  l10n.aboutAppName,
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -33,7 +35,7 @@ class AboutPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '"Cây có gốc mới nở ngành xanh ngọn,\nNước có nguồn mới bể rộng sông sâu"',
+                  l10n.aboutMotto,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 16,
@@ -57,27 +59,27 @@ class AboutPage extends StatelessWidget {
                     children: [
                       _buildInfoRow(
                         Icons.history_edu,
-                        'Về ứng dụng',
-                        'Ứng dụng được tạo ra nhằm lưu giữ, kết nối và phát huy truyền thống của dòng họ, giúp con cháu hiểu rõ cội nguồn và gìn giữ giá trị gia đình qua nhiều thế hệ.',
+                        l10n.aboutDescriptionTitle,
+                        l10n.aboutDescriptionContent,
                       ),
                       const Divider(height: 32),
                       _buildInfoRow(
                         Icons.developer_mode,
-                        'Tâm huyết thực hiện',
-                        'Được xây dựng bởi con cháu trong dòng họ với mong muốn lưu giữ những ký ức, câu chuyện và giá trị tốt đẹp của gia đình.',
+                        l10n.aboutDedicationTitle,
+                        l10n.aboutDedicationContent,
                       ),
                       const Divider(height: 32),
                       _buildInfoRow(
                         Icons.copyright,
-                        'Ghi chú',
-                        '© 2026 Gia phả họ Huỳnh. Lưu hành nội bộ.',
+                        l10n.aboutCopyrightTitle,
+                        l10n.aboutCopyrightContent,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  'Phiên bản 1.0.0',
+                  l10n.aboutVersion('1.0.0'),
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     color: AppColors.textSecondary,

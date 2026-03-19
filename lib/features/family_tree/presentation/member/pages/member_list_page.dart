@@ -10,11 +10,11 @@ import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/add_member_dialog.dart';
 import 'package:app_family_tree/features/family_tree/presentation/member/widgets/member_list_skeleton.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
+import 'package:resources/resources.dart';
 
 class MemberListPage extends StatefulWidget {
   const MemberListPage({super.key});
@@ -26,7 +26,7 @@ class MemberListPage extends StatefulWidget {
 class _MemberListPageState extends State<MemberListPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _selectedGender = 'Tất cả';
+  String? _selectedGender;
   bool _isSearching = false;
 
   @override
@@ -40,7 +40,7 @@ class _MemberListPageState extends State<MemberListPage> {
     return Scaffold(
       backgroundColor: AppColors.parchment,
       appBar: CommonAppBar(
-        titleText: 'DANH SÁCH THÀNH VIÊN',
+        titleText: S.of(context).memberListTitle,
         isSearching: _isSearching,
         searchController: _searchController,
         onSearchChanged: (val) => setState(() => _searchQuery = val),
@@ -53,7 +53,7 @@ class _MemberListPageState extends State<MemberListPage> {
           });
         },
         onFilterToggle: _showFilterMenu,
-        isFilterActive: _selectedGender != 'Tất cả',
+        isFilterActive: _selectedGender != null,
         actions: const [],
       ),
       body: BlocBuilder<TreeBloc, TreeState>(
@@ -71,9 +71,9 @@ class _MemberListPageState extends State<MemberListPage> {
                     _searchQuery.toLowerCase(),
                   );
                   final matchesGender =
-                      _selectedGender == 'Tất cả' ||
-                      (_selectedGender == 'Nam' && m.gender == Gender.male) ||
-                      (_selectedGender == 'Nữ' && m.gender == Gender.female);
+                      _selectedGender == null ||
+                      (_selectedGender == S.of(context).male && m.gender == Gender.male) ||
+                      (_selectedGender == S.of(context).female && m.gender == Gender.female);
                   return matchesSearch && matchesGender;
                 }).toList()..sort((a, b) {
                   final genComp = (a.generation ?? 0).compareTo(
@@ -86,7 +86,7 @@ class _MemberListPageState extends State<MemberListPage> {
             if (filteredMembers.isEmpty) {
               return Center(
                 child: Text(
-                  'Chưa có dữ liệu thành viên',
+                  S.of(context).noMemberData,
                   style: GoogleFonts.inter(color: AppColors.textSecondary),
                 ),
               );
@@ -106,7 +106,7 @@ class _MemberListPageState extends State<MemberListPage> {
                       child: FadeInAnimation(
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 12),
-                          child: _buildSlidableMemberTile(context, member),
+                          child: _buildMemberTile(context, member),
                         ),
                       ),
                     ),
@@ -160,7 +160,7 @@ class _MemberListPageState extends State<MemberListPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'CHỌN GIỚI TÍNH',
+              S.of(context).selectGenderTitle,
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -168,138 +168,33 @@ class _MemberListPageState extends State<MemberListPage> {
               ),
             ),
             const Divider(),
-            _buildFilterOption('Tất cả', Icons.all_inclusive),
-            _buildFilterOption('Nam', Icons.male_rounded),
-            _buildFilterOption('Nữ', Icons.female_rounded),
+            _buildFilterOption(null, Icons.all_inclusive, S.of(context).all),
+            _buildFilterOption(S.of(context).male, Icons.male_rounded, S.of(context).male),
+            _buildFilterOption(S.of(context).female, Icons.female_rounded, S.of(context).female),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFilterOption(String label, IconData icon) {
+  Widget _buildFilterOption(String? value, IconData icon, String label) {
     return ListTile(
       leading: Icon(icon, color: AppColors.crimson),
       title: Text(
         label,
         style: GoogleFonts.inter(
-          fontWeight: _selectedGender == label
-              ? FontWeight.bold
-              : FontWeight.normal,
         ),
       ),
-      trailing: _selectedGender == label
+      trailing: _selectedGender == value
           ? const Icon(Icons.check, color: AppColors.crimson)
           : null,
       onTap: () {
-        setState(() => _selectedGender = label);
+        setState(() => _selectedGender = value);
         Navigator.pop(context);
       },
     );
   }
 
-  Widget _buildSlidableMemberTile(BuildContext context, MemberEntity m) {
-    return BlocProvider(
-      create: (context) => di.sl<MemberFormBloc>(),
-      child: BlocListener<MemberFormBloc, MemberFormState>(
-        listener: (context, state) {
-          if (state is MemberFormSuccess && state.isDeleted) {
-            context.read<TreeBloc>().add(LoadTreeEvent(force: true));
-          } else if (state is MemberFormError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Lỗi: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
-        child: Builder(
-          builder: (context) => Slidable(
-            key: Key('member_list_${m.id}'),
-            endActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              extentRatio: 0.22,
-              children: [
-                CustomSlidableAction(
-                  onPressed: (_) async {
-                    final confirm = await _showDeleteConfirmDialog(
-                      context,
-                      m.fullName,
-                    );
-                    if (confirm == true && context.mounted) {
-                      context.read<MemberFormBloc>().add(
-                        DeleteMemberFormEvent(m.id),
-                      );
-                    }
-                  },
-                  backgroundColor: AppColors.parchment,
-                  foregroundColor: Colors.white,
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.redAccent,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(Icons.delete_outline, size: 28),
-                  ),
-                ),
-              ],
-            ),
-            child: _buildMemberTile(context, m),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<bool?> _showDeleteConfirmDialog(BuildContext context, String name) {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.parchment,
-        title: Text(
-          'Xác nhận xóa',
-          style: GoogleFonts.playfairDisplay(
-            fontWeight: FontWeight.bold,
-            color: AppColors.crimson,
-          ),
-        ),
-        content: Text(
-          'Bạn có chắc muốn xóa thành viên $name khỏi gia phả không?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text(
-              'Hủy',
-              style: TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson),
-            child: const Text(
-              'Xóa ngay',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildMemberTile(BuildContext context, MemberEntity m) {
     return Card(
@@ -340,7 +235,7 @@ class _MemberListPageState extends State<MemberListPage> {
           style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 15),
         ),
         subtitle: Text(
-          'Đời ${m.generation ?? "?"} • ${m.branchName ?? "Họ Huỳnh"} • ${m.isAlive ? "Còn sống" : "Đã mất"}',
+          '${S.of(context).generation} ${m.generation ?? "?"} • ${m.branchName ?? "Họ Huỳnh"} • ${m.isAlive ? S.of(context).stillAlive : S.of(context).deceased}',
           style: GoogleFonts.inter(
             fontSize: 12,
             color: AppColors.textSecondary,

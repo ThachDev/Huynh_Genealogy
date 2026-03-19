@@ -3,16 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
+import 'package:resources/resources.dart';
 
 class SecurityPolicyPage extends StatelessWidget {
   const SecurityPolicyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: const CommonAppBar(
-        titleText: 'Chính sách bảo mật',
+      appBar: CommonAppBar(
+        titleText: l10n.securityTitle,
         centerTitle: true,
       ),
       body: Stack(
@@ -26,33 +28,33 @@ class SecurityPolicyPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildPolicySection(
-                  '1. Thông tin được lưu trữ',
-                  'Ứng dụng lưu giữ các thông tin cơ bản của thành viên trong dòng họ như: Họ tên, giới tính, ngày sinh, ngày mất và mối quan hệ gia đình nhằm phục vụ việc xây dựng và duy trì gia phả.',
+                  l10n.securityPart1Title,
+                  l10n.securityPart1Content,
                 ),
                 const SizedBox(height: 24),
                 _buildPolicySection(
-                  '2. Mục đích sử dụng',
-                  'Toàn bộ thông tin chỉ được sử dụng trong phạm vi nội bộ dòng họ, nhằm giúp con cháu theo dõi phả hệ, kết nối các thế hệ và gìn giữ truyền thống gia đình. Không sử dụng cho mục đích thương mại.',
+                  l10n.securityPart2Title,
+                  l10n.securityPart2Content,
                 ),
                 const SizedBox(height: 24),
                 _buildPolicySection(
-                  '3. Bảo quản thông tin',
-                  'Dữ liệu gia phả được lưu trữ cẩn thận và chỉ những người được tin cậy trong dòng họ mới có quyền cập nhật hoặc chỉnh sửa thông tin.',
+                  l10n.securityPart3Title,
+                  l10n.securityPart3Content,
                 ),
                 const SizedBox(height: 24),
                 _buildPolicySection(
-                  '4. Quyền của thành viên',
-                  'Mỗi thành viên có thể đề nghị bổ sung hoặc điều chỉnh thông tin của bản thân và người thân thông qua người quản lý gia phả của dòng họ.',
+                  l10n.securityPart4Title,
+                  l10n.securityPart4Content,
                 ),
                 const SizedBox(height: 24),
                 _buildPolicySection(
-                  '5. Cập nhật nội dung',
-                  'Thông tin và nội dung trong ứng dụng có thể được cập nhật theo thời gian để đảm bảo chính xác và đầy đủ hơn, và sẽ được thông báo đến các thành viên khi cần thiết.',
+                  l10n.securityPart5Title,
+                  l10n.securityPart5Content,
                 ),
                 const SizedBox(height: 40),
                 Center(
                   child: Text(
-                    'Cập nhật lần cuối: Tháng 3, 2026',
+                    l10n.securityLastUpdate('Tháng 3, 2026'),
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       fontStyle: FontStyle.italic,

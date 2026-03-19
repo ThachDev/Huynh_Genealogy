@@ -16,6 +16,7 @@ import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/br
 import 'package:app_family_tree/features/family_tree/presentation/branch/widgets/add_branch_dialog.dart';
 import 'package:app_family_tree/components/search/member_search_overlay.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
+import 'package:app_family_tree/components/dialog/delete_confirm_dialog.dart';
 import 'package:resources/resources.dart';
 
 class BranchDetailPage extends StatefulWidget {
@@ -104,13 +105,13 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: _buildBranchInfo(stateBranch),
+                    child: _buildBranchInfo(stateBranch, l10n),
                   ),
-                  _buildSectionHeader(members.length),
+                  _buildSectionHeader(members.length, l10n),
                   if (members.isEmpty)
-                    _buildEmptyState()
+                    _buildEmptyState(l10n)
                   else
-                    _buildMemberList(members),
+                    _buildMemberList(members, l10n),
                   const SizedBox(height: 32),
                 ],
               ),
@@ -140,7 +141,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  Widget _buildSectionHeader(int count) {
+  Widget _buildSectionHeader(int count, S l10n) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Row(
@@ -148,7 +149,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
           Container(width: 4, height: 18, color: AppColors.crimson),
           const SizedBox(width: 10),
           Text(
-            'DANH SÁCH THÀNH VIÊN',
+            l10n.memberListTitle,
             style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.bold,
@@ -158,7 +159,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
           ),
           const Spacer(),
           Text(
-            '$count người',
+            l10n.countPeople(count),
             style: GoogleFonts.inter(
               fontSize: 12,
               color: AppColors.textSecondary,
@@ -193,19 +194,19 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(S l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 100),
       child: Center(
         child: Text(
-          'Chưa có thành viên trong chi tộc này',
+          l10n.noMemberInBranch,
           style: GoogleFonts.inter(color: AppColors.textSecondary),
         ),
       ),
     );
   }
 
-  Widget _buildMemberList(List<MemberEntity> members) {
+  Widget _buildMemberList(List<MemberEntity> members, S l10n) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -221,7 +222,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
             child: FadeInAnimation(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _buildSlidableMemberTile(context, member),
+                child: _buildSlidableMemberTile(context, member, l10n),
               ),
             ),
           ),
@@ -230,7 +231,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  Widget _buildBranchInfo(BranchEntity branch) {
+  Widget _buildBranchInfo(BranchEntity branch, S l10n) {
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -245,24 +246,24 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
           children: [
             _buildInfoRow(
               Icons.person,
-              'Người sáng lập',
-              branch.founderName ?? 'Chưa rõ',
+              l10n.branchFounderLabel,
+              branch.founderName ?? l10n.generalUnknown,
             ),
             const Divider(height: 24),
             _buildInfoRow(
               Icons.calendar_today,
-              'Năm thành lập',
-              branch.foundingYear?.toString() ?? 'Chưa rõ',
+              l10n.branchYearLabel,
+              branch.foundingYear?.toString() ?? l10n.generalUnknown,
             ),
             const Divider(height: 24),
             _buildInfoRow(
               Icons.location_on,
-              'Vùng miền',
-              branch.region ?? 'Chưa rõ',
+              l10n.branchRegionLabel,
+              branch.region ?? l10n.generalUnknown,
             ),
             const Divider(height: 24),
             Text(
-              'Mô tả',
+              l10n.descriptionLabel,
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -271,7 +272,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              branch.description ?? 'Chưa có mô tả cho chi tộc này.',
+              branch.description ?? l10n.noBranchDescription,
               style: GoogleFonts.inter(
                 fontSize: 14,
                 color: AppColors.textPrimary,
@@ -313,7 +314,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  Widget _buildSlidableMemberTile(BuildContext context, MemberEntity m) {
+  Widget _buildSlidableMemberTile(BuildContext context, MemberEntity m, S l10n) {
     return BlocProvider(
       create: (context) => di.sl<MemberFormBloc>(),
       child: BlocListener<MemberFormBloc, MemberFormState>(
@@ -338,9 +339,10 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
               children: [
                 CustomSlidableAction(
                   onPressed: (_) async {
-                    final confirm = await _showDeleteConfirmDialog(
-                      context,
-                      m.fullName,
+                    final confirm = await showDeleteConfirmDialog(
+                      context: context,
+                      title: l10n.confirmDelete,
+                      content: l10n.confirmDeleteContent(m.fullName),
                     );
                     if (confirm == true && context.mounted) {
                       context.read<MemberFormBloc>().add(
@@ -373,14 +375,14 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
                 ),
               ],
             ),
-            child: _buildMemberTile(context, m),
+            child: _buildMemberTile(context, m, l10n),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildMemberTile(BuildContext context, MemberEntity m) {
+  Widget _buildMemberTile(BuildContext context, MemberEntity m, S l10n) {
     return Card(
       elevation: 2,
       shadowColor: Colors.black12,
@@ -419,7 +421,7 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
           style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 15),
         ),
         subtitle: Text(
-          'Đời ${m.generation ?? "?"} • ${m.isAlive ? "Còn sống" : "Đã mất"}',
+          '${l10n.generation} ${m.generation ?? "?"} • ${m.isAlive ? l10n.stillAlive : l10n.deceased}',
           style: GoogleFonts.inter(
             fontSize: 12,
             color: AppColors.textSecondary,
@@ -431,39 +433,4 @@ class _BranchDetailPageState extends State<BranchDetailPage> {
     );
   }
 
-  Future<bool?> _showDeleteConfirmDialog(BuildContext context, String name) {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.parchment,
-        title: Text(
-          'Xác nhận xóa',
-          style: GoogleFonts.playfairDisplay(
-            fontWeight: FontWeight.bold,
-            color: AppColors.crimson,
-          ),
-        ),
-        content: Text(
-          'Bạn có chắc muốn xóa thành viên $name khỏi gia phả không?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text(
-              'Hủy',
-              style: TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson),
-            child: const Text(
-              'Xóa ngay',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

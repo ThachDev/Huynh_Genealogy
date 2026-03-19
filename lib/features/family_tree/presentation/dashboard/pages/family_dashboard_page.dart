@@ -1,4 +1,3 @@
-import 'package:app_family_tree/core/di/injection_container.dart' as di;
 import 'package:app_family_tree/core/utils/member_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +9,7 @@ import 'package:app_family_tree/features/family_tree/presentation/dashboard/widg
 import 'package:app_family_tree/features/family_tree/presentation/dashboard/widgets/dashboard_skeleton.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
-import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resources/resources.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
@@ -271,9 +268,9 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                 child: FadeInAnimation(
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
-                                    child: _buildSlidableMemberCard(
-                                      context,
+                                    child: _buildMemberCard(
                                       member,
+                                      l10n,
                                     ),
                                   ),
                                 ),
@@ -493,7 +490,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
     );
   }
 
-  Widget _buildMemberCard(MemberEntity m) {
+  Widget _buildMemberCard(MemberEntity m, S l10n) {
     return Card(
       elevation: 0,
       margin: const EdgeInsets.only(
@@ -532,7 +529,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
           style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         subtitle: Text(
-          'Đời ${m.generation ?? "?"} • ${m.branchName ?? "Họ Huỳnh"} • ${m.isAlive ? "Còn sống" : "Đã mất"}',
+          '${l10n.generation} ${m.generation ?? "?"} • ${m.branchName ?? "Họ Huỳnh"} • ${m.isAlive ? l10n.stillAlive : l10n.deceased}',
           style: GoogleFonts.inter(
             fontSize: 11,
             color: AppColors.textSecondary,
@@ -546,113 +543,4 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
     );
   }
 
-  Widget _buildSlidableMemberCard(BuildContext context, MemberEntity m) {
-    return BlocProvider(
-      create: (context) => di.sl<MemberFormBloc>(),
-      child: BlocListener<MemberFormBloc, MemberFormState>(
-        listener: (context, state) {
-          if (state is MemberFormSuccess && state.isDeleted) {
-            context.read<TreeBloc>().add(LoadTreeEvent(force: true));
-          } else if (state is MemberFormError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Lỗi: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
-        child: Builder(
-          builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0),
-              child: Slidable(
-                key: Key('member_${m.id}'),
-                endActionPane: ActionPane(
-                  motion:
-                      const ScrollMotion(), // Đổi lại ScrollMotion để thấy rõ khoảng cách
-                  extentRatio: 0.22,
-                  children: [
-                    CustomSlidableAction(
-                      onPressed: (_) async {
-                        // Sử dụng context từ Builder để đảm bảo tìm thấy Bloc và Navigator
-                        final confirm = await _showDeleteConfirmDialog(
-                          context,
-                          m.fullName,
-                        );
-                        if (confirm == true && context.mounted) {
-                          context.read<MemberFormBloc>().add(
-                            DeleteMemberFormEvent(m.id),
-                          );
-                        }
-                      },
-                      backgroundColor: Colors.transparent, // Nền trong suốt
-                      foregroundColor: Colors.white,
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 6,
-                          horizontal: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.redAccent,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(Icons.delete_outline, size: 28),
-                      ),
-                    ),
-                  ],
-                ),
-                child: _buildMemberCard(m),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Future<bool?> _showDeleteConfirmDialog(BuildContext context, String name) {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.parchment,
-        title: Text(
-          'Xác nhận xóa',
-          style: GoogleFonts.playfairDisplay(
-            fontWeight: FontWeight.bold,
-            color: AppColors.crimson,
-          ),
-        ),
-        content: Text(
-          'Bạn có chắc muốn xóa thành viên $name khỏi gia phả không?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text(
-              'Hủy',
-              style: TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.crimson),
-            child: const Text(
-              'Xóa ngay',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

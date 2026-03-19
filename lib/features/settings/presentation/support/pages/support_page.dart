@@ -4,6 +4,7 @@ import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:resources/resources.dart';
 
 class SupportPage extends StatelessWidget {
   const SupportPage({super.key});
@@ -31,9 +32,10 @@ class SupportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: const CommonAppBar(titleText: 'HỎI ĐÁP', centerTitle: true),
+      appBar: CommonAppBar(titleText: l10n.supportTitle, centerTitle: true),
       body: Stack(
         children: [
           const Positioned.fill(
@@ -44,10 +46,10 @@ class SupportPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildContactInfo(),
+                _buildContactInfo(l10n),
                 const SizedBox(height: 40),
                 Text(
-                  'HỎI ĐÁP',
+                  l10n.supportTitle,
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -56,22 +58,10 @@ class SupportPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildFAQItem(
-                  'Làm sao để thêm người trong gia đình?',
-                  'Bạn chọn nút "Thêm thành viên" (+), sau đó nhập thông tin và chọn đúng mối quan hệ trong gia đình.',
-                ),
-                _buildFAQItem(
-                  'Vì sao tôi không chỉnh sửa được thông tin?',
-                  'Để đảm bảo tính chính xác của gia phả, chỉ một số thành viên được giao trách nhiệm mới có quyền chỉnh sửa dữ liệu.',
-                ),
-                _buildFAQItem(
-                  'Tôi có thể cập nhật thông tin bằng cách nào?',
-                  'Bạn có thể liên hệ với người quản lý gia phả trong dòng họ để được hỗ trợ cập nhật hoặc chỉnh sửa thông tin.',
-                ),
-                _buildFAQItem(
-                  'Thông tin gia phả được lưu ở đâu?',
-                  'Dữ liệu được lưu trữ an toàn và chỉ sử dụng trong phạm vi nội bộ dòng họ.',
-                ),
+                _buildFAQItem(l10n.supportFAQ1Question, l10n.supportFAQ1Answer),
+                _buildFAQItem(l10n.supportFAQ2Question, l10n.supportFAQ2Answer),
+                _buildFAQItem(l10n.supportFAQ3Question, l10n.supportFAQ3Answer),
+                _buildFAQItem(l10n.supportFAQ4Question, l10n.supportFAQ4Answer),
                 const SizedBox(height: 40),
               ],
             ),
@@ -81,7 +71,7 @@ class SupportPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContactInfo() {
+  Widget _buildContactInfo(S l10n) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -93,22 +83,22 @@ class SupportPage extends StatelessWidget {
         children: [
           _buildContactRow(
             Icons.email_outlined,
-            'Email hỗ trợ',
+            l10n.supportEmailTitle,
             'thachhuynh.dev@gmail.com',
             onTap: () => _sendEmail('thachhuynh.dev@gmail.com'),
           ),
           const Divider(height: 32),
           _buildContactRow(
             Icons.phone_outlined,
-            'Hotline',
+            l10n.supportHotlineTitle,
             '+84 364 749 854',
             onTap: () => _makeCall('+84 364 749 854'),
           ),
           const Divider(height: 32),
           _buildContactRow(
             Icons.facebook,
-            'Nhóm Facebook',
-            'Gia Tộc Họ Huỳnh Việt Nam',
+            l10n.supportFacebookTitle,
+            'Gia Phả Họ Huỳnh',
             onTap: () => _launchUrlHelper(
               'https://www.facebook.com/groups/giaphahohuynh/',
             ),

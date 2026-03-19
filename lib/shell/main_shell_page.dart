@@ -5,6 +5,7 @@ import 'package:app_family_tree/features/family_tree/presentation/dashboard/page
 import 'package:app_family_tree/features/family_tree/presentation/tree/pages/tree_view_page.dart';
 import 'package:app_family_tree/features/events/presentation/pages/events_page.dart';
 import 'package:app_family_tree/features/settings/presentation/settings_page.dart';
+import 'package:resources/resources.dart';
 
 class ShellIndexProvider extends InheritedWidget {
   final int currentIndex;
@@ -109,24 +110,37 @@ class _MainShellPageState extends State<MainShellPage> {
             Positioned.fill(
               child: Padding(
                 padding: EdgeInsets.only(
-                  bottom: (MediaQuery.of(context).padding.bottom - 15).clamp(0, double.infinity),
+                  bottom: (MediaQuery.of(context).padding.bottom - 15).clamp(
+                    0,
+                    double.infinity,
+                  ),
                 ),
                 child: Row(
                   children: [
-                    _buildNavItem(context, 0, Icons.home_rounded, 'Trang chủ'),
+                    _buildNavItem(
+                      context,
+                      0,
+                      Icons.home_rounded,
+                      S.of(context).home,
+                    ),
                     _buildNavItem(
                       context,
                       1,
                       Icons.account_tree_rounded,
-                      'Sơ đồ',
+                      S.of(context).diagram,
                     ),
                     _buildNavItem(
                       context,
                       2,
                       Icons.event_note_rounded,
-                      'Sự kiện',
+                      S.of(context).event,
                     ),
-                    _buildNavItem(context, 3, Icons.menu_rounded, 'Menu'),
+                    _buildNavItem(
+                      context,
+                      3,
+                      Icons.menu_rounded,
+                      S.of(context).settings,
+                    ),
                   ],
                 ),
               ),

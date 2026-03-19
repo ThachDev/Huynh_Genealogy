@@ -413,14 +413,14 @@ class _TreeViewPageState extends State<TreeViewPage>
             ),
             const SizedBox(height: 10),
             Text(
-              'Đời thứ ${member.generation ?? "?"}',
+              S.of(context).generationLabelShort(member.generation?.toString() ?? "?"),
               style: GoogleFonts.inter(color: AppColors.textSecondary),
             ),
             const Divider(height: 32),
             _buildQuickAction(
               ctx,
               Icons.person_pin_rounded,
-              'Xem chi tiết',
+              S.of(context).viewDetail,
               () {
                 Navigator.pop(ctx);
                 context.push('/members/${member.id}', extra: member);
@@ -429,7 +429,7 @@ class _TreeViewPageState extends State<TreeViewPage>
             _buildQuickAction(
               ctx,
               Icons.add_home_rounded,
-              'Thêm con (Hậu duệ)',
+              S.of(context).addChild,
               () {
                 Navigator.pop(ctx);
                 _openAddMemberDialog(parent: member);
@@ -438,7 +438,7 @@ class _TreeViewPageState extends State<TreeViewPage>
             _buildQuickAction(
               ctx,
               Icons.favorite_rounded,
-              'Thêm vợ / chồng',
+              S.of(context).addSpouse,
               () {
                 Navigator.pop(ctx);
                 _openAddMemberDialog(spouse: member);
@@ -447,7 +447,7 @@ class _TreeViewPageState extends State<TreeViewPage>
             _buildQuickAction(
               ctx,
               Icons.edit_note_rounded,
-              'Sửa thông tin',
+              S.of(context).editInfo,
               () {
                 Navigator.pop(ctx);
                 _openAddMemberDialog(edit: member);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
+import 'package:resources/resources.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? title;
@@ -113,7 +114,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       decoration: InputDecoration(
                         isDense: true,
-                        hintText: searchHint ?? 'Tìm kiếm...',
+                        hintText: searchHint ?? S.of(context).searchHint,
                         hintStyle: GoogleFonts.inter(
                           color: Colors.white60,
                           fontSize: 12,

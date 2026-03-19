@@ -5,7 +5,6 @@ import 'package:app_family_tree/components/theme/app_theme.dart';
 class CommonDialogContainer extends StatelessWidget {
   final Widget child;
   final String title;
-  final IconData? icon;
   final String statusLabel; // "MỚI" or "SỬA"
   final bool isDesktop;
 
@@ -13,7 +12,6 @@ class CommonDialogContainer extends StatelessWidget {
     super.key,
     required this.child,
     required this.title,
-    this.icon,
     this.statusLabel = 'MỚI',
     this.isDesktop = false,
   });
@@ -52,15 +50,11 @@ class CommonDialogContainer extends StatelessWidget {
                   padding: const EdgeInsets.all(24.0),
                   child: Row(
                     children: [
-                      if (icon != null) ...[
-                        Icon(icon, color: AppColors.crimson, size: 28),
-                        const SizedBox(width: 12),
-                      ],
                       Expanded(
                         child: Text(
                           title.toUpperCase(),
                           style: GoogleFonts.playfairDisplay(
-                            fontSize: 22,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: AppColors.crimson,
                             letterSpacing: 1,

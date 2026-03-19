@@ -8,6 +8,7 @@ import 'package:app_family_tree/components/input/common_text_field.dart';
 import 'package:app_family_tree/components/dialog/common_dialog_container.dart';
 import 'package:app_family_tree/components/dialog/success_dialog.dart';
 import 'package:app_family_tree/components/button/common_buttons.dart';
+import 'package:resources/resources.dart';
 
 class AddBranchDialog extends StatefulWidget {
   final BranchEntity? branchToEdit;
@@ -55,8 +56,8 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
         if (state is BranchFormSuccess) {
           SuccessDialog.show(
             context,
-            title: 'LƯU THÀNH CÔNG!',
-            message: 'Đã lưu thông tin chi tộc ${state.branch.name}.',
+            title: S.of(context).saveSuccessTitle,
+            message: S.of(context).saveBranchSuccessMessage(state.branch.name),
           );
           context.read<TreeBloc>().add(LoadTreeEvent(force: true));
         } else if (state is BranchFormError) {
@@ -69,19 +70,22 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
         }
       },
       child: CommonDialogContainer(
-        title: widget.branchToEdit != null ? 'CHỈNH SỬA CHI TỘC' : 'THÊM CHI TỘC MỚI',
-        icon: Icons.park_rounded,
-        statusLabel: widget.branchToEdit != null ? 'SỬA' : 'MỚI',
+        title: widget.branchToEdit != null
+            ? S.of(context).editBranchTitle
+            : S.of(context).addBranchTitle,
+        statusLabel: widget.branchToEdit != null
+            ? S.of(context).statusEdit
+            : S.of(context).statusNew,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SectionLabel('TÊN CHI TỘC'),
+              SectionLabel(S.of(context).branchNameLabel),
               CommonTextField(
                 controller: _nameController,
-                hintText: 'Chi tộc Huỳnh Văn...',
+                hintText: S.of(context).branchNameHint,
               ),
               const SizedBox(height: 16),
               Row(
@@ -90,10 +94,10 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SectionLabel('NGƯỜI SÁNG LẬP'),
+                        SectionLabel(S.of(context).branchFounderLabel),
                         CommonTextField(
                           controller: _founderController,
-                          hintText: 'Tên cụ tổ...',
+                          hintText: S.of(context).branchFounderHint,
                         ),
                       ],
                     ),
@@ -103,10 +107,10 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SectionLabel('NĂM THÀNH LẬP'),
+                        SectionLabel(S.of(context).branchYearLabel),
                         CommonTextField(
                           controller: _yearController,
-                          hintText: 'VD: 1900',
+                          hintText: S.of(context).branchYearHint,
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -115,16 +119,16 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                 ],
               ),
               const SizedBox(height: 16),
-              const SectionLabel('VÙNG MIỀN / ĐỊA DANH'),
+              SectionLabel(S.of(context).branchRegionLabel),
               CommonTextField(
                 controller: _regionController,
-                hintText: 'Quảng Ngãi, Bình Định...',
+                hintText: S.of(context).branchRegionHint,
               ),
               const SizedBox(height: 16),
-              const SectionLabel('MÔ TẢ / TIỂU SỬ CHI TỘC'),
+              SectionLabel(S.of(context).branchDescriptionLabel),
               CommonTextField(
                 controller: _descriptionController,
-                hintText: 'Đôi nét về lịch sử chi tộc...',
+                hintText: S.of(context).branchDescriptionHint,
                 maxLines: 4,
               ),
               const SizedBox(height: 32),
@@ -132,7 +136,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                 children: [
                   Expanded(
                     child: SecondaryButton(
-                      text: 'HỦY',
+                      text: S.of(context).cancelButton,
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
@@ -141,7 +145,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                     child: BlocBuilder<BranchFormBloc, BranchFormState>(
                       builder: (context, state) {
                         return PrimaryButton(
-                          text: 'LƯU LẠI',
+                          text: S.of(context).saveButton,
                           isLoading: state is BranchFormSubmitting,
                           onPressed: _submit,
                         );
@@ -160,7 +164,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
   void _submit() {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập tên chi tộc')),
+        SnackBar(content: Text(S.of(context).errorEnterBranchName)),
       );
       return;
     }
@@ -168,10 +172,14 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
     final branch = BranchEntity(
       id: widget.branchToEdit?.id ?? 0,
       name: _nameController.text,
-      founderName: _founderController.text.isNotEmpty ? _founderController.text : null,
+      founderName: _founderController.text.isNotEmpty
+          ? _founderController.text
+          : null,
       foundingYear: int.tryParse(_yearController.text),
       region: _regionController.text.isNotEmpty ? _regionController.text : null,
-      description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
+      description: _descriptionController.text.isNotEmpty
+          ? _descriptionController.text
+          : null,
     );
 
     context.read<BranchFormBloc>().add(SubmitBranchFormEvent(branch));

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
+import 'package:resources/resources.dart';
 
 class EventsPage extends StatelessWidget {
   const EventsPage({super.key});
@@ -11,7 +12,7 @@ class EventsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: const CommonAppBar(titleText: 'SỰ KIỆN', centerTitle: true),
+      appBar: CommonAppBar(titleText: S.of(context).event, centerTitle: true),
       body: Stack(
         children: [
           const Positioned.fill(
@@ -28,7 +29,7 @@ class EventsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Sự kiện',
+                  S.of(context).event,
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -37,7 +38,7 @@ class EventsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Tính năng đang được phát triển.\nSẽ sớm cập nhật!',
+                  S.of(context).featureInDevelopment,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 14,

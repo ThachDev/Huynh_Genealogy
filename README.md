@@ -1,4 +1,4 @@
-# Huỳnh Genealogy - Ứng dụng Quản lý Gia phả Huỳnh Tộc
+# Huỳnh Genealogy - Ứng dụng Quản lý Huỳnh Gia Tộc
 
 **Huỳnh Genealogy** là một ứng dụng di động hiện đại được xây dựng bằng Flutter, giúp lưu trữ, quản lý và trực quan hóa sơ đồ gia phả của dòng họ một cách trực quan và sinh động. Với kiến trúc Clean Architecture chuẩn mực, ứng dụng đảm bảo tính mở rộng và khả năng bảo trì cao.
 

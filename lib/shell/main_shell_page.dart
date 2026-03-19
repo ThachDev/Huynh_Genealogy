@@ -109,7 +109,7 @@ class _MainShellPageState extends State<MainShellPage> {
             Positioned.fill(
               child: Padding(
                 padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom - 15,
+                  bottom: (MediaQuery.of(context).padding.bottom - 15).clamp(0, double.infinity),
                 ),
                 child: Row(
                   children: [

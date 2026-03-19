@@ -3,9 +3,31 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/widgets/tree_background_painter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupportPage extends StatelessWidget {
   const SupportPage({super.key});
+
+  Future<void> _launchUrlHelper(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      debugPrint('Could not launch $url');
+    }
+  }
+
+  Future<void> _sendEmail(String email) async {
+    final Uri uri = Uri(scheme: 'mailto', path: email);
+    if (!await launchUrl(uri)) {
+      debugPrint('Could not launch $email');
+    }
+  }
+
+  Future<void> _makeCall(String phoneNumber) async {
+    final Uri uri = Uri(scheme: 'tel', path: phoneNumber.replaceAll(' ', ''));
+    if (!await launchUrl(uri)) {
+      debugPrint('Could not launch $phoneNumber');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,30 +95,48 @@ class SupportPage extends StatelessWidget {
             Icons.email_outlined,
             'Email hỗ trợ',
             'thachhuynh.dev@gmail.com',
+            onTap: () => _sendEmail('thachhuynh.dev@gmail.com'),
           ),
           const Divider(height: 32),
-          _buildContactRow(Icons.phone_outlined, 'Hotline', '+84 364 749 854'),
+          _buildContactRow(
+            Icons.phone_outlined,
+            'Hotline',
+            '+84 364 749 854',
+            onTap: () => _makeCall('+84 364 749 854'),
+          ),
           const Divider(height: 32),
           _buildContactRow(
             Icons.facebook,
             'Nhóm Facebook',
             'Gia Tộc Họ Huỳnh Việt Nam',
+            onTap: () => _launchUrlHelper(
+              'https://www.facebook.com/groups/giaphahohuynh/',
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildContactRow(IconData icon, String title, String content) {
+  Widget _buildContactRow(
+    IconData icon,
+    String title,
+    String content, {
+    VoidCallback? onTap,
+  }) {
     return Row(
       children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: AppColors.gold.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(30),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.gold.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.crimson, size: 20),
           ),
-          child: Icon(icon, color: AppColors.crimson, size: 20),
         ),
         const SizedBox(width: 16),
         Expanded(

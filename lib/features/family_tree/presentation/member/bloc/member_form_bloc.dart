@@ -63,7 +63,6 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
     emit(MemberFormSubmitting());
     final result = await deleteMemberUseCase(event.memberId);
     result.fold((failure) => emit(MemberFormError(failure.message)), (_) {
-      // Tạo một entity dummy để trả về khi xoá
       const dummy = MemberEntity(id: 0, fullName: '', gender: Gender.unknown);
       emit(MemberFormSuccess(member: dummy, isDeleted: true));
     });

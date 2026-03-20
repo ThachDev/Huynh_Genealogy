@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
-import 'package:app_family_tree/features/family_tree/presentation/dashboard/pages/family_dashboard_page.dart';
-import 'package:app_family_tree/features/family_tree/presentation/tree/pages/tree_view_page.dart';
+import 'package:app_family_tree/features/dashboard/presentation/pages/family_dashboard_page.dart';
+import 'package:app_family_tree/features/tree/presentation/pages/tree_view_page.dart';
 import 'package:app_family_tree/features/events/presentation/pages/events_page.dart';
 import 'package:app_family_tree/features/settings/presentation/settings_page.dart';
 import 'package:resources/resources.dart';

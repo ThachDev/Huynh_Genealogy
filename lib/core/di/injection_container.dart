@@ -3,23 +3,28 @@ import 'package:app_family_tree/core/logger/app_log_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
-// Features - Data
-import 'package:app_family_tree/features/family_tree/data/source/family_api_service.dart';
-import 'package:app_family_tree/features/family_tree/data/repository/family_repository_impl.dart';
+// Branch Feature
+import 'package:app_family_tree/features/branch/data/repositories/branch_repository_impl.dart';
+import 'package:app_family_tree/features/branch/data/sources/branch_api_service.dart';
+import 'package:app_family_tree/features/branch/domain/repositories/branch_repository.dart';
+import 'package:app_family_tree/features/branch/domain/usecase/get_branches_usecase.dart';
+import 'package:app_family_tree/features/branch/domain/usecase/save_branch_usecase.dart';
+import 'package:app_family_tree/features/branch/presentation/bloc/branch_bloc.dart';
 
-// Domain
-import 'package:app_family_tree/features/family_tree/domain/repositories/family_repository.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/get_members_usecase.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/get_member_by_id_usecase.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/save_member_usecase.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/delete_member_usecase.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/get_branches_usecase.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/save_branch_usecase.dart';
+// Member Feature
+import 'package:app_family_tree/features/member/data/repositories/member_repository_impl.dart';
+import 'package:app_family_tree/features/member/data/sources/member_api_service.dart';
+import 'package:app_family_tree/features/member/domain/repositories/member_repository.dart';
+import 'package:app_family_tree/features/member/domain/usecase/delete_member_usecase.dart';
+import 'package:app_family_tree/features/member/domain/usecase/get_member_by_id_usecase.dart';
+import 'package:app_family_tree/features/member/domain/usecase/get_members_usecase.dart';
+import 'package:app_family_tree/features/member/domain/usecase/save_member_usecase.dart';
+import 'package:app_family_tree/features/member/presentation/bloc/member_bloc.dart';
 
-// Presentation
-import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
-import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
-import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
+// Tree Feature
+import 'package:app_family_tree/features/tree/presentation/bloc/tree_bloc.dart';
+
+// Settings & Shared
 import 'package:app_family_tree/features/settings/presentation/language/bloc/language_bloc.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
@@ -31,14 +36,14 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
-    () => MemberFormBloc(
+    () => MemberBloc(
       getMemberByIdUseCase: sl(),
       saveMemberUseCase: sl(),
       deleteMemberUseCase: sl(),
     ),
   );
 
-  sl.registerFactory(() => BranchFormBloc(saveBranchUseCase: sl()));
+  sl.registerFactory(() => BranchBloc(saveBranchUseCase: sl()));
 
   sl.registerLazySingleton(() => LanguageBloc());
 
@@ -51,12 +56,16 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SaveBranchUseCase(repository: sl()));
 
   // ─── Repository ───────────────────────────────────────────────────────────
-  sl.registerLazySingleton<FamilyRepository>(
-    () => FamilyRepositoryImpl(apiService: sl()),
+  sl.registerLazySingleton<BranchRepository>(
+    () => BranchRepositoryImpl(apiService: sl()),
+  );
+  sl.registerLazySingleton<MemberRepository>(
+    () => MemberRepositoryImpl(apiService: sl()),
   );
 
   // ─── Services (Data Layer) ────────────────────────────────────────────────
-  sl.registerLazySingleton(() => FamilyApiService(sl()));
+  sl.registerLazySingleton(() => BranchApiService(sl()));
+  sl.registerLazySingleton(() => MemberApiService(sl()));
 
   // ─── External ─────────────────────────────────────────────────────────────
   sl.registerLazySingleton(

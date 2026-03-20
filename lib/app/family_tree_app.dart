@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resources/resources.dart';
-import '../features/family_tree/presentation/tree/bloc/tree_bloc.dart';
+import '../features/tree/presentation/bloc/tree_bloc.dart';
 import '../features/settings/presentation/language/bloc/language_bloc.dart';
 import '../features/settings/presentation/language/bloc/language_state.dart';
 import '../components/theme/app_theme.dart';

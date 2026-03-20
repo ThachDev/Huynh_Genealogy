@@ -20,22 +20,30 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'vi';
 
+  // ignore: strict_top_level_inference
   static String m1(version) => "Phiên bản ${version}";
 
+  // ignore: strict_top_level_inference
   static String m2(name) =>
       "Bạn có chắc muốn xóa thành viên ${name} khỏi gia phả không? Thao tác này không thể hoàn tác.";
 
+  // ignore: strict_top_level_inference
   static String m3(count) => "${count} người";
 
+  // ignore: strict_top_level_inference
   static String m0(name) =>
       "Bạn có chắc muốn xóa thành viên ${name} khỏi gia phả không?";
 
+  // ignore: strict_top_level_inference
   static String m4(gen) => "Đời thứ ${gen}";
 
+  // ignore: strict_top_level_inference
   static String m5(name) => "Đã lưu thông tin chi tộc ${name}.";
 
+  // ignore: strict_top_level_inference
   static String m6(name) => "Đã lưu thông tin thành viên ${name}.";
 
+  // ignore: strict_top_level_inference
   static String m7(date) => "Cập nhật lần cuối: ${date}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);

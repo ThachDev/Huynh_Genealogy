@@ -15,15 +15,15 @@ class AboutPage extends StatelessWidget {
       backgroundColor: AppColors.parchment,
       appBar: CommonAppBar(titleText: l10n.aboutTitle, centerTitle: true),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const Positioned.fill(
             child: CustomPaint(painter: TreeBackgroundPainter()),
           ),
           SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.fromLTRB(24, 32, 24, 60),
             child: Column(
               children: [
-                const SizedBox(height: 15),
                 Text(
                   l10n.aboutAppName,
                   style: GoogleFonts.playfairDisplay(
@@ -58,36 +58,40 @@ class AboutPage extends StatelessWidget {
                   child: Column(
                     children: [
                       _buildInfoRow(
-                        Icons.history_edu,
                         l10n.aboutDescriptionTitle,
                         l10n.aboutDescriptionContent,
                       ),
                       const Divider(height: 32),
                       _buildInfoRow(
-                        Icons.developer_mode,
                         l10n.aboutDedicationTitle,
                         l10n.aboutDedicationContent,
                       ),
                       const Divider(height: 32),
                       _buildInfoRow(
-                        Icons.copyright,
                         l10n.aboutCopyrightTitle,
                         l10n.aboutCopyrightContent,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 40),
-                Text(
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: SafeArea(
+              child: Center(
+                child: Text(
                   l10n.aboutVersion('1.0.0'),
                   style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    color: AppColors.textSecondary.withValues(alpha: 0.7),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 60),
-              ],
+              ),
             ),
           ),
         ],
@@ -95,14 +99,12 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String title, String content) {
+  Widget _buildInfoRow(String title, String content) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, color: AppColors.crimson, size: 20),
-            const SizedBox(width: 8),
             Text(
               title,
               style: GoogleFonts.inter(

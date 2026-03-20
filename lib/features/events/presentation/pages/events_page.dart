@@ -14,6 +14,7 @@ class EventsPage extends StatelessWidget {
       backgroundColor: AppColors.parchment,
       appBar: CommonAppBar(titleText: S.of(context).event, centerTitle: true),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const Positioned.fill(
             child: CustomPaint(painter: TreeBackgroundPainter()),

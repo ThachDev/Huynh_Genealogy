@@ -18,12 +18,13 @@ class SecurityPolicyPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const Positioned.fill(
             child: CustomPaint(painter: TreeBackgroundPainter()),
           ),
           SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -34,7 +34,7 @@ class _TreeViewPageState extends State<TreeViewPage>
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   bool _isSearching = false;
-  bool _showMiniMap = false;
+
   final Map<int, GlobalKey> _nodeKeys = {};
 
   AnimationController? _animationController;
@@ -190,22 +190,7 @@ class _TreeViewPageState extends State<TreeViewPage>
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 10, right: 10),
-            child: FloatingActionButton(
-              heroTag: 'tree_minimap_fab',
-              onPressed: () => setState(() => _showMiniMap = !_showMiniMap),
-              backgroundColor: _showMiniMap
-                  ? AppColors.gold
-                  : AppColors.crimson,
-              mini: true,
-              child: Icon(
-                Icons.map_rounded,
-                color: _showMiniMap ? AppColors.crimson : AppColors.gold,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20, right: 10),
+            padding: const EdgeInsets.only(bottom: 80, right: 10),
             child: FloatingActionButton(
               heroTag: 'tree_reset_fab',
               tooltip: l10n.familyTreeDiagram,
@@ -338,7 +323,6 @@ class _TreeViewPageState extends State<TreeViewPage>
                         });
                       },
                     ),
-                    if (_showMiniMap) _buildMiniMap(state.allMembers),
                   ],
                 );
               }
@@ -413,7 +397,9 @@ class _TreeViewPageState extends State<TreeViewPage>
             ),
             const SizedBox(height: 10),
             Text(
-              S.of(context).generationLabelShort(member.generation?.toString() ?? "?"),
+              S
+                  .of(context)
+                  .generationLabelShort(member.generation?.toString() ?? "?"),
               style: GoogleFonts.inter(color: AppColors.textSecondary),
             ),
             const Divider(height: 32),
@@ -505,81 +491,6 @@ class _TreeViewPageState extends State<TreeViewPage>
           memberToEdit: edit,
           initialParentId: parent?.id,
           initialSpouseId: spouse?.id,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMiniMap(List<MemberEntity> members) {
-    return Positioned(
-      bottom: 20,
-      left: 16,
-      child: Container(
-        width: 140,
-        height: 140,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: AppColors.gold, width: 2),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(13),
-          child: IgnorePointer(
-            child: Stack(
-              children: [
-                InteractiveViewer(
-                  transformationController: TransformationController(
-                    Matrix4.identity()
-                      ..setEntry(0, 0, 0.06)
-                      ..setEntry(1, 1, 0.06)
-                      ..setEntry(0, 3, 400.0)
-                      ..setEntry(1, 3, 100.0),
-                  ),
-                  constrained: false,
-                  child: GraphView(
-                    graph: _graph!,
-                    algorithm: BuchheimWalkerAlgorithm(
-                      _builder,
-                      TreeEdgeRenderer(_builder),
-                    ),
-                    paint: Paint()
-                      ..color = AppColors.connectionLine.withValues(alpha: 0.3)
-                      ..strokeWidth = 1.0
-                      ..style = PaintingStyle.stroke,
-                    builder: (Node node) {
-                      return Container(
-                        width: 30,
-                        height: 30,
-                        decoration: const BoxDecoration(
-                          color: AppColors.crimson,
-                          shape: BoxShape.circle,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

@@ -299,10 +299,10 @@ class S {
     );
   }
 
-  /// `© 2026 Gia phả họ Huỳnh. Lưu hành nội bộ.`
+  /// `© 2026 Gia phả họ Huỳnh.`
   String get aboutCopyrightContent {
     return Intl.message(
-      '© 2026 Gia phả họ Huỳnh. Lưu hành nội bộ.',
+      '© 2026 Gia phả họ Huỳnh.',
       name: 'aboutCopyrightContent',
       desc: '',
       args: [],

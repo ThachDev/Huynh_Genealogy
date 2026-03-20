@@ -16,12 +16,13 @@ class SettingsPage extends StatelessWidget {
       backgroundColor: AppColors.parchment,
       appBar: const CommonAppBar(titleText: 'CÀI ĐẶT', centerTitle: true),
       body: Stack(
+        fit: StackFit.expand,
         children: [
           const Positioned.fill(
             child: CustomPaint(painter: TreeBackgroundPainter()),
           ),
           ListView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),
             children: [
               _buildSectionTitle('Tài Khoản'),
               CommonSettingsCard(

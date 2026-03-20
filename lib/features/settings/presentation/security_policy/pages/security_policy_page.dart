@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
-import 'package:app_family_tree/features/tree/presentation/widgets/tree_background_painter.dart';
+import 'package:app_family_tree/components/background/app_background.dart';
 import 'package:resources/resources.dart';
 
 class SecurityPolicyPage extends StatelessWidget {
@@ -21,7 +21,7 @@ class SecurityPolicyPage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           const Positioned.fill(
-            child: CustomPaint(painter: TreeBackgroundPainter()),
+            child: AppBackground(),
           ),
           SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),

@@ -22,10 +22,10 @@ class AppColors {
   static const Color textOnPrimary = Colors.white;
 
   // Tree node colors
-  static const Color nodeMale = Color(0xFFE8F1F8);
-  static const Color nodeFemale = Color(0xFFF9E8EE);
-  static const Color maleBorder = Color(0xFF1F3A5F);
-  static const Color femaleBorder = Color(0xFF7B3F61);
+  static const Color nodeMale = Color(0xFF90CAF9);     // Light Blue
+  static const Color nodeFemale = Color(0xFFF48FB1);   // Light Pink
+  static const Color maleBorder = Color(0xFF1976D2);   // Solid Blue
+  static const Color femaleBorder = Color(0xFFC2185B); // Solid Pink
   static const Color nodeDeceased = Color(0xFF9E9E9E);
   static const Color nodeBorder = gold;
   static const Color connectionLine = crimson;

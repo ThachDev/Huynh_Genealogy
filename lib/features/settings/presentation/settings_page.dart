@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:app_family_tree/components/theme/app_theme.dart';
 import 'package:app_family_tree/features/settings/presentation/language/widgets/language_selector.dart';
-import 'package:app_family_tree/features/tree/presentation/widgets/tree_background_painter.dart';
+import 'package:app_family_tree/components/background/app_background.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/components/card/common_settings_card.dart';
 
@@ -19,7 +19,7 @@ class SettingsPage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           const Positioned.fill(
-            child: CustomPaint(painter: TreeBackgroundPainter()),
+            child: AppBackground(),
           ),
           ListView(
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),

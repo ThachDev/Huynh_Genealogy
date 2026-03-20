@@ -8,7 +8,7 @@ import 'package:app_family_tree/features/tree/presentation/bloc/tree_bloc.dart';
 import 'package:app_family_tree/features/dashboard/presentation/widgets/branch_card.dart';
 import 'package:app_family_tree/features/dashboard/presentation/widgets/dashboard_skeleton.dart';
 import 'package:app_family_tree/features/member/domain/entities/member.dart';
-import 'package:app_family_tree/features/tree/presentation/widgets/tree_background_painter.dart';
+import 'package:app_family_tree/components/background/app_background.dart';
 import 'package:go_router/go_router.dart';
 import 'package:resources/resources.dart';
 
@@ -35,7 +35,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         children: [
           // Elegant East-Asian Background Painter
           const Positioned.fill(
-            child: CustomPaint(painter: TreeBackgroundPainter()),
+            child: AppBackground(),
           ),
           BlocBuilder<TreeBloc, TreeState>(
             builder: (context, state) {

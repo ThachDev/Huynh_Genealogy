@@ -8,11 +8,11 @@ import 'package:app_family_tree/features/tree/presentation/widgets/member_node_w
 import 'package:app_family_tree/components/search/member_search_overlay.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/features/tree/presentation/widgets/tree_view_skeleton.dart';
-import 'package:app_family_tree/features/tree/presentation/widgets/tree_background_painter.dart';
+import 'package:app_family_tree/components/background/app_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graphview/GraphView.dart';
+import 'package:app_family_tree/features/tree/presentation/widgets/tree_layout.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:resources/resources.dart';
 import 'package:go_router/go_router.dart';
@@ -27,8 +27,7 @@ class TreeViewPage extends StatefulWidget {
 class _TreeViewPageState extends State<TreeViewPage>
     with TickerProviderStateMixin {
   final GlobalKey _graphKey = GlobalKey();
-  Graph? _graph;
-  final BuchheimWalkerConfiguration _builder = BuchheimWalkerConfiguration();
+  TreeLayoutCalculator? _layout;
   final TransformationController _transformationController =
       TransformationController();
   final TextEditingController _searchController = TextEditingController();
@@ -51,6 +50,7 @@ class _TreeViewPageState extends State<TreeViewPage>
       vsync: this,
       duration: const Duration(milliseconds: 800),
     )..addListener(() => _transformationController.value = _animation!.value);
+
     _bgAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 10),
@@ -58,12 +58,6 @@ class _TreeViewPageState extends State<TreeViewPage>
     _bgAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _bgAnimationController!, curve: Curves.easeInOut),
     );
-
-    _builder
-      ..siblingSeparation = 40
-      ..levelSeparation = 80
-      ..subtreeSeparation = 60
-      ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
   }
 
   @override
@@ -77,9 +71,10 @@ class _TreeViewPageState extends State<TreeViewPage>
 
   void _resetView() {
     final viewportSize = MediaQuery.of(context).size;
-    const scale = 0.6;
-    final x = (viewportSize.width / 2) - (600 * scale);
-    const y = 60.0;
+    const scale = 0.5;
+    final x =
+        (viewportSize.width / 2) - (80 * scale); // 80 is roughly node width
+    const y = 80.0;
     final targetMatrix = Matrix4.identity()
       ..setEntry(0, 0, scale)
       ..setEntry(1, 1, scale)
@@ -106,9 +101,11 @@ class _TreeViewPageState extends State<TreeViewPage>
     final RenderBox? graphBox =
         _graphKey.currentContext?.findRenderObject() as RenderBox?;
     if (nodeBox == null || graphBox == null) return;
+
     final viewportSize = MediaQuery.of(context).size;
     final nodeOffset = nodeBox.localToGlobal(Offset.zero, ancestor: graphBox);
     final nodeSize = nodeBox.size;
+
     const targetScale = 1.0;
     final x =
         (viewportSize.width / 2) -
@@ -116,11 +113,13 @@ class _TreeViewPageState extends State<TreeViewPage>
     final y =
         (viewportSize.height / 2) -
         (nodeOffset.dy + nodeSize.height / 2) * targetScale;
+
     final targetMatrix = Matrix4.identity()
       ..setEntry(0, 0, targetScale)
       ..setEntry(1, 1, targetScale)
       ..setEntry(0, 3, x)
       ..setEntry(1, 3, y);
+
     _animation =
         Matrix4Tween(
           begin: _transformationController.value,
@@ -134,29 +133,16 @@ class _TreeViewPageState extends State<TreeViewPage>
     _animationController?.forward(from: 0);
   }
 
-  void _ensureGraph(List<MemberEntity> members) {
-    if (_memoizedMembers == members && _graph != null) return;
+  void _ensureLayout(List<MemberEntity> members) {
+    if (_memoizedMembers == members && _layout != null) return;
     _memoizedMembers = members;
-    final graph = Graph()..isTree = true;
-    final nodeMap = <int, Node>{};
-    for (final member in members) {
-      final node = Node.Id(member.id);
-      nodeMap[member.id] = node;
-    }
-    for (final member in members) {
-      if (member.parentId != null && nodeMap.containsKey(member.parentId)) {
-        graph.addEdge(
-          nodeMap[member.parentId]!,
-          nodeMap[member.id]!,
-          paint: Paint()
-            ..color = AppColors.connectionLine
-            ..strokeWidth = 2.0,
-        );
-      } else if (member.parentId == null) {
-        if (nodeMap[member.id] != null) graph.addNode(nodeMap[member.id]!);
-      }
-    }
-    _graph = graph;
+
+    _layout = TreeLayoutCalculator(members);
+
+    // Auto-reset view after graph is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _resetView();
+    });
   }
 
   @override
@@ -210,16 +196,7 @@ class _TreeViewPageState extends State<TreeViewPage>
       ),
       body: Stack(
         children: [
-          Positioned.fill(
-            child: AnimatedBuilder(
-              animation: _bgAnimation,
-              builder: (context, _) => CustomPaint(
-                painter: TreeBackgroundPainter(
-                  animationValue: _bgAnimation.value,
-                ),
-              ),
-            ),
-          ),
+          Positioned.fill(child: AppBackground(animation: _bgAnimation)),
           BlocBuilder<TreeBloc, TreeState>(
             builder: (context, state) {
               if (state is TreeLoading || state is TreeInitial) {
@@ -240,68 +217,79 @@ class _TreeViewPageState extends State<TreeViewPage>
                     ),
                   );
                 }
-                _ensureGraph(state.allMembers);
-                final memberMap = {for (final m in state.allMembers) m.id: m};
+                _ensureLayout(state.allMembers);
+
+                final double width = _layout?.treeWidth ?? 1000;
+                final double height = _layout?.treeHeight ?? 1000;
+
                 return Stack(
                   children: [
                     InteractiveViewer(
                       transformationController: _transformationController,
                       constrained: false,
-                      boundaryMargin: const EdgeInsets.all(1000),
-                      minScale: 0.1,
-                      maxScale: 2.5,
-                      child: GraphView(
+                      boundaryMargin: const EdgeInsets.all(
+                        4000,
+                      ), // Larger boundary
+                      minScale: 0.05,
+                      maxScale: 3.0,
+                      child: SizedBox(
                         key: _graphKey,
-                        graph: _graph!,
-                        algorithm: BuchheimWalkerAlgorithm(
-                          _builder,
-                          TreeEdgeRenderer(_builder),
+                        width: width,
+                        height: height,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            if (_layout != null)
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: TreeEdgePainter(_layout!.allNodes),
+                                ),
+                              ),
+                            if (_layout != null)
+                              ..._layout!.allNodes.map((node) {
+                                final member = node.member;
+                                final isHighlighted =
+                                    _searchQuery.isNotEmpty &&
+                                    member.fullName.toLowerCase().contains(
+                                      _searchQuery.toLowerCase(),
+                                    );
+                                return Positioned(
+                                  left: node.x,
+                                  top: node.y,
+                                  width: TreeLayoutCalculator.nodeWidth,
+                                  height: TreeLayoutCalculator.nodeHeight,
+                                  child: MemberNodeWidget(
+                                    key: _nodeKeys.putIfAbsent(
+                                      member.id,
+                                      () => GlobalKey(),
+                                    ),
+                                    member: member,
+                                    isSelected:
+                                        state.selectedMemberId == member.id,
+                                    isHighlighted: isHighlighted,
+                                    onTap: () {
+                                      HapticFeedback.lightImpact();
+                                      context.read<TreeBloc>().add(
+                                        SelectMemberEvent(member.id),
+                                      );
+                                      context.push(
+                                        '/members/${member.id}',
+                                        extra: member,
+                                      );
+                                    },
+                                    onDoubleTap: () {
+                                      HapticFeedback.mediumImpact();
+                                      _centerNode(member.id);
+                                    },
+                                    onLongPress: () {
+                                      HapticFeedback.heavyImpact();
+                                      _showQuickMenu(context, member);
+                                    },
+                                  ),
+                                );
+                              }),
+                          ],
                         ),
-                        paint: Paint()
-                          ..color = AppColors.connectionLine
-                          ..strokeWidth = 2.0
-                          ..style = PaintingStyle.stroke,
-                        builder: (Node node) {
-                          final memberId = node.key?.value as int?;
-                          final member = memberId != null
-                              ? memberMap[memberId]
-                              : null;
-                          if (member == null) {
-                            return const SizedBox(width: 80, height: 40);
-                          }
-                          final isHighlighted =
-                              _searchQuery.isNotEmpty &&
-                              member.fullName.toLowerCase().contains(
-                                _searchQuery.toLowerCase(),
-                              );
-                          return MemberNodeWidget(
-                            key: _nodeKeys.putIfAbsent(
-                              member.id,
-                              () => GlobalKey(),
-                            ),
-                            member: member,
-                            isSelected: state.selectedMemberId == member.id,
-                            isHighlighted: isHighlighted,
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              context.read<TreeBloc>().add(
-                                SelectMemberEvent(member.id),
-                              );
-                              context.push(
-                                '/members/${member.id}',
-                                extra: member,
-                              );
-                            },
-                            onDoubleTap: () {
-                              HapticFeedback.mediumImpact();
-                              _centerNode(member.id);
-                            },
-                            onLongPress: () {
-                              HapticFeedback.heavyImpact();
-                              _showQuickMenu(context, member);
-                            },
-                          );
-                        },
                       ),
                     ),
                     MemberSearchOverlay(

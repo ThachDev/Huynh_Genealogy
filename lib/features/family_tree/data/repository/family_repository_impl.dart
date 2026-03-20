@@ -4,26 +4,25 @@ import 'package:app_family_tree/core/error/failures.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
 import 'package:app_family_tree/features/family_tree/domain/entities/member.dart';
 import 'package:app_family_tree/features/family_tree/domain/repositories/family_repository.dart';
-import 'package:app_family_tree/features/family_tree/data/source/family_data_source.dart';
-import 'package:app_family_tree/features/family_tree/data/model/branch_model.dart';
-import 'package:app_family_tree/features/family_tree/data/model/member_model.dart';
+import 'package:app_family_tree/features/family_tree/data/source/family_api_service.dart';
+import 'package:app_family_tree/features/family_tree/data/mapper/branch_data_mapper.dart';
+import 'package:app_family_tree/features/family_tree/data/mapper/member_data_mapper.dart';
 import 'package:app_family_tree/core/error/app_error_handler.dart';
 
 class FamilyRepositoryImpl implements FamilyRepository {
-  /// Có thể là FamilyLocalDataSourceImpl hoặc FamilyRemoteDataSourceImpl
-  final FamilyDataSource dataSource;
+  FamilyRepositoryImpl({required this.apiService});
 
-  FamilyRepositoryImpl({required this.dataSource});
+  final FamilyApiService apiService;
+  final MemberDataMapper _memberMapper = MemberDataMapper();
+  final BranchDataMapper _branchMapper = BranchDataMapper();
 
   // ─── Members ──────────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, List<MemberEntity>>> getMembers({
-    int? branchId,
-  }) async {
+  Future<Either<Failure, List<MemberEntity>>> getMembers({int? branchId}) async {
     try {
-      final models = await dataSource.getMembers(branchId: branchId);
-      return Right(models);
+      final models = await apiService.getMembers(branchId: branchId);
+      return Right(models.map(_memberMapper.mapToEntity).toList());
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }
@@ -32,8 +31,8 @@ class FamilyRepositoryImpl implements FamilyRepository {
   @override
   Future<Either<Failure, MemberEntity>> getMemberById(int id) async {
     try {
-      final model = await dataSource.getMemberById(id);
-      return Right(model);
+      final model = await apiService.getMemberById(id);
+      return Right(_memberMapper.mapToEntity(model));
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }
@@ -45,9 +44,9 @@ class FamilyRepositoryImpl implements FamilyRepository {
     File? imageFile,
   }) async {
     try {
-      final model = MemberModel.fromEntity(member);
-      final saved = await dataSource.saveMember(model, imageFile: imageFile);
-      return Right(saved);
+      final model = _memberMapper.mapToData(member);
+      final saved = await apiService.saveMember(model, imageFile: imageFile);
+      return Right(_memberMapper.mapToEntity(saved));
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }
@@ -56,8 +55,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
   @override
   Future<Either<Failure, bool>> deleteMember(int id) async {
     try {
-      final result = await dataSource.deleteMember(id);
-      return Right(result);
+      return Right(await apiService.deleteMember(id));
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }
@@ -68,8 +66,8 @@ class FamilyRepositoryImpl implements FamilyRepository {
   @override
   Future<Either<Failure, List<BranchEntity>>> getBranches() async {
     try {
-      final models = await dataSource.getBranches();
-      return Right(models);
+      final models = await apiService.getBranches();
+      return Right(models.map(_branchMapper.mapToEntity).toList());
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }
@@ -78,8 +76,8 @@ class FamilyRepositoryImpl implements FamilyRepository {
   @override
   Future<Either<Failure, BranchEntity>> getBranchById(int id) async {
     try {
-      final model = await dataSource.getBranchById(id);
-      return Right(model);
+      final model = await apiService.getBranchById(id);
+      return Right(_branchMapper.mapToEntity(model));
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }
@@ -88,9 +86,9 @@ class FamilyRepositoryImpl implements FamilyRepository {
   @override
   Future<Either<Failure, BranchEntity>> saveBranch(BranchEntity branch) async {
     try {
-      final model = BranchModel.fromEntity(branch);
-      final saved = await dataSource.saveBranch(model);
-      return Right(saved);
+      final model = _branchMapper.mapToData(branch);
+      final saved = await apiService.saveBranch(model);
+      return Right(_branchMapper.mapToEntity(saved));
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }
@@ -99,8 +97,7 @@ class FamilyRepositoryImpl implements FamilyRepository {
   @override
   Future<Either<Failure, bool>> deleteBranch(int id) async {
     try {
-      final result = await dataSource.deleteBranch(id);
-      return Right(result);
+      return Right(await apiService.deleteBranch(id));
     } catch (e) {
       return Left(AppErrorHandler.handle(e));
     }

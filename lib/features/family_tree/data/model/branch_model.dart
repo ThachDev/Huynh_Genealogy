@@ -1,52 +1,21 @@
-import 'package:app_family_tree/features/family_tree/domain/entities/branch.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class BranchModel extends BranchEntity {
-  const BranchModel({
-    required super.id,
-    required super.name,
-    super.description,
-    super.founderName,
-    super.foundingYear,
-    super.region,
-  });
+part 'branch_model.freezed.dart';
+part 'branch_model.g.dart';
 
-  factory BranchModel.fromJson(Map<String, dynamic> json) {
-    int? asInt(dynamic v) => v is int ? v : (v is String ? int.tryParse(v) : null);
+@freezed
+abstract class BranchModel with _$BranchModel {
+  const factory BranchModel({
+    @JsonKey() int? id,
+    @JsonKey() String? name,
+    @JsonKey() String? description,
+    @JsonKey() String? founderName,
+    @JsonKey() int? foundingYear,
+    @JsonKey() String? region,
+  }) = _BranchModel;
 
-    return BranchModel(
-      id: asInt(json['id']) ?? 0,
-      name: json['name'] as String,
-      description: json['description'] as String?,
-      founderName: json['founderName'] as String?,
-      foundingYear: asInt(json['foundingYear']),
-      region: json['region'] as String?,
-    );
-  }
+  const BranchModel._();
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'name': name,
-      'description': description,
-      'founderName': founderName,
-      'foundingYear': foundingYear,
-      'region': region,
-    };
-
-    if (id != 0) {
-      data['id'] = id;
-    }
-
-    return data;
-  }
-
-  factory BranchModel.fromEntity(BranchEntity entity) {
-    return BranchModel(
-      id: entity.id,
-      name: entity.name,
-      description: entity.description,
-      founderName: entity.founderName,
-      foundingYear: entity.foundingYear,
-      region: entity.region,
-    );
-  }
+  factory BranchModel.fromJson(Map<String, dynamic> json) =>
+      _$BranchModelFromJson(json);
 }

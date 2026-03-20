@@ -1,13 +1,10 @@
 import 'package:app_family_tree/constants/app_constants.dart';
-import 'package:app_family_tree/features/family_tree/data/source/family_remote_data_source_impl.dart';
-import 'package:app_family_tree/features/family_tree/domain/usecase/get_branches_usecase.dart';
+import 'package:app_family_tree/core/logger/app_log_interceptor.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
-// Features
-// Data
-import 'package:app_family_tree/features/family_tree/data/source/family_data_source.dart';
+// Features - Data
+import 'package:app_family_tree/features/family_tree/data/source/family_api_service.dart';
 import 'package:app_family_tree/features/family_tree/data/repository/family_repository_impl.dart';
 
 // Domain
@@ -16,9 +13,10 @@ import 'package:app_family_tree/features/family_tree/domain/usecase/get_members_
 import 'package:app_family_tree/features/family_tree/domain/usecase/get_member_by_id_usecase.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/save_member_usecase.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/delete_member_usecase.dart';
+import 'package:app_family_tree/features/family_tree/domain/usecase/get_branches_usecase.dart';
 import 'package:app_family_tree/features/family_tree/domain/usecase/save_branch_usecase.dart';
 
-// Application
+// Presentation
 import 'package:app_family_tree/features/family_tree/presentation/member/bloc/member_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/branch/bloc/branch_form_bloc.dart';
 import 'package:app_family_tree/features/family_tree/presentation/tree/bloc/tree_bloc.dart';
@@ -54,15 +52,11 @@ Future<void> init() async {
 
   // ─── Repository ───────────────────────────────────────────────────────────
   sl.registerLazySingleton<FamilyRepository>(
-    () => FamilyRepositoryImpl(dataSource: sl()),
+    () => FamilyRepositoryImpl(apiService: sl()),
   );
 
-  // ─── Data Sources ─────────────────────────────────────────────────────────
-  sl.registerLazySingleton<FamilyDataSource>(
-    // Thay đổi ở đây để chuyển đổi giữa Local và Remote
-    // () => FamilyLocalDataSourceImpl(),
-    () => FamilyRemoteDataSourceImpl(dio: sl()),
-  );
+  // ─── Services (Data Layer) ────────────────────────────────────────────────
+  sl.registerLazySingleton(() => FamilyApiService(sl()));
 
   // ─── External ─────────────────────────────────────────────────────────────
   sl.registerLazySingleton(
@@ -70,16 +64,10 @@ Future<void> init() async {
         Dio(
             BaseOptions(
               baseUrl: AppConstants.baseUrl,
-              connectTimeout: const Duration(seconds: 5),
-              receiveTimeout: const Duration(seconds: 3),
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 10),
             ),
           )
-          ..interceptors.add(
-            LogInterceptor(
-              requestBody: true,
-              responseBody: true,
-              logPrint: (obj) => debugPrint(obj.toString()),
-            ),
-          ),
+          ..interceptors.add(AppLogInterceptor()),
   );
 }

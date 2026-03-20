@@ -1,29 +1,15 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class BranchEntity extends Equatable {
-  final int id;
-  final String name;
-  final String? description;
-  final String? founderName;
-  final int? foundingYear;
-  final String? region;
+part 'branch.freezed.dart';
 
-  const BranchEntity({
-    required this.id,
-    required this.name,
-    this.description,
-    this.founderName,
-    this.foundingYear,
-    this.region,
-  });
-
-  @override
-  List<Object?> get props => [
-    id,
-    name,
-    description,
-    founderName,
-    foundingYear,
-    region,
-  ];
+@freezed
+abstract class BranchEntity with _$BranchEntity {
+  const factory BranchEntity({
+    @Default(0) int id,
+    @Default('') String name,
+    String? description,
+    String? founderName,
+    int? foundingYear,
+    String? region,
+  }) = _BranchEntity;
 }

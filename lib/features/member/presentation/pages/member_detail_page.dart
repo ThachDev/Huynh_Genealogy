@@ -74,7 +74,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
           } else if (state is MemberError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Lỗi: ${state.message}'),
+                content: Text(S.of(context).errorMessage(state.message)),
                 backgroundColor: Colors.red,
               ),
             );
@@ -451,11 +451,11 @@ class _MemberDetailPageState extends State<MemberDetailPage>
     return Column(
       children: [
         if (personalRows.isNotEmpty)
-          _buildGlassSection('Thông tin cá nhân', personalRows),
+          _buildGlassSection(S.of(context).personalInfoSection, personalRows),
         if (personalRows.isNotEmpty && familyRows.isNotEmpty)
           const SizedBox(height: 24),
         if (familyRows.isNotEmpty)
-          _buildGlassSection('Gia phả & Liên kết', familyRows),
+          _buildGlassSection(S.of(context).genealogyAndLinksSection, familyRows),
       ],
     );
   }
@@ -640,9 +640,9 @@ class _MemberDetailPageState extends State<MemberDetailPage>
 
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Đang xử lý tải ảnh...'),
-                          duration: Duration(seconds: 1),
+                        SnackBar(
+                          content: Text(S.of(context).downloadingImage),
+                          duration: const Duration(seconds: 1),
                         ),
                       );
                     }
@@ -658,8 +658,8 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                     if (result != null && result['isSuccess'] == true) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Lưu ảnh thành công vào thư viện!'),
+                          SnackBar(
+                            content: Text(S.of(context).downloadImageSuccess),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -667,10 +667,8 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                     } else {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Tải ảnh thất bại! Hãy cấp quyền truy cập bộ sưu tập.',
-                            ),
+                          SnackBar(
+                            content: Text(S.of(context).downloadImageError),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -680,7 +678,7 @@ class _MemberDetailPageState extends State<MemberDetailPage>
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Lỗi tải ảnh: $e'),
+                          content: Text(S.of(context).downloadImageException(e.toString())),
                           backgroundColor: Colors.red,
                         ),
                       );

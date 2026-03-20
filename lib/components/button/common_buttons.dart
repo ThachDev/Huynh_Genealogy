@@ -23,7 +23,7 @@ class PrimaryButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.crimson,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         elevation: 4,
         shadowColor: Colors.black45,
@@ -44,12 +44,15 @@ class PrimaryButton extends StatelessWidget {
                   Icon(icon, size: 18),
                   const SizedBox(width: 8),
                 ],
-                Text(
-                  text.toUpperCase(),
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                    fontSize: 12,
+                Flexible(
+                  child: Text(
+                    text.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -76,7 +79,7 @@ class SecondaryButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         foregroundColor: AppColors.crimson,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -85,12 +88,15 @@ class SecondaryButton extends StatelessWidget {
             Icon(icon, size: 18),
             const SizedBox(width: 8),
           ],
-          Text(
-            text.toUpperCase(),
-            style: GoogleFonts.inter(
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-              fontSize: 12,
+          Flexible(
+            child: Text(
+              text.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+                fontSize: 12,
+              ),
             ),
           ),
         ],

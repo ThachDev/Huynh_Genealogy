@@ -102,7 +102,7 @@
   "spouseRelationLabel": "VỢ / CHỒNG",
   "branchRelationLabel": "CHI / NHÁNH GIA PHẢ",
   "cancelButton": "HỦY BỎ",
-  "saveButton": "LƯU THÔNG TIN",
+  "saveButton": "LƯU",
   "errorEnterName": "Vui lòng nhập họ tên",
   "maritalSingle": "Độc thân",
   "maritalMarried": "Đã kết hôn",
@@ -146,5 +146,33 @@
   "generalUnknown": "Chưa rõ",
   "descriptionLabel": "Mô tả",
   "noBranchDescription": "Chưa có mô tả cho chi tộc này.",
-  "featureInDevelopment": "Tính năng đang được phát triển.\nSẽ sớm cập nhật!"
+  "featureInDevelopment": "Tính năng đang được phát triển.\nSẽ sớm cập nhật!",
+  "settingsTitle": "CÀI ĐẶT",
+  "accountSection": "Tài Khoản",
+  "languageSelect": "Ngôn ngữ",
+  "infoAndSupport": "Thông tin & Hỗ trợ",
+  "aboutAppMenuItem": "Về ứng dụng",
+  "privacyPolicyMenuItem": "Chính sách bảo mật",
+  "helpAndSupportMenuItem": "Trợ giúp & Hỗ trợ",
+  "downloadingImage": "Đang xử lý tải ảnh...",
+  "downloadImageSuccess": "Lưu ảnh thành công vào thư viện!",
+  "downloadImageError": "Tải ảnh thất bại! Hãy cấp quyền truy cập bộ sưu tập.",
+  "downloadImageException": "Lỗi tải ảnh: {error}",
+  "@downloadImageException": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "personalInfoSection": "THÔNG TIN CÁ NHÂN",
+  "genealogyAndLinksSection": "GIA PHẢ & LIÊN KẾT",
+  "errorMessage": "Lỗi: {error}",
+  "@errorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

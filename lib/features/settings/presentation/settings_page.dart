@@ -6,6 +6,7 @@ import 'package:app_family_tree/features/settings/presentation/language/widgets/
 import 'package:app_family_tree/components/background/app_background.dart';
 import 'package:app_family_tree/components/app_bar/app_bar.dart';
 import 'package:app_family_tree/components/card/common_settings_card.dart';
+import 'package:resources/resources.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -14,33 +15,24 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: const CommonAppBar(titleText: 'CÀI ĐẶT', centerTitle: true),
+      appBar: CommonAppBar(titleText: S.of(context).settingsTitle, centerTitle: true),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const Positioned.fill(
-            child: AppBackground(),
-          ),
+          const Positioned.fill(child: AppBackground()),
           ListView(
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),
             children: [
-              _buildSectionTitle('Tài Khoản'),
+              _buildSectionTitle(S.of(context).accountSection),
               CommonSettingsCard(
                 children: [
                   ListTile(
                     leading: _buildIconContainer(Icons.language),
                     title: Text(
-                      'Ngôn ngữ',
+                      S.of(context).languageSelect,
                       style: GoogleFonts.inter(
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimary,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Thay đổi ngôn ngữ hiển thị',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
                       ),
                     ),
                     trailing: const LanguageSelector(),
@@ -48,25 +40,25 @@ class SettingsPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-              _buildSectionTitle('Thông tin & Hỗ trợ'),
+              _buildSectionTitle(S.of(context).infoAndSupport),
               CommonSettingsCard(
                 padding: EdgeInsets.zero,
                 children: [
                   _buildMenuItem(
                     icon: Icons.info_outline,
-                    title: 'Về ứng dụng',
+                    title: S.of(context).aboutAppMenuItem,
                     onTap: () => context.push('/about'),
                   ),
                   _buildDivider(),
                   _buildMenuItem(
                     icon: Icons.privacy_tip_outlined,
-                    title: 'Chính sách bảo mật',
+                    title: S.of(context).privacyPolicyMenuItem,
                     onTap: () => context.push('/security_policy'),
                   ),
                   _buildDivider(),
                   _buildMenuItem(
                     icon: Icons.help_outline,
-                    title: 'Trợ giúp & Hỗ trợ',
+                    title: S.of(context).helpAndSupportMenuItem,
                     onTap: () => context.push('/support'),
                   ),
                 ],

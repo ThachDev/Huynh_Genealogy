@@ -46,7 +46,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
   final TextEditingController _deathAnniversaryController =
       TextEditingController();
 
-  String _selectedGender = 'Nam';
+  Gender _selectedGender = Gender.male;
   String _selectedMaritalStatus = 'unknown';
 
   Map<String, String> get _maritalStatusMap {
@@ -77,9 +77,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
       _generationController.text = (m.generation ?? 1).toString();
       _placeOfBirthController.text = m.placeOfBirth ?? '';
       _noteController.text = m.notes ?? '';
-      _selectedGender = m.gender == Gender.male
-          ? 'Nam'
-          : (m.gender == Gender.female ? 'Nữ' : 'Khác');
+      _selectedGender = m.gender;
       _selectedMaritalStatus = m.maritalStatus.name;
       _selectedParentId = m.parentId;
       _selectedSpouseId = m.spouseId;
@@ -230,9 +228,14 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SectionLabel(S.of(context).genderLabel),
-                  CommonDropdown<String>(
+                  CommonDropdown<Gender>(
                     value: _selectedGender,
-                    items: [S.of(context).male, S.of(context).female],
+                    items: const [Gender.male, Gender.female, Gender.unknown],
+                    itemLabel: (g) {
+                      if (g == Gender.male) return S.of(context).male;
+                      if (g == Gender.female) return S.of(context).female;
+                      return S.of(context).generalUnknown;
+                    },
                     onChanged: (val) {
                       if (val != null) setState(() => _selectedGender = val);
                     },
@@ -424,18 +427,21 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
   Widget _buildFooter() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        SecondaryButton(
-          text: S.of(context).cancelButton,
-          onPressed: () => Navigator.of(context).pop(),
+        Expanded(
+          child: SecondaryButton(
+            text: S.of(context).cancelButton,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
         const SizedBox(width: 16),
-        BlocBuilder<MemberBloc, MemberState>(
-          builder: (context, state) => PrimaryButton(
-            text: S.of(context).saveButton,
-            isLoading: state is MemberSubmitting,
-            onPressed: _submit,
+        Expanded(
+          child: BlocBuilder<MemberBloc, MemberState>(
+            builder: (context, state) => PrimaryButton(
+              text: S.of(context).saveButton,
+              isLoading: state is MemberSubmitting,
+              onPressed: _submit,
+            ),
           ),
         ),
       ],
@@ -464,9 +470,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
     final member = MemberEntity(
       id: widget.memberToEdit?.id ?? 0,
       fullName: _nameController.text,
-      gender: _selectedGender == 'Nam'
-          ? Gender.male
-          : (_selectedGender == 'Nữ' ? Gender.female : Gender.unknown),
+      gender: _selectedGender,
       generation: int.tryParse(_generationController.text) ?? 1,
       dateOfBirth: formatToBE(_dobController.text),
       dateOfDeath: formatToBE(_dodController.text),

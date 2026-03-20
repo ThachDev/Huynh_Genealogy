@@ -100,7 +100,7 @@
   "spouseRelationLabel": "SPOUSE",
   "branchRelationLabel": "BRANCH / GENEALOGY LINE",
   "cancelButton": "CANCEL",
-  "saveButton": "SAVE INFORMATION",
+  "saveButton": "SAVE",
   "errorEnterName": "Please enter full name",
   "maritalSingle": "Single",
   "maritalMarried": "Married",
@@ -143,5 +143,33 @@
   "generalUnknown": "Unknown",
   "descriptionLabel": "Description",
   "noBranchDescription": "No description for this branch yet.",
-  "featureInDevelopment": "Feature in development.\nUpdating soon!"
+  "featureInDevelopment": "Feature in development.\nUpdating soon!",
+  "settingsTitle": "SETTINGS",
+  "accountSection": "Account",
+  "languageSelect": "Language",
+  "infoAndSupport": "Info & Support",
+  "aboutAppMenuItem": "About App",
+  "privacyPolicyMenuItem": "Privacy Policy",
+  "helpAndSupportMenuItem": "Help & Support",
+  "downloadingImage": "Processing image download...",
+  "downloadImageSuccess": "Image saved to gallery successfully!",
+  "downloadImageError": "Failed to download image! Please grant gallery access.",
+  "downloadImageException": "Image download error: {error}",
+  "@downloadImageException": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "personalInfoSection": "PERSONAL INFO",
+  "genealogyAndLinksSection": "GENEALOGY & LINKS",
+  "errorMessage": "Error: {error}",
+  "@errorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -269,20 +269,20 @@ class S {
     );
   }
 
-  /// `Tâm huyết thực hiện`
+  /// `Thực hiện`
   String get aboutDedicationTitle {
     return Intl.message(
-      'Tâm huyết thực hiện',
+      'Thực hiện',
       name: 'aboutDedicationTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Được xây dựng bởi con cháu trong dòng họ với mong muốn lưu giữ những ký ức, câu chuyện và giá trị tốt đẹp của gia đình.`
+  /// `Xây dựng bởi con cháu trong dòng họ.`
   String get aboutDedicationContent {
     return Intl.message(
-      'Được xây dựng bởi con cháu trong dòng họ với mong muốn lưu giữ những ký ức, câu chuyện và giá trị tốt đẹp của gia đình.',
+      'Xây dựng bởi con cháu trong dòng họ.',
       name: 'aboutDedicationContent',
       desc: '',
       args: [],
@@ -299,10 +299,10 @@ class S {
     );
   }
 
-  /// `© 2026 Gia phả họ Huỳnh.`
+  /// `© 2026 Gia phả họ Huỳnh. Lưu hành nội bộ.`
   String get aboutCopyrightContent {
     return Intl.message(
-      '© 2026 Gia phả họ Huỳnh.',
+      '© 2026 Gia phả họ Huỳnh. Lưu hành nội bộ.',
       name: 'aboutCopyrightContent',
       desc: '',
       args: [],
@@ -714,14 +714,9 @@ class S {
     return Intl.message('HỦY BỎ', name: 'cancelButton', desc: '', args: []);
   }
 
-  /// `LƯU THÔNG TIN`
+  /// `LƯU`
   String get saveButton {
-    return Intl.message(
-      'LƯU THÔNG TIN',
-      name: 'saveButton',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('LƯU', name: 'saveButton', desc: '', args: []);
   }
 
   /// `Vui lòng nhập họ tên`
@@ -1096,6 +1091,136 @@ class S {
       name: 'featureInDevelopment',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `CÀI ĐẶT`
+  String get settingsTitle {
+    return Intl.message('CÀI ĐẶT', name: 'settingsTitle', desc: '', args: []);
+  }
+
+  /// `Tài Khoản`
+  String get accountSection {
+    return Intl.message(
+      'Tài Khoản',
+      name: 'accountSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ngôn ngữ`
+  String get languageSelect {
+    return Intl.message('Ngôn ngữ', name: 'languageSelect', desc: '', args: []);
+  }
+
+  /// `Thông tin & Hỗ trợ`
+  String get infoAndSupport {
+    return Intl.message(
+      'Thông tin & Hỗ trợ',
+      name: 'infoAndSupport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Về ứng dụng`
+  String get aboutAppMenuItem {
+    return Intl.message(
+      'Về ứng dụng',
+      name: 'aboutAppMenuItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chính sách bảo mật`
+  String get privacyPolicyMenuItem {
+    return Intl.message(
+      'Chính sách bảo mật',
+      name: 'privacyPolicyMenuItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trợ giúp & Hỗ trợ`
+  String get helpAndSupportMenuItem {
+    return Intl.message(
+      'Trợ giúp & Hỗ trợ',
+      name: 'helpAndSupportMenuItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Đang xử lý tải ảnh...`
+  String get downloadingImage {
+    return Intl.message(
+      'Đang xử lý tải ảnh...',
+      name: 'downloadingImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lưu ảnh thành công vào thư viện!`
+  String get downloadImageSuccess {
+    return Intl.message(
+      'Lưu ảnh thành công vào thư viện!',
+      name: 'downloadImageSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tải ảnh thất bại! Hãy cấp quyền truy cập bộ sưu tập.`
+  String get downloadImageError {
+    return Intl.message(
+      'Tải ảnh thất bại! Hãy cấp quyền truy cập bộ sưu tập.',
+      name: 'downloadImageError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lỗi tải ảnh: {error}`
+  String downloadImageException(String error) {
+    return Intl.message(
+      'Lỗi tải ảnh: $error',
+      name: 'downloadImageException',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `THÔNG TIN CÁ NHÂN`
+  String get personalInfoSection {
+    return Intl.message(
+      'THÔNG TIN CÁ NHÂN',
+      name: 'personalInfoSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GIA PHẢ & LIÊN KẾT`
+  String get genealogyAndLinksSection {
+    return Intl.message(
+      'GIA PHẢ & LIÊN KẾT',
+      name: 'genealogyAndLinksSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lỗi: {error}`
+  String errorMessage(String error) {
+    return Intl.message(
+      'Lỗi: $error',
+      name: 'errorMessage',
+      desc: '',
+      args: [error],
     );
   }
 }

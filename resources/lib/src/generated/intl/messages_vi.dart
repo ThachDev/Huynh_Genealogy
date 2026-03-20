@@ -20,45 +20,40 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'vi';
 
-  // ignore: strict_top_level_inference
-  static String m1(version) => "Phiên bản ${version}";
+  static String m0(version) => "Phiên bản ${version}";
 
-  // ignore: strict_top_level_inference
-  static String m2(name) =>
+  static String m1(name) =>
       "Bạn có chắc muốn xóa thành viên ${name} khỏi gia phả không? Thao tác này không thể hoàn tác.";
 
-  // ignore: strict_top_level_inference
-  static String m3(count) => "${count} người";
+  static String m2(count) => "${count} người";
 
-  // ignore: strict_top_level_inference
-  static String m0(name) =>
+  static String m3(name) =>
       "Bạn có chắc muốn xóa thành viên ${name} khỏi gia phả không?";
 
-  // ignore: strict_top_level_inference
-  static String m4(gen) => "Đời thứ ${gen}";
+  static String m4(error) => "Lỗi tải ảnh: ${error}";
 
-  // ignore: strict_top_level_inference
-  static String m5(name) => "Đã lưu thông tin chi tộc ${name}.";
+  static String m5(error) => "Lỗi: ${error}";
 
-  // ignore: strict_top_level_inference
-  static String m6(name) => "Đã lưu thông tin thành viên ${name}.";
+  static String m6(gen) => "Đời thứ ${gen}";
 
-  // ignore: strict_top_level_inference
-  static String m7(date) => "Cập nhật lần cuối: ${date}";
+  static String m7(name) => "Đã lưu thông tin chi tộc ${name}.";
+
+  static String m8(name) => "Đã lưu thông tin thành viên ${name}.";
+
+  static String m9(date) => "Cập nhật lần cuối: ${date}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "aboutAppMenuItem": MessageLookupByLibrary.simpleMessage("Về ứng dụng"),
     "aboutAppName": MessageLookupByLibrary.simpleMessage("Gia Phả Họ Huỳnh"),
     "aboutCopyrightContent": MessageLookupByLibrary.simpleMessage(
       "© 2026 Gia phả họ Huỳnh. Lưu hành nội bộ.",
     ),
     "aboutCopyrightTitle": MessageLookupByLibrary.simpleMessage("Ghi chú"),
     "aboutDedicationContent": MessageLookupByLibrary.simpleMessage(
-      "Được xây dựng bởi con cháu trong dòng họ với mong muốn lưu giữ những ký ức, câu chuyện và giá trị tốt đẹp của gia đình.",
+      "Xây dựng bởi con cháu trong dòng họ.",
     ),
-    "aboutDedicationTitle": MessageLookupByLibrary.simpleMessage(
-      "Tâm huyết thực hiện",
-    ),
+    "aboutDedicationTitle": MessageLookupByLibrary.simpleMessage("Thực hiện"),
     "aboutDescriptionContent": MessageLookupByLibrary.simpleMessage(
       "Ứng dụng được tạo ra nhằm lưu giữ, kết nối và phát huy truyền thống của dòng họ, giúp con cháu hiểu rõ cội nguồn và gìn giữ giá trị gia đình qua nhiều thế hệ.",
     ),
@@ -69,7 +64,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Cây có gốc mới nở ngành xanh ngọn,\nNước có nguồn mới bể rộng sông sâu",
     ),
     "aboutTitle": MessageLookupByLibrary.simpleMessage("VỀ ỨNG DỤNG"),
-    "aboutVersion": m1,
+    "aboutVersion": m0,
+    "accountSection": MessageLookupByLibrary.simpleMessage("Tài Khoản"),
     "addBranchTitle": MessageLookupByLibrary.simpleMessage("THÊM CHI TỘC MỚI"),
     "addChild": MessageLookupByLibrary.simpleMessage("Thêm con (Hậu duệ)"),
     "addMemberTitle": MessageLookupByLibrary.simpleMessage("THÊM THÀNH VIÊN"),
@@ -114,13 +110,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "cancel": MessageLookupByLibrary.simpleMessage("Hủy"),
     "cancelButton": MessageLookupByLibrary.simpleMessage("HỦY BỎ"),
     "confirmDelete": MessageLookupByLibrary.simpleMessage("Xác nhận xóa"),
-    "confirmDeleteContent": m2,
-    "countPeople": m3,
+    "confirmDeleteContent": m1,
+    "countPeople": m2,
     "deceased": MessageLookupByLibrary.simpleMessage("Đã mất"),
     "deleteMemberButton": MessageLookupByLibrary.simpleMessage(
       "XÓA THÀNH VIÊN",
     ),
-    "deleteMemberConfirm": m0,
+    "deleteMemberConfirm": m3,
     "deleteMemberSuccess": MessageLookupByLibrary.simpleMessage(
       "Đã xóa thành viên thành công",
     ),
@@ -129,6 +125,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "diagram": MessageLookupByLibrary.simpleMessage("Sơ đồ"),
     "dobLabel": MessageLookupByLibrary.simpleMessage("NGÀY SINH"),
     "dodLabel": MessageLookupByLibrary.simpleMessage("NGÀY MẤT"),
+    "downloadImageError": MessageLookupByLibrary.simpleMessage(
+      "Tải ảnh thất bại! Hãy cấp quyền truy cập bộ sưu tập.",
+    ),
+    "downloadImageException": m4,
+    "downloadImageSuccess": MessageLookupByLibrary.simpleMessage(
+      "Lưu ảnh thành công vào thư viện!",
+    ),
+    "downloadingImage": MessageLookupByLibrary.simpleMessage(
+      "Đang xử lý tải ảnh...",
+    ),
     "editBranchTitle": MessageLookupByLibrary.simpleMessage(
       "CHỈNH SỬA CHI TỘC",
     ),
@@ -142,6 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "errorEnterName": MessageLookupByLibrary.simpleMessage(
       "Vui lòng nhập họ tên",
     ),
+    "errorMessage": m5,
     "errorOccurred": MessageLookupByLibrary.simpleMessage("Có lỗi xảy ra"),
     "event": MessageLookupByLibrary.simpleMessage("Sự kiện"),
     "familyTreeDiagram": MessageLookupByLibrary.simpleMessage("SƠ ĐỒ GIA PHẢ"),
@@ -151,11 +158,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "female": MessageLookupByLibrary.simpleMessage("Nữ"),
     "fullNameLabel": MessageLookupByLibrary.simpleMessage("HỌ VÀ TÊN"),
     "genderLabel": MessageLookupByLibrary.simpleMessage("GIỚI TÍNH"),
+    "genealogyAndLinksSection": MessageLookupByLibrary.simpleMessage(
+      "GIA PHẢ & LIÊN KẾT",
+    ),
     "generalUnknown": MessageLookupByLibrary.simpleMessage("Chưa rõ"),
     "generation": MessageLookupByLibrary.simpleMessage("Đời"),
     "generationLabel": MessageLookupByLibrary.simpleMessage("ĐỜI THỨ"),
-    "generationLabelShort": m4,
+    "generationLabelShort": m6,
+    "helpAndSupportMenuItem": MessageLookupByLibrary.simpleMessage(
+      "Trợ giúp & Hỗ trợ",
+    ),
     "home": MessageLookupByLibrary.simpleMessage("Trang chủ"),
+    "infoAndSupport": MessageLookupByLibrary.simpleMessage(
+      "Thông tin & Hỗ trợ",
+    ),
+    "languageSelect": MessageLookupByLibrary.simpleMessage("Ngôn ngữ"),
     "legend": MessageLookupByLibrary.simpleMessage("Chú thích ký hiệu"),
     "male": MessageLookupByLibrary.simpleMessage("Nam"),
     "maritalDivorced": MessageLookupByLibrary.simpleMessage("Ly hôn"),
@@ -190,16 +207,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "parentRelationLabel": MessageLookupByLibrary.simpleMessage(
       "CHA / MẸ (Người trực hệ)",
     ),
+    "personalInfoSection": MessageLookupByLibrary.simpleMessage(
+      "THÔNG TIN CÁ NHÂN",
+    ),
     "pickAvatarLabel": MessageLookupByLibrary.simpleMessage(
       "CHỌN ẢNH CHÂN DUNG",
     ),
+    "privacyPolicyMenuItem": MessageLookupByLibrary.simpleMessage(
+      "Chính sách bảo mật",
+    ),
     "retry": MessageLookupByLibrary.simpleMessage("Thử lại"),
-    "saveBranchSuccessMessage": m5,
-    "saveButton": MessageLookupByLibrary.simpleMessage("LƯU THÔNG TIN"),
-    "saveMemberSuccessMessage": m6,
+    "saveBranchSuccessMessage": m7,
+    "saveButton": MessageLookupByLibrary.simpleMessage("LƯU"),
+    "saveMemberSuccessMessage": m8,
     "saveSuccessTitle": MessageLookupByLibrary.simpleMessage("LƯU THÀNH CÔNG!"),
     "searchHint": MessageLookupByLibrary.simpleMessage("Tìm người thân..."),
-    "securityLastUpdate": m7,
+    "securityLastUpdate": m9,
     "securityPart1Content": MessageLookupByLibrary.simpleMessage(
       "Ứng dụng lưu giữ các thông tin cơ bản của thành viên trong dòng họ như: Họ tên, giới tính, ngày sinh, ngày mất và mối quan hệ gia đình nhằm phục vụ việc xây dựng và duy trì gia phả.",
     ),
@@ -233,6 +256,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "securityTitle": MessageLookupByLibrary.simpleMessage("Chính sách bảo mật"),
     "selectGenderTitle": MessageLookupByLibrary.simpleMessage("CHỌN GIỚI TÍNH"),
     "settings": MessageLookupByLibrary.simpleMessage("Cài đặt"),
+    "settingsTitle": MessageLookupByLibrary.simpleMessage("CÀI ĐẶT"),
     "spouseDropdownHint": MessageLookupByLibrary.simpleMessage(
       "Chọn người phối ngẫu",
     ),

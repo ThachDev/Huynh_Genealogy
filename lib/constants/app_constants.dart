@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class AppConstants {
   AppConstants._();
 
@@ -11,12 +9,7 @@ class AppConstants {
   static const String cachedBranches = 'CACHED_BRANCHES';
 
   // API
-  static String get serverUrl {
-    if (Platform.isAndroid) {
-      return 'http://172.16.0.132:3000';
-    }
-    return 'http://localhost:3000';
-  }
+  static const String serverUrl = 'http://172.16.0.148:3000';
 
   static String get baseUrl => '$serverUrl/api';
 

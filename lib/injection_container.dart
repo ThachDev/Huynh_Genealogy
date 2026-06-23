@@ -6,35 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/dio_client.dart';
 
-// Data
-import 'data/datasources/family_mock_data_source.dart';
-import 'data/datasources/family_remote_data_source.dart';
-import 'data/repositories/family_repository_impl.dart';
-import 'data/datasources/auth_local_data_source.dart';
-import 'data/datasources/auth_remote_data_source.dart';
-import 'data/repositories/auth_repository_impl.dart';
-
-// Domain
-import 'domain/repositories/family_repository.dart';
-import 'domain/repositories/auth_repository.dart';
-import 'domain/usecases/delete_member.dart';
-import 'domain/usecases/get_branches.dart';
-import 'domain/usecases/get_members.dart';
-import 'domain/usecases/save_member.dart';
-import 'domain/usecases/auth/get_cached_user.dart';
-import 'domain/usecases/auth/login_with_google.dart';
-import 'domain/usecases/auth/logout.dart';
-import 'domain/usecases/family/create_family.dart';
-import 'domain/usecases/family/verify_invite_code.dart';
-import 'domain/usecases/family/join_family.dart';
-import 'domain/usecases/family/get_pending_requests.dart';
-import 'domain/usecases/family/approve_request.dart';
-
-// Presentation
-import 'presentation/bloc/member_form/member_form_bloc.dart';
-import 'presentation/bloc/tree/tree_bloc.dart';
-import 'presentation/bloc/auth/auth_bloc.dart';
-import 'presentation/bloc/onboarding/onboarding_bloc.dart';
+// Features (Encapsulated Entry Points)
+import 'features/auth/auth.dart';
+import 'features/family/family.dart';
+import 'features/family_tree/family_tree.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 
@@ -96,6 +71,10 @@ Future<void> init() async {
     () => FamilyRepositoryImpl(remoteDataSource: sl()),
   );
 
+  sl.registerLazySingleton<TreeRepository>(
+    () => TreeRepositoryImpl(remoteDataSource: sl()),
+  );
+
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       remoteDataSource: sl(),
@@ -107,12 +86,12 @@ Future<void> init() async {
 
   // ─── Data Sources ─────────────────────────────────────────────────────────
   sl.registerLazySingleton<FamilyRemoteDataSource>(
-    () => FamilyMockDataSourceImpl(),
+    () => FamilyRemoteDataSourceImpl(dio: sl()),
   );
 
-  // sl.registerLazySingleton<FamilyRemoteDataSource>(
-  //   () => FamilyRemoteDataSourceImpl(dio: sl()),
-  // );
+  sl.registerLazySingleton<TreeRemoteDataSource>(
+    () => TreeRemoteDataSourceImpl(dio: sl()),
+  );
 
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(

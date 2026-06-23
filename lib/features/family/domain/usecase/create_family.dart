@@ -1,0 +1,39 @@
+import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
+import '../../../../core/errors/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entity/family_entity.dart';
+import '../repository/family_repository.dart';
+
+class CreateFamily implements UseCase<FamilyEntity, CreateFamilyParams> {
+  final FamilyRepository repository;
+
+  CreateFamily(this.repository);
+
+  @override
+  Future<Either<Failure, FamilyEntity>> call(CreateFamilyParams params) {
+    return repository.createFamily(
+      name: params.name,
+      description: params.description,
+      coverImageUrl: params.coverImageUrl,
+      userId: params.userId,
+    );
+  }
+}
+
+class CreateFamilyParams extends Equatable {
+  final String name;
+  final String? description;
+  final String? coverImageUrl;
+  final int userId;
+
+  const CreateFamilyParams({
+    required this.name,
+    this.description,
+    this.coverImageUrl,
+    required this.userId,
+  });
+
+  @override
+  List<Object?> get props => [name, description, coverImageUrl, userId];
+}

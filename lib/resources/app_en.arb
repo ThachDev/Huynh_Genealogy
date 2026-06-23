@@ -1,0 +1,14 @@
+{
+  "loginTitle": "Login",
+  "loginSubtitle": "Connect with your family genealogy roots",
+  "emailLabel": "Email Address",
+  "emailHint": "email@example.com",
+  "passwordLabel": "Password",
+  "passwordHint": "••••••••",
+  "forgotPassword": "FORGOT PASSWORD?",
+  "loginButton": "LOGIN",
+  "orDivider": "OR",
+  "googleLoginButton": "LOGIN WITH GOOGLE",
+  "noAccountText": "Don't have an account? ",
+  "registerNow": "REGISTER NOW"
+}

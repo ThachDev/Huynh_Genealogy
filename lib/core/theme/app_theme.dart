@@ -63,7 +63,7 @@ class AppTheme {
           color: Colors.white,
         ),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: AppColors.surface,
         elevation: 3,
         shape: RoundedRectangleBorder(
@@ -76,7 +76,7 @@ class AppTheme {
           backgroundColor: AppColors.crimson,
           foregroundColor: Colors.white,
           elevation: 4,
-          shadowColor: AppColors.gold.withValues(alpha: 0.5),
+          shadowColor: AppColors.gold.withOpacity(0.5),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: GoogleFonts.inter(fontWeight: FontWeight.bold),
         ),

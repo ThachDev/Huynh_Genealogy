@@ -1,0 +1,14 @@
+{
+  "loginTitle": "Đăng Nhập",
+  "loginSubtitle": "Kết nối với cội nguồn dòng tộc của bạn",
+  "emailLabel": "Địa chỉ email",
+  "emailHint": "email@example.com",
+  "passwordLabel": "Mật khẩu",
+  "passwordHint": "••••••••",
+  "forgotPassword": "QUÊN MẬT KHẨU?",
+  "loginButton": "ĐĂNG NHẬP",
+  "orDivider": "HOẶC",
+  "googleLoginButton": "ĐĂNG NHẬP VỚI GOOGLE",
+  "noAccountText": "Chưa có tài khoản? ",
+  "registerNow": "ĐĂNG KÝ NGAY"
+}

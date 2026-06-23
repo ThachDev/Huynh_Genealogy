@@ -32,7 +32,7 @@ class MemberFormBloc extends Bloc<MemberFormEvent, MemberFormState> {
       return;
     }
     // Edit mode – fetch member
-    final result = await getMembers(GetMembersParams());
+    final result = await getMembers(const GetMembersParams());
     result.fold(
       (failure) => emit(MemberFormError(failure.message)),
       (members) {

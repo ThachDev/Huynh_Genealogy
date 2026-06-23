@@ -208,7 +208,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                         children: [
                           Text(
                             'GIA PHẢ HỌ HUỲNH',
-                            style: GoogleFonts.playfairDisplay(
+                            style: GoogleFonts.beVietnamPro(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: AppColors.gold,
@@ -363,7 +363,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                 const SizedBox(width: 8),
                 Text(
                   'SỰ KIỆN HÔM NAY',
-                  style: GoogleFonts.playfairDisplay(
+                  style: GoogleFonts.beVietnamPro(
                     fontWeight: FontWeight.bold,
                     color: AppColors.crimson,
                     fontSize: 14,
@@ -459,7 +459,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.beVietnamPro(
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -478,7 +478,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
           const SizedBox(width: 10),
           Text(
             title.toUpperCase(),
-            style: GoogleFonts.playfairDisplay(
+            style: GoogleFonts.beVietnamPro(
               fontSize: 14,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,

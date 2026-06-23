@@ -1,6 +1,6 @@
 {
-    "name": "app_family_tree",
-    "short_name": "app_family_tree",
+    "name": "Gia Tộc Việt",
+    "short_name": "Gia Tộc Việt",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

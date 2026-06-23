@@ -29,7 +29,8 @@ class TreeRemoteDataSourceImpl implements TreeRemoteDataSource {
         AppConstants.membersEndpoint,
         queryParameters: queryParams,
       );
-      final List<dynamic> data = response.data as List<dynamic>;
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      final List<dynamic> data = responseData['data'] as List<dynamic>;
       return data
           .map((json) => MemberModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -46,7 +47,8 @@ class TreeRemoteDataSourceImpl implements TreeRemoteDataSource {
     try {
       final response =
           await dio.get('${AppConstants.membersEndpoint}/$id');
-      return MemberModel.fromJson(response.data as Map<String, dynamic>);
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      return MemberModel.fromJson(responseData['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         throw const NotFoundException(message: 'Không tìm thấy thành viên');
@@ -71,7 +73,8 @@ class TreeRemoteDataSourceImpl implements TreeRemoteDataSource {
               '${AppConstants.membersEndpoint}/${member.id}',
               data: member.toJson(),
             );
-      return MemberModel.fromJson(response.data as Map<String, dynamic>);
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      return MemberModel.fromJson(responseData['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
         message: e.message ?? 'Lỗi lưu thành viên',
@@ -97,7 +100,8 @@ class TreeRemoteDataSourceImpl implements TreeRemoteDataSource {
   Future<List<BranchModel>> getBranches() async {
     try {
       final response = await dio.get(AppConstants.branchesEndpoint);
-      final List<dynamic> data = response.data as List<dynamic>;
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      final List<dynamic> data = responseData['data'] as List<dynamic>;
       return data
           .map((json) => BranchModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -114,7 +118,8 @@ class TreeRemoteDataSourceImpl implements TreeRemoteDataSource {
     try {
       final response =
           await dio.get('${AppConstants.branchesEndpoint}/$id');
-      return BranchModel.fromJson(response.data as Map<String, dynamic>);
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      return BranchModel.fromJson(responseData['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         throw const NotFoundException(message: 'Không tìm thấy chi/nhánh');
@@ -139,7 +144,8 @@ class TreeRemoteDataSourceImpl implements TreeRemoteDataSource {
               '${AppConstants.branchesEndpoint}/${branch.id}',
               data: branch.toJson(),
             );
-      return BranchModel.fromJson(response.data as Map<String, dynamic>);
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
+      return BranchModel.fromJson(responseData['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
         message: e.message ?? 'Lỗi lưu chi/nhánh',

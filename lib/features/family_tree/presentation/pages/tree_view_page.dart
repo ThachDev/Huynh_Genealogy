@@ -68,7 +68,7 @@ class _TreeViewPageState extends State<TreeViewPage> {
       appBar: AppBar(
         title: Text(
           'Bản Đồ Phả Hệ',
-          style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
+          style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
@@ -172,7 +172,7 @@ class _TreeViewPageState extends State<TreeViewPage> {
         backgroundColor: AppColors.parchment,
         title: Text(
           'Hướng dẫn sử dụng',
-          style: GoogleFonts.playfairDisplay(
+          style: GoogleFonts.beVietnamPro(
             fontWeight: FontWeight.bold,
             color: AppColors.crimson,
           ),

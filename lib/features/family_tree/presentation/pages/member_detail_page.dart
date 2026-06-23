@@ -100,7 +100,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                   Text(
                     widget.member.fullName.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.playfairDisplay(
+                    style: GoogleFonts.beVietnamPro(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppColors.crimson,
@@ -365,7 +365,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           child: Text(
             widget.member.notes ??
                 'Chưa có thông tin tiểu sử cho thành viên này.',
-            style: GoogleFonts.playfairDisplay(
+            style: GoogleFonts.beVietnamPro(
               fontSize: 16,
               height: 1.6,
               fontStyle: FontStyle.italic,

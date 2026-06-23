@@ -4,11 +4,15 @@ import 'package:google_fonts/google_fonts.dart';
 class AppColors {
   AppColors._();
 
-  // Primary palette – "Warm Organic / Cultural"
-  static const Color crimson = Color(0xFF8B0000); // Crimson - #8B0000
-  static const Color gold = Color(0xFFD4AF37); // Gold - #D4AF37
-  static const Color parchment = Color(0xFFF4EBD0); // Parchment - #F4EBD0
-  static const Color wood = Color(0xFF4B2E1E); // Wood - #4B2E1E
+  // Primary palette – "Neo-Industrial"
+  static const Color crimson = Color(0xFF5C0612); // Crimson/Secondary - #5C0612
+  static const Color gold = Color(0xFFD4AF37); // Gold/Tertiary - #D4AF37
+  static const Color parchment = Color(
+    0xFFF5F5F5,
+  ); // Background/Parchment - #F5F5F5 (Neo-Industrial light grey)
+  static const Color wood = Color(
+    0xFF1A1A1A,
+  ); // Wood/AppBar - #1A1A1A (Neo-Industrial charcoal black)
 
   // Compatibility names (if used elsewhere)
   static const Color primary = crimson;
@@ -17,8 +21,8 @@ class AppColors {
   static const Color surface = Colors.white;
 
   // Text colors
-  static const Color textPrimary = Color(0xFF2C1810);
-  static const Color textSecondary = Color(0xFF6D4C41);
+  static const Color textPrimary = Color(0xFF000000); // Neutral - #000000
+  static const Color textSecondary = Color(0xFF555555); // Dark grey
   static const Color textOnPrimary = Colors.white;
 
   // Tree node colors
@@ -53,7 +57,7 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 4,
         centerTitle: true,
-        titleTextStyle: GoogleFonts.playfairDisplay(
+        titleTextStyle: GoogleFonts.beVietnamPro(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -78,17 +82,17 @@ class AppTheme {
         ),
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
-        displayLarge: GoogleFonts.playfairDisplay(
+        displayLarge: GoogleFonts.beVietnamPro(
           fontSize: 32,
           fontWeight: FontWeight.bold,
           color: AppColors.crimson,
         ),
-        headlineMedium: GoogleFonts.playfairDisplay(
+        headlineMedium: GoogleFonts.beVietnamPro(
           fontSize: 24,
           fontWeight: FontWeight.bold,
           color: AppColors.crimson,
         ),
-        titleLarge: GoogleFonts.playfairDisplay(
+        titleLarge: GoogleFonts.beVietnamPro(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: AppColors.textPrimary,
@@ -99,6 +103,21 @@ class AppTheme {
         ),
         bodyMedium: GoogleFonts.inter(
           fontSize: 14,
+          color: AppColors.textSecondary,
+        ),
+        labelLarge: GoogleFonts.notoSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimary,
+        ),
+        labelMedium: GoogleFonts.notoSans(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textSecondary,
+        ),
+        labelSmall: GoogleFonts.notoSans(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
           color: AppColors.textSecondary,
         ),
       ),

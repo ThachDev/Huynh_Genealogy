@@ -2,7 +2,7 @@ class AppConstants {
   AppConstants._();
 
   // API
-  static const String baseUrl = 'http://localhost:3000/api';
+  static const String baseUrl = 'http://172.16.0.148:3000/api';
 
   // Endpoints
   static const String membersEndpoint = '/members';

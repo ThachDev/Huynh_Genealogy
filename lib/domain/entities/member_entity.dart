@@ -22,6 +22,9 @@ class MemberEntity extends Equatable {
   final int? spouseId;            // ID vợ/chồng
   final String? notes;
   final String? avatarUrl;
+  final int? familyId;
+  final bool isLunarBirthDate;
+  final bool isLunarDeathDate;
 
   const MemberEntity({
     required this.id,
@@ -39,6 +42,9 @@ class MemberEntity extends Equatable {
     this.spouseId,
     this.notes,
     this.avatarUrl,
+    this.familyId,
+    this.isLunarBirthDate = false,
+    this.isLunarDeathDate = false,
   });
 
   @override
@@ -58,5 +64,8 @@ class MemberEntity extends Equatable {
         spouseId,
         notes,
         avatarUrl,
+        familyId,
+        isLunarBirthDate,
+        isLunarDeathDate,
       ];
 }

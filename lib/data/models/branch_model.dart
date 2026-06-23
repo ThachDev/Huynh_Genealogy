@@ -8,6 +8,7 @@ class BranchModel extends BranchEntity {
     super.founderName,
     super.foundingYear,
     super.region,
+    super.familyId,
   });
 
   factory BranchModel.fromJson(Map<String, dynamic> json) {
@@ -18,6 +19,7 @@ class BranchModel extends BranchEntity {
       founderName: json['founderName'] as String?,
       foundingYear: json['foundingYear'] as int?,
       region: json['region'] as String?,
+      familyId: json['familyId'] as int?,
     );
   }
 
@@ -29,6 +31,7 @@ class BranchModel extends BranchEntity {
       'founderName': founderName,
       'foundingYear': foundingYear,
       'region': region,
+      'familyId': familyId,
     };
   }
 
@@ -40,6 +43,7 @@ class BranchModel extends BranchEntity {
       founderName: entity.founderName,
       foundingYear: entity.foundingYear,
       region: entity.region,
+      familyId: entity.familyId,
     );
   }
 }

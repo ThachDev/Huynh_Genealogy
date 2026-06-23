@@ -1,6 +1,8 @@
 import '../../domain/entities/member_entity.dart';
 import '../models/branch_model.dart';
 import '../models/member_model.dart';
+import '../models/family_model.dart';
+import '../models/family_user_model.dart';
 import 'family_remote_data_source.dart';
 
 class FamilyMockDataSourceImpl implements FamilyRemoteDataSource {
@@ -245,5 +247,118 @@ class FamilyMockDataSourceImpl implements FamilyRemoteDataSource {
     await Future.delayed(const Duration(milliseconds: 300));
     _branches.removeWhere((b) => b.id == id);
     return true;
+  }
+
+  // ---------- Mock Databases for Family ----------
+  final List<FamilyModel> _families = [
+    const FamilyModel(
+      id: 1,
+      name: 'Họ Nguyễn Văn',
+      inviteCode: 'NGUYEN123',
+      creatorId: 1,
+      description: 'Dòng họ Nguyễn Văn tại miền Bắc',
+    )
+  ];
+
+  final List<FamilyUserModel> _requests = [
+    const FamilyUserModel(
+      id: 1,
+      userId: 100,
+      familyId: 1,
+      memberNodeId: 4,
+      role: 'VIEWER',
+      status: 'PENDING',
+      userFullName: 'Nguyễn Văn Test',
+      userEmail: 'test@gmail.com',
+    )
+  ];
+
+  // ---------- Family & Onboarding Mock Implementations ----------
+
+  @override
+  Future<FamilyModel> createFamily({
+    required String name,
+    String? description,
+    String? coverImageUrl,
+    required int userId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final newFamily = FamilyModel(
+      id: _families.isEmpty ? 1 : _families.map((f) => f.id).reduce((a, b) => a > b ? a : b) + 1,
+      name: name,
+      inviteCode: 'INV${name.substring(0, 3).toUpperCase()}',
+      creatorId: userId,
+      description: description,
+      coverImageUrl: coverImageUrl,
+    );
+    _families.add(newFamily);
+    return newFamily;
+  }
+
+  @override
+  Future<Map<String, dynamic>> verifyInviteCode(String code) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      final family = _families.firstWhere(
+        (f) => f.inviteCode.toUpperCase() == code.toUpperCase(),
+      );
+      // Return members associated with that family
+      final members = _members.where((m) => m.familyId == family.id).toList();
+      return {
+        'family': family,
+        'members': members,
+      };
+    } catch (_) {
+      throw Exception('Mã mời không chính xác');
+    }
+  }
+
+  @override
+  Future<FamilyUserModel> joinFamily({
+    required int userId,
+    required int familyId,
+    int? memberNodeId,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    final newRequest = FamilyUserModel(
+      id: _requests.isEmpty ? 1 : _requests.map((r) => r.id).reduce((a, b) => a > b ? a : b) + 1,
+      userId: userId,
+      familyId: familyId,
+      memberNodeId: memberNodeId,
+      role: 'VIEWER',
+      status: 'PENDING',
+      userFullName: 'User $userId',
+      userEmail: 'user$userId@gmail.com',
+    );
+    _requests.add(newRequest);
+    return newRequest;
+  }
+
+  @override
+  Future<List<FamilyUserModel>> getPendingRequests(int familyId) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    return _requests.where((r) => r.familyId == familyId && r.status == 'PENDING').toList();
+  }
+
+  @override
+  Future<bool> approveRequest(int requestId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final index = _requests.indexWhere((r) => r.id == requestId);
+    if (index != -1) {
+      final old = _requests[index];
+      _requests[index] = FamilyUserModel(
+        id: old.id,
+        userId: old.userId,
+        familyId: old.familyId,
+        memberNodeId: old.memberNodeId,
+        role: old.role,
+        status: 'APPROVED',
+        userFullName: old.userFullName,
+        userEmail: old.userEmail,
+        userAvatarUrl: old.userAvatarUrl,
+      );
+      return true;
+    }
+    return false;
   }
 }

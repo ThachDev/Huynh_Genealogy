@@ -30,7 +30,7 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _buttonStyle();
+    final style = _buttonStyle(context);
     final height = _height();
     final fontSize = _fontSize();
 
@@ -40,7 +40,7 @@ class AppButton extends StatelessWidget {
             height: 18,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: _loadingColor(),
+              color: _loadingColor(context),
             ),
           )
         : Row(
@@ -88,7 +88,8 @@ class AppButton extends StatelessWidget {
     }
   }
 
-  ButtonStyle _buttonStyle() {
+  ButtonStyle _buttonStyle(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     switch (variant) {
       case AppButtonVariant.primary:
         return ElevatedButton.styleFrom(
@@ -114,8 +115,8 @@ class AppButton extends StatelessWidget {
         );
       case AppButtonVariant.ghost:
         return OutlinedButton.styleFrom(
-          foregroundColor: Colors.white70,
-          side: const BorderSide(color: Colors.white24),
+          foregroundColor: isDark ? Colors.white70 : Colors.black87,
+          side: BorderSide(color: isDark ? Colors.white24 : Colors.black12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
       case AppButtonVariant.danger:
@@ -151,14 +152,15 @@ class AppButton extends StatelessWidget {
     }
   }
 
-  Color _loadingColor() {
+  Color _loadingColor(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     switch (variant) {
       case AppButtonVariant.secondary:
         return Colors.black87;
       case AppButtonVariant.outline:
         return AppColors.gold;
       case AppButtonVariant.ghost:
-        return Colors.white70;
+        return isDark ? Colors.white70 : Colors.black87;
       default:
         return Colors.white;
     }
@@ -186,6 +188,7 @@ class AppIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final btn = InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(size / 2),
@@ -193,7 +196,7 @@ class AppIconButton extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: backgroundColor ?? AppColors.wood,
+          color: backgroundColor ?? (isDark ? AppColors.wood : Colors.black.withValues(alpha: 0.05)),
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
         ),

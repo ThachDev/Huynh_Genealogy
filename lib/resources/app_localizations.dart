@@ -697,6 +697,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại.'**
   String get errTimeout;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thử lại'**
+  String get retryButton;
+
+  /// No description provided for @errStateTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xảy ra lỗi'**
+  String get errStateTitle;
 }
 
 class _AppLocalizationsDelegate

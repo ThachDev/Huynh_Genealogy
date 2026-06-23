@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import '../../resources/app_localizations.dart';
 import '../theme/app_theme.dart';
 
 /// Loading indicator component using Lottie
@@ -87,6 +88,7 @@ class AppEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -105,7 +107,7 @@ class AppEmptyState extends StatelessWidget {
               style: GoogleFonts.beVietnamPro(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             if (subMessage != null) ...[
@@ -115,7 +117,7 @@ class AppEmptyState extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
                   fontSize: 13,
-                  color: AppColors.textSecondary,
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -133,16 +135,22 @@ class AppEmptyState extends StatelessWidget {
 /// Error state widget — khi có lỗi
 class AppErrorState extends StatelessWidget {
   final String message;
+  final String? title;
+  final String? retryLabel;
   final VoidCallback? onRetry;
 
   const AppErrorState({
     super.key,
     required this.message,
+    this.title,
+    this.retryLabel,
     this.onRetry,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -156,11 +164,11 @@ class AppErrorState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Đã có lỗi xảy ra',
+              title ?? l10n.errStateTitle,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
@@ -169,7 +177,7 @@ class AppErrorState extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 13,
-                color: AppColors.textSecondary,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             if (onRetry != null) ...[
@@ -178,7 +186,7 @@ class AppErrorState extends StatelessWidget {
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded, size: 18),
                 label: Text(
-                  'Thử lại',
+                  retryLabel ?? l10n.retryButton,
                   style: GoogleFonts.inter(fontWeight: FontWeight.w600),
                 ),
                 style: OutlinedButton.styleFrom(

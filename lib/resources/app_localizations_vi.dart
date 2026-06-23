@@ -348,4 +348,10 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get errTimeout =>
       'Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại.';
+
+  @override
+  String get retryButton => 'Thử lại';
+
+  @override
+  String get errStateTitle => 'Đã xảy ra lỗi';
 }

@@ -348,4 +348,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errTimeout =>
       'Connection is too slow or was interrupted. Please try again.';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get errStateTitle => 'An error occurred';
 }

@@ -147,5 +147,7 @@
   "errUnknown": "An unexpected error occurred. Please try again later.",
   "errAuth": "Session has expired or credentials are incorrect. Please sign in again.",
   "errPermission": "Your account does not have permission to access this feature.",
-  "errTimeout": "Connection is too slow or was interrupted. Please try again."
+  "errTimeout": "Connection is too slow or was interrupted. Please try again.",
+  "retryButton": "Retry",
+  "errStateTitle": "An error occurred"
 }

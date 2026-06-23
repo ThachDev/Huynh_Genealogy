@@ -147,5 +147,7 @@
   "errUnknown": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.",
   "errAuth": "Phiên đăng nhập đã hết hạn hoặc tài khoản/mật khẩu không chính xác. Vui lòng đăng nhập lại.",
   "errPermission": "Tài khoản của bạn không có quyền thực hiện chức năng này.",
-  "errTimeout": "Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại."
+  "errTimeout": "Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại.",
+  "retryButton": "Thử lại",
+  "errStateTitle": "Đã xảy ra lỗi"
 }

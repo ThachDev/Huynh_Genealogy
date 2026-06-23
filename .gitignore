@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# FVM
+.fvm/flutter_sdk
+.fvm/release
+.fvm/version
+.fvm/versions/
+
+# VS Code
+.vscode/settings.json
+

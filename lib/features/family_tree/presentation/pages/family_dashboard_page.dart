@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/entity/member_entity.dart';
 import '../bloc/tree/tree_bloc.dart';
@@ -50,7 +51,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(
-                          Icons.error_outline,
+                          LucideIcons.alertCircle,
                           size: 64,
                           color: AppColors.crimson,
                         ),
@@ -141,7 +142,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         },
         backgroundColor: AppColors.crimson,
         elevation: 6,
-        icon: const Icon(Icons.account_tree_rounded, color: Colors.white),
+        icon: const Icon(LucideIcons.gitBranch, color: Colors.white),
         label: Text(
           'XEM SƠ ĐỒ',
           style: GoogleFonts.inter(
@@ -197,7 +198,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                             'assets/images/logo.png',
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.park, color: AppColors.gold, size: 40),
+                                const Icon(LucideIcons.gitBranch, color: AppColors.gold, size: 40),
                           ),
                         ),
                       ),
@@ -244,7 +245,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                     fontSize: 13,
                                   ),
                                   prefixIcon: const Icon(
-                                    Icons.search,
+                                    LucideIcons.search,
                                     color: AppColors.gold,
                                   ),
                                   filled: true,
@@ -276,7 +277,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                 value: _selectedGender,
                                 underline: const SizedBox(),
                                 icon: const Icon(
-                                  Icons.filter_list,
+                                  LucideIcons.filter,
                                   color: AppColors.gold,
                                 ),
                                 dropdownColor: AppColors.wood,
@@ -308,7 +309,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                           child: ElevatedButton.icon(
                             onPressed: () {},
                             icon: const Icon(
-                              Icons.add_circle_outline,
+                              LucideIcons.plusCircle,
                               size: 20,
                             ),
                             label: Text(
@@ -355,7 +356,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
             Row(
               children: [
                 const Icon(
-                  Icons.auto_awesome,
+                  LucideIcons.sparkles,
                   color: AppColors.crimson,
                   size: 20,
                 ),
@@ -378,7 +379,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                   child: Row(
                     children: [
                       const Icon(
-                        Icons.local_fire_department,
+                        LucideIcons.flame,
                         color: Colors.orange,
                         size: 18,
                       ),
@@ -434,9 +435,9 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _statItem('Thành viên', memberCount.toString(), Icons.people),
+          _statItem('Thành viên', memberCount.toString(), LucideIcons.users),
           Container(width: 1, height: 30, color: Colors.white24),
-          _statItem('Chi tộc', branchCount.toString(), Icons.park),
+          _statItem('Chi tộc', branchCount.toString(), LucideIcons.gitBranch),
         ],
       ),
     );
@@ -513,8 +514,8 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                 ? NetworkImage(m.avatarUrl!)
                 : null,
             child: m.avatarUrl == null
-                ? Icon(
-                    m.gender == Gender.male ? Icons.man : Icons.woman,
+                ? const Icon(
+                    LucideIcons.user,
                     color: AppColors.crimson,
                   )
                 : null,
@@ -531,7 +532,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
             color: AppColors.textSecondary,
           ),
         ),
-        trailing: const Icon(Icons.chevron_right, color: AppColors.gold),
+        trailing: const Icon(LucideIcons.chevronRight, color: AppColors.gold),
         onTap: () {
           // Navigate to detail
         },

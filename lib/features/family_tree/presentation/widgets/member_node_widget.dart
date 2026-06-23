@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/entity/member_entity.dart';
 
@@ -101,10 +102,8 @@ class _MemberNodeWidgetState extends State<MemberNodeWidget>
                       ? NetworkImage(widget.member.avatarUrl!)
                       : null,
                   child: widget.member.avatarUrl == null
-                      ? Icon(
-                          widget.member.gender == Gender.female
-                              ? Icons.woman
-                              : Icons.man,
+                      ? const Icon(
+                          LucideIcons.user,
                           color: AppColors.crimson,
                           size: 36,
                         )

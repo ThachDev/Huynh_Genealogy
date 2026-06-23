@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/entity/branch_entity.dart';
 
@@ -53,7 +54,7 @@ class BranchCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
-                Icons.account_tree_rounded,
+                LucideIcons.gitBranch,
                 color: isSelected ? Colors.white : AppColors.crimson,
                 size: 28,
               ),
@@ -93,7 +94,7 @@ class BranchCard extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          Icons.location_on_outlined,
+                          LucideIcons.mapPin,
                           size: 14,
                           color: isSelected
                               ? Colors.white60

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../domain/entity/member_entity.dart';
@@ -86,10 +87,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                           ? NetworkImage(widget.member.avatarUrl!)
                           : null,
                       child: widget.member.avatarUrl == null
-                          ? Icon(
-                              widget.member.gender == Gender.male
-                                  ? Icons.man
-                                  : Icons.woman,
+                          ? const Icon(
+                              LucideIcons.user,
                               size: 60,
                               color: AppColors.crimson,
                             )
@@ -141,14 +140,14 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
               delegate: SliverChildListDelegate([
                 _buildInfoSection('THÔNG TIN CÁ NHÂN', [
                   _buildInfoRow(
-                    Icons.cake,
+                    LucideIcons.cake,
                     'Ngày sinh',
                     DateFormatter.formatForDisplay(widget.member.dateOfBirth) ??
                         'Chưa rõ',
                   ),
                   if (!widget.member.isAlive)
                     _buildInfoRow(
-                      Icons.event_note,
+                      LucideIcons.calendar,
                       'Ngày mất',
                       DateFormatter.formatForDisplay(
                             widget.member.dateOfDeath,
@@ -156,12 +155,12 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                           'Chưa rõ',
                     ),
                   _buildInfoRow(
-                    Icons.place,
+                    LucideIcons.mapPin,
                     'Nơi sinh',
                     widget.member.placeOfBirth ?? 'Chưa rõ',
                   ),
                   _buildInfoRow(
-                    Icons.park,
+                    LucideIcons.gitBranch,
                     'Chi tộc',
                     widget.member.branchName ?? 'Họ Huỳnh',
                   ),
@@ -219,7 +218,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         );
       },
       icon: Icon(
-        isDeceased ? Icons.local_fire_department : Icons.card_giftcard,
+        isDeceased ? LucideIcons.flame : LucideIcons.gift,
       ),
       label: Text(
         isDeceased
@@ -245,7 +244,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       children: [
         Row(
           children: [
-            const Icon(Icons.info_outline, color: AppColors.gold, size: 18),
+            const Icon(LucideIcons.info, color: AppColors.gold, size: 18),
             const SizedBox(width: 8),
             Text(
               title,
@@ -304,7 +303,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          const Icon(Icons.people_outline, size: 18, color: AppColors.gold),
+          const Icon(LucideIcons.users, size: 18, color: AppColors.gold),
           const SizedBox(width: 12),
           Text(
             label,
@@ -341,7 +340,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       children: [
         Row(
           children: [
-            const Icon(Icons.history_edu, color: AppColors.gold, size: 18),
+            const Icon(LucideIcons.scroll, color: AppColors.gold, size: 18),
             const SizedBox(width: 8),
             Text(
               'TIỂU SỬ & GHI CHÚ',

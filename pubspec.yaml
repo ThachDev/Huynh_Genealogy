@@ -50,6 +50,7 @@ dependencies:
   firebase_auth: ^4.17.8
   google_sign_in: ^6.2.1
   shared_preferences: ^2.2.2
+  lucide_icons: ^0.257.0
 
 dev_dependencies:
   flutter_test:

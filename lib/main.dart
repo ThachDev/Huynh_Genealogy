@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'generated/app_localizations.dart';
+import 'resources/app_localizations.dart';
 import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'injection_container.dart' as di;
@@ -58,7 +58,6 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
             if (state is Authenticated) {
               return const FamilyDashboardPage();
             }
-            // Mặc định hiển thị màn hình Đăng nhập nếu chưa xác thực
             return const LoginPage();
           },
         ),

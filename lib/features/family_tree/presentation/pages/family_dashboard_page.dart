@@ -7,6 +7,7 @@ import '../../domain/entity/member_entity.dart';
 import '../bloc/tree/tree_bloc.dart';
 import '../widgets/branch_card.dart';
 import 'tree_view_page.dart';
+import '../../../auth/auth.dart';
 
 class FamilyDashboardPage extends StatefulWidget {
   const FamilyDashboardPage({super.key});
@@ -155,8 +156,16 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final authState = context.read<AuthBloc>().state;
+    final user = authState is Authenticated ? authState.user : null;
+    final isAdmin = user != null &&
+        (user.role == 'OWNER' ||
+            user.role == 'BRANCH_ADMIN' ||
+            user.role == 'EDITOR' ||
+            user.role == 'creator');
+
     return SliverAppBar(
-      expandedHeight: 220,
+      expandedHeight: isAdmin ? 220 : 180,
       pinned: true,
       backgroundColor: AppColors.wood,
       flexibleSpace: FlexibleSpaceBar(
@@ -304,29 +313,31 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                         ),
                         const SizedBox(height: 12),
                         // Add Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(
-                              LucideIcons.plusCircle,
-                              size: 20,
-                            ),
-                            label: Text(
-                              'THÊM THÀNH VIÊN',
-                              style: GoogleFonts.inter(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                        if (isAdmin) ...[
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {},
+                              icon: const Icon(
+                                LucideIcons.plusCircle,
+                                size: 20,
+                              ),
+                              label: Text(
+                                'THÊM THÀNH VIÊN',
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.crimson,
+                                foregroundColor: Colors.white,
+                                elevation: 5,
+                                shadowColor: AppColors.gold,
                               ),
                             ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.crimson,
-                              foregroundColor: Colors.white,
-                              elevation: 5,
-                              shadowColor: AppColors.gold,
-                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),

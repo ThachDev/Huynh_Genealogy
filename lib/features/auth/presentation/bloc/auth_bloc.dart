@@ -3,6 +3,7 @@ import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecase/get_cached_user.dart';
 import '../../domain/usecase/login_with_google.dart';
 import '../../domain/usecase/logout.dart';
+import '../../domain/usecase/register_with_email.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -10,15 +11,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginWithGoogle loginWithGoogle;
   final Logout logout;
   final GetCachedUser getCachedUser;
+  final RegisterWithEmail registerWithEmail;
 
   AuthBloc({
     required this.loginWithGoogle,
     required this.logout,
     required this.getCachedUser,
+    required this.registerWithEmail,
   }) : super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
+    on<AuthRegisterRequested>(_onAuthRegisterRequested);
   }
 
   Future<void> _onAuthCheckRequested(
@@ -60,6 +64,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     failureOrVoid.fold(
       (failure) => emit(AuthError(message: failure.message)),
       (_) => emit(Unauthenticated()),
+    );
+  }
+
+  Future<void> _onAuthRegisterRequested(
+    AuthRegisterRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final failureOrUser = await registerWithEmail(
+      RegisterParams(
+        email: event.email,
+        password: event.password,
+        fullName: event.fullName,
+        role: event.role,
+      ),
+    );
+    failureOrUser.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (user) => emit(Authenticated(user: user)),
     );
   }
 }

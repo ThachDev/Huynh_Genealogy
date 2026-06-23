@@ -27,20 +27,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordHint => '••••••••';
 
   @override
-  String get forgotPassword => 'FORGOT PASSWORD?';
+  String get forgotPassword => 'Forgot password?';
 
   @override
-  String get loginButton => 'LOGIN';
+  String get loginButton => 'Login';
 
   @override
-  String get orDivider => 'OR';
+  String get orDivider => 'Or';
 
   @override
-  String get googleLoginButton => 'LOGIN WITH GOOGLE';
+  String get googleLoginButton => 'Login with Google';
 
   @override
   String get noAccountText => 'Don\'t have an account? ';
 
   @override
-  String get registerNow => 'REGISTER NOW';
+  String get registerNow => 'Register now';
+
+  @override
+  String get rememberMe => 'Remember me';
+
+  @override
+  String get registerTitle => 'Register';
+
+  @override
+  String get registerSubtitle => 'Create your family tree lineage account';
+
+  @override
+  String get fullNameLabel => 'Full Name';
+
+  @override
+  String get fullNameHint => 'John Doe';
+
+  @override
+  String get confirmPasswordLabel => 'Confirm Password';
+
+  @override
+  String get confirmPasswordHint => '••••••••';
+
+  @override
+  String get registerButton => 'Register';
+
+  @override
+  String get alreadyHaveAccountText => 'Already have an account? ';
+
+  @override
+  String get loginNow => 'Login now';
+
+  @override
+  String get registerAsCreator => 'Register as Clan Leader';
 }

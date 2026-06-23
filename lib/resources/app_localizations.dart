@@ -137,25 +137,25 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPassword.
   ///
   /// In vi, this message translates to:
-  /// **'QUÊN MẬT KHẨU?'**
+  /// **'Quên mật khẩu?'**
   String get forgotPassword;
 
   /// No description provided for @loginButton.
   ///
   /// In vi, this message translates to:
-  /// **'ĐĂNG NHẬP'**
+  /// **'Đăng nhập'**
   String get loginButton;
 
   /// No description provided for @orDivider.
   ///
   /// In vi, this message translates to:
-  /// **'HOẶC'**
+  /// **'Hoặc'**
   String get orDivider;
 
   /// No description provided for @googleLoginButton.
   ///
   /// In vi, this message translates to:
-  /// **'ĐĂNG NHẬP VỚI GOOGLE'**
+  /// **'Đăng nhập với Google'**
   String get googleLoginButton;
 
   /// No description provided for @noAccountText.
@@ -167,8 +167,74 @@ abstract class AppLocalizations {
   /// No description provided for @registerNow.
   ///
   /// In vi, this message translates to:
-  /// **'ĐĂNG KÝ NGAY'**
+  /// **'Đăng ký ngay'**
   String get registerNow;
+
+  /// No description provided for @rememberMe.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhớ mật khẩu'**
+  String get rememberMe;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng Ký'**
+  String get registerTitle;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo tài khoản gia phả dòng tộc của bạn'**
+  String get registerSubtitle;
+
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Họ và tên'**
+  String get fullNameLabel;
+
+  /// No description provided for @fullNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nguyễn Văn A'**
+  String get fullNameHint;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận mật khẩu'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @confirmPasswordHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'••••••••'**
+  String get confirmPasswordHint;
+
+  /// No description provided for @registerButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký'**
+  String get registerButton;
+
+  /// No description provided for @alreadyHaveAccountText.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có tài khoản? '**
+  String get alreadyHaveAccountText;
+
+  /// No description provided for @loginNow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập ngay'**
+  String get loginNow;
+
+  /// No description provided for @registerAsCreator.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký với tư cách Trưởng tộc'**
+  String get registerAsCreator;
 }
 
 class _AppLocalizationsDelegate

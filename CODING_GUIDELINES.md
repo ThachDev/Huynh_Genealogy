@@ -128,3 +128,10 @@ Dự án được bản địa hóa hoàn chỉnh sử dụng Flutter Localizati
 * Giữ cấu trúc tệp gọn gàng, tránh các Widget lồng nhau quá sâu. Hãy tách ra các private helper method (ví dụ: `_buildHeader()`) hoặc các Widget class riêng biệt khi vượt quá 200 dòng.
 * Luôn khai báo `const` cho các Constructor của widget tĩnh để tối ưu hiệu năng hiển thị.
 * Khi gặp cảnh báo từ linter, hãy khắc phục triệt để. Nếu là cảnh báo giả (false positive) từ thư viện SDK, hãy sử dụng chú thích `// ignore: lint_rule` cục bộ thay vì tắt diện rộng.
+
+---
+
+## 7. Phối hợp Phát triển & Đồng bộ với Backend
+Khi phát triển hoặc nâng cấp tính năng ở Frontend, lập trình viên/AI cần thực hiện:
+* **Rà soát mã nguồn Backend**: Chủ động kiểm tra mã nguồn tại thư mục `/Users/ancq/ThienThach/Code/BE/BE_Huynh_Genealogy` (hoặc đường dẫn tương đương của backend) xem đã có đầy đủ logic nghiệp vụ, cơ sở dữ liệu (Database Schema), hay API endpoints mà Frontend cần chưa (và ngược lại).
+* **Bổ sung logic thiếu**: Nếu Backend chưa hỗ trợ phần nghiệp vụ cần thiết cho Frontend, AI có nhiệm vụ trực tiếp triển khai/xây dựng bổ sung logic đó ở phần Backend để đảm bảo hai bên hoạt động đồng bộ.

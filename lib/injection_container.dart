@@ -35,6 +35,7 @@ Future<void> init() async {
       loginWithGoogle: sl(),
       logout: sl(),
       getCachedUser: sl(),
+      registerWithEmail: sl(),
     ),
   );
 
@@ -58,6 +59,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginWithGoogle(sl()));
   sl.registerLazySingleton(() => Logout(sl()));
   sl.registerLazySingleton(() => GetCachedUser(sl()));
+  sl.registerLazySingleton(() => RegisterWithEmail(sl()));
 
   // Family Use Cases
   sl.registerLazySingleton(() => CreateFamily(sl()));

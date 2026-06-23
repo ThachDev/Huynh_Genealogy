@@ -8,6 +8,7 @@ export 'domain/repository/auth_repository.dart';
 export 'domain/usecase/login_with_google.dart';
 export 'domain/usecase/logout.dart';
 export 'domain/usecase/get_cached_user.dart';
+export 'domain/usecase/register_with_email.dart';
 
 // Data Sources & Models
 export 'data/model/user_model.dart';
@@ -24,3 +25,4 @@ export 'presentation/bloc/auth_state.dart';
 
 // Presentation Pages
 export 'presentation/pages/login_page.dart';
+export 'presentation/pages/register_page.dart';

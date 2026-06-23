@@ -6,6 +6,7 @@ class UserEntity extends Equatable {
   final String fullName;
   final String? avatarUrl;
   final String? fcmToken;
+  final String role; // 'OWNER' | 'BRANCH_ADMIN' | 'EDITOR' | 'VIEWER'
 
   const UserEntity({
     required this.id,
@@ -13,8 +14,9 @@ class UserEntity extends Equatable {
     required this.fullName,
     this.avatarUrl,
     this.fcmToken,
+    this.role = 'VIEWER',
   });
 
   @override
-  List<Object?> get props => [id, email, fullName, avatarUrl, fcmToken];
+  List<Object?> get props => [id, email, fullName, avatarUrl, fcmToken, role];
 }

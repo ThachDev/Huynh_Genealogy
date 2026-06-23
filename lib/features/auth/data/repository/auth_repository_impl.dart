@@ -59,4 +59,29 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> registerWithEmail({
+    required String email,
+    required String password,
+    required String fullName,
+    required String role,
+  }) async {
+    try {
+      final userModel = await remoteDataSource.registerWithEmail(
+        email: email,
+        password: password,
+        fullName: fullName,
+        role: role,
+      );
+      await localDataSource.cacheUser(userModel);
+      return Right(userModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Lỗi đăng ký: $e'));
+    }
+  }
 }

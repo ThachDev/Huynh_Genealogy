@@ -6,4 +6,10 @@ abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> loginWithGoogle();
   Future<Either<Failure, void>> logout();
   Future<Either<Failure, UserEntity?>> getCachedUser();
+  Future<Either<Failure, UserEntity>> registerWithEmail({
+    required String email,
+    required String password,
+    required String fullName,
+    required String role,
+  });
 }

@@ -7,6 +7,12 @@ import '../model/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> loginWithGoogle();
+  Future<UserModel> registerWithEmail({
+    required String email,
+    required String password,
+    required String fullName,
+    required String role,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -72,6 +78,75 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } on FirebaseAuthException catch (e) {
       throw ServerException(message: e.message ?? 'Lỗi Firebase Auth', statusCode: 401);
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(message: 'Lỗi không xác định: $e');
+    }
+  }
+
+  @override
+  Future<UserModel> registerWithEmail({
+    required String email,
+    required String password,
+    required String fullName,
+    required String role,
+  }) async {
+    try {
+      // 1. Firebase Register
+      final UserCredential userCredential = await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final User? firebaseUser = userCredential.user;
+      if (firebaseUser == null) {
+        throw const ServerException(message: 'Không thể đăng ký tài khoản với Firebase');
+      }
+
+      // 2. Update Display Name
+      await firebaseUser.updateDisplayName(fullName);
+
+      // 3. Get Firebase ID Token
+      final String? idToken = await firebaseUser.getIdToken();
+      if (idToken == null) {
+        throw const ServerException(message: 'Không thể lấy Firebase ID Token sau đăng ký');
+      }
+
+      // 4. Send token to backend
+      final response = await dio.post(
+        AppConstants.loginEndpoint,
+        data: {
+          'idToken': idToken,
+          'fcmToken': null,
+          'role': role,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        final Map<String, dynamic> userData = data['data']['user'] as Map<String, dynamic>;
+        return UserModel.fromJson(userData);
+      } else {
+        throw ServerException(
+          message: response.data['message']?.toString() ?? 'Lỗi đăng ký tài khoản trên máy chủ',
+          statusCode: response.statusCode,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      String msg = 'Lỗi đăng ký Firebase';
+      if (e.code == 'email-already-in-use') {
+        msg = 'Địa chỉ email đã được sử dụng bởi một tài khoản khác.';
+      } else if (e.code == 'weak-password') {
+        msg = 'Mật khẩu quá yếu.';
+      } else if (e.code == 'invalid-email') {
+        msg = 'Địa chỉ email không đúng định dạng.';
+      }
+      throw ServerException(message: e.message ?? msg, statusCode: 400);
     } on DioException catch (e) {
       throw ServerException(
         message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi kết nối máy chủ',

@@ -7,6 +7,7 @@ class UserModel extends UserEntity {
     required super.fullName,
     super.avatarUrl,
     super.fcmToken,
+    super.role = 'VIEWER',
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -16,6 +17,7 @@ class UserModel extends UserEntity {
       fullName: json['fullName'] as String,
       avatarUrl: json['avatarUrl'] as String?,
       fcmToken: json['fcmToken'] as String?,
+      role: json['role'] as String? ?? 'VIEWER',
     );
   }
 
@@ -26,6 +28,7 @@ class UserModel extends UserEntity {
       'fullName': fullName,
       'avatarUrl': avatarUrl,
       'fcmToken': fcmToken,
+      'role': role,
     };
   }
 
@@ -36,6 +39,7 @@ class UserModel extends UserEntity {
       fullName: entity.fullName,
       avatarUrl: entity.avatarUrl,
       fcmToken: entity.fcmToken,
+      role: entity.role,
     );
   }
 }

@@ -44,9 +44,9 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withOpacity(0.5),
+                            Colors.black.withValues(alpha: 0.5),
                             Colors.transparent,
-                            Colors.black.withOpacity(0.3),
+                            Colors.black.withValues(alpha: 0.3),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -74,7 +74,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                       border: Border.all(color: AppColors.gold, width: 4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -184,9 +184,9 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.5), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
       ),
       child: Text(
         label,
@@ -231,7 +231,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         foregroundColor: AppColors.crimson,
         side: const BorderSide(color: AppColors.gold, width: 2),
         elevation: 8,
-        shadowColor: AppColors.gold.withOpacity(0.3),
+        shadowColor: AppColors.gold.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
@@ -271,7 +271,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           Icon(
             icon,
             size: 18,
-            color: AppColors.textSecondary.withOpacity(0.6),
+            color: AppColors.textSecondary.withValues(alpha: 0.6),
           ),
           const SizedBox(width: 12),
           Text(
@@ -360,7 +360,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: AppColors.gold.withOpacity(0.3)),
+            border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
           ),
           child: Text(
             widget.member.notes ??

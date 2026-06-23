@@ -47,7 +47,7 @@ class AppTextField extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: AppColors.nodeFemale.withOpacity(0.8),
+            color: AppColors.nodeFemale.withValues(alpha: 0.8),
             letterSpacing: 0.8,
           ),
         ),
@@ -69,7 +69,7 @@ class AppTextField extends StatelessWidget {
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: Colors.white.withOpacity(0.05),
+            fillColor: Colors.white.withValues(alpha: 0.05),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
@@ -77,7 +77,7 @@ class AppTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -95,7 +95,7 @@ class AppTextField extends StatelessWidget {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: Colors.white.withOpacity(0.07),
+                color: Colors.white.withValues(alpha: 0.07),
               ),
             ),
             errorStyle: GoogleFonts.inter(color: AppColors.error, fontSize: 12),
@@ -164,7 +164,7 @@ class AppTextFieldLight extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: GoogleFonts.inter(
-              color: AppColors.textSecondary.withOpacity(0.5),
+              color: AppColors.textSecondary.withValues(alpha: 0.5),
               fontSize: 14,
             ),
             prefixIcon: prefixIcon,
@@ -178,7 +178,7 @@ class AppTextFieldLight extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: AppColors.textSecondary.withOpacity(0.2),
+                color: AppColors.textSecondary.withValues(alpha: 0.2),
               ),
             ),
             focusedBorder: OutlineInputBorder(

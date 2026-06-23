@@ -37,8 +37,10 @@ lib/
 
 ---
 
-## 3. Hệ thống Component & Theme dùng chung
-Không tự định nghĩa lại hoặc tùy biến thủ công (ad-hoc styling) cho các widget cơ bản. Phải ưu tiên sử dụng thư viện dùng chung trong `core/widgets/widgets.dart` và `core/theme/app_theme.dart`.
+## 3. Giao diện Sáng/Tối & Hệ thống Component dùng chung
+Dự án hỗ trợ song song hai chế độ **Giao diện sáng (Light Mode)** và **Giao diện tối (Dark Mode)**. 
+* **MANDATORY**: Mỗi khi tạo mới hoặc sửa đổi bất kỳ Widget/Component nào, lập trình viên/AI bắt buộc phải lưu ý thiết kế để giao diện hiển thị tốt trên cả hai chế độ sáng và tối (sử dụng màu từ `Theme.of(context)` hoặc `AppColors` phù hợp). Hãy kiểm tra độ tương phản màu sắc của văn bản và background trên cả hai chế độ để tránh hiện tượng chữ bị chìm hoặc hiển thị sai tông màu.
+* Không tự định nghĩa lại hoặc tùy biến thủ công (ad-hoc styling) cho các widget cơ bản. Phải ưu tiên sử dụng thư viện dùng chung trong `core/widgets/widgets.dart` và `core/theme/app_theme.dart`.
 
 > [!IMPORTANT]
 > **Quy tắc tạo Widget dùng chung**: Nếu có bất kỳ Widget nào cần tái sử dụng ở nhiều nơi hoặc giữa nhiều feature khác nhau, bắt buộc phải tạo mới tệp tin widget đó trong thư mục `lib/core/widgets/` và cập nhật khai báo export vào tệp tổng hợp [widgets.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/widgets/widgets.dart). Điều này giúp đảm bảo tính nhất quán của giao diện và tránh việc khai báo trùng lặp code.
@@ -68,6 +70,16 @@ Không tự định nghĩa lại hoặc tùy biến thủ công (ad-hoc styling)
 
 ### 3.4. Phân cách có chữ (Dividers)
 * Sử dụng `AppLabeledDivider(label: 'TEXT', isLight: true/false)` cho các phần phân tách giữa các khối (ví dụ: dòng chữ "HOẶC").
+
+### 3.5. Biểu tượng (Icons)
+* Dự án thống nhất sử dụng thư viện **`lucide_icons`** làm gói biểu tượng chính thay cho `Icons` mặc định của Material để mang lại phong cách thiết kế hiện đại, đồng bộ.
+* **Cách sử dụng**:
+  ```dart
+  import 'package:lucide_icons/lucide_icons.dart';
+  
+  // Ví dụ:
+  Icon(LucideIcons.gitBranch)
+  ```
 
 ---
 

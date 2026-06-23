@@ -30,12 +30,12 @@ class BranchCard extends StatelessWidget {
           border: Border.all(
             color: isSelected
                 ? AppColors.gold
-                : AppColors.gold.withOpacity(0.3),
+                : AppColors.gold.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -49,7 +49,7 @@ class BranchCard extends StatelessWidget {
               height: 52,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.white.withOpacity(0.2)
+                    ? Colors.white.withValues(alpha: 0.2)
                     : AppColors.parchment,
                 borderRadius: BorderRadius.circular(12),
               ),

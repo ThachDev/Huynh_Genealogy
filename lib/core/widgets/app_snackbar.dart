@@ -116,7 +116,7 @@ class AppSnackBar {
       case SnackBarType.info:
         return _SnackBarColors(
           background: const Color(0xFF1B1F2E),
-          border: AppColors.nodeMale.withOpacity(0.5),
+          border: AppColors.nodeMale.withValues(alpha: 0.5),
           icon: AppColors.nodeFemale,
           text: Colors.white,
         );

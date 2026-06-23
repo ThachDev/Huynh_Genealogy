@@ -138,7 +138,7 @@ class _AppDialogWidget extends StatelessWidget {
       backgroundColor: const Color(0xFF1E1E1E),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: accentColor.withOpacity(0.3), width: 1),
+        side: BorderSide(color: accentColor.withValues(alpha: 0.3), width: 1),
       ),
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Padding(
@@ -151,7 +151,7 @@ class _AppDialogWidget extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: accentColor.withOpacity(0.1),
+                color: accentColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: accentColor, size: 28),

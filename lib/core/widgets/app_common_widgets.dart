@@ -45,7 +45,7 @@ class AppLoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -96,7 +96,7 @@ class AppEmptyState extends StatelessWidget {
             Icon(
               icon,
               size: 64,
-              color: AppColors.gold.withOpacity(0.5),
+              color: AppColors.gold.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
@@ -152,7 +152,7 @@ class AppErrorState extends StatelessWidget {
             Icon(
               Icons.error_outline_rounded,
               size: 56,
-              color: AppColors.error.withOpacity(0.8),
+              color: AppColors.error.withValues(alpha: 0.8),
             ),
             const SizedBox(height: 16),
             Text(
@@ -209,11 +209,11 @@ class AppLabeledDivider extends StatelessWidget {
     final bool effectiveIsLight =
         isLight ?? (Theme.of(context).brightness == Brightness.light);
     final dividerColor = effectiveIsLight
-        ? Colors.black.withOpacity(0.1)
-        : Colors.white.withOpacity(0.1);
+        ? Colors.black.withValues(alpha: 0.1)
+        : Colors.white.withValues(alpha: 0.1);
     final textColor = effectiveIsLight
-        ? AppColors.textSecondary.withOpacity(0.6)
-        : AppColors.nodeFemale.withOpacity(0.4);
+        ? AppColors.textSecondary.withValues(alpha: 0.6)
+        : AppColors.nodeFemale.withValues(alpha: 0.4);
 
     return Row(
       children: [
@@ -265,9 +265,9 @@ class AppBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: bg.withOpacity(0.15),
+        color: bg.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: bg.withOpacity(0.4)),
+        border: Border.all(color: bg.withValues(alpha: 0.4)),
       ),
       child: Text(
         label,

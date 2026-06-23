@@ -173,7 +173,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
             ),
             // Wood Overlay to darken
             Positioned.fill(
-              child: Container(color: Colors.black.withOpacity(0.3)),
+              child: Container(color: Colors.black.withValues(alpha: 0.3)),
             ),
             // Content
             SafeArea(
@@ -190,7 +190,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                         decoration: BoxDecoration(
                           border: Border.all(color: AppColors.gold, width: 1.5),
                           borderRadius: BorderRadius.circular(10),
-                          color: AppColors.parchment.withOpacity(0.1),
+                          color: AppColors.parchment.withValues(alpha: 0.1),
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
@@ -249,8 +249,8 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                     color: AppColors.gold,
                                   ),
                                   filled: true,
-                                  fillColor: Colors.black.withOpacity(
-                                    0.24,
+                                  fillColor: Colors.black.withValues(
+                                    alpha: 0.24,
                                   ),
                                   contentPadding: const EdgeInsets.symmetric(
                                     vertical: 0,
@@ -270,7 +270,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                                 horizontal: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.24),
+                                color: Colors.black.withValues(alpha: 0.24),
                                 borderRadius: BorderRadius.circular(25),
                               ),
                               child: DropdownButton<String>(
@@ -347,7 +347,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.crimson.withOpacity(0.05),
+          color: AppColors.crimson.withValues(alpha: 0.05),
           border: Border.all(color: AppColors.gold, width: 1.5),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -426,7 +426,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -496,7 +496,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: AppColors.gold.withOpacity(0.2)),
+        side: BorderSide(color: AppColors.gold.withValues(alpha: 0.2)),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),

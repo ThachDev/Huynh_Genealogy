@@ -94,7 +94,7 @@ class AppButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.crimson,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: AppColors.crimson.withOpacity(0.5),
+          disabledBackgroundColor: AppColors.crimson.withValues(alpha: 0.5),
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
@@ -102,7 +102,7 @@ class AppButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.gold,
           foregroundColor: Colors.black87,
-          disabledBackgroundColor: AppColors.gold.withOpacity(0.5),
+          disabledBackgroundColor: AppColors.gold.withValues(alpha: 0.5),
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
@@ -122,7 +122,7 @@ class AppButton extends StatelessWidget {
         return ElevatedButton.styleFrom(
           backgroundColor: AppColors.error,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: AppColors.error.withOpacity(0.5),
+          disabledBackgroundColor: AppColors.error.withValues(alpha: 0.5),
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
@@ -195,7 +195,7 @@ class AppIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.wood,
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.gold.withOpacity(0.3)),
+          border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
         ),
         child: Center(child: icon),
       ),

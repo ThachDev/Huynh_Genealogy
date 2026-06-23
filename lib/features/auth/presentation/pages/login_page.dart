@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../generated/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../core/utils/validators.dart';
@@ -143,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                                           ? Icons.visibility_off_outlined
                                           : Icons.visibility_outlined,
                                       color: AppColors.textSecondary
-                                          .withOpacity(0.5),
+                                          .withValues(alpha: 0.5),
                                       size: 20,
                                     ),
                                     onPressed: () {
@@ -287,11 +287,11 @@ class _LoginPageState extends State<LoginPage> {
                                   : const Locale('vi');
                               FamilyTreeApp.setLocale(context, newLocale);
                             },
-                            activeColor: AppColors.gold,
-                            activeTrackColor: AppColors.gold.withOpacity(0.3),
+                            activeThumbColor: AppColors.gold,
+                            activeTrackColor: AppColors.gold.withValues(alpha: 0.3),
                             inactiveThumbColor: AppColors.crimson,
                             inactiveTrackColor:
-                                AppColors.crimson.withOpacity(0.2),
+                                AppColors.crimson.withValues(alpha: 0.2),
                           ),
                         ],
                       ),

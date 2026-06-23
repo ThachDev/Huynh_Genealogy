@@ -1,4 +1,4 @@
-package com.example.app_family_tree
+package com.giatocviet.app
 
 import io.flutter.embedding.android.FlutterActivity
 

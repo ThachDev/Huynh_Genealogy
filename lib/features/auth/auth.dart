@@ -21,3 +21,6 @@ export 'data/repository/auth_repository_impl.dart';
 export 'presentation/bloc/auth_bloc.dart';
 export 'presentation/bloc/auth_event.dart';
 export 'presentation/bloc/auth_state.dart';
+
+// Presentation Pages
+export 'presentation/pages/login_page.dart';

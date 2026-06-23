@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1096920037866",
+    "project_id": "giatocviet-d5903",
+    "storage_bucket": "giatocviet-d5903.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096920037866:android:6a304fabc79b16be0cda93",
+        "android_client_info": {
+          "package_name": "com.giatocviet.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096920037866-s8mhbq8l78oa1rd11u4i152engmspf7n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzKrsyj_7gDTRhiYF2qx9SB3IyBga4Rgg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1096920037866-s8mhbq8l78oa1rd11u4i152engmspf7n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1096920037866-9lgpftkcfh343fdu7gbroabjm5qb3urr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.giatocviet.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

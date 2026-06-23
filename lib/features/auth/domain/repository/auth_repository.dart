@@ -12,4 +12,5 @@ abstract class AuthRepository {
     required String fullName,
     required String role,
   });
+  Future<Either<Failure, void>> cacheUser(UserEntity user);
 }

@@ -21,5 +21,131 @@
   "registerButton": "Đăng ký",
   "alreadyHaveAccountText": "Đã có tài khoản? ",
   "loginNow": "Đăng nhập ngay",
-  "registerAsCreator": "Đăng ký với tư cách Trưởng tộc"
+  "registerAsCreator": "Đăng ký với tư cách Trưởng tộc",
+  "acceptTermsText": "Tôi đồng ý với ",
+  "termsOfService": "Điều khoản dịch vụ",
+  "andText": " và ",
+  "privacyPolicy": "Chính sách bảo mật",
+  "termsValidationErr": "Bạn phải đồng ý với Điều khoản dịch vụ và Chính sách bảo mật để tiếp tục",
+  "termsContent": "Chào mừng bạn đến với Gia Tộc Việt. Khi sử dụng dịch vụ của chúng tôi, bạn đồng ý với các điều khoản dưới đây:\n\n1. Quy định tài khoản: Bạn chịu trách nhiệm bảo mật thông tin tài khoản và mật khẩu của mình.\n\n2. Quyền sở hữu dữ liệu: Thông tin gia phả do dòng họ đóng góp thuộc quyền sở hữu chung của các thành viên được cấp quyền trong dòng họ.\n\n3. Hành vi bị cấm: Không đăng tải nội dung xuyên tạc lịch sử, thông tin sai sự thật hoặc xâm phạm đời tư của người khác.\n\n4. Thay đổi điều khoản: Chúng tôi có quyền cập nhật điều khoản dịch vụ để phù hợp hơn với hoạt động của hệ thống.",
+  "privacyContent": "Gia Tộc Việt cam kết bảo vệ thông tin riêng tư của gia đình bạn:\n\n1. Thu thập dữ liệu: Chúng tôi thu thập họ tên, email, ảnh đại diện, và dữ liệu phả hệ do bạn chủ động cung cấp.\n\n2. Sử dụng thông tin: Dữ liệu được sử dụng để xây dựng sơ đồ cây gia phả, kết nối các thành viên và thông báo các sự kiện dòng họ.\n\n3. Bảo mật: Chúng tôi áp dụng các biện pháp bảo mật hiện đại để ngăn chặn rò rỉ dữ liệu.\n\n4. Chia sẻ dữ liệu: Chúng tôi tuyệt đối không bán hoặc chia sẻ dữ liệu gia phả của bạn cho bất kỳ bên thứ ba nào vì mục đích quảng cáo.",
+  "closeButton": "Đóng",
+  "appTitle": "Gia Tộc Việt",
+  "confirmLabel": "Xác nhận",
+  "cancelLabel": "Hủy",
+  "okLabel": "Đóng",
+  "loadingMessage": "Đang xử lý...",
+  "emailLoginFeatureNotice": "Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.",
+  "forgotPasswordNotice": "Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.",
+  "enterInviteCodeWarning": "Vui lòng nhập mã mời",
+  "onboardingTitle": "Thiết Lập Gia Tộc",
+  "logoutTooltip": "Đăng xuất",
+  "createFamilySuccess": "Tạo dòng họ thành công!",
+  "verifyInviteSuccess": "Xác thực mã mời thành công: {familyName}",
+  "@verifyInviteSuccess": {
+    "placeholders": {
+      "familyName": {
+        "type": "String"
+      }
+    }
+  },
+  "joinRequestSuccess": "Yêu cầu tham gia đã gửi thành công!",
+  "pendingApprovalTitle": "Đang Chờ Phê Duyệt",
+  "pendingApprovalMessage": "Yêu cầu tham gia dòng họ của bạn đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc / Chủ quản dòng họ để phê duyệt tài khoản.",
+  "checkStatusButton": "Kiểm tra trạng thái",
+  "welcomeCreatorTitle": "Chào Trưởng tộc, {name}!",
+  "@welcomeCreatorTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeCreatorSubtitle": "Vui lòng nhập thông tin dưới đây để khởi tạo cây gia phả dòng tộc của bạn.",
+  "familyNameLabel": "Tên Dòng Họ / Gia Tộc",
+  "familyNameHint": "Ví dụ: Nguyễn Gia Tộc",
+  "familyNameRequired": "Tên dòng họ không được để trống",
+  "familyDescriptionLabel": "Tiểu sử / Mô tả Dòng Họ",
+  "familyDescriptionHint": "Quê quán, nguồn gốc gia phả...",
+  "initFamilyButton": "KHỞI TẠO GIA TỘC",
+  "welcomeViewerTitle": "Chào {name}!",
+  "@welcomeViewerTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeViewerSubtitle": "Vui lòng nhập Mã Mời (Invite Code) do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.",
+  "inviteCodeLabel": "Mã Mời Gia Tộc",
+  "inviteCodeHint": "Nhập mã 6 ký tự",
+  "verifyButton": "Xác thực",
+  "familyFoundTitle": "Gia tộc tìm thấy: {name}",
+  "@familyFoundTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "selectMemberPrompt": "Vui lòng chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):",
+  "whoAreYouDropdownHint": "Bạn là ai trên cây gia phả?",
+  "sendJoinRequestButton": "GỬI YÊU CẦU GIA NHẬP",
+  "chooseOnboardingSubtitle": "Vui lòng chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.",
+  "createFamilyCardTitle": "Khởi tạo Gia tộc mới",
+  "createFamilyCardDesc": "Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.",
+  "joinFamilyCardTitle": "Gia nhập Gia tộc đã có",
+  "joinFamilyCardDesc": "Dành cho thành viên đã có mã mời từ Trưởng tộc để xem và cập nhật cây gia phả.",
+  "errEmailRequired": "Vui lòng nhập địa chỉ email",
+  "errEmailInvalid": "Email không đúng định dạng (Ví dụ: ten@gmail.com)",
+  "errPasswordRequired": "Vui lòng nhập mật khẩu",
+  "errPasswordMinLength": "Mật khẩu phải chứa ít nhất 6 ký tự",
+  "errStrongPasswordMinLength": "Mật khẩu bảo mật phải có ít nhất 8 ký tự",
+  "errStrongPasswordUppercase": "Mật khẩu cần ít nhất 1 chữ cái viết hoa",
+  "errStrongPasswordNumber": "Mật khẩu cần ít nhất 1 chữ số",
+  "errStrongPasswordSpecialChar": "Mật khẩu cần ít nhất 1 ký tự đặc biệt (!@#...)",
+  "errConfirmPasswordRequired": "Vui lòng xác nhận lại mật khẩu",
+  "errConfirmPasswordMismatch": "Mật khẩu xác nhận không khớp",
+  "errFullNameRequired": "Vui lòng nhập họ và tên",
+  "errFullNameTooShort": "Họ và tên quá ngắn",
+  "errFullNameTooLong": "Họ và tên không được vượt quá 50 ký tự",
+  "errFullNameInvalid": "Họ và tên chỉ được chứa chữ cái và khoảng trắng",
+  "errPhoneNumberRequired": "Vui lòng nhập số điện thoại",
+  "errPhoneNumberInvalid": "Số điện thoại không hợp lệ (Ví dụ: 0912345678)",
+  "errYearRequired": "Vui lòng nhập năm",
+  "errYearInvalid": "Vui lòng nhập số năm hợp lệ",
+  "errYearFuture": "Năm không thể lớn hơn năm hiện tại ({year})",
+  "@errYearFuture": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "errYearMin": "Năm phải lớn hơn hoặc bằng {year}",
+  "@errYearMin": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "errYearTooSmall": "Năm quá nhỏ (yêu cầu từ năm 1000 trở đi)",
+  "errRequiredField": "Vui lòng nhập {fieldName}",
+  "@errRequiredField": {
+    "placeholders": {
+      "fieldName": {
+        "type": "String"
+      }
+    }
+  },
+  "errServer": "Hệ thống đang gặp sự cố tạm thời. Vui lòng thử lại sau ít phút.",
+  "errNetwork": "Không có kết nối mạng. Vui lòng kiểm tra lại Wi-Fi hoặc dữ liệu di động.",
+  "errCache": "Không thể truy xuất dữ liệu lưu tạm trên thiết bị. Vui lòng tải lại trang.",
+  "errNotFound": "Không tìm thấy thông tin yêu cầu hoặc dữ liệu đã bị xóa.",
+  "errValidation": "Thông tin nhập vào chưa chính xác. Vui lòng kiểm tra lại.",
+  "errUnknown": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.",
+  "errAuth": "Phiên đăng nhập đã hết hạn hoặc tài khoản/mật khẩu không chính xác. Vui lòng đăng nhập lại.",
+  "errPermission": "Tài khoản của bạn không có quyền thực hiện chức năng này.",
+  "errTimeout": "Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại."
 }

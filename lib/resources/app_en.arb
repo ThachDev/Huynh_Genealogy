@@ -21,5 +21,131 @@
   "registerButton": "Register",
   "alreadyHaveAccountText": "Already have an account? ",
   "loginNow": "Login now",
-  "registerAsCreator": "Register as Clan Leader"
+  "registerAsCreator": "Register as Clan Leader",
+  "acceptTermsText": "I agree to the ",
+  "termsOfService": "Terms of Service",
+  "andText": " and ",
+  "privacyPolicy": "Privacy Policy",
+  "termsValidationErr": "You must agree to the Terms of Service and Privacy Policy to continue",
+  "termsContent": "Welcome to Gia Toc Viet. By using our service, you agree to the following terms:\n\n1. Account regulations: You are responsible for maintaining the confidentiality of your account and password.\n\n2. Data ownership: Genealogy information contributed by the clan is owned collectively by authorized members of the family.\n\n3. Prohibited conduct: Do not post content that distorts history, contains false information, or violates others' privacy.\n\n4. Changes to terms: We reserve the right to update these terms of service to better fit system operations.",
+  "privacyContent": "Gia Toc Viet is committed to protecting your family's privacy:\n\n1. Data collection: We collect name, email, avatar, and genealogy data actively provided by you.\n\n2. Data usage: Data is used to build the family tree diagram, connect members, and notify family events.\n\n3. Security: We apply modern security measures to prevent data breaches.\n\n4. Data sharing: We strictly do not sell or share your genealogy data with any third party for advertising purposes.",
+  "closeButton": "Close",
+  "appTitle": "Gia Toc Viet",
+  "confirmLabel": "Confirm",
+  "cancelLabel": "Cancel",
+  "okLabel": "Close",
+  "loadingMessage": "Processing...",
+  "emailLoginFeatureNotice": "Email Login feature is under development. Please use Login with Google.",
+  "forgotPasswordNotice": "Please contact the Clan Leader to reset your password.",
+  "enterInviteCodeWarning": "Please enter the invite code",
+  "onboardingTitle": "Set Up Family",
+  "logoutTooltip": "Logout",
+  "createFamilySuccess": "Family created successfully!",
+  "verifyInviteSuccess": "Invite code verified successfully: {familyName}",
+  "@verifyInviteSuccess": {
+    "placeholders": {
+      "familyName": {
+        "type": "String"
+      }
+    }
+  },
+  "joinRequestSuccess": "Join request sent successfully!",
+  "pendingApprovalTitle": "Pending Approval",
+  "pendingApprovalMessage": "Your request to join the family has been sent successfully. Please contact the Clan Leader to approve your account.",
+  "checkStatusButton": "Check Status",
+  "welcomeCreatorTitle": "Welcome Clan Leader, {name}!",
+  "@welcomeCreatorTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeCreatorSubtitle": "Please enter the information below to initialize your family tree.",
+  "familyNameLabel": "Family / Clan Name",
+  "familyNameHint": "e.g. Nguyen Family",
+  "familyNameRequired": "Family name cannot be empty",
+  "familyDescriptionLabel": "Biography / Description",
+  "familyDescriptionHint": "Home town, origins...",
+  "initFamilyButton": "INITIALIZE FAMILY",
+  "welcomeViewerTitle": "Welcome {name}!",
+  "@welcomeViewerTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeViewerSubtitle": "Please enter the Invite Code provided by the Clan Leader to join and view the family tree.",
+  "inviteCodeLabel": "Family Invite Code",
+  "inviteCodeHint": "Enter 6-character code",
+  "verifyButton": "Verify",
+  "familyFoundTitle": "Family found: {name}",
+  "@familyFoundTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "selectMemberPrompt": "Please select your name from the list below to link with the family tree (if any):",
+  "whoAreYouDropdownHint": "Who are you on the family tree?",
+  "sendJoinRequestButton": "SEND JOIN REQUEST",
+  "chooseOnboardingSubtitle": "Please select a family tree setup method to start connecting your clan.",
+  "createFamilyCardTitle": "Create a new Family",
+  "createFamilyCardDesc": "For Clan Leaders/Genealogists who want to build a completely new family tree.",
+  "joinFamilyCardTitle": "Join an existing Family",
+  "joinFamilyCardDesc": "For members who have an invite code from the Clan Leader to view and update the family tree.",
+  "errEmailRequired": "Please enter your email address",
+  "errEmailInvalid": "Invalid email format (e.g. name@gmail.com)",
+  "errPasswordRequired": "Please enter password",
+  "errPasswordMinLength": "Password must contain at least 6 characters",
+  "errStrongPasswordMinLength": "Strong password must have at least 8 characters",
+  "errStrongPasswordUppercase": "Password needs at least 1 uppercase letter",
+  "errStrongPasswordNumber": "Password needs at least 1 digit",
+  "errStrongPasswordSpecialChar": "Password needs at least 1 special character (!@#...)",
+  "errConfirmPasswordRequired": "Please confirm your password",
+  "errConfirmPasswordMismatch": "Confirm password does not match",
+  "errFullNameRequired": "Please enter full name",
+  "errFullNameTooShort": "Full name is too short",
+  "errFullNameTooLong": "Full name cannot exceed 50 characters",
+  "errFullNameInvalid": "Full name can only contain letters and spaces",
+  "errPhoneNumberRequired": "Please enter phone number",
+  "errPhoneNumberInvalid": "Invalid phone number (e.g. 0912345678)",
+  "errYearRequired": "Please enter year",
+  "errYearInvalid": "Please enter a valid year",
+  "errYearFuture": "Year cannot be greater than the current year ({year})",
+  "@errYearFuture": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "errYearMin": "Year must be greater than or equal to {year}",
+  "@errYearMin": {
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "errYearTooSmall": "Year is too small (required from year 1000 onwards)",
+  "errRequiredField": "Please enter {fieldName}",
+  "@errRequiredField": {
+    "placeholders": {
+      "fieldName": {
+        "type": "String"
+      }
+    }
+  },
+  "errServer": "The system is temporarily unavailable. Please try again in a few minutes.",
+  "errNetwork": "No internet connection. Please check your Wi-Fi or cellular data.",
+  "errCache": "Could not access temporary data on the device. Please reload the page.",
+  "errNotFound": "Requested information could not be found or has been deleted.",
+  "errValidation": "The entered details are incorrect. Please verify and try again.",
+  "errUnknown": "An unexpected error occurred. Please try again later.",
+  "errAuth": "Session has expired or credentials are incorrect. Please sign in again.",
+  "errPermission": "Your account does not have permission to access this feature.",
+  "errTimeout": "Connection is too slow or was interrupted. Please try again."
 }

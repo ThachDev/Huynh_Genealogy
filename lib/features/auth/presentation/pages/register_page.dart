@@ -27,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
-  bool _isCreator = false;
+  bool _isTermsAccepted = false;
 
   @override
   void dispose() {
@@ -39,13 +39,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _onRegisterPressed() {
+    final l10n = AppLocalizations.of(context)!;
+    if (!_isTermsAccepted) {
+      AppSnackBar.warning(context, l10n.termsValidationErr);
+      return;
+    }
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
             AuthRegisterRequested(
               email: _emailController.text.trim(),
               password: _passwordController.text,
               fullName: _fullNameController.text.trim(),
-              role: _isCreator ? 'OWNER' : 'VIEWER',
+              role: 'VIEWER',
             ),
           );
     }
@@ -110,8 +115,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 const SizedBox(height: 16.0),
                                 _buildConfirmPasswordInput(isLoading, l10n),
                                 const SizedBox(height: 16.0),
-                                _buildRoleCheckbox(isLoading, l10n),
-                                const SizedBox(height: 28.0),
+                                _buildTermsCheckbox(isLoading, l10n),
+                                const SizedBox(height: 24.0),
                                 _buildRegisterButton(isLoading, l10n),
                                 const Spacer(),
                                 if (bottomInset == 0) ...[
@@ -191,7 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
       keyboardType: TextInputType.name,
       enabled: !isLoading,
       hintText: l10n.fullNameHint,
-      validator: AppValidators.validateFullName,
+      validator: (val) => AppValidators.validateFullName(context, val),
     );
   }
 
@@ -202,7 +207,7 @@ class _RegisterPageState extends State<RegisterPage> {
       keyboardType: TextInputType.emailAddress,
       enabled: !isLoading,
       hintText: l10n.emailHint,
-      validator: AppValidators.validateEmail,
+      validator: (val) => AppValidators.validateEmail(context, val),
     );
   }
 
@@ -225,7 +230,7 @@ class _RegisterPageState extends State<RegisterPage> {
           });
         },
       ),
-      validator: AppValidators.validateStrongPassword,
+      validator: (val) => AppValidators.validateStrongPassword(context, val),
     );
   }
 
@@ -249,56 +254,9 @@ class _RegisterPageState extends State<RegisterPage> {
         },
       ),
       validator: (value) => AppValidators.validateConfirmPassword(
+        context,
         value,
         _passwordController.text,
-      ),
-    );
-  }
-
-  Widget _buildRoleCheckbox(bool isLoading, AppLocalizations l10n) {
-    return GestureDetector(
-      onTap: isLoading
-          ? null
-          : () {
-              setState(() {
-                _isCreator = !_isCreator;
-              });
-            },
-      child: Row(
-        children: [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: Checkbox(
-              value: _isCreator,
-              onChanged: isLoading
-                  ? null
-                  : (value) {
-                      setState(() {
-                        _isCreator = value ?? false;
-                      });
-                    },
-              activeColor: AppColors.crimson,
-              checkColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-              side: BorderSide(
-                color: AppColors.textSecondary.withValues(alpha: 0.5),
-                width: 1.5,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8.0),
-          Text(
-            l10n.registerAsCreator,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -421,6 +379,178 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTermsCheckbox(bool isLoading, AppLocalizations l10n) {
+    return GestureDetector(
+      onTap: isLoading
+          ? null
+          : () {
+              setState(() {
+                _isTermsAccepted = !_isTermsAccepted;
+              });
+            },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 20,
+            height: 20,
+            child: Checkbox(
+              value: _isTermsAccepted,
+              onChanged: isLoading
+                  ? null
+                  : (value) {
+                      setState(() {
+                        _isTermsAccepted = value ?? false;
+                      });
+                    },
+              activeColor: AppColors.crimson,
+              checkColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              side: BorderSide(
+                color: AppColors.textSecondary.withValues(alpha: 0.5),
+                width: 1.5,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10.0),
+          Expanded(
+            child: RichText(
+              text: TextSpan(
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                  height: 1.4,
+                ),
+                children: [
+                  TextSpan(text: l10n.acceptTermsText),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: GestureDetector(
+                      onTap: () =>
+                          _showTermsDialog(context, l10n.termsOfService),
+                      child: Text(
+                        l10n.termsOfService,
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.crimson,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextSpan(text: l10n.andText),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: GestureDetector(
+                      onTap: () =>
+                          _showPrivacyPolicyDialog(context, l10n.privacyPolicy),
+                      child: Text(
+                        l10n.privacyPolicy,
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.crimson,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showTermsDialog(BuildContext context, String title) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text(
+          title,
+          style: GoogleFonts.beVietnamPro(
+            fontWeight: FontWeight.bold,
+            color: AppColors.crimson,
+          ),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Text(
+              l10n.termsContent,
+              textAlign: TextAlign.justify,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              l10n.closeButton,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                color: AppColors.crimson,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPrivacyPolicyDialog(BuildContext context, String title) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text(
+          title,
+          style: GoogleFonts.beVietnamPro(
+            fontWeight: FontWeight.bold,
+            color: AppColors.crimson,
+          ),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Text(
+              l10n.privacyContent,
+              textAlign: TextAlign.justify,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              l10n.closeButton,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                color: AppColors.crimson,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

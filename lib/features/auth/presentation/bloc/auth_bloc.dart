@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecase/get_cached_user.dart';
 import '../../domain/usecase/login_with_google.dart';
+import '../../domain/repository/auth_repository.dart';
 import '../../domain/usecase/logout.dart';
 import '../../domain/usecase/register_with_email.dart';
 import 'auth_event.dart';
@@ -12,17 +13,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Logout logout;
   final GetCachedUser getCachedUser;
   final RegisterWithEmail registerWithEmail;
+  final AuthRepository authRepository;
 
   AuthBloc({
     required this.loginWithGoogle,
     required this.logout,
     required this.getCachedUser,
     required this.registerWithEmail,
+    required this.authRepository,
   }) : super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
     on<AuthRegisterRequested>(_onAuthRegisterRequested);
+    on<AuthUserUpdated>(_onAuthUserUpdated);
   }
 
   Future<void> _onAuthCheckRequested(
@@ -84,5 +88,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) => emit(AuthError(message: failure.message)),
       (user) => emit(Authenticated(user: user)),
     );
+  }
+
+  Future<void> _onAuthUserUpdated(
+    AuthUserUpdated event,
+    Emitter<AuthState> emit,
+  ) async {
+    // Cache the updated user data
+    await authRepository.cacheUser(event.user);
+    emit(Authenticated(user: event.user));
   }
 }

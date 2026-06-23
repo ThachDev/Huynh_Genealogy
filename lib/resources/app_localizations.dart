@@ -235,6 +235,468 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng ký với tư cách Trưởng tộc'**
   String get registerAsCreator;
+
+  /// No description provided for @acceptTermsText.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi đồng ý với '**
+  String get acceptTermsText;
+
+  /// No description provided for @termsOfService.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều khoản dịch vụ'**
+  String get termsOfService;
+
+  /// No description provided for @andText.
+  ///
+  /// In vi, this message translates to:
+  /// **' và '**
+  String get andText;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chính sách bảo mật'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsValidationErr.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn phải đồng ý với Điều khoản dịch vụ và Chính sách bảo mật để tiếp tục'**
+  String get termsValidationErr;
+
+  /// No description provided for @termsContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào mừng bạn đến với Gia Tộc Việt. Khi sử dụng dịch vụ của chúng tôi, bạn đồng ý với các điều khoản dưới đây:\n\n1. Quy định tài khoản: Bạn chịu trách nhiệm bảo mật thông tin tài khoản và mật khẩu của mình.\n\n2. Quyền sở hữu dữ liệu: Thông tin gia phả do dòng họ đóng góp thuộc quyền sở hữu chung của các thành viên được cấp quyền trong dòng họ.\n\n3. Hành vi bị cấm: Không đăng tải nội dung xuyên tạc lịch sử, thông tin sai sự thật hoặc xâm phạm đời tư của người khác.\n\n4. Thay đổi điều khoản: Chúng tôi có quyền cập nhật điều khoản dịch vụ để phù hợp hơn với hoạt động của hệ thống.'**
+  String get termsContent;
+
+  /// No description provided for @privacyContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia Tộc Việt cam kết bảo vệ thông tin riêng tư của gia đình bạn:\n\n1. Thu thập dữ liệu: Chúng tôi thu thập họ tên, email, ảnh đại diện, và dữ liệu phả hệ do bạn chủ động cung cấp.\n\n2. Sử dụng thông tin: Dữ liệu được sử dụng để xây dựng sơ đồ cây gia phả, kết nối các thành viên và thông báo các sự kiện dòng họ.\n\n3. Bảo mật: Chúng tôi áp dụng các biện pháp bảo mật hiện đại để ngăn chặn rò rỉ dữ liệu.\n\n4. Chia sẻ dữ liệu: Chúng tôi tuyệt đối không bán hoặc chia sẻ dữ liệu gia phả của bạn cho bất kỳ bên thứ ba nào vì mục đích quảng cáo.'**
+  String get privacyContent;
+
+  /// No description provided for @closeButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get closeButton;
+
+  /// No description provided for @appTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia Tộc Việt'**
+  String get appTitle;
+
+  /// No description provided for @confirmLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận'**
+  String get confirmLabel;
+
+  /// No description provided for @cancelLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy'**
+  String get cancelLabel;
+
+  /// No description provided for @okLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get okLabel;
+
+  /// No description provided for @loadingMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xử lý...'**
+  String get loadingMessage;
+
+  /// No description provided for @emailLoginFeatureNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.'**
+  String get emailLoginFeatureNotice;
+
+  /// No description provided for @forgotPasswordNotice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.'**
+  String get forgotPasswordNotice;
+
+  /// No description provided for @enterInviteCodeWarning.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập mã mời'**
+  String get enterInviteCodeWarning;
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết Lập Gia Tộc'**
+  String get onboardingTitle;
+
+  /// No description provided for @logoutTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng xuất'**
+  String get logoutTooltip;
+
+  /// No description provided for @createFamilySuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo dòng họ thành công!'**
+  String get createFamilySuccess;
+
+  /// No description provided for @verifyInviteSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác thực mã mời thành công: {familyName}'**
+  String verifyInviteSuccess(String familyName);
+
+  /// No description provided for @joinRequestSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu cầu tham gia đã gửi thành công!'**
+  String get joinRequestSuccess;
+
+  /// No description provided for @pendingApprovalTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang Chờ Phê Duyệt'**
+  String get pendingApprovalTitle;
+
+  /// No description provided for @pendingApprovalMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu cầu tham gia dòng họ của bạn đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc / Chủ quản dòng họ để phê duyệt tài khoản.'**
+  String get pendingApprovalMessage;
+
+  /// No description provided for @checkStatusButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra trạng thái'**
+  String get checkStatusButton;
+
+  /// No description provided for @welcomeCreatorTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào Trưởng tộc, {name}!'**
+  String welcomeCreatorTitle(String name);
+
+  /// No description provided for @welcomeCreatorSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập thông tin dưới đây để khởi tạo cây gia phả dòng tộc của bạn.'**
+  String get welcomeCreatorSubtitle;
+
+  /// No description provided for @familyNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên Dòng Họ / Gia Tộc'**
+  String get familyNameLabel;
+
+  /// No description provided for @familyNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ví dụ: Nguyễn Gia Tộc'**
+  String get familyNameHint;
+
+  /// No description provided for @familyNameRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên dòng họ không được để trống'**
+  String get familyNameRequired;
+
+  /// No description provided for @familyDescriptionLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiểu sử / Mô tả Dòng Họ'**
+  String get familyDescriptionLabel;
+
+  /// No description provided for @familyDescriptionHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quê quán, nguồn gốc gia phả...'**
+  String get familyDescriptionHint;
+
+  /// No description provided for @initFamilyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'KHỞI TẠO GIA TỘC'**
+  String get initFamilyButton;
+
+  /// No description provided for @welcomeViewerTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chào {name}!'**
+  String welcomeViewerTitle(String name);
+
+  /// No description provided for @welcomeViewerSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập Mã Mời (Invite Code) do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.'**
+  String get welcomeViewerSubtitle;
+
+  /// No description provided for @inviteCodeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã Mời Gia Tộc'**
+  String get inviteCodeLabel;
+
+  /// No description provided for @inviteCodeHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập mã 6 ký tự'**
+  String get inviteCodeHint;
+
+  /// No description provided for @verifyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác thực'**
+  String get verifyButton;
+
+  /// No description provided for @familyFoundTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia tộc tìm thấy: {name}'**
+  String familyFoundTitle(String name);
+
+  /// No description provided for @selectMemberPrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):'**
+  String get selectMemberPrompt;
+
+  /// No description provided for @whoAreYouDropdownHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn là ai trên cây gia phả?'**
+  String get whoAreYouDropdownHint;
+
+  /// No description provided for @sendJoinRequestButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'GỬI YÊU CẦU GIA NHẬP'**
+  String get sendJoinRequestButton;
+
+  /// No description provided for @chooseOnboardingSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.'**
+  String get chooseOnboardingSubtitle;
+
+  /// No description provided for @createFamilyCardTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khởi tạo Gia tộc mới'**
+  String get createFamilyCardTitle;
+
+  /// No description provided for @createFamilyCardDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.'**
+  String get createFamilyCardDesc;
+
+  /// No description provided for @joinFamilyCardTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia nhập Gia tộc đã có'**
+  String get joinFamilyCardTitle;
+
+  /// No description provided for @joinFamilyCardDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dành cho thành viên đã có mã mời từ Trưởng tộc để xem và cập nhật cây gia phả.'**
+  String get joinFamilyCardDesc;
+
+  /// No description provided for @errEmailRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập địa chỉ email'**
+  String get errEmailRequired;
+
+  /// No description provided for @errEmailInvalid.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email không đúng định dạng (Ví dụ: ten@gmail.com)'**
+  String get errEmailInvalid;
+
+  /// No description provided for @errPasswordRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập mật khẩu'**
+  String get errPasswordRequired;
+
+  /// No description provided for @errPasswordMinLength.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu phải chứa ít nhất 6 ký tự'**
+  String get errPasswordMinLength;
+
+  /// No description provided for @errStrongPasswordMinLength.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu bảo mật phải có ít nhất 8 ký tự'**
+  String get errStrongPasswordMinLength;
+
+  /// No description provided for @errStrongPasswordUppercase.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu cần ít nhất 1 chữ cái viết hoa'**
+  String get errStrongPasswordUppercase;
+
+  /// No description provided for @errStrongPasswordNumber.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu cần ít nhất 1 chữ số'**
+  String get errStrongPasswordNumber;
+
+  /// No description provided for @errStrongPasswordSpecialChar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu cần ít nhất 1 ký tự đặc biệt (!@#...)'**
+  String get errStrongPasswordSpecialChar;
+
+  /// No description provided for @errConfirmPasswordRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng xác nhận lại mật khẩu'**
+  String get errConfirmPasswordRequired;
+
+  /// No description provided for @errConfirmPasswordMismatch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu xác nhận không khớp'**
+  String get errConfirmPasswordMismatch;
+
+  /// No description provided for @errFullNameRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập họ và tên'**
+  String get errFullNameRequired;
+
+  /// No description provided for @errFullNameTooShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Họ và tên quá ngắn'**
+  String get errFullNameTooShort;
+
+  /// No description provided for @errFullNameTooLong.
+  ///
+  /// In vi, this message translates to:
+  /// **'Họ và tên không được vượt quá 50 ký tự'**
+  String get errFullNameTooLong;
+
+  /// No description provided for @errFullNameInvalid.
+  ///
+  /// In vi, this message translates to:
+  /// **'Họ và tên chỉ được chứa chữ cái và khoảng trắng'**
+  String get errFullNameInvalid;
+
+  /// No description provided for @errPhoneNumberRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập số điện thoại'**
+  String get errPhoneNumberRequired;
+
+  /// No description provided for @errPhoneNumberInvalid.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số điện thoại không hợp lệ (Ví dụ: 0912345678)'**
+  String get errPhoneNumberInvalid;
+
+  /// No description provided for @errYearRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập năm'**
+  String get errYearRequired;
+
+  /// No description provided for @errYearInvalid.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập số năm hợp lệ'**
+  String get errYearInvalid;
+
+  /// No description provided for @errYearFuture.
+  ///
+  /// In vi, this message translates to:
+  /// **'Năm không thể lớn hơn năm hiện tại ({year})'**
+  String errYearFuture(int year);
+
+  /// No description provided for @errYearMin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Năm phải lớn hơn hoặc bằng {year}'**
+  String errYearMin(int year);
+
+  /// No description provided for @errYearTooSmall.
+  ///
+  /// In vi, this message translates to:
+  /// **'Năm quá nhỏ (yêu cầu từ năm 1000 trở đi)'**
+  String get errYearTooSmall;
+
+  /// No description provided for @errRequiredField.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập {fieldName}'**
+  String errRequiredField(String fieldName);
+
+  /// No description provided for @errServer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hệ thống đang gặp sự cố tạm thời. Vui lòng thử lại sau ít phút.'**
+  String get errServer;
+
+  /// No description provided for @errNetwork.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có kết nối mạng. Vui lòng kiểm tra lại Wi-Fi hoặc dữ liệu di động.'**
+  String get errNetwork;
+
+  /// No description provided for @errCache.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể truy xuất dữ liệu lưu tạm trên thiết bị. Vui lòng tải lại trang.'**
+  String get errCache;
+
+  /// No description provided for @errNotFound.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy thông tin yêu cầu hoặc dữ liệu đã bị xóa.'**
+  String get errNotFound;
+
+  /// No description provided for @errValidation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin nhập vào chưa chính xác. Vui lòng kiểm tra lại.'**
+  String get errValidation;
+
+  /// No description provided for @errUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.'**
+  String get errUnknown;
+
+  /// No description provided for @errAuth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phiên đăng nhập đã hết hạn hoặc tài khoản/mật khẩu không chính xác. Vui lòng đăng nhập lại.'**
+  String get errAuth;
+
+  /// No description provided for @errPermission.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản của bạn không có quyền thực hiện chức năng này.'**
+  String get errPermission;
+
+  /// No description provided for @errTimeout.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại.'**
+  String get errTimeout;
 }
 
 class _AppLocalizationsDelegate

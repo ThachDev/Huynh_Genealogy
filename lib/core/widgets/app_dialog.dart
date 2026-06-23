@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../resources/app_localizations.dart';
 import '../theme/app_theme.dart';
 import 'app_common_widgets.dart';
 
@@ -13,18 +14,19 @@ class AppDialog {
     BuildContext context, {
     required String title,
     required String message,
-    String confirmLabel = 'Xác nhận',
-    String cancelLabel = 'Huỷ',
+    String? confirmLabel,
+    String? cancelLabel,
     AppDialogType type = AppDialogType.warning,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (_) => _AppDialogWidget(
         title: title,
         message: message,
-        confirmLabel: confirmLabel,
-        cancelLabel: cancelLabel,
+        confirmLabel: confirmLabel ?? l10n.confirmLabel,
+        cancelLabel: cancelLabel ?? l10n.cancelLabel,
         type: type,
         showCancel: true,
       ),
@@ -36,15 +38,16 @@ class AppDialog {
     BuildContext context, {
     required String title,
     required String message,
-    String okLabel = 'Đóng',
+    String? okLabel,
     AppDialogType type = AppDialogType.info,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<void>(
       context: context,
       builder: (_) => _AppDialogWidget(
         title: title,
         message: message,
-        confirmLabel: okLabel,
+        confirmLabel: okLabel ?? l10n.okLabel,
         type: type,
         showCancel: false,
       ),
@@ -54,8 +57,9 @@ class AppDialog {
   /// Dialog loading – không thể đóng bằng back/tap ngoài
   static Future<void> showLoading(
     BuildContext context, {
-    String message = 'Đang xử lý...',
+    String? message,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -73,7 +77,7 @@ class AppDialog {
                 const SizedBox(width: 16),
                 Flexible(
                   child: Text(
-                    message,
+                    message ?? l10n.loadingMessage,
                     style: GoogleFonts.inter(
                       color: Colors.white,
                       fontSize: 14,

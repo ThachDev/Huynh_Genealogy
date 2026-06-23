@@ -33,6 +33,14 @@ lib/
 
 ### Quy tắc triển khai:
 * **Presentation Layer**: Trang (Pages) chỉ xử lý bố cục và phản hồi sự kiện từ Bloc. Không nhúng logic nghiệp vụ hoặc logic kiểm tra dữ liệu trực tiếp trong UI.
+  * Cấu trúc thư mục con trong `presentation/`:
+    ```
+    presentation/
+    ├── bloc/          # Quản lý trạng thái (Bloc/Cubit)
+    ├── pages/         # Các màn hình/trang giao diện chính
+    └── widgets/       # Các widget dùng chung nội bộ cho feature này
+    ```
+  * **Quy tắc tổ chức**: Khi số lượng widget hoặc các file trong thư mục `pages/` quá nhiều (ví dụ như trong feature `family`), ta cần tạo thêm thư mục `widgets/` tại nhánh con `presentation/` (ví dụ: `lib/features/family/presentation/widgets/`) để chứa các widget dùng chung hoặc các widget con được tách ra từ page, giúp thư mục `pages/` luôn gọn gàng và dễ quản lý.
 * **Domain Layer**: Phải độc lập hoàn toàn, không phụ thuộc vào bất kỳ thư viện UI nào.
 
 ---
@@ -81,6 +89,11 @@ Dự án hỗ trợ song song hai chế độ **Giao diện sáng (Light Mode)**
   Icon(LucideIcons.gitBranch)
   ```
 
+### 3.6. Hiệu ứng chuyển trang (Page Route Transitions)
+* Các ứng dụng lớn cần tính thẩm mỹ cao không lạm dụng hiệu ứng trượt (Slide) toàn trang một cách thô sơ.
+* Ưu tiên sử dụng **`FadeScalePageRoute`** (hiệu ứng phóng to mờ dần chuẩn Material 3) để chuyển đổi giữa các màn hình độc lập (ví dụ: Đăng nhập $\leftrightarrow$ Đăng ký).
+* Mọi hiệu ứng chuyển trang dùng chung phải được khai báo trong [app_route_transitions.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/widgets/app_route_transitions.dart) và export tại [widgets.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/widgets/widgets.dart).
+
 ---
 
 ## 4. Xác thực dữ liệu (Validators)
@@ -98,10 +111,17 @@ Tất cả các biểu mẫu (Form) nhập liệu phải sử dụng các hàm x
 
 ---
 
-## 5. Đa ngôn ngữ (Localization - l10n)
+## 5. Quản lý và xử lý lỗi (Errors & Failures)
+Tất cả các lỗi nghiệp vụ, kết nối mạng, xác thực hoặc sự cố máy chủ phải được quản lý tập trung tại thư mục [errors](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/errors).
+* **MANDATORY**: Nếu phát sinh hoặc cần thêm bất kỳ trường hợp lỗi mới nào (như Exception hoặc Failure), lập trình viên/AI bắt buộc phải định nghĩa và cập nhật ngay vào [exceptions.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/errors/exceptions.dart) và [failures.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/errors/failures.dart) để tái sử dụng toàn cục. Không viết các Exception hoặc Failure cục bộ riêng lẻ trong các feature.
+* Mọi lớp `Failure` con bắt buộc phải cài đặt phương thức `getMessage(BuildContext context)` để trả về chuỗi thông báo lỗi đã được bản địa hóa qua tệp `.arb` tương ứng.
+
+---
+
+## 6. Đa ngôn ngữ (Localization - l10n)
 Dự án được bản địa hóa hoàn chỉnh sử dụng Flutter Localization chính thống. Không được hardcode bất kỳ chuỗi ký tự hiển thị nào hiển thị lên UI.
 
-### 5.1. Khai báo chuỗi dịch:
+### 6.1. Khai báo chuỗi dịch:
 * Thêm các key-value tương ứng vào hai tệp tài nguyên:
   * Tiếng Việt: [app_vi.arb](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/resources/app_vi.arb)
   * Tiếng Anh: [app_en.arb](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/resources/app_en.arb)
@@ -110,7 +130,7 @@ Dự án được bản địa hóa hoàn chỉnh sử dụng Flutter Localizati
   fvm flutter gen-l10n
   ```
 
-### 5.2. Sử dụng trong code:
+### 6.2. Sử dụng trong code:
 * Import gói thư viện sinh ra:
   ```dart
   import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -122,16 +142,22 @@ Dự án được bản địa hóa hoàn chỉnh sử dụng Flutter Localizati
   Text(l10n.loginTitle)
   ```
 
+> [!IMPORTANT]
+> **Quy tắc bản địa hóa các giá trị mặc định (Default Parameters)**:
+> Trong Dart, các giá trị mặc định của tham số phương thức/constructor bắt buộc phải là hằng số (compile-time constant), do đó ta không thể gọi `AppLocalizations.of(context)` tại phần khai báo tham số. 
+> * **Giải pháp bắt buộc**: Đặt giá trị mặc định là `null` (ví dụ: `String? confirmLabel`), sau đó trong thân phương thức hoặc hàm dựng `build` (nơi có `BuildContext`), thực hiện gán fallback: `confirmLabel ?? AppLocalizations.of(context)!.confirmLabel` để tránh hardcode ngôn ngữ.
+
 ---
 
-## 6. Tiêu chuẩn viết code (Code Style & Linting)
+## 7. Tiêu chuẩn viết code (Code Style & Linting)
 * Giữ cấu trúc tệp gọn gàng, tránh các Widget lồng nhau quá sâu. Hãy tách ra các private helper method (ví dụ: `_buildHeader()`) hoặc các Widget class riêng biệt khi vượt quá 200 dòng.
 * Luôn khai báo `const` cho các Constructor của widget tĩnh để tối ưu hiệu năng hiển thị.
 * Khi gặp cảnh báo từ linter, hãy khắc phục triệt để. Nếu là cảnh báo giả (false positive) từ thư viện SDK, hãy sử dụng chú thích `// ignore: lint_rule` cục bộ thay vì tắt diện rộng.
 
 ---
 
-## 7. Phối hợp Phát triển & Đồng bộ với Backend
+## 8. Phối hợp Phát triển & Đồng bộ với Backend
 Khi phát triển hoặc nâng cấp tính năng ở Frontend, lập trình viên/AI cần thực hiện:
 * **Rà soát mã nguồn Backend**: Chủ động kiểm tra mã nguồn tại thư mục `/Users/ancq/ThienThach/Code/BE/BE_Huynh_Genealogy` (hoặc đường dẫn tương đương của backend) xem đã có đầy đủ logic nghiệp vụ, cơ sở dữ liệu (Database Schema), hay API endpoints mà Frontend cần chưa (và ngược lại).
 * **Bổ sung logic thiếu**: Nếu Backend chưa hỗ trợ phần nghiệp vụ cần thiết cho Frontend, AI có nhiệm vụ trực tiếp triển khai/xây dựng bổ sung logic đó ở phần Backend để đảm bảo hai bên hoạt động đồng bộ.
+

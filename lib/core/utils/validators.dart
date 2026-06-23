@@ -1,116 +1,125 @@
-// ignore_for_file: deprecated_member_use
+import 'package:flutter/widgets.dart';
+import '../../resources/app_localizations.dart';
 
 class AppValidators {
   AppValidators._();
 
-  static String? validateEmail(String? value) {
+  static String? validateEmail(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng nhập địa chỉ email';
+      return l10n.errEmailRequired;
     }
     final trimmed = value.trim();
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
     if (!emailRegex.hasMatch(trimmed)) {
-      return 'Email không đúng định dạng (Ví dụ: ten@gmail.com)';
+      return l10n.errEmailInvalid;
     }
     return null;
   }
 
-  static String? validatePassword(String? value) {
+  static String? validatePassword(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Vui lòng nhập mật khẩu';
+      return l10n.errPasswordRequired;
     }
     if (value.length < 6) {
-      return 'Mật khẩu phải chứa ít nhất 6 ký tự';
+      return l10n.errPasswordMinLength;
     }
     return null;
   }
 
-  static String? validateStrongPassword(String? value) {
+  static String? validateStrongPassword(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Vui lòng nhập mật khẩu';
+      return l10n.errPasswordRequired;
     }
     if (value.length < 8) {
-      return 'Mật khẩu bảo mật phải có ít nhất 8 ký tự';
+      return l10n.errStrongPasswordMinLength;
     }
     if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'Mật khẩu cần ít nhất 1 chữ cái viết hoa';
+      return l10n.errStrongPasswordUppercase;
     }
     if (!value.contains(RegExp(r'[0-9]'))) {
-      return 'Mật khẩu cần ít nhất 1 chữ số';
+      return l10n.errStrongPasswordNumber;
     }
     if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'Mật khẩu cần ít nhất 1 ký tự đặc biệt (!@#...)';
+      return l10n.errStrongPasswordSpecialChar;
     }
     return null;
   }
 
-  static String? validateConfirmPassword(String? value, String password) {
+  static String? validateConfirmPassword(BuildContext context, String? value, String password) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Vui lòng xác nhận lại mật khẩu';
+      return l10n.errConfirmPasswordRequired;
     }
     if (value != password) {
-      return 'Mật khẩu xác nhận không khớp';
+      return l10n.errConfirmPasswordMismatch;
     }
     return null;
   }
 
-  static String? validateFullName(String? value) {
+  static String? validateFullName(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng nhập họ và tên';
+      return l10n.errFullNameRequired;
     }
     final trimmed = value.trim();
     if (trimmed.length < 2) {
-      return 'Họ và tên quá ngắn';
+      return l10n.errFullNameTooShort;
     }
     if (trimmed.length > 50) {
-      return 'Họ và tên không được vượt quá 50 ký tự';
+      return l10n.errFullNameTooLong;
     }
     final nameRegex = RegExp(
         r'^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂĐÎÔƠƯỨỨỰửữựỳỵỷỹ \s]+$');
     if (!nameRegex.hasMatch(trimmed)) {
-      return 'Họ và tên chỉ được chứa chữ cái và khoảng trắng';
+      return l10n.errFullNameInvalid;
     }
     return null;
   }
 
-  static String? validatePhoneNumber(String? value) {
+  static String? validatePhoneNumber(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng nhập số điện thoại';
+      return l10n.errPhoneNumberRequired;
     }
     final trimmed = value.trim();
     final phoneRegex = RegExp(r'^(0|\+84)[3|5|7|8|9][0-9]{8}$');
     if (!phoneRegex.hasMatch(trimmed)) {
-      return 'Số điện thoại không hợp lệ (Ví dụ: 0912345678)';
+      return l10n.errPhoneNumberInvalid;
     }
     return null;
   }
 
-  static String? validateYear(String? value, {int? minYear}) {
+  static String? validateYear(BuildContext context, String? value, {int? minYear}) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng nhập năm';
+      return l10n.errYearRequired;
     }
     final year = int.tryParse(value.trim());
     if (year == null) {
-      return 'Vui lòng nhập số năm hợp lệ';
+      return l10n.errYearInvalid;
     }
     final currentYear = DateTime.now().year;
     if (year > currentYear) {
-      return 'Năm không thể lớn hơn năm hiện tại ($currentYear)';
+      return l10n.errYearFuture(currentYear);
     }
     if (minYear != null && year < minYear) {
-      return 'Năm phải lớn hơn hoặc bằng $minYear';
+      return l10n.errYearMin(minYear);
     }
     if (year < 1000) {
-      return 'Năm quá nhỏ (yêu cầu từ năm 1000 trở đi)';
+      return l10n.errYearTooSmall;
     }
     return null;
   }
 
-  static String? validateRequired(String? value, String fieldName) {
+  static String? validateRequired(BuildContext context, String? value, String fieldName) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng nhập $fieldName';
+      return l10n.errRequiredField(fieldName);
     }
     return null;
   }

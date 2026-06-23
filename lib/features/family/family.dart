@@ -24,3 +24,6 @@ export 'data/repository/family_repository_impl.dart';
 export 'presentation/bloc/onboarding_bloc.dart';
 export 'presentation/bloc/onboarding_event.dart';
 export 'presentation/bloc/onboarding_state.dart';
+
+// Presentation Pages
+export 'presentation/pages/onboarding_page.dart';

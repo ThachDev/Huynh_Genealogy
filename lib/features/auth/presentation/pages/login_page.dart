@@ -35,10 +35,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onEmailLoginPressed() {
+    final l10n = AppLocalizations.of(context)!;
     if (_formKey.currentState?.validate() ?? false) {
       AppSnackBar.warning(
         context,
-        'Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.',
+        l10n.emailLoginFeatureNotice,
       );
     }
   }
@@ -176,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       enabled: !isLoading,
       hintText: l10n.emailHint,
-      validator: AppValidators.validateEmail,
+      validator: (val) => AppValidators.validateEmail(context, val),
     );
   }
 
@@ -199,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
           });
         },
       ),
-      validator: AppValidators.validatePassword,
+      validator: (val) => AppValidators.validatePassword(context, val),
     );
   }
 
@@ -260,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
               : () {
                   AppSnackBar.info(
                     context,
-                    'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.',
+                    l10n.forgotPasswordNotice,
                   );
                 },
           child: Text(
@@ -311,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
             : () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const RegisterPage()),
+                  FadeScalePageRoute(page: const RegisterPage()),
                 );
               },
         child: RichText(

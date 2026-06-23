@@ -36,6 +36,7 @@ Future<void> init() async {
       logout: sl(),
       getCachedUser: sl(),
       registerWithEmail: sl(),
+      authRepository: sl(),
     ),
   );
 

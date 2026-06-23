@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'injection_container.dart' as di;
 import 'features/auth/auth.dart';
+import 'features/family/family.dart';
 import 'features/family_tree/family_tree.dart';
 
 void main() async {
@@ -45,9 +46,10 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
           create: (_) => di.sl<AuthBloc>()..add(AuthCheckRequested()),
         ),
         BlocProvider<TreeBloc>(create: (_) => di.sl<TreeBloc>()),
+        BlocProvider<OnboardingBloc>(create: (_) => di.sl<OnboardingBloc>()),
       ],
       child: MaterialApp(
-        title: 'Gia Tộc Việt',
+        onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         locale: _locale,
@@ -56,7 +58,10 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is Authenticated) {
-              return const FamilyDashboardPage();
+              if (state.user.familyId != null) {
+                return const FamilyDashboardPage();
+              }
+              return const OnboardingPage();
             }
             return const LoginPage();
           },

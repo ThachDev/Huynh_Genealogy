@@ -5,6 +5,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/entity/user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
+import '../model/user_model.dart';
 import '../source/auth_local_data_source.dart';
 import '../source/auth_remote_data_source.dart';
 
@@ -82,6 +83,18 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure(message: e.message));
     } catch (e) {
       return Left(ServerFailure(message: 'Lỗi đăng ký: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> cacheUser(UserEntity user) async {
+    try {
+      await localDataSource.cacheUser(UserModel.fromEntity(user));
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(CacheFailure(message: 'Lỗi lưu thông tin: $e'));
     }
   }
 }

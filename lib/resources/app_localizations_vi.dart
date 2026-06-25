@@ -152,7 +152,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pendingApprovalMessage =>
-      'Yêu cầu tham gia dòng họ của bạn đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc / Chủ quản dòng họ để phê duyệt tài khoản.';
+      'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc hoặc Người quản trị dòng họ để được phê duyệt.';
 
   @override
   String get checkStatusButton => 'Kiểm tra trạng thái';
@@ -164,10 +164,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get welcomeCreatorSubtitle =>
-      'Vui lòng nhập thông tin dưới đây để khởi tạo cây gia phả dòng tộc của bạn.';
+      'Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.';
 
   @override
-  String get familyNameLabel => 'Tên Dòng Họ / Gia Tộc';
+  String get familyNameLabel => 'Tên dòng họ / Gia tộc';
 
   @override
   String get familyNameHint => 'Ví dụ: Nguyễn Gia Tộc';
@@ -176,10 +176,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get familyNameRequired => 'Tên dòng họ không được để trống';
 
   @override
-  String get familyDescriptionLabel => 'Tiểu sử / Mô tả Dòng Họ';
+  String get familyDescriptionLabel => 'Tiểu sử / Mô tả dòng họ';
 
   @override
-  String get familyDescriptionHint => 'Quê quán, nguồn gốc gia phả...';
+  String get familyDescriptionHint => 'Quê quán, nguồn gốc gia tộc...';
 
   @override
   String get initFamilyButton => 'KHỞI TẠO GIA TỘC';
@@ -191,7 +191,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get welcomeViewerSubtitle =>
-      'Vui lòng nhập Mã Mời (Invite Code) do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.';
+      'Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.';
 
   @override
   String get inviteCodeLabel => 'Mã Mời Gia Tộc';
@@ -204,12 +204,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String familyFoundTitle(String name) {
-    return 'Gia tộc tìm thấy: $name';
+    return 'Tìm thấy gia tộc: $name';
   }
 
   @override
   String get selectMemberPrompt =>
-      'Vui lòng chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):';
+      'Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):';
 
   @override
   String get whoAreYouDropdownHint => 'Bạn là ai trên cây gia phả?';
@@ -219,7 +219,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get chooseOnboardingSubtitle =>
-      'Vui lòng chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.';
+      'Chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.';
 
   @override
   String get createFamilyCardTitle => 'Khởi tạo Gia tộc mới';

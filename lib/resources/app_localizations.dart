@@ -371,7 +371,7 @@ abstract class AppLocalizations {
   /// No description provided for @pendingApprovalMessage.
   ///
   /// In vi, this message translates to:
-  /// **'Yêu cầu tham gia dòng họ của bạn đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc / Chủ quản dòng họ để phê duyệt tài khoản.'**
+  /// **'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc hoặc Người quản trị dòng họ để được phê duyệt.'**
   String get pendingApprovalMessage;
 
   /// No description provided for @checkStatusButton.
@@ -389,13 +389,13 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeCreatorSubtitle.
   ///
   /// In vi, this message translates to:
-  /// **'Vui lòng nhập thông tin dưới đây để khởi tạo cây gia phả dòng tộc của bạn.'**
+  /// **'Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.'**
   String get welcomeCreatorSubtitle;
 
   /// No description provided for @familyNameLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Tên Dòng Họ / Gia Tộc'**
+  /// **'Tên dòng họ / Gia tộc'**
   String get familyNameLabel;
 
   /// No description provided for @familyNameHint.
@@ -413,13 +413,13 @@ abstract class AppLocalizations {
   /// No description provided for @familyDescriptionLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Tiểu sử / Mô tả Dòng Họ'**
+  /// **'Tiểu sử / Mô tả dòng họ'**
   String get familyDescriptionLabel;
 
   /// No description provided for @familyDescriptionHint.
   ///
   /// In vi, this message translates to:
-  /// **'Quê quán, nguồn gốc gia phả...'**
+  /// **'Quê quán, nguồn gốc gia tộc...'**
   String get familyDescriptionHint;
 
   /// No description provided for @initFamilyButton.
@@ -437,7 +437,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeViewerSubtitle.
   ///
   /// In vi, this message translates to:
-  /// **'Vui lòng nhập Mã Mời (Invite Code) do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.'**
+  /// **'Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.'**
   String get welcomeViewerSubtitle;
 
   /// No description provided for @inviteCodeLabel.
@@ -461,13 +461,13 @@ abstract class AppLocalizations {
   /// No description provided for @familyFoundTitle.
   ///
   /// In vi, this message translates to:
-  /// **'Gia tộc tìm thấy: {name}'**
+  /// **'Tìm thấy gia tộc: {name}'**
   String familyFoundTitle(String name);
 
   /// No description provided for @selectMemberPrompt.
   ///
   /// In vi, this message translates to:
-  /// **'Vui lòng chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):'**
+  /// **'Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):'**
   String get selectMemberPrompt;
 
   /// No description provided for @whoAreYouDropdownHint.
@@ -485,7 +485,7 @@ abstract class AppLocalizations {
   /// No description provided for @chooseOnboardingSubtitle.
   ///
   /// In vi, this message translates to:
-  /// **'Vui lòng chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.'**
+  /// **'Chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.'**
   String get chooseOnboardingSubtitle;
 
   /// No description provided for @createFamilyCardTitle.

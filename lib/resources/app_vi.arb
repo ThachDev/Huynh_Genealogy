@@ -51,7 +51,7 @@
   },
   "joinRequestSuccess": "Yêu cầu tham gia đã gửi thành công!",
   "pendingApprovalTitle": "Đang Chờ Phê Duyệt",
-  "pendingApprovalMessage": "Yêu cầu tham gia dòng họ của bạn đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc / Chủ quản dòng họ để phê duyệt tài khoản.",
+  "pendingApprovalMessage": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc hoặc Người quản trị dòng họ để được phê duyệt.",
   "checkStatusButton": "Kiểm tra trạng thái",
   "welcomeCreatorTitle": "Chào Trưởng tộc, {name}!",
   "@welcomeCreatorTitle": {
@@ -61,12 +61,12 @@
       }
     }
   },
-  "welcomeCreatorSubtitle": "Vui lòng nhập thông tin dưới đây để khởi tạo cây gia phả dòng tộc của bạn.",
-  "familyNameLabel": "Tên Dòng Họ / Gia Tộc",
+  "welcomeCreatorSubtitle": "Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.",
+  "familyNameLabel": "Tên dòng họ / Gia tộc",
   "familyNameHint": "Ví dụ: Nguyễn Gia Tộc",
   "familyNameRequired": "Tên dòng họ không được để trống",
-  "familyDescriptionLabel": "Tiểu sử / Mô tả Dòng Họ",
-  "familyDescriptionHint": "Quê quán, nguồn gốc gia phả...",
+  "familyDescriptionLabel": "Tiểu sử / Mô tả dòng họ",
+  "familyDescriptionHint": "Quê quán, nguồn gốc gia tộc...",
   "initFamilyButton": "KHỞI TẠO GIA TỘC",
   "welcomeViewerTitle": "Chào {name}!",
   "@welcomeViewerTitle": {
@@ -76,11 +76,11 @@
       }
     }
   },
-  "welcomeViewerSubtitle": "Vui lòng nhập Mã Mời (Invite Code) do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.",
+  "welcomeViewerSubtitle": "Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.",
   "inviteCodeLabel": "Mã Mời Gia Tộc",
   "inviteCodeHint": "Nhập mã 6 ký tự",
   "verifyButton": "Xác thực",
-  "familyFoundTitle": "Gia tộc tìm thấy: {name}",
+  "familyFoundTitle": "Tìm thấy gia tộc: {name}",
   "@familyFoundTitle": {
     "placeholders": {
       "name": {
@@ -88,10 +88,10 @@
       }
     }
   },
-  "selectMemberPrompt": "Vui lòng chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):",
+  "selectMemberPrompt": "Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):",
   "whoAreYouDropdownHint": "Bạn là ai trên cây gia phả?",
   "sendJoinRequestButton": "GỬI YÊU CẦU GIA NHẬP",
-  "chooseOnboardingSubtitle": "Vui lòng chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.",
+  "chooseOnboardingSubtitle": "Chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.",
   "createFamilyCardTitle": "Khởi tạo Gia tộc mới",
   "createFamilyCardDesc": "Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.",
   "joinFamilyCardTitle": "Gia nhập Gia tộc đã có",

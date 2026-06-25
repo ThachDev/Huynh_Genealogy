@@ -35,12 +35,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onEmailLoginPressed() {
-    final l10n = AppLocalizations.of(context)!;
     if (_formKey.currentState?.validate() ?? false) {
-      AppSnackBar.warning(
-        context,
-        l10n.emailLoginFeatureNotice,
-      );
+      context.read<AuthBloc>().add(
+            AuthLoginWithEmailRequested(
+              email: _emailController.text.trim(),
+              password: _passwordController.text.trim(),
+            ),
+          );
     }
   }
 
@@ -282,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
     return AppButton(
       label: l10n.loginButton,
       onPressed: _onEmailLoginPressed,
-      isLoading: isLoading,
+      isLoading: false,
       fullWidth: true,
       size: AppButtonSize.large,
     );

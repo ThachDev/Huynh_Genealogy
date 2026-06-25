@@ -265,7 +265,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return AppButton(
       label: l10n.registerButton,
       onPressed: _onRegisterPressed,
-      isLoading: isLoading,
+      isLoading: false,
       fullWidth: true,
       size: AppButtonSize.large,
     );

@@ -6,6 +6,7 @@ export 'domain/repository/auth_repository.dart';
 
 // Domain Use Cases
 export 'domain/usecase/login_with_google.dart';
+export 'domain/usecase/login_with_email.dart';
 export 'domain/usecase/logout.dart';
 export 'domain/usecase/get_cached_user.dart';
 export 'domain/usecase/register_with_email.dart';

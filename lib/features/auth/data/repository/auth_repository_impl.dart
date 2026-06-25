@@ -38,6 +38,27 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, UserEntity>> loginWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final userModel = await remoteDataSource.loginWithEmail(
+        email: email,
+        password: password,
+      );
+      await localDataSource.cacheUser(userModel);
+      return Right(userModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Lỗi đăng nhập: $e'));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> logout() async {
     try {
       await firebaseAuth.signOut();

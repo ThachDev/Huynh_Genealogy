@@ -33,6 +33,7 @@ Future<void> init() async {
   sl.registerFactory(
     () => AuthBloc(
       loginWithGoogle: sl(),
+      loginWithEmail: sl(),
       logout: sl(),
       getCachedUser: sl(),
       registerWithEmail: sl(),
@@ -58,6 +59,7 @@ Future<void> init() async {
 
   // Auth Use Cases
   sl.registerLazySingleton(() => LoginWithGoogle(sl()));
+  sl.registerLazySingleton(() => LoginWithEmail(sl()));
   sl.registerLazySingleton(() => Logout(sl()));
   sl.registerLazySingleton(() => GetCachedUser(sl()));
   sl.registerLazySingleton(() => RegisterWithEmail(sl()));

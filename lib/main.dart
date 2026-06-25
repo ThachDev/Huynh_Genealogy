@@ -6,8 +6,8 @@ import 'core/configs/firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'injection_container.dart' as di;
 import 'features/auth/auth.dart';
-import 'features/family/family.dart';
-import 'features/family_tree/family_tree.dart';
+import 'features/onboarding/onboarding.dart';
+import 'features/user/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

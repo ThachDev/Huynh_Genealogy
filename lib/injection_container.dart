@@ -8,8 +8,9 @@ import 'core/network/dio_client.dart';
 
 // Features (Encapsulated Entry Points)
 import 'features/auth/auth.dart';
-import 'features/family/family.dart';
-import 'features/family_tree/family_tree.dart';
+import 'features/onboarding/onboarding.dart';
+import 'features/user/user.dart';
+import 'features/admin/admin.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 

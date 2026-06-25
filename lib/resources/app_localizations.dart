@@ -395,7 +395,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyNameLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Tên dòng họ / Gia tộc'**
+  /// **'Tên Gia tộc'**
   String get familyNameLabel;
 
   /// No description provided for @familyNameHint.
@@ -413,7 +413,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyDescriptionLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Tiểu sử / Mô tả dòng họ'**
+  /// **'Mô tả Gia Tộc'**
   String get familyDescriptionLabel;
 
   /// No description provided for @familyDescriptionHint.
@@ -503,7 +503,7 @@ abstract class AppLocalizations {
   /// No description provided for @joinFamilyCardTitle.
   ///
   /// In vi, this message translates to:
-  /// **'Gia nhập Gia tộc đã có'**
+  /// **'Kết nối dòng tộc'**
   String get joinFamilyCardTitle;
 
   /// No description provided for @joinFamilyCardDesc.
@@ -709,6 +709,78 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã xảy ra lỗi'**
   String get errStateTitle;
+
+  /// No description provided for @qrScannerTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quét mã QR'**
+  String get qrScannerTitle;
+
+  /// No description provided for @qrScannerInstruction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt mã QR vào trong khung hình để thực hiện quét tự động'**
+  String get qrScannerInstruction;
+
+  /// No description provided for @qrScannerNoCodeFound.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy mã QR nào trong bức ảnh này.'**
+  String get qrScannerNoCodeFound;
+
+  /// No description provided for @qrScannerSelectImageError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xảy ra lỗi khi chọn ảnh.'**
+  String get qrScannerSelectImageError;
+
+  /// No description provided for @tapToChangePhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'NHẤN ĐỂ THAY ĐỔI ẢNH'**
+  String get tapToChangePhoto;
+
+  /// No description provided for @tapToUploadPhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'NHẤN ĐỂ TẢI ẢNH LÊN'**
+  String get tapToUploadPhoto;
+
+  /// No description provided for @byInitAgreeTerms.
+  ///
+  /// In vi, this message translates to:
+  /// **'BẰNG CÁCH NHẤN KHỞI TẠO, BẠN ĐỒNG Ý VỚI '**
+  String get byInitAgreeTerms;
+
+  /// No description provided for @appTerms.
+  ///
+  /// In vi, this message translates to:
+  /// **'CÁC ĐIỀU KHOẢN CỦA GIA TỘC VIỆT'**
+  String get appTerms;
+
+  /// No description provided for @enterInviteCodeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'NHẬP MÃ THAM GIA'**
+  String get enterInviteCodeLabel;
+
+  /// No description provided for @inviteCodeHintNew.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: HGT-2024'**
+  String get inviteCodeHintNew;
+
+  /// No description provided for @inviteCodeDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập mã định danh 9 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.'**
+  String get inviteCodeDescription;
+
+  /// No description provided for @confirmJoinButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'XÁC NHẬN THAM GIA'**
+  String get confirmJoinButton;
 }
 
 class _AppLocalizationsDelegate

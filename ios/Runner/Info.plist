@@ -47,5 +47,9 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Ứng dụng cần truy cập thư viện ảnh để chọn ảnh đại diện cho dòng họ.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Ứng dụng cần truy cập máy ảnh để chụp ảnh đại diện hoặc quét mã QR tham gia gia tộc.</string>
 	</dict>
 </plist>

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import 'app_common_widgets.dart';
 
 enum AppButtonVariant { primary, secondary, outline, ghost, danger }
 
@@ -35,14 +36,7 @@ class AppButton extends StatelessWidget {
     final fontSize = _fontSize();
 
     final content = isLoading
-        ? SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: _loadingColor(context),
-            ),
-          )
+        ? const AppLoading(size: 40)
         : Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -67,7 +61,9 @@ class AppButton extends StatelessWidget {
 
     final button = _buildButton(style, content, height);
 
-    return fullWidth ? SizedBox(width: double.infinity, height: height, child: button) : SizedBox(height: height, child: button);
+    return fullWidth
+        ? SizedBox(width: double.infinity, height: height, child: button)
+        : SizedBox(height: height, child: button);
   }
 
   Widget _buildButton(ButtonStyle style, Widget content, double height) {
@@ -151,20 +147,6 @@ class AppButton extends StatelessWidget {
         return 16;
     }
   }
-
-  Color _loadingColor(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    switch (variant) {
-      case AppButtonVariant.secondary:
-        return Colors.black87;
-      case AppButtonVariant.outline:
-        return AppColors.gold;
-      case AppButtonVariant.ghost:
-        return isDark ? Colors.white70 : Colors.black87;
-      default:
-        return Colors.white;
-    }
-  }
 }
 
 /// Icon button tròn dùng chung
@@ -196,7 +178,8 @@ class AppIconButton extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: backgroundColor ?? (isDark ? AppColors.wood : Colors.black.withValues(alpha: 0.05)),
+          color: backgroundColor ??
+              (isDark ? AppColors.wood : Colors.black.withValues(alpha: 0.05)),
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
         ),

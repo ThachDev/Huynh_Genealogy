@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giatocviet/features/family/presentation/bloc/onboarding_state.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -19,7 +22,8 @@ class CreatorOnboardingWidget extends StatefulWidget {
   });
 
   @override
-  State<CreatorOnboardingWidget> createState() => _CreatorOnboardingWidgetState();
+  State<CreatorOnboardingWidget> createState() =>
+      _CreatorOnboardingWidgetState();
 }
 
 class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
@@ -27,6 +31,63 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
   final _familyNameController = TextEditingController();
   final _familyDescriptionController = TextEditingController();
   late final TapGestureRecognizer _termsRecognizer;
+  final ImagePicker _picker = ImagePicker();
+  XFile? _imageFile;
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = pickedFile;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
+    }
+  }
+
+  Widget _buildCorner({required bool isTop, required bool isLeft}) {
+    const double lineLength = 12.0;
+    const double thickness = 2.0;
+    const Color cornerColor = Colors.amber;
+
+    return SizedBox(
+      width: lineLength,
+      height: lineLength,
+      child: Stack(
+        children: [
+          // Horizontal line
+          Positioned(
+            top: isTop ? 0 : null,
+            bottom: !isTop ? 0 : null,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: thickness,
+              color: cornerColor,
+            ),
+          ),
+          // Vertical line
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: isLeft ? 0 : null,
+            right: !isLeft ? 0 : null,
+            child: Container(
+              width: thickness,
+              color: cornerColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -48,6 +109,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
             CreateFamilyEvent(
               name: _familyNameController.text.trim(),
               description: _familyDescriptionController.text.trim(),
+              coverImageUrl: _imageFile?.path,
               userId: widget.user.id,
             ),
           );
@@ -82,24 +144,13 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
             // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.termsOfService,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.crimson,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(LucideIcons.x, size: 20),
-                    color: AppColors.textSecondary,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+              child: Text(
+                l10n.termsOfService,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.crimson,
+                ),
               ),
             ),
             const Divider(height: 1, color: AppColors.parchment),
@@ -141,45 +192,13 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 3.5,
-                height: 20,
-                margin: const EdgeInsets.only(top: 4, right: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.crimson,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "KHỞI TẠO TRANG SỬ MỚI",
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.crimson,
-                        height: 1.15,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 16),
-          Text(
-            "Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.",
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              color: AppColors.textSecondary,
-              height: 1.45,
-            ),
+          const AppSectionHeader(
+            title: "Khởi tạo gia tộc mới",
+            description:
+                "Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.",
+            titleSize: 20,
+            spacing: 8,
           ),
           const SizedBox(height: 28),
           Container(
@@ -208,46 +227,106 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Stack(
-                  children: [
-                    Container(
-                      height: 140,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppColors.parchment,
-                        borderRadius: BorderRadius.circular(8),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/images/thumbnail.png'),
-                          opacity: 0.3,
-                          fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 140,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2C1E1C),
+                          borderRadius: BorderRadius.circular(8),
+                          image: _imageFile != null
+                              ? DecorationImage(
+                                  image: FileImage(File(_imageFile!.path)),
+                                  fit: BoxFit.cover,
+                                )
+                              : const DecorationImage(
+                                  image:
+                                      AssetImage('assets/images/thumbnail.png'),
+                                  opacity: 0.25,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
+                        child: _imageFile != null
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withValues(alpha: 0.45),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      LucideIcons.edit2,
+                                      size: 32,
+                                      color: Colors.amber,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      l10n.tapToChangePhoto,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.amber,
+                                        letterSpacing: 1.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    LucideIcons.camera,
+                                    size: 38,
+                                    color: Colors.amber,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    l10n.tapToUploadPhoto,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.amber,
+                                      letterSpacing: 1.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.add_a_photo_outlined,
-                            size: 32,
-                            color: AppColors.textPrimary,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "NHẤN ĐỂ TẢI ẢNH LÊN",
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textSecondary,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                        ],
+                      // Top Left Corner
+                      Positioned(
+                        top: 6,
+                        left: 6,
+                        child: _buildCorner(isTop: true, isLeft: true),
                       ),
-                    ),
-                  ],
+                      // Top Right Corner
+                      Positioned(
+                        top: 6,
+                        right: 6,
+                        child: _buildCorner(isTop: true, isLeft: false),
+                      ),
+                      // Bottom Left Corner
+                      Positioned(
+                        bottom: 6,
+                        left: 6,
+                        child: _buildCorner(isTop: false, isLeft: true),
+                      ),
+                      // Bottom Right Corner
+                      Positioned(
+                        bottom: 6,
+                        right: 6,
+                        child: _buildCorner(isTop: false, isLeft: false),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "TÊN DÒNG HỌ",
+                  l10n.familyNameLabel.toUpperCase(),
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -273,7 +352,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                     style: GoogleFonts.inter(
                         color: AppColors.textPrimary, fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: "Vd: Nguyễn Tộc",
+                      hintText: l10n.familyNameHint,
                       hintStyle: GoogleFonts.inter(
                         color: AppColors.textSecondary.withValues(alpha: 0.4),
                         fontSize: 14,
@@ -298,7 +377,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "MÔ TẢ NGẮN",
+                  l10n.familyDescriptionLabel.toUpperCase(),
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -325,8 +404,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                         color: AppColors.textPrimary, fontSize: 14),
                     maxLines: 4,
                     decoration: InputDecoration(
-                      hintText:
-                          "Chia sẻ đôi nét về nguồn gốc hoặc truyền thống dòng họ...",
+                      hintText: l10n.familyDescriptionHint,
                       hintStyle: GoogleFonts.inter(
                         color: AppColors.textSecondary.withValues(alpha: 0.4),
                         fontSize: 14,
@@ -341,18 +419,23 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                   ),
                 ),
                 const SizedBox(height: 28),
-                AppButton(
-                  label: "KHỞI TẠO",
-                  onPressed: _onCreateFamilyPressed,
-                  fullWidth: true,
-                  size: AppButtonSize.large,
+                BlocBuilder<OnboardingBloc, OnboardingState>(
+                  builder: (context, state) {
+                    return AppButton(
+                      label: l10n.initFamilyButton,
+                      onPressed: _onCreateFamilyPressed,
+                      isLoading: state is OnboardingLoading,
+                      fullWidth: true,
+                      size: AppButtonSize.large,
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 Center(
                   child: RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                      text: "BẰNG CÁCH NHẤN KHỞI TẠO, BẠN ĐỒNG Ý VỚI ",
+                      text: l10n.byInitAgreeTerms,
                       style: GoogleFonts.inter(
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
@@ -362,7 +445,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                       ),
                       children: [
                         TextSpan(
-                          text: "CÁC ĐIỀU KHOẢN CỦA GIA TỘC VIỆT",
+                          text: l10n.appTerms,
                           style: GoogleFonts.inter(
                             fontSize: 9,
                             fontWeight: FontWeight.bold,

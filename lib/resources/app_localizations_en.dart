@@ -229,7 +229,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'For Clan Leaders/Genealogists who want to build a completely new family tree.';
 
   @override
-  String get joinFamilyCardTitle => 'Join an existing Family';
+  String get joinFamilyCardTitle => 'Connect with Family';
 
   @override
   String get joinFamilyCardDesc =>
@@ -354,4 +354,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errStateTitle => 'An error occurred';
+
+  @override
+  String get qrScannerTitle => 'Scan QR Code';
+
+  @override
+  String get qrScannerInstruction =>
+      'Place the QR code inside the frame to scan automatically';
+
+  @override
+  String get qrScannerNoCodeFound => 'No QR code found in this photo.';
+
+  @override
+  String get qrScannerSelectImageError =>
+      'An error occurred while choosing the photo.';
+
+  @override
+  String get tapToChangePhoto => 'TAP TO CHANGE PHOTO';
+
+  @override
+  String get tapToUploadPhoto => 'TAP TO UPLOAD PHOTO';
+
+  @override
+  String get byInitAgreeTerms => 'BY CLICKING INITIALIZE, YOU AGREE TO ';
+
+  @override
+  String get appTerms => 'THE TERMS OF GIA TOC VIET';
+
+  @override
+  String get enterInviteCodeLabel => 'ENTER INVITE CODE';
+
+  @override
+  String get inviteCodeHintNew => 'EG: HGT-2024';
+
+  @override
+  String get inviteCodeDescription =>
+      'Enter the 9-character code provided by your family leader or administrator.';
+
+  @override
+  String get confirmJoinButton => 'CONFIRM JOIN';
 }

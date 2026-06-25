@@ -54,6 +54,8 @@ dependencies:
   shared_preferences: ^2.2.2
   lucide_icons: ^0.257.0
   flutter_gen: ^5.14.1
+  image_picker: ^1.2.2
+  mobile_scanner: ^7.2.0
 
 dev_dependencies:
   flutter_test:

@@ -63,14 +63,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
               )
             : null,
         actions: [
-          IconButton(
-            icon:
-                const Icon(LucideIcons.logOut, color: AppColors.textSecondary),
-            tooltip: l10n.logoutTooltip,
-            onPressed: () {
-              context.read<AuthBloc>().add(AuthLogoutRequested());
-            },
-          ),
+          if (_selectedPath == null)
+            IconButton(
+              icon: const Icon(LucideIcons.logOut,
+                  color: AppColors.textSecondary),
+              tooltip: l10n.logoutTooltip,
+              onPressed: () {
+                context.read<AuthBloc>().add(AuthLogoutRequested());
+              },
+            ),
         ],
       ),
       body: BlocConsumer<OnboardingBloc, OnboardingState>(
@@ -95,38 +96,33 @@ class _OnboardingPageState extends State<OnboardingPage> {
           }
         },
         builder: (context, state) {
-          final isLoading = state is OnboardingLoading;
-
-          return AppLoadingOverlay(
-            isLoading: isLoading,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (_isRequestSent)
-                    PendingApprovalWidget(user: user)
-                  else if (_selectedPath == null)
-                    PathSelectionWidget(
-                      user: user,
-                      selectedPath: _selectedPath,
-                      onPathSelected: (path) {
-                        setState(() {
-                          _selectedPath = path;
-                        });
-                      },
-                    )
-                  else if (_selectedPath == 1)
-                    CreatorOnboardingWidget(user: user)
-                  else
-                    ViewerOnboardingWidget(user: user),
-                ],
-              ),
+          return SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_isRequestSent)
+                  PendingApprovalWidget(user: user)
+                else if (_selectedPath == null)
+                  PathSelectionWidget(
+                    user: user,
+                    selectedPath: _selectedPath,
+                    onPathSelected: (path) {
+                      setState(() {
+                        _selectedPath = path;
+                      });
+                    },
+                  )
+                else if (_selectedPath == 1)
+                  CreatorOnboardingWidget(user: user)
+                else
+                  ViewerOnboardingWidget(user: user),
+              ],
             ),
           );
         },
       ),
     );
   }
-
 }

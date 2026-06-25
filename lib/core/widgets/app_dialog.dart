@@ -63,11 +63,13 @@ class AppDialog {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
+      barrierColor: Colors.transparent,
       builder: (_) => PopScope(
         canPop: false,
         child: Dialog(
           backgroundColor: AppColors.wood,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             child: Row(
@@ -215,7 +217,9 @@ class _AppDialogWidget extends StatelessWidget {
                       onPressed: () => Navigator.of(context).pop(true),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: accentColor,
-                        foregroundColor: type == AppDialogType.warning ? Colors.black87 : Colors.white,
+                        foregroundColor: type == AppDialogType.warning
+                            ? Colors.black87
+                            : Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -237,7 +241,9 @@ class _AppDialogWidget extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: accentColor,
-                    foregroundColor: type == AppDialogType.warning ? Colors.black87 : Colors.white,
+                    foregroundColor: type == AppDialogType.warning
+                        ? Colors.black87
+                        : Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

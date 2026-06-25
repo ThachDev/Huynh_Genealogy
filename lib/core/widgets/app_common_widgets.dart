@@ -46,7 +46,7 @@ class AppLoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: Colors.transparent,
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -286,6 +286,71 @@ class AppBadge extends StatelessWidget {
           letterSpacing: 0.5,
         ),
       ),
+    );
+  }
+}
+
+/// Section Header component with red vertical indicator
+class AppSectionHeader extends StatelessWidget {
+  final String title;
+  final String? description;
+  final double titleSize;
+  final double indicatorHeight;
+  final double spacing;
+
+  const AppSectionHeader({
+    super.key,
+    required this.title,
+    this.description,
+    this.titleSize = 20.0,
+    this.indicatorHeight = 20.0,
+    this.spacing = 8.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 3.5,
+              height: indicatorHeight,
+              margin: EdgeInsets.only(
+                  top: (titleSize - indicatorHeight) / 2 + 1, right: 12),
+              decoration: BoxDecoration(
+                color: AppColors.crimson,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                title,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: titleSize,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.crimson,
+                  height: 1.15,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (description != null) ...[
+          SizedBox(height: spacing),
+          Text(
+            description!,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              height: 1.45,
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

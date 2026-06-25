@@ -8,8 +8,7 @@ class AppColors {
   static const Color crimson = Color(0xFF5C0612); // Crimson/Secondary - #5C0612
   static const Color gold = Color(0xFFD4AF37); // Gold/Tertiary - #D4AF37
   static const Color parchment = Color(
-    0xFFF5F5F5,
-  ); // Background/Parchment - #F5F5F5 (Neo-Industrial light grey)
+      0xFFF5F5F5); // Background/Parchment - #F5F5F5 (Neo-Industrial light grey)
   static const Color wood = Color(
     0xFF1A1A1A,
   ); // Wood/AppBar - #1A1A1A (Neo-Industrial charcoal black)

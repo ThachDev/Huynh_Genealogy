@@ -167,7 +167,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.';
 
   @override
-  String get familyNameLabel => 'Tên dòng họ / Gia tộc';
+  String get familyNameLabel => 'Tên Gia tộc';
 
   @override
   String get familyNameHint => 'Ví dụ: Nguyễn Gia Tộc';
@@ -176,7 +176,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get familyNameRequired => 'Tên dòng họ không được để trống';
 
   @override
-  String get familyDescriptionLabel => 'Tiểu sử / Mô tả dòng họ';
+  String get familyDescriptionLabel => 'Mô tả Gia Tộc';
 
   @override
   String get familyDescriptionHint => 'Quê quán, nguồn gốc gia tộc...';
@@ -229,7 +229,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.';
 
   @override
-  String get joinFamilyCardTitle => 'Gia nhập Gia tộc đã có';
+  String get joinFamilyCardTitle => 'Kết nối dòng tộc';
 
   @override
   String get joinFamilyCardDesc =>
@@ -354,4 +354,43 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get errStateTitle => 'Đã xảy ra lỗi';
+
+  @override
+  String get qrScannerTitle => 'Quét mã QR';
+
+  @override
+  String get qrScannerInstruction =>
+      'Đặt mã QR vào trong khung hình để thực hiện quét tự động';
+
+  @override
+  String get qrScannerNoCodeFound =>
+      'Không tìm thấy mã QR nào trong bức ảnh này.';
+
+  @override
+  String get qrScannerSelectImageError => 'Đã xảy ra lỗi khi chọn ảnh.';
+
+  @override
+  String get tapToChangePhoto => 'NHẤN ĐỂ THAY ĐỔI ẢNH';
+
+  @override
+  String get tapToUploadPhoto => 'NHẤN ĐỂ TẢI ẢNH LÊN';
+
+  @override
+  String get byInitAgreeTerms => 'BẰNG CÁCH NHẤN KHỞI TẠO, BẠN ĐỒNG Ý VỚI ';
+
+  @override
+  String get appTerms => 'CÁC ĐIỀU KHOẢN CỦA GIA TỘC VIỆT';
+
+  @override
+  String get enterInviteCodeLabel => 'NHẬP MÃ THAM GIA';
+
+  @override
+  String get inviteCodeHintNew => 'VD: HGT-2024';
+
+  @override
+  String get inviteCodeDescription =>
+      'Nhập mã định danh 9 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.';
+
+  @override
+  String get confirmJoinButton => 'XÁC NHẬN THAM GIA';
 }

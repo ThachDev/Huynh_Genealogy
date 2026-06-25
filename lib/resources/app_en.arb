@@ -94,7 +94,7 @@
   "chooseOnboardingSubtitle": "Please select a family tree setup method to start connecting your clan.",
   "createFamilyCardTitle": "Create a new Family",
   "createFamilyCardDesc": "For Clan Leaders/Genealogists who want to build a completely new family tree.",
-  "joinFamilyCardTitle": "Join an existing Family",
+  "joinFamilyCardTitle": "Connect with Family",
   "joinFamilyCardDesc": "For members who have an invite code from the Clan Leader to view and update the family tree.",
   "errEmailRequired": "Please enter your email address",
   "errEmailInvalid": "Invalid email format (e.g. name@gmail.com)",
@@ -149,5 +149,17 @@
   "errPermission": "Your account does not have permission to access this feature.",
   "errTimeout": "Connection is too slow or was interrupted. Please try again.",
   "retryButton": "Retry",
-  "errStateTitle": "An error occurred"
+  "errStateTitle": "An error occurred",
+  "qrScannerTitle": "Scan QR Code",
+  "qrScannerInstruction": "Place the QR code inside the frame to scan automatically",
+  "qrScannerNoCodeFound": "No QR code found in this photo.",
+  "qrScannerSelectImageError": "An error occurred while choosing the photo.",
+  "tapToChangePhoto": "TAP TO CHANGE PHOTO",
+  "tapToUploadPhoto": "TAP TO UPLOAD PHOTO",
+  "byInitAgreeTerms": "BY CLICKING INITIALIZE, YOU AGREE TO ",
+  "appTerms": "THE TERMS OF GIA TOC VIET",
+  "enterInviteCodeLabel": "ENTER INVITE CODE",
+  "inviteCodeHintNew": "EG: HGT-2024",
+  "inviteCodeDescription": "Enter the 9-character code provided by your family leader or administrator.",
+  "confirmJoinButton": "CONFIRM JOIN"
 }

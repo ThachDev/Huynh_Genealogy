@@ -4,19 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import '../bloc/tree_bloc.dart';
-import '../widgets/branch_card.dart';
-import 'tree_view_page.dart';
+import '../bloc/user_tree_bloc.dart';
+import '../widgets/user_branch_card.dart';
+import 'user_tree_view_page.dart';
 import '../../../auth/auth.dart';
 
-class FamilyDashboardPage extends StatefulWidget {
-  const FamilyDashboardPage({super.key});
+class UserFamilyDashboardPage extends StatefulWidget {
+  const UserFamilyDashboardPage({super.key});
 
   @override
-  State<FamilyDashboardPage> createState() => _FamilyDashboardPageState();
+  State<UserFamilyDashboardPage> createState() => _UserFamilyDashboardPageState();
 }
 
-class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
+class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   int? _selectedBranchId;
   final TextEditingController _searchController = TextEditingController();
   String _selectedGender = 'Tất cả';
@@ -24,26 +24,26 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
   @override
   void initState() {
     super.initState();
-    context.read<TreeBloc>().add(LoadTreeEvent());
+    context.read<UserTreeBloc>().add(UserTreeLoadEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      body: BlocBuilder<TreeBloc, TreeState>(
+      body: BlocBuilder<UserTreeBloc, UserTreeState>(
         builder: (context, state) {
           return CustomScrollView(
             slivers: [
               // ── Wooden Header with Dragon Patterns ──
               _buildHeader(context, state),
-            if (state is TreeLoading)
+            if (state is UserTreeLoading)
               const SliverFillRemaining(
                 child: Center(
                   child: CircularProgressIndicator(color: AppColors.crimson),
                 ),
               ),
-            if (state is TreeError)
+            if (state is UserTreeError)
               SliverFillRemaining(
                 child: Center(
                   child: Column(
@@ -58,14 +58,14 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       Text(state.message, style: GoogleFonts.inter()),
                       ElevatedButton(
                         onPressed: () =>
-                            context.read<TreeBloc>().add(LoadTreeEvent()),
+                            context.read<UserTreeBloc>().add(UserTreeLoadEvent()),
                         child: const Text('Thử lại'),
                       ),
                     ],
                   ),
                 ),
               ),
-            if (state is TreeLoaded) ...[
+            if (state is UserTreeLoaded) ...[
               // ── Today's Events Banner ──
               _buildEventsBanner(),
               // ── Stats Section ──
@@ -90,13 +90,13 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
                       final branch = state.branches[index];
                       return SizedBox(
                         width: 220,
-                        child: BranchCard(
+                        child: UserBranchCard(
                           branch: branch,
                           isSelected: _selectedBranchId == branch.id,
                           onTap: () {
                             setState(() => _selectedBranchId = branch.id);
-                            context.read<TreeBloc>().add(
-                              FilterByBranchEvent(branch.id),
+                            context.read<UserTreeBloc>().add(
+                              UserTreeFilterByBranchEvent(branch.id),
                             );
                           },
                         ),
@@ -132,7 +132,7 @@ class _FamilyDashboardPageState extends State<FamilyDashboardPage> {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const TreeViewPage()),
+          MaterialPageRoute(builder: (_) => const UserTreeViewPage()),
         );
       },
       backgroundColor: AppColors.crimson,
@@ -176,7 +176,7 @@ String _getRoleLabel(String role) {
   }
 }
 
-Widget _buildHeader(BuildContext context, TreeState state) {
+Widget _buildHeader(BuildContext context, UserTreeState state) {
   final authState = context.read<AuthBloc>().state;
   final user = authState is Authenticated ? authState.user : null;
   final isAdmin = user != null &&
@@ -186,7 +186,7 @@ Widget _buildHeader(BuildContext context, TreeState state) {
           user.role == 'creator');
 
   String familyName = 'GIA PHẢ DÒNG HỌ';
-  if (state is TreeLoaded && state.members.isNotEmpty) {
+  if (state is UserTreeLoaded && state.members.isNotEmpty) {
     final rootMember = state.members.firstWhere(
       (m) => m.generation == 1 || m.parentId == null,
       orElse: () => state.members.first,
@@ -415,7 +415,6 @@ Widget _buildHeader(BuildContext context, TreeState state) {
   }
 
   Widget _buildEventsBanner() {
-    // Fake current events for demonstration
     return SliverToBoxAdapter(
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),

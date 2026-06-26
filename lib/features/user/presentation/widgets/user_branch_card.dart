@@ -4,12 +4,12 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 
-class BranchCard extends StatelessWidget {
+class UserBranchCard extends StatelessWidget {
   final BranchEntity branch;
   final bool isSelected;
   final VoidCallback? onTap;
 
-  const BranchCard({
+  const UserBranchCard({
     super.key,
     required this.branch,
     this.isSelected = false,

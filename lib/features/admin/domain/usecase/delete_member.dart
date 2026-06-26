@@ -2,10 +2,10 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../user/domain/repository/tree_repository.dart';
+import '../../../user/domain/repository/user_tree_repository.dart';
 
 class DeleteMember implements UseCase<bool, DeleteMemberParams> {
-  final TreeRepository repository;
+  final UserTreeRepository repository;
 
   DeleteMember(this.repository);
 

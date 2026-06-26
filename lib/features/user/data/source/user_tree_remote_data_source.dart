@@ -4,7 +4,7 @@ import '../../../../core/errors/exceptions.dart';
 import 'package:giatocviet/core/data/model/branch_model.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
 
-abstract class TreeRemoteDataSource {
+abstract class UserTreeRemoteDataSource {
   Future<List<MemberModel>> getMembers({int? branchId});
   Future<MemberModel> getMemberById(int id);
   Future<MemberModel> saveMember(MemberModel member);
@@ -16,10 +16,10 @@ abstract class TreeRemoteDataSource {
   Future<bool> deleteBranch(int id);
 }
 
-class TreeRemoteDataSourceImpl implements TreeRemoteDataSource {
+class UserTreeRemoteDataSourceImpl implements UserTreeRemoteDataSource {
   final Dio dio;
 
-  TreeRemoteDataSourceImpl({required this.dio});
+  UserTreeRemoteDataSourceImpl({required this.dio});
 
   @override
   Future<List<MemberModel>> getMembers({int? branchId}) async {

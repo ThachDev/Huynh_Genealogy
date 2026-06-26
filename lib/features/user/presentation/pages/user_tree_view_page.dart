@@ -5,18 +5,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import '../bloc/tree_bloc.dart';
-import '../widgets/member_node_widget.dart';
-import 'member_detail_page.dart';
+import '../bloc/user_tree_bloc.dart';
+import '../widgets/user_member_node_widget.dart';
+import 'user_member_detail_page.dart';
 
-class TreeViewPage extends StatefulWidget {
-  const TreeViewPage({super.key});
+class UserTreeViewPage extends StatefulWidget {
+  const UserTreeViewPage({super.key});
 
   @override
-  State<TreeViewPage> createState() => _TreeViewPageState();
+  State<UserTreeViewPage> createState() => _UserTreeViewPageState();
 }
 
-class _TreeViewPageState extends State<TreeViewPage> {
+class _UserTreeViewPageState extends State<UserTreeViewPage> {
   final BuchheimWalkerConfiguration _algorithm =
       BuchheimWalkerConfiguration();
 
@@ -80,15 +80,14 @@ class _TreeViewPageState extends State<TreeViewPage> {
       ),
       body: Stack(
         children: [
-          // Background pattern/texture could go here if available
-          BlocBuilder<TreeBloc, TreeState>(
+          BlocBuilder<UserTreeBloc, UserTreeState>(
             builder: (context, state) {
-              if (state is TreeLoading) {
+              if (state is UserTreeLoading) {
                 return const Center(
                     child: CircularProgressIndicator(color: AppColors.crimson));
               }
 
-              if (state is TreeError) {
+              if (state is UserTreeError) {
                 return Center(
                   child: Text(
                     state.message,
@@ -97,7 +96,7 @@ class _TreeViewPageState extends State<TreeViewPage> {
                 );
               }
 
-              if (state is TreeLoaded) {
+              if (state is UserTreeLoaded) {
                 if (state.members.isEmpty) {
                   return Center(
                     child: Text(
@@ -136,18 +135,18 @@ class _TreeViewPageState extends State<TreeViewPage> {
                         return const SizedBox(width: 80, height: 40);
                       }
 
-                      return MemberNodeWidget(
+                      return UserMemberNodeWidget(
                         member: member,
                         isSelected: state.selectedMemberId == member.id,
                         onTap: () {
                           context
-                              .read<TreeBloc>()
-                              .add(SelectMemberEvent(member.id));
+                              .read<UserTreeBloc>()
+                              .add(UserTreeSelectMemberEvent(member.id));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
-                                  MemberDetailPage(member: member),
+                                  UserMemberDetailPage(member: member),
                             ),
                           );
                         },

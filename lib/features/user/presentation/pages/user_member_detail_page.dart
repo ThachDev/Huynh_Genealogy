@@ -5,16 +5,16 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
-class MemberDetailPage extends StatefulWidget {
+class UserMemberDetailPage extends StatefulWidget {
   final MemberEntity member;
 
-  const MemberDetailPage({super.key, required this.member});
+  const UserMemberDetailPage({super.key, required this.member});
 
   @override
-  State<MemberDetailPage> createState() => _MemberDetailPageState();
+  State<UserMemberDetailPage> createState() => _UserMemberDetailPageState();
 }
 
-class _MemberDetailPageState extends State<MemberDetailPage> {
+class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
   int _spiritualCount = 0;
 
   @override
@@ -204,7 +204,6 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     return ElevatedButton.icon(
       onPressed: () {
         setState(() => _spiritualCount++);
-        // Show lottie effect here if available
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

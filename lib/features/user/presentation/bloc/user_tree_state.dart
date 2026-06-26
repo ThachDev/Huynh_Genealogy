@@ -1,31 +1,31 @@
-part of 'tree_bloc.dart';
+part of 'user_tree_bloc.dart';
 
-abstract class TreeState {}
+abstract class UserTreeState {}
 
-class TreeInitial extends TreeState {}
+class UserTreeInitial extends UserTreeState {}
 
-class TreeLoading extends TreeState {}
+class UserTreeLoading extends UserTreeState {}
 
-class TreeLoaded extends TreeState {
+class UserTreeLoaded extends UserTreeState {
   final List<MemberEntity> members;
   final List<BranchEntity> branches;
   final int? selectedMemberId;
   final int? filterBranchId;
 
-  TreeLoaded({
+  UserTreeLoaded({
     required this.members,
     required this.branches,
     this.selectedMemberId,
     this.filterBranchId,
   });
 
-  TreeLoaded copyWith({
+  UserTreeLoaded copyWith({
     List<MemberEntity>? members,
     List<BranchEntity>? branches,
     int? selectedMemberId,
     int? filterBranchId,
   }) {
-    return TreeLoaded(
+    return UserTreeLoaded(
       members: members ?? this.members,
       branches: branches ?? this.branches,
       selectedMemberId: selectedMemberId ?? this.selectedMemberId,
@@ -34,7 +34,7 @@ class TreeLoaded extends TreeState {
   }
 }
 
-class TreeError extends TreeState {
+class UserTreeError extends UserTreeState {
   final String message;
-  TreeError(this.message);
+  UserTreeError(this.message);
 }

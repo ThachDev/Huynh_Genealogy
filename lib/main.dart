@@ -45,7 +45,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         BlocProvider<AuthBloc>(
           create: (_) => di.sl<AuthBloc>()..add(AuthCheckRequested()),
         ),
-        BlocProvider<TreeBloc>(create: (_) => di.sl<TreeBloc>()),
+        BlocProvider<UserTreeBloc>(create: (_) => di.sl<UserTreeBloc>()),
         BlocProvider<OnboardingBloc>(create: (_) => di.sl<OnboardingBloc>()),
       ],
       child: MaterialApp(
@@ -59,7 +59,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
           builder: (context, state) {
             if (state is Authenticated) {
               if (state.user.familyId != null) {
-                return const FamilyDashboardPage();
+                return const UserFamilyDashboardPage();
               }
               return const OnboardingPage();
             }

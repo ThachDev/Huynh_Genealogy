@@ -4,12 +4,12 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
-class MemberNodeWidget extends StatefulWidget {
+class UserMemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
   final bool isSelected;
   final VoidCallback? onTap;
 
-  const MemberNodeWidget({
+  const UserMemberNodeWidget({
     super.key,
     required this.member,
     this.isSelected = false,
@@ -17,10 +17,10 @@ class MemberNodeWidget extends StatefulWidget {
   });
 
   @override
-  State<MemberNodeWidget> createState() => _MemberNodeWidgetState();
+  State<UserMemberNodeWidget> createState() => _UserMemberNodeWidgetState();
 }
 
-class _MemberNodeWidgetState extends State<MemberNodeWidget>
+class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;

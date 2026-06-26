@@ -2,12 +2,12 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
-import '../repository/tree_repository.dart';
+import '../repository/user_tree_repository.dart';
 
-class GetBranches implements UseCase<List<BranchEntity>, NoParams> {
-  final TreeRepository repository;
+class UserGetBranches implements UseCase<List<BranchEntity>, NoParams> {
+  final UserTreeRepository repository;
 
-  GetBranches(this.repository);
+  UserGetBranches(this.repository);
 
   @override
   Future<Either<Failure, List<BranchEntity>>> call(NoParams params) {

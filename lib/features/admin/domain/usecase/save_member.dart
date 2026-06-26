@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import '../../../user/domain/repository/tree_repository.dart';
+import '../../../user/domain/repository/user_tree_repository.dart';
 
 class SaveMember implements UseCase<MemberEntity, SaveMemberParams> {
-  final TreeRepository repository;
+  final UserTreeRepository repository;
 
   SaveMember(this.repository);
 

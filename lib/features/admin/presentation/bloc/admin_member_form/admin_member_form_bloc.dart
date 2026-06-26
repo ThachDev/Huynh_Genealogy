@@ -1,14 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../domain/usecase/delete_member.dart';
-import '../../../../user/domain/usecase/get_members.dart';
+import '../../../../user/domain/usecase/user_get_members.dart';
 import '../../../domain/usecase/save_member.dart';
 
 part 'admin_member_form_event.dart';
 part 'admin_member_form_state.dart';
 
 class AdminMemberFormBloc extends Bloc<AdminMemberFormEvent, AdminMemberFormState> {
-  final GetMembers getMembers;
+  final UserGetMembers getMembers;
   final SaveMember saveMember;
   final DeleteMember deleteMember;
 
@@ -32,7 +32,7 @@ class AdminMemberFormBloc extends Bloc<AdminMemberFormEvent, AdminMemberFormStat
       return;
     }
     // Edit mode – fetch member
-    final result = await getMembers(const GetMembersParams());
+    final result = await getMembers(const UserGetMembersParams());
     result.fold(
       (failure) => emit(AdminMemberFormError(failure.message)),
       (members) {

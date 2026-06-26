@@ -17,7 +17,7 @@ final sl = GetIt.instance; // sl = Service Locator
 Future<void> init() async {
   // ─── BLoCs (factory – tạo mới mỗi lần dùng) ──────────────────────────────
   sl.registerFactory(
-    () => TreeBloc(
+    () => UserTreeBloc(
       getMembers: sl(),
       getBranches: sl(),
     ),
@@ -58,8 +58,8 @@ Future<void> init() async {
   );
 
   // ─── Use Cases ────────────────────────────────────────────────────────────
-  sl.registerLazySingleton(() => GetMembers(sl()));
-  sl.registerLazySingleton(() => GetBranches(sl()));
+  sl.registerLazySingleton(() => UserGetMembers(sl()));
+  sl.registerLazySingleton(() => UserGetBranches(sl()));
   sl.registerLazySingleton(() => SaveMember(sl()));
   sl.registerLazySingleton(() => DeleteMember(sl()));
 
@@ -82,8 +82,8 @@ Future<void> init() async {
     () => OnboardingRepositoryImpl(remoteDataSource: sl()),
   );
 
-  sl.registerLazySingleton<TreeRepository>(
-    () => TreeRepositoryImpl(remoteDataSource: sl()),
+  sl.registerLazySingleton<UserTreeRepository>(
+    () => UserTreeRepositoryImpl(remoteDataSource: sl()),
   );
 
   sl.registerLazySingleton<AuthRepository>(
@@ -100,8 +100,8 @@ Future<void> init() async {
     () => OnboardingRemoteDataSourceImpl(dio: sl()),
   );
 
-  sl.registerLazySingleton<TreeRemoteDataSource>(
-    () => TreeRemoteDataSourceImpl(dio: sl()),
+  sl.registerLazySingleton<UserTreeRemoteDataSource>(
+    () => UserTreeRemoteDataSourceImpl(dio: sl()),
   );
 
   sl.registerLazySingleton<AuthRemoteDataSource>(

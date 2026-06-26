@@ -7,8 +7,6 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 import '../../admin.dart';
-import 'admin_member_roles_page.dart';
-import 'admin_settings_page.dart';
 import '../../../user/presentation/bloc/user_tree_bloc.dart';
 
 class AdminDashboardPage extends StatelessWidget {
@@ -93,7 +91,8 @@ class AdminDashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, UserEntity? user, double height, String familyName) {
+  Widget _buildHeader(BuildContext context, UserEntity? user, double height,
+      String familyName) {
     return Container(
       height: height,
       width: double.infinity,
@@ -151,7 +150,8 @@ class AdminDashboardPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: roleColor(user.role),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
+                            border: Border.all(
+                                color: AppColors.gold.withValues(alpha: 0.4)),
                           ),
                           child: Text(
                             roleLabel(user.role),
@@ -168,7 +168,8 @@ class AdminDashboardPage extends StatelessWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(LucideIcons.calendar, color: AppColors.gold, size: 14),
+                      const Icon(LucideIcons.calendar,
+                          color: AppColors.gold, size: 14),
                       const SizedBox(width: 6),
                       Text(
                         'Thứ Sáu, 26/06/2026 • 12/05 Âm Lịch',
@@ -313,7 +314,8 @@ class _QuickStatsRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          const _StatItem(icon: LucideIcons.users, label: 'Thành viên', value: '--'),
+          const _StatItem(
+              icon: LucideIcons.users, label: 'Thành viên', value: '--'),
           Container(width: 1, height: 32, color: Colors.white24),
           const _StatItem(
               icon: LucideIcons.gitBranch, label: 'Chi tộc', value: '--'),
@@ -351,8 +353,7 @@ class _StatItem extends StatelessWidget {
             Icon(icon, color: AppColors.gold, size: 14),
             const SizedBox(width: 4),
             Text(label,
-                style:
-                    GoogleFonts.inter(color: Colors.white60, fontSize: 11)),
+                style: GoogleFonts.inter(color: Colors.white60, fontSize: 11)),
           ],
         ),
         const SizedBox(height: 4),
@@ -430,8 +431,8 @@ class _AdminMenuCard extends StatelessWidget {
                   top: 0,
                   right: 0,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: Colors.orange.shade700,
                       borderRadius: BorderRadius.circular(8),

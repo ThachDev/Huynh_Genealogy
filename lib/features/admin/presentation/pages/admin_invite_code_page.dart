@@ -47,7 +47,8 @@ class AdminInviteCodePage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.parchment, // Đổi sang Parchment (kem sáng) của hệ thống
+      backgroundColor:
+          AppColors.parchment, // Đổi sang Parchment (kem sáng) của hệ thống
       appBar: AppBar(
         backgroundColor: AppColors.wood,
         elevation: 4,
@@ -68,9 +69,10 @@ class AdminInviteCodePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Sử dụng AppSectionHeader theo kiểu kết nối dòng tộc của viewer_onboarding_widget
-              AppSectionHeader(
+              const AppSectionHeader(
                 title: "Chia sẻ mã mời",
-                description: "Mời thành viên gia đình tham gia cây gia phả bằng mã hoặc quét QR dưới đây.",
+                description:
+                    "Mời thành viên gia đình tham gia cây gia phả bằng mã hoặc quét QR dưới đây.",
                 titleSize: 20,
                 indicatorHeight: 20,
                 spacing: 8,
@@ -139,7 +141,8 @@ class AdminInviteCodePage extends StatelessWidget {
                               color: AppColors.parchment.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
-                                color: AppColors.textSecondary.withValues(alpha: 0.15),
+                                color: AppColors.textSecondary
+                                    .withValues(alpha: 0.15),
                               ),
                             ),
                             child: Align(
@@ -167,7 +170,8 @@ class AdminInviteCodePage extends StatelessWidget {
                               color: AppColors.parchment.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
-                                color: AppColors.textSecondary.withValues(alpha: 0.15),
+                                color: AppColors.textSecondary
+                                    .withValues(alpha: 0.15),
                               ),
                             ),
                             child: const Center(
@@ -226,7 +230,8 @@ class AdminInviteCodePage extends StatelessWidget {
                     AppButton(
                       label: 'LƯU MÃ QR VỀ MÁY',
                       onPressed: () {
-                        AppSnackBar.info(context, 'Tính năng tải mã QR đang được phát triển');
+                        AppSnackBar.info(context,
+                            'Tính năng tải mã QR đang được phát triển');
                       },
                       fullWidth: true,
                       size: AppButtonSize.large,

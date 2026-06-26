@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import '../../domain/entity/user_entity.dart';
+import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
-import '../model/user_model.dart';
+import 'package:giatocviet/core/data/model/user_model.dart';
 import '../source/auth_local_data_source.dart';
 import '../source/auth_remote_data_source.dart';
 

@@ -5,4 +5,5 @@ export 'domain/usecase/save_member.dart';
 export 'domain/usecase/delete_member.dart';
 
 // Presentation Blocs
-export 'presentation/bloc/member_form/member_form_bloc.dart';
+export 'presentation/bloc/admin_member_form/admin_member_form_bloc.dart';
+export 'presentation/bloc/admin_pending_requests/admin_pending_requests_bloc.dart';

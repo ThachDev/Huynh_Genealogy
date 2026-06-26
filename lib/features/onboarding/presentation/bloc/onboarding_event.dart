@@ -47,21 +47,3 @@ class JoinFamilyEvent extends OnboardingEvent {
   @override
   List<Object?> get props => [userId, familyId, memberNodeId];
 }
-
-class LoadPendingRequestsEvent extends OnboardingEvent {
-  final int familyId;
-
-  const LoadPendingRequestsEvent({required this.familyId});
-
-  @override
-  List<Object?> get props => [familyId];
-}
-
-class ApproveRequestEvent extends OnboardingEvent {
-  final int requestId;
-
-  const ApproveRequestEvent({required this.requestId});
-
-  @override
-  List<Object?> get props => [requestId];
-}

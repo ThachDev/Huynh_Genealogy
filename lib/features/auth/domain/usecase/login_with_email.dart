@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entity/user_entity.dart';
+import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../repository/auth_repository.dart';
 
 class LoginWithEmail implements UseCase<UserEntity, LoginWithEmailParams> {

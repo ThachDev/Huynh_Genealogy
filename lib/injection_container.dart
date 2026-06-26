@@ -24,10 +24,17 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
-    () => MemberFormBloc(
+    () => AdminMemberFormBloc(
       getMembers: sl(),
       saveMember: sl(),
       deleteMember: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => AdminPendingRequestsBloc(
+      getPendingRequests: sl(),
+      approveRequest: sl(),
     ),
   );
 
@@ -47,8 +54,6 @@ Future<void> init() async {
       createFamily: sl(),
       verifyInviteCode: sl(),
       joinFamily: sl(),
-      getPendingRequests: sl(),
-      approveRequest: sl(),
     ),
   );
 
@@ -73,8 +78,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ApproveRequest(sl()));
 
   // ─── Repository ───────────────────────────────────────────────────────────
-  sl.registerLazySingleton<FamilyRepository>(
-    () => FamilyRepositoryImpl(remoteDataSource: sl()),
+  sl.registerLazySingleton<OnboardingRepository>(
+    () => OnboardingRepositoryImpl(remoteDataSource: sl()),
   );
 
   sl.registerLazySingleton<TreeRepository>(
@@ -91,8 +96,8 @@ Future<void> init() async {
   );
 
   // ─── Data Sources ─────────────────────────────────────────────────────────
-  sl.registerLazySingleton<FamilyRemoteDataSource>(
-    () => FamilyRemoteDataSourceImpl(dio: sl()),
+  sl.registerLazySingleton<OnboardingRemoteDataSource>(
+    () => OnboardingRemoteDataSourceImpl(dio: sl()),
   );
 
   sl.registerLazySingleton<TreeRemoteDataSource>(

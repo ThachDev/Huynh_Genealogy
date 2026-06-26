@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
-import '../model/branch_model.dart';
-import '../model/member_model.dart';
+import 'package:giatocviet/core/data/model/branch_model.dart';
+import 'package:giatocviet/core/data/model/member_model.dart';
 
 abstract class TreeRemoteDataSource {
   Future<List<MemberModel>> getMembers({int? branchId});

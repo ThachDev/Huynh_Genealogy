@@ -1,0 +1,24 @@
+part of 'admin_pending_requests_bloc.dart';
+
+abstract class AdminPendingRequestsState {
+  const AdminPendingRequestsState();
+}
+
+class AdminPendingRequestsInitial extends AdminPendingRequestsState {}
+
+class AdminPendingRequestsLoading extends AdminPendingRequestsState {}
+
+class AdminPendingRequestsLoaded extends AdminPendingRequestsState {
+  final List<FamilyUserEntity> requests;
+  const AdminPendingRequestsLoaded({required this.requests});
+}
+
+class AdminRequestApprovedSuccess extends AdminPendingRequestsState {
+  final int requestId;
+  const AdminRequestApprovedSuccess({required this.requestId});
+}
+
+class AdminPendingRequestsFailure extends AdminPendingRequestsState {
+  final String message;
+  const AdminPendingRequestsFailure({required this.message});
+}

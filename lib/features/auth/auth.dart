@@ -1,6 +1,5 @@
 // Domain Entities
-export 'domain/entity/user_entity.dart';
-
+export 'package:giatocviet/core/domain/entity/user_entity.dart';
 // Domain Repositories
 export 'domain/repository/auth_repository.dart';
 
@@ -12,7 +11,6 @@ export 'domain/usecase/get_cached_user.dart';
 export 'domain/usecase/register_with_email.dart';
 
 // Data Sources & Models
-export 'data/model/user_model.dart';
 export 'data/source/auth_remote_data_source.dart';
 export 'data/source/auth_local_data_source.dart';
 

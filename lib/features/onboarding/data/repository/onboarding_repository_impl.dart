@@ -1,15 +1,15 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import '../../domain/entity/family_entity.dart';
-import '../../domain/entity/family_user_entity.dart';
-import '../../domain/repository/family_repository.dart';
-import '../source/family_remote_data_source.dart';
+import '../../../../core/domain/entity/family_entity.dart';
+import '../../../../core/domain/entity/family_user_entity.dart';
+import '../../domain/repository/onboarding_repository.dart';
+import '../source/onboarding_remote_data_source.dart';
 
-class FamilyRepositoryImpl implements FamilyRepository {
-  final FamilyRemoteDataSource remoteDataSource;
+class OnboardingRepositoryImpl implements OnboardingRepository {
+  final OnboardingRemoteDataSource remoteDataSource;
 
-  FamilyRepositoryImpl({required this.remoteDataSource});
+  OnboardingRepositoryImpl({required this.remoteDataSource});
 
   @override
   Future<Either<Failure, FamilyEntity>> createFamily({

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/date_formatter.dart';
-import '../../domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
 class MemberDetailPage extends StatefulWidget {
   final MemberEntity member;

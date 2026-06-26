@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../onboarding/domain/entity/family_user_entity.dart';
-import '../../../onboarding/domain/repository/family_repository.dart';
+import '../../../../core/domain/entity/family_user_entity.dart';
+import '../../../onboarding/domain/repository/onboarding_repository.dart';
 
 class GetPendingRequests implements UseCase<List<FamilyUserEntity>, int> {
-  final FamilyRepository repository;
+  final OnboardingRepository repository;
 
   GetPendingRequests(this.repository);
 

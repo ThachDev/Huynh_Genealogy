@@ -2,11 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entity/family_entity.dart';
-import '../repository/family_repository.dart';
+import '../../../../core/domain/entity/family_entity.dart';
+import '../repository/onboarding_repository.dart';
 
 class CreateFamily implements UseCase<FamilyEntity, CreateFamilyParams> {
-  final FamilyRepository repository;
+  final OnboardingRepository repository;
 
   CreateFamily(this.repository);
 

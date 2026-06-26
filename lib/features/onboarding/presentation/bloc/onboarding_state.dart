@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entity/family_entity.dart';
-import '../../domain/entity/family_user_entity.dart';
-import '../../../user/domain/entity/member_entity.dart';
+import '../../../../core/domain/entity/family_entity.dart';
+import '../../../../core/domain/entity/family_user_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
 abstract class OnboardingState extends Equatable {
   const OnboardingState();
@@ -43,24 +43,6 @@ class JoinRequestSentState extends OnboardingState {
 
   @override
   List<Object?> get props => [request];
-}
-
-class PendingRequestsLoadedState extends OnboardingState {
-  final List<FamilyUserEntity> requests;
-
-  const PendingRequestsLoadedState({required this.requests});
-
-  @override
-  List<Object?> get props => [requests];
-}
-
-class RequestApprovedState extends OnboardingState {
-  final int requestId;
-
-  const RequestApprovedState({required this.requestId});
-
-  @override
-  List<Object?> get props => [requestId];
 }
 
 class OnboardingFailureState extends OnboardingState {

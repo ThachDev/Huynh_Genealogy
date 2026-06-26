@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
-import '../../../user/data/model/member_model.dart';
-import '../model/family_model.dart';
-import '../model/family_user_model.dart';
+import 'package:giatocviet/core/data/model/member_model.dart';
+import '../../../../core/data/model/family_model.dart';
+import '../../../../core/data/model/family_user_model.dart';
 
-abstract class FamilyRemoteDataSource {
+abstract class OnboardingRemoteDataSource {
   Future<FamilyModel> createFamily({
     required String name,
     String? description,
@@ -26,10 +26,10 @@ abstract class FamilyRemoteDataSource {
   Future<bool> approveRequest(int requestId);
 }
 
-class FamilyRemoteDataSourceImpl implements FamilyRemoteDataSource {
+class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
   final Dio dio;
 
-  FamilyRemoteDataSourceImpl({required this.dio});
+  OnboardingRemoteDataSourceImpl({required this.dio});
 
   @override
   Future<FamilyModel> createFamily({

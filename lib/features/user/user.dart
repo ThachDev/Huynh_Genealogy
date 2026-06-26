@@ -1,6 +1,4 @@
 // Domain Entities
-export 'domain/entity/branch_entity.dart';
-export 'domain/entity/member_entity.dart';
 
 // Domain Repositories
 export 'domain/repository/tree_repository.dart';
@@ -10,8 +8,6 @@ export 'domain/usecase/get_branches.dart';
 export 'domain/usecase/get_members.dart';
 
 // Data Sources & Models
-export 'data/model/branch_model.dart';
-export 'data/model/member_model.dart';
 export 'data/source/tree_remote_data_source.dart';
 
 // Data Repositories Implementations

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/tree_bloc.dart';
 import '../widgets/branch_card.dart';
 import 'tree_view_page.dart';

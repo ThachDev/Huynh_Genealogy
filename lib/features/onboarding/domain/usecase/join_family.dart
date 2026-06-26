@@ -2,11 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entity/family_user_entity.dart';
-import '../repository/family_repository.dart';
+import '../../../../core/domain/entity/family_user_entity.dart';
+import '../repository/onboarding_repository.dart';
 
 class JoinFamily implements UseCase<FamilyUserEntity, JoinFamilyParams> {
-  final FamilyRepository repository;
+  final OnboardingRepository repository;
 
   JoinFamily(this.repository);
 

@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../user/domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../user/domain/repository/tree_repository.dart';
 
 class SaveMember implements UseCase<MemberEntity, SaveMemberParams> {

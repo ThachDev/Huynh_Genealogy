@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entity/branch_entity.dart';
-import '../../domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/branch_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../domain/usecase/get_branches.dart';
 import '../../domain/usecase/get_members.dart';
 import '../../../../core/usecases/usecase.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../domain/entity/branch_entity.dart';
+import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 
 class BranchCard extends StatelessWidget {
   final BranchEntity branch;

@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../repository/tree_repository.dart';
 
 class GetMembers implements UseCase<List<MemberEntity>, GetMembersParams> {

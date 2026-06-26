@@ -4,7 +4,7 @@ import 'package:graphview/GraphView.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/tree_bloc.dart';
 import '../widgets/member_node_widget.dart';
 import 'member_detail_page.dart';

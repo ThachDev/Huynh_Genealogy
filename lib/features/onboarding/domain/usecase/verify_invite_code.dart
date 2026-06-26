@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../repository/family_repository.dart';
+import '../repository/onboarding_repository.dart';
 
 class VerifyInviteCode implements UseCase<Map<String, dynamic>, String> {
-  final FamilyRepository repository;
+  final OnboardingRepository repository;
 
   VerifyInviteCode(this.repository);
 

@@ -5,7 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_snackbar.dart';
-import '../../domain/entity/family_entity.dart';
+import '../../../../core/domain/entity/family_entity.dart';
 
 class FamilyCreationSuccessDialog extends StatefulWidget {
   final FamilyEntity family;

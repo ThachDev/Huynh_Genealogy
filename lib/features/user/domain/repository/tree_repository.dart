@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import '../entity/branch_entity.dart';
-import '../entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/branch_entity.dart';
+import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
 abstract class TreeRepository {
   // ---------- Members ----------

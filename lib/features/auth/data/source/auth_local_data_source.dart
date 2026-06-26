@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
-import '../model/user_model.dart';
+import 'package:giatocviet/core/data/model/user_model.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> cacheUser(UserModel userToCache);

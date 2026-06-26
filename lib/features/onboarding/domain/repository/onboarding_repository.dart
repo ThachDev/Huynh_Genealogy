@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import '../entity/family_entity.dart';
-import '../entity/family_user_entity.dart';
+import '../../../../core/domain/entity/family_entity.dart';
+import '../../../../core/domain/entity/family_user_entity.dart';
 
-abstract class FamilyRepository {
+abstract class OnboardingRepository {
   Future<Either<Failure, FamilyEntity>> createFamily({
     required String name,
     String? description,

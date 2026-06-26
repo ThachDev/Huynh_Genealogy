@@ -5,11 +5,16 @@ import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../core/domain/entity/member_entity.dart';
+import '../../../../core/domain/entity/branch_entity.dart';
+import '../../../../core/domain/entity/family_user_entity.dart';
 import '../../../auth/auth.dart';
-import '../../admin.dart';
 import '../../../user/presentation/bloc/user_tree_bloc.dart';
+import '../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
-class AdminDashboardPage extends StatelessWidget {
+enum _DashboardTab { members, branches, pending }
+
+class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
 
   /// Role label & color helper
@@ -34,6 +39,49 @@ class AdminDashboardPage extends StatelessWidget {
         return Colors.orange.shade800;
       default:
         return Colors.teal;
+    }
+  }
+
+  @override
+  State<AdminDashboardPage> createState() => _AdminDashboardPageState();
+}
+
+class _AdminDashboardPageState extends State<AdminDashboardPage> {
+  _DashboardTab _selectedTab = _DashboardTab.members;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+
+    // Dispatch events to fetch latest data on init
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+      _loadPendingRequests();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text.trim().toLowerCase();
+    });
+  }
+
+  void _loadPendingRequests() {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is Authenticated && authState.user.familyId != null) {
+      context.read<AdminPendingRequestsBloc>().add(
+            LoadAdminPendingRequestsEvent(familyId: authState.user.familyId!),
+          );
     }
   }
 
@@ -65,27 +113,77 @@ class AdminDashboardPage extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.parchment,
-      body: SingleChildScrollView(
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(context, user, headerHeight, familyName),
-                const SizedBox(height: 50),
-                _buildMenuGrid(context),
-              ],
-            ),
-            Positioned(
-              top: headerHeight - 35,
-              left: 0,
-              right: 0,
-              child: _QuickStatsRow(),
-            ),
-          ],
+    // Connect real data counts
+    final userTreeState = context.watch<UserTreeBloc>().state;
+    String memberCount = '--';
+    String branchCount = '--';
+    List<MemberEntity> allMembers = [];
+    List<BranchEntity> allBranches = [];
+    if (userTreeState is UserTreeLoaded) {
+      memberCount = userTreeState.members.length.toString();
+      branchCount = userTreeState.branches.length.toString();
+      allMembers = userTreeState.members;
+      allBranches = userTreeState.branches;
+    }
+
+    final pendingState = context.watch<AdminPendingRequestsBloc>().state;
+    String pendingCount = '--';
+    List<FamilyUserEntity> pendingRequests = [];
+    if (pendingState is AdminPendingRequestsLoaded) {
+      pendingCount = pendingState.requests.length.toString();
+      pendingRequests = pendingState.requests;
+    }
+
+    return BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
+      listener: (context, state) {
+        if (state is AdminRequestApprovedSuccess) {
+          AppSnackBar.success(context, 'Đã phê duyệt yêu cầu thành công!');
+          _loadPendingRequests();
+          context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+        } else if (state is AdminPendingRequestsFailure) {
+          AppSnackBar.error(context, state.message);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.parchment,
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  _buildHeader(context, user, headerHeight, familyName),
+                  Positioned(
+                    top: headerHeight - 35,
+                    left: 0,
+                    right: 0,
+                    child: _QuickStatsRow(
+                      memberCount: memberCount,
+                      branchCount: branchCount,
+                      pendingCount: pendingCount,
+                      selectedTab: _selectedTab,
+                      onTabChanged: (tab) {
+                        setState(() {
+                          _selectedTab = tab;
+                          _searchController.clear();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 80),
+              _buildContentSection(
+                userTreeState: userTreeState,
+                pendingState: pendingState,
+                members: allMembers,
+                branches: allBranches,
+                requests: pendingRequests,
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );
@@ -114,7 +212,6 @@ class AdminDashboardPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,13 +245,13 @@ class AdminDashboardPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: roleColor(user.role),
+                            color: AdminDashboardPage.roleColor(user.role),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                                 color: AppColors.gold.withValues(alpha: 0.4)),
                           ),
                           child: Text(
-                            roleLabel(user.role),
+                            AdminDashboardPage.roleLabel(user.role),
                             style: GoogleFonts.inter(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -199,93 +296,492 @@ class AdminDashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuGrid(BuildContext context) {
+  Widget _buildContentSection({
+    required UserTreeState userTreeState,
+    required AdminPendingRequestsState pendingState,
+    required List<MemberEntity> members,
+    required List<BranchEntity> branches,
+    required List<FamilyUserEntity> requests,
+  }) {
+    switch (_selectedTab) {
+      case _DashboardTab.members:
+        if (userTreeState is UserTreeLoading) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(40.0),
+              child: CircularProgressIndicator(color: AppColors.wood),
+            ),
+          );
+        }
+        final filteredMembers = members
+            .where((m) =>
+                m.fullName.toLowerCase().contains(_searchQuery) ||
+                (m.branchName != null &&
+                    m.branchName!.toLowerCase().contains(_searchQuery)))
+            .toList();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(
+                'DANH SÁCH THÀNH VIÊN', '${filteredMembers.length} người'),
+            _buildSearchBar('Tìm kiếm thành viên hoặc chi tộc...'),
+            if (filteredMembers.isEmpty)
+              _buildEmptyWidget('Không tìm thấy thành viên phù hợp')
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: filteredMembers.length,
+                itemBuilder: (context, index) =>
+                    _buildMemberItem(filteredMembers[index]),
+              ),
+          ],
+        );
+
+      case _DashboardTab.branches:
+        if (userTreeState is UserTreeLoading) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(40.0),
+              child: CircularProgressIndicator(color: AppColors.wood),
+            ),
+          );
+        }
+        final filteredBranches = branches
+            .where((b) =>
+                b.name.toLowerCase().contains(_searchQuery) ||
+                (b.founderName != null &&
+                    b.founderName!.toLowerCase().contains(_searchQuery)))
+            .toList();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(
+                'DANH SÁCH CHI TỘC', '${filteredBranches.length} chi'),
+            _buildSearchBar('Tìm kiếm chi tộc...'),
+            if (filteredBranches.isEmpty)
+              _buildEmptyWidget('Không tìm thấy chi tộc phù hợp')
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: filteredBranches.length,
+                itemBuilder: (context, index) =>
+                    _buildBranchItem(filteredBranches[index], members),
+              ),
+          ],
+        );
+
+      case _DashboardTab.pending:
+        if (pendingState is AdminPendingRequestsLoading) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(40.0),
+              child: CircularProgressIndicator(color: AppColors.wood),
+            ),
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(
+                'YÊU CẦU CHỜ DUYỆT', '${requests.length} yêu cầu'),
+            if (requests.isEmpty)
+              _buildEmptyWidget('Không có yêu cầu tham gia nào đang chờ duyệt')
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: requests.length,
+                itemBuilder: (context, index) =>
+                    _buildPendingRequestItem(requests[index]),
+              ),
+          ],
+        );
+    }
+  }
+
+  Widget _buildSectionHeader(String title, String subtitle) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 2,
-        mainAxisSpacing: 14,
-        crossAxisSpacing: 14,
-        childAspectRatio: 1.15,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _AdminMenuCard(
-            icon: LucideIcons.users,
-            label: 'Quản lý\nThành viên',
-            color: AppColors.crimson,
-            onTap: () {
-              Navigator.push(
-                context,
-                FadeScalePageRoute(
-                  page: const AdminMemberFormPage(),
-                ),
-              );
-            },
+          Text(
+            title,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColors.wood,
+              letterSpacing: 0.5,
+            ),
           ),
-          _AdminMenuCard(
-            icon: LucideIcons.clipboardList,
-            label: 'Duyệt Yêu\nCầu Tham Gia',
-            color: Colors.orange.shade800,
-            badge: '?',
-            onTap: () {
-              Navigator.push(
-                context,
-                FadeScalePageRoute(
-                  page: const AdminPendingRequestsPage(),
-                ),
-              );
-            },
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+            decoration: BoxDecoration(
+              color: AppColors.wood.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              subtitle,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: AppColors.wood,
+              ),
+            ),
           ),
-          _AdminMenuCard(
-            icon: LucideIcons.shieldAlert,
-            label: 'Phân quyền\nThành viên',
-            color: Colors.teal.shade700,
-            onTap: () {
-              Navigator.push(
-                context,
-                FadeScalePageRoute(
-                  page: const AdminMemberRolesPage(),
-                ),
-              );
-            },
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(String hintText) {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
-          _AdminMenuCard(
-            icon: LucideIcons.qrCode,
-            label: 'Mã Mời\nGia Tộc',
-            color: Colors.indigo.shade700,
-            onTap: () {
-              Navigator.push(
-                context,
-                FadeScalePageRoute(
-                  page: const AdminInviteCodePage(),
-                ),
-              );
-            },
+        ],
+      ),
+      child: TextField(
+        controller: _searchController,
+        style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle:
+              GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade400),
+          prefixIcon:
+              const Icon(LucideIcons.search, size: 18, color: Colors.grey),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(LucideIcons.x, size: 16, color: Colors.grey),
+                  onPressed: () {
+                    _searchController.clear();
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyWidget(String message) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        children: [
+          Icon(LucideIcons.folderOpen, size: 40, color: Colors.grey.shade300),
+          const SizedBox(height: 12),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
           ),
-          _AdminMenuCard(
-            icon: LucideIcons.gitBranch,
-            label: 'Quản lý\nChi Tộc',
-            color: Colors.brown.shade700,
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Trang quản lý chi tộc – sắp ra mắt')),
-              );
-            },
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMemberItem(MemberEntity member) {
+    final String genderText = member.gender == Gender.male ? 'Nam' : 'Nữ';
+    final String aliveText = member.isAlive ? 'Còn sống' : 'Đã mất';
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.15)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
-          _AdminMenuCard(
-            icon: LucideIcons.settings,
-            label: 'Cài đặt\nGia Tộc',
-            color: Colors.blueGrey.shade700,
-            onTap: () {
-              Navigator.push(
-                context,
-                FadeScalePageRoute(
-                  page: const AdminSettingsPage(),
+        ],
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 22,
+            backgroundColor: member.gender == Gender.male
+                ? Colors.blue.shade50
+                : Colors.pink.shade50,
+            backgroundImage: member.avatarUrl != null
+                ? NetworkImage(member.avatarUrl!)
+                : null,
+            child: member.avatarUrl == null
+                ? Icon(
+                    member.gender == Gender.male
+                        ? LucideIcons.user
+                        : LucideIcons.user2,
+                    color: member.gender == Gender.male
+                        ? Colors.blue
+                        : Colors.pink,
+                    size: 20,
+                  )
+                : null,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  member.fullName,
+                  style: GoogleFonts.beVietnamPro(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-              );
-            },
+                const SizedBox(height: 2),
+                Text(
+                  'Đời thứ ${member.generation ?? "?"} • $genderText • $aliveText',
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                if (member.branchName != null &&
+                    member.branchName!.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    'Chi tộc: ${member.branchName}',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: AppColors.wood,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBranchItem(BranchEntity branch, List<MemberEntity> members) {
+    final memberCount = members.where((m) => m.branchId == branch.id).length;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.15)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.wood.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(LucideIcons.gitBranch,
+                color: AppColors.wood, size: 20),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  branch.name,
+                  style: GoogleFonts.beVietnamPro(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                if (branch.founderName != null &&
+                    branch.founderName!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Đời tổ/Sáng lập: ${branch.founderName}',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(LucideIcons.users,
+                        size: 12, color: Colors.blueGrey.shade400),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$memberCount thành viên',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueGrey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPendingRequestItem(FamilyUserEntity request) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: AppColors.wood.withValues(alpha: 0.12),
+                backgroundImage: request.userAvatarUrl != null
+                    ? NetworkImage(request.userAvatarUrl!)
+                    : null,
+                child: request.userAvatarUrl == null
+                    ? const Icon(LucideIcons.user, color: AppColors.wood)
+                    : null,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      request.userFullName ?? 'Người dùng ẩn danh',
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      request.userEmail ?? 'Không có email',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    LucideIcons.shieldAlert,
+                    size: 12,
+                    color: AppColors.gold,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Vai trò: ',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 6, vertical: 1.5),
+                    decoration: BoxDecoration(
+                      color: AppColors.wood.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      request.role.toUpperCase(),
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.wood,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<AdminPendingRequestsBloc>().add(
+                        ApproveAdminRequestEvent(requestId: request.id),
+                      );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.crimson,
+                  foregroundColor: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                child: Text(
+                  'Phê duyệt',
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -295,6 +791,20 @@ class AdminDashboardPage extends StatelessWidget {
 
 // ── Quick Stats Row ────────────────────────────────────────────────────────────
 class _QuickStatsRow extends StatelessWidget {
+  final String memberCount;
+  final String branchCount;
+  final String pendingCount;
+  final _DashboardTab selectedTab;
+  final ValueChanged<_DashboardTab> onTabChanged;
+
+  const _QuickStatsRow({
+    required this.memberCount,
+    required this.branchCount,
+    required this.pendingCount,
+    required this.selectedTab,
+    required this.onTabChanged,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -314,17 +824,30 @@ class _QuickStatsRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          const _StatItem(
-              icon: LucideIcons.users, label: 'Thành viên', value: '--'),
-          Container(width: 1, height: 32, color: Colors.white24),
-          const _StatItem(
-              icon: LucideIcons.gitBranch, label: 'Chi tộc', value: '--'),
+          _StatItem(
+            icon: LucideIcons.users,
+            label: 'Thành viên',
+            value: memberCount,
+            isSelected: selectedTab == _DashboardTab.members,
+            onTap: () => onTabChanged(_DashboardTab.members),
+          ),
           Container(width: 1, height: 32, color: Colors.white24),
           _StatItem(
-              icon: LucideIcons.clock,
-              label: 'Chờ duyệt',
-              value: '--',
-              valueColor: Colors.orange.shade300),
+            icon: LucideIcons.gitBranch,
+            label: 'Chi tộc',
+            value: branchCount,
+            isSelected: selectedTab == _DashboardTab.branches,
+            onTap: () => onTabChanged(_DashboardTab.branches),
+          ),
+          Container(width: 1, height: 32, color: Colors.white24),
+          _StatItem(
+            icon: LucideIcons.clock,
+            label: 'Chờ duyệt',
+            value: pendingCount,
+            valueColor: Colors.orange.shade300,
+            isSelected: selectedTab == _DashboardTab.pending,
+            onTap: () => onTabChanged(_DashboardTab.pending),
+          ),
         ],
       ),
     );
@@ -336,118 +859,67 @@ class _StatItem extends StatelessWidget {
   final String label;
   final String value;
   final Color? valueColor;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   const _StatItem({
     required this.icon,
     required this.label,
     required this.value,
     this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Icon(icon, color: AppColors.gold, size: 14),
-            const SizedBox(width: 4),
-            Text(label,
-                style: GoogleFonts.inter(color: Colors.white60, fontSize: 11)),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: GoogleFonts.beVietnamPro(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: valueColor ?? Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ── Admin Menu Card ────────────────────────────────────────────────────────────
-class _AdminMenuCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final String? badge;
-  final VoidCallback onTap;
-
-  const _AdminMenuCard({
-    required this.icon,
-    required this.label,
-    required this.color,
+    required this.isSelected,
     required this.onTap,
-    this.badge,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.gold.withValues(alpha: 0.3)
+                : Colors.transparent,
           ),
-          padding: const EdgeInsets.all(16),
-          child: Stack(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Icon(icon, color: color, size: 24),
-                  ),
-                  Text(
-                    label,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                      height: 1.3,
-                    ),
-                  ),
-                ],
-              ),
-              // Badge (e.g. pending count)
-              if (badge != null)
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.shade700,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      badge!,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold),
-                    ),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon,
+                    color: isSelected ? AppColors.gold : Colors.white70,
+                    size: 14),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: GoogleFonts.inter(
+                    color: isSelected ? Colors.white : Colors.white60,
+                    fontSize: 11,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
-            ],
-          ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color:
+                    isSelected ? AppColors.gold : (valueColor ?? Colors.white),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -10,6 +10,7 @@ export 'presentation/bloc/admin_pending_requests/admin_pending_requests_bloc.dar
 
 // Presentation Pages
 export 'presentation/pages/admin_dashboard_page.dart';
+export 'presentation/pages/admin_menu_page.dart';
 export 'presentation/pages/admin_member_form_page.dart';
 export 'presentation/pages/admin_pending_requests_page.dart';
 export 'presentation/pages/admin_member_roles_page.dart';

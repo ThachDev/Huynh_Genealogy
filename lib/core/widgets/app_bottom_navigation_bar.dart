@@ -9,6 +9,7 @@ import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
 import '../../features/user/presentation/pages/user_tree_view_page.dart';
 import '../../features/admin/presentation/pages/admin_dashboard_page.dart';
 import '../../features/admin/presentation/pages/admin_settings_page.dart';
+import '../../features/admin/presentation/pages/admin_menu_page.dart';
 
 class UserMainNavigationPage extends StatefulWidget {
   const UserMainNavigationPage({super.key});
@@ -37,11 +38,17 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
     final List<BottomNavigationBarItem> navigationItems = [];
 
     if (isAdmin) {
-      // Admin: Tổng quan, Cây gia phả, Cài đặt
+      // Admin: Tổng quan, Danh mục, Cây gia phả, Cài đặt
       pages.add(const AdminDashboardPage());
       navigationItems.add(const BottomNavigationBarItem(
         icon: Icon(LucideIcons.layoutDashboard),
         label: 'Tổng quan',
+      ));
+
+      pages.add(const AdminMenuPage());
+      navigationItems.add(const BottomNavigationBarItem(
+        icon: Icon(LucideIcons.layoutGrid),
+        label: 'Danh mục',
       ));
 
       pages.add(const UserTreeViewPage());

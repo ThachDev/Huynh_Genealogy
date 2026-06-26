@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'resources/app_localizations.dart';
 import 'core/configs/firebase_options.dart';
 import 'core/theme/app_theme.dart';
+import 'core/widgets/widgets.dart';
 import 'injection_container.dart' as di;
 import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
@@ -77,7 +78,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
           builder: (context, state) {
             if (state is Authenticated) {
               if (state.user.familyId != null) {
-                return const UserFamilyDashboardPage();
+                return const UserMainNavigationPage();
               }
               return const OnboardingPage();
             }

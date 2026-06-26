@@ -66,8 +66,10 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
           create: (_) => di.sl<FamilyFundBloc>()..add(FetchFundSummary()),
         ),
         BlocProvider<OnboardingBloc>(create: (_) => di.sl<OnboardingBloc>()),
-        BlocProvider<AdminMemberFormBloc>(create: (_) => di.sl<AdminMemberFormBloc>()),
-        BlocProvider<AdminPendingRequestsBloc>(create: (_) => di.sl<AdminPendingRequestsBloc>()),
+        BlocProvider<AdminMemberFormBloc>(
+            create: (_) => di.sl<AdminMemberFormBloc>()),
+        BlocProvider<AdminPendingRequestsBloc>(
+            create: (_) => di.sl<AdminPendingRequestsBloc>()),
       ],
       child: MaterialApp(
         onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
@@ -93,4 +95,3 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
     );
   }
 }
-

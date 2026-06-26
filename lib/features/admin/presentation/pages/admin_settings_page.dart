@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_route_transitions.dart';
+import '../../../auth/auth.dart';
 
 import 'admin_clan_info_settings_page.dart';
+import 'admin_edit_profile_page.dart';
 import 'admin_language_settings_page.dart';
 import 'admin_account_security_page.dart';
 import 'admin_transfer_ownership_page.dart';
@@ -42,13 +45,19 @@ class AdminSettingsPage extends StatelessWidget {
             _buildDivider(),
             _buildSettingsTile(
               context: context,
+              icon: LucideIcons.user,
+              title: 'Chỉnh sửa người dùng',
+              destination: const AdminEditProfilePage(),
+            ),
+            _buildDivider(),
+            _buildSettingsTile(
+              context: context,
               icon: LucideIcons.lock,
               title: 'Bảo mật tài khoản',
               destination: const AdminAccountSecurityPage(),
             ),
           ]),
           const SizedBox(height: 24),
-
           _buildSectionHeader(context, 'THIẾT LẬP ỨNG DỤNG'),
           _buildSettingsCard(children: [
             _buildSettingsTile(
@@ -66,7 +75,6 @@ class AdminSettingsPage extends StatelessWidget {
             ),
           ]),
           const SizedBox(height: 24),
-
           _buildSectionHeader(context, 'THÔNG TIN & TRỢ GIÚP'),
           _buildSettingsCard(children: [
             _buildSettingsTile(
@@ -91,7 +99,6 @@ class AdminSettingsPage extends StatelessWidget {
             ),
           ]),
           const SizedBox(height: 24),
-
           _buildSectionHeader(context, 'QUẢN TRỊ NÂNG CAO'),
           _buildSettingsCard(children: [
             _buildSettingsTile(
@@ -110,6 +117,29 @@ class AdminSettingsPage extends StatelessWidget {
               iconColor: AppColors.error,
             ),
           ]),
+          const SizedBox(height: 24),
+          OutlinedButton.icon(
+            onPressed: () {
+              context.read<AuthBloc>().add(AuthLogoutRequested());
+            },
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.red,
+              side: const BorderSide(color: Colors.red),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: const Icon(LucideIcons.logOut, size: 18),
+            label: Text(
+              'ĐĂNG XUẤT',
+              style: GoogleFonts.beVietnamPro(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                letterSpacing: 1.0,
+              ),
+            ),
+          ),
           const SizedBox(height: 32),
         ],
       ),

@@ -18,6 +18,8 @@ import '../../../../core/domain/entity/branch_entity.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
 import '../../../auth/auth.dart';
 import '../../../user/user.dart';
+import 'admin_member_form_page.dart';
+import '../bloc/admin_member_form/admin_member_form_bloc.dart';
 import '../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
 enum _DashboardTab { members, branches, pending }
@@ -56,6 +58,8 @@ class AdminDashboardPage extends StatefulWidget {
 
 class _AdminDashboardPageState extends State<AdminDashboardPage> {
   _DashboardTab _selectedTab = _DashboardTab.members;
+  bool _isEditMode = false;
+  bool _isDeleteMode = false;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -105,10 +109,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     if (user != null) {
       final userTreeState = context.watch<UserTreeBloc>().state;
       if (userTreeState is UserTreeLoaded && userTreeState.members.isNotEmpty) {
-        final rootMember = userTreeState.members.firstWhere(
+        final rootMembers = userTreeState.members.where(
           (m) => m.generation == 1 || m.parentId == null,
-          orElse: () => userTreeState.members.first,
         );
+        final rootMember = rootMembers.isNotEmpty ? rootMembers.first : userTreeState.members.first;
         final parts = rootMember.fullName.trim().split(' ');
         if (parts.isNotEmpty) {
           familyName = '${parts.first} Gia Tộc';
@@ -142,16 +146,34 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       pendingRequests = pendingState.requests;
     }
 
-    return BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
-      listener: (context, state) {
-        if (state is AdminRequestApprovedSuccess) {
-          AppSnackBar.success(context, 'Đã phê duyệt yêu cầu thành công!');
-          _loadPendingRequests();
-          context.read<UserTreeBloc>().add(UserTreeLoadEvent());
-        } else if (state is AdminPendingRequestsFailure) {
-          AppSnackBar.error(context, state.message);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
+          listener: (context, state) {
+            if (state is AdminRequestApprovedSuccess) {
+              AppSnackBar.success(context, 'Đã phê duyệt yêu cầu thành công!');
+              _loadPendingRequests();
+              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+            } else if (state is AdminPendingRequestsFailure) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
+        BlocListener<AdminMemberFormBloc, AdminMemberFormState>(
+          listener: (context, state) {
+            if (state is AdminMemberFormSuccess) {
+              if (state.isDeleted) {
+                AppSnackBar.success(context, 'Đã xoá thành viên thành công!');
+              } else {
+                AppSnackBar.success(context, 'Đã lưu thông tin thành viên!');
+              }
+              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+            } else if (state is AdminMemberFormError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: AppColors.parchment,
         body: SingleChildScrollView(
@@ -182,6 +204,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     setState(() {
                       _selectedTab = tab;
                       _searchController.clear();
+                      _isEditMode = false;
+                      _isDeleteMode = false;
                     });
                   },
                 ),
@@ -337,7 +361,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-                'DANH SÁCH THÀNH VIÊN', '${filteredMembers.length} thành viên'),
+              'DANH SÁCH THÀNH VIÊN',
+              onAdd: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdminMemberFormPage(),
+                  ),
+                );
+              },
+              onEdit: () {
+                setState(() {
+                  _isEditMode = !_isEditMode;
+                  if (_isEditMode) _isDeleteMode = false;
+                });
+              },
+              onDelete: () {
+                setState(() {
+                  _isDeleteMode = !_isDeleteMode;
+                  if (_isDeleteMode) _isEditMode = false;
+                });
+              },
+            ),
             _buildSearchBar('Tìm kiếm thành viên hoặc chi tộc...'),
             if (filteredMembers.isEmpty)
               _buildEmptyWidget('Không tìm thấy thành viên phù hợp')
@@ -372,7 +417,21 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-                'DANH SÁCH CHI TỘC', '${filteredBranches.length} chi tộc'),
+              'DANH SÁCH CHI TỘC',
+              onAdd: () => _showBranchDialog(context),
+              onEdit: () {
+                setState(() {
+                  _isEditMode = !_isEditMode;
+                  if (_isEditMode) _isDeleteMode = false;
+                });
+              },
+              onDelete: () {
+                setState(() {
+                  _isDeleteMode = !_isDeleteMode;
+                  if (_isDeleteMode) _isEditMode = false;
+                });
+              },
+            ),
             _buildSearchBar('Tìm kiếm chi tộc...'),
             if (filteredBranches.isEmpty)
               _buildEmptyWidget('Không tìm thấy chi tộc phù hợp')
@@ -399,8 +458,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(
-                'YÊU CẦU CHỜ DUYỆT', '${requests.length} yêu cầu'),
+            _buildSectionHeader('YÊU CẦU CHỜ DUYỆT'),
             if (requests.isEmpty)
               _buildEmptyWidget('Không có yêu cầu tham gia nào đang chờ duyệt')
             else
@@ -642,7 +700,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
   }
 
-  Widget _buildSectionHeader(String title, String subtitle) {
+  Widget _buildSectionHeader(String title,
+      {VoidCallback? onAdd, VoidCallback? onEdit, VoidCallback? onDelete}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
@@ -657,20 +716,182 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               letterSpacing: 0.5,
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-            decoration: BoxDecoration(
-              color: AppColors.wood.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(12),
+          if (onAdd != null || onEdit != null || onDelete != null)
+            Row(
+              children: [
+                if (onAdd != null)
+                  IconButton(
+                    icon: const Icon(LucideIcons.plusCircle,
+                        color: AppColors.wood, size: 20),
+                    onPressed: onAdd,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    tooltip: 'Thêm',
+                  ),
+                if (onEdit != null) ...[
+                  const SizedBox(width: 16),
+                  IconButton(
+                    icon: Icon(
+                      _isEditMode ? LucideIcons.check : LucideIcons.edit3,
+                      color: _isEditMode ? Colors.green : AppColors.wood,
+                      size: 20,
+                    ),
+                    onPressed: onEdit,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    tooltip: 'Sửa',
+                  ),
+                ],
+                if (onDelete != null) ...[
+                  const SizedBox(width: 16),
+                  IconButton(
+                    icon: Icon(
+                      _isDeleteMode ? LucideIcons.check : LucideIcons.trash2,
+                      color: _isDeleteMode ? Colors.red : AppColors.error,
+                      size: 20,
+                    ),
+                    onPressed: onDelete,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    tooltip: 'Xoá',
+                  ),
+                ],
+              ],
             ),
-            child: Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AppColors.wood,
-              ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, MemberEntity member) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.parchment,
+        title: Text(
+          'Xác nhận xoá',
+          style: GoogleFonts.beVietnamPro(
+              fontWeight: FontWeight.bold, color: AppColors.wood),
+        ),
+        content: Text(
+          'Bạn có chắc chắn muốn xoá thành viên ${member.fullName} khỏi gia phả không?',
+          style: GoogleFonts.beVietnamPro(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Hủy',
+                style:
+                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              context
+                  .read<AdminMemberFormBloc>()
+                  .add(DeleteAdminMemberFormEvent(member.id));
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white),
+            child: const Text('Xoá'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showBranchDialog(BuildContext context, {BranchEntity? branch}) {
+    final nameController = TextEditingController(text: branch?.name ?? '');
+    final founderController =
+        TextEditingController(text: branch?.founderName ?? '');
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.parchment,
+        title: Text(
+          branch == null ? 'Thêm Chi Tộc' : 'Chỉnh Sửa Chi Tộc',
+          style: GoogleFonts.beVietnamPro(
+              fontWeight: FontWeight.bold, color: AppColors.wood),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Tên chi tộc'),
             ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: founderController,
+              decoration:
+                  const InputDecoration(labelText: 'Tên tổ chi / Sáng lập'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Hủy',
+                style:
+                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (nameController.text.trim().isEmpty) {
+                AppSnackBar.error(ctx, 'Vui lòng nhập tên chi tộc');
+                return;
+              }
+              Navigator.pop(ctx);
+              AppSnackBar.success(
+                  context,
+                  branch == null
+                      ? 'Đã thêm chi tộc mới thành công!'
+                      : 'Đã cập nhật thông tin chi tộc!');
+              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.wood, foregroundColor: Colors.white),
+            child: const Text('Lưu'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteBranchConfirmation(
+      BuildContext context, BranchEntity branch) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.parchment,
+        title: Text(
+          'Xác nhận xoá chi tộc',
+          style: GoogleFonts.beVietnamPro(
+              fontWeight: FontWeight.bold, color: AppColors.wood),
+        ),
+        content: Text(
+          'Bạn có chắc chắn muốn xoá chi tộc ${branch.name}? Tất cả thành viên thuộc chi này sẽ mất liên kết chi tộc.',
+          style: GoogleFonts.beVietnamPro(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Hủy',
+                style:
+                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              AppSnackBar.success(context, 'Đã xoá chi tộc thành công!');
+              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white),
+            child: const Text('Xoá'),
           ),
         ],
       ),
@@ -820,6 +1041,26 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               ],
             ),
           ),
+          if (_isEditMode)
+            IconButton(
+              icon: const Icon(LucideIcons.edit, color: Colors.green, size: 20),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AdminMemberFormPage(memberId: member.id),
+                  ),
+                );
+              },
+            ),
+          if (_isDeleteMode)
+            IconButton(
+              icon: const Icon(LucideIcons.trash2, color: Colors.red, size: 20),
+              onPressed: () {
+                _showDeleteConfirmation(context, member);
+              },
+            ),
         ],
       ),
     );
@@ -897,6 +1138,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               ],
             ),
           ),
+          if (_isEditMode)
+            IconButton(
+              icon: const Icon(LucideIcons.edit, color: Colors.green, size: 20),
+              onPressed: () {
+                _showBranchDialog(context, branch: branch);
+              },
+            ),
+          if (_isDeleteMode)
+            IconButton(
+              icon: const Icon(LucideIcons.trash2, color: Colors.red, size: 20),
+              onPressed: () {
+                _showDeleteBranchConfirmation(context, branch);
+              },
+            ),
         ],
       ),
     );

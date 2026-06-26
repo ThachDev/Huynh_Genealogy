@@ -10,6 +10,7 @@ import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/user/user.dart';
 import 'features/admin/admin.dart';
+import 'features/family_fund/family_fund.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +62,9 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
           create: (_) => di.sl<AuthBloc>()..add(AuthCheckRequested()),
         ),
         BlocProvider<UserTreeBloc>(create: (_) => di.sl<UserTreeBloc>()),
+        BlocProvider<FamilyFundBloc>(
+          create: (_) => di.sl<FamilyFundBloc>()..add(FetchFundSummary()),
+        ),
         BlocProvider<OnboardingBloc>(create: (_) => di.sl<OnboardingBloc>()),
         BlocProvider<AdminMemberFormBloc>(create: (_) => di.sl<AdminMemberFormBloc>()),
         BlocProvider<AdminPendingRequestsBloc>(create: (_) => di.sl<AdminPendingRequestsBloc>()),

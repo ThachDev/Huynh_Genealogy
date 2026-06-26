@@ -1,7 +1,15 @@
+import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:gal/gal.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -9,7 +17,7 @@ import '../../../../core/domain/entity/member_entity.dart';
 import '../../../../core/domain/entity/branch_entity.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
 import '../../../auth/auth.dart';
-import '../../../user/presentation/bloc/user_tree_bloc.dart';
+import '../../../user/user.dart';
 import '../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
 enum _DashboardTab { members, branches, pending }
@@ -154,26 +162,31 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 clipBehavior: Clip.none,
                 children: [
                   _buildHeader(context, user, headerHeight, familyName),
-                  Positioned(
-                    top: headerHeight - 35,
-                    left: 0,
-                    right: 0,
-                    child: _QuickStatsRow(
-                      memberCount: memberCount,
-                      branchCount: branchCount,
-                      pendingCount: pendingCount,
-                      selectedTab: _selectedTab,
-                      onTabChanged: (tab) {
-                        setState(() {
-                          _selectedTab = tab;
-                          _searchController.clear();
-                        });
-                      },
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 80),
+              Transform.translate(
+                offset: const Offset(0, -45),
+                child: _buildInviteCodeCard(
+                  context,
+                  user != null ? 'HGT-${user.familyId ?? 2026}' : 'HGT-2026',
+                ),
+              ),
+              Transform.translate(
+                offset: const Offset(0, -25),
+                child: _QuickStatsRow(
+                  memberCount: memberCount,
+                  branchCount: branchCount,
+                  pendingCount: pendingCount,
+                  selectedTab: _selectedTab,
+                  onTabChanged: (tab) {
+                    setState(() {
+                      _selectedTab = tab;
+                      _searchController.clear();
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
               _buildContentSection(
                 userTreeState: userTreeState,
                 pendingState: pendingState,
@@ -324,7 +337,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-                'DANH SÁCH THÀNH VIÊN', '${filteredMembers.length} người'),
+                'DANH SÁCH THÀNH VIÊN', '${filteredMembers.length} thành viên'),
             _buildSearchBar('Tìm kiếm thành viên hoặc chi tộc...'),
             if (filteredMembers.isEmpty)
               _buildEmptyWidget('Không tìm thấy thành viên phù hợp')
@@ -359,7 +372,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-                'DANH SÁCH CHI TỘC', '${filteredBranches.length} chi'),
+                'DANH SÁCH CHI TỘC', '${filteredBranches.length} chi tộc'),
             _buildSearchBar('Tìm kiếm chi tộc...'),
             if (filteredBranches.isEmpty)
               _buildEmptyWidget('Không tìm thấy chi tộc phù hợp')
@@ -401,6 +414,232 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ],
         );
     }
+  }
+
+  Widget _buildInviteCodeCard(BuildContext context, String inviteCode) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.25)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.wood.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child:
+                const Icon(LucideIcons.qrCode, color: AppColors.wood, size: 22),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'MÃ THAM GIA GIA TỘC',
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textSecondary,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  inviteCode,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.wood,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(LucideIcons.copy, size: 18, color: AppColors.wood),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: inviteCode));
+              AppSnackBar.success(context, 'Đã sao chép mã mời: $inviteCode');
+            },
+            tooltip: 'Sao chép mã',
+          ),
+          const SizedBox(width: 4),
+          ElevatedButton.icon(
+            onPressed: () => _showQrDialog(context, inviteCode),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.wood,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+            icon: const Icon(LucideIcons.maximize2, size: 10),
+            label: Text(
+              'Mã QR',
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Uint8List?> _captureQr(GlobalKey key) async {
+    try {
+      final boundary =
+          key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return null;
+      final image = await boundary.toImage(pixelRatio: 4.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      return byteData?.buffer.asUint8List();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void _showQrDialog(BuildContext context, String code) {
+    final qrKey = GlobalKey();
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: AppColors.parchment,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Stack(
+          children: [
+            Container(
+              width: 280,
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Mã QR Gia Tộc',
+                    style: GoogleFonts.beVietnamPro(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.wood,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  RepaintBoundary(
+                    key: qrKey,
+                    child: Container(
+                      width: 200,
+                      height: 200,
+                      padding: const EdgeInsets.all(16),
+                      color: Colors.white,
+                      child: QrImageView(
+                        data: code,
+                        version: QrVersions.auto,
+                        size: 200.0,
+                        gapless: false,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () async {
+                            final bytes = await _captureQr(qrKey);
+                            if (bytes == null) return;
+                            try {
+                              await Gal.putImageBytes(bytes, name: 'qr_$code');
+                              if (ctx.mounted) {
+                                AppSnackBar.success(
+                                    ctx, 'Đã lưu QR vào thư viện ảnh!');
+                              }
+                            } catch (e) {
+                              if (ctx.mounted) {
+                                AppSnackBar.error(ctx,
+                                    'Không thể lưu ảnh. Vui lòng cấp quyền thư viện ảnh.');
+                              }
+                            }
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.wood,
+                            side: const BorderSide(color: AppColors.wood),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                          icon: const Icon(LucideIcons.download, size: 16),
+                          label: Text('Tải xuống',
+                              style: GoogleFonts.beVietnamPro(
+                                  fontSize: 13, fontWeight: FontWeight.w600)),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            final bytes = await _captureQr(qrKey);
+                            if (bytes == null) return;
+                            final dir = await getTemporaryDirectory();
+                            final file = File('${dir.path}/qr_$code.png');
+                            await file.writeAsBytes(bytes);
+                            await Share.shareXFiles(
+                              [XFile(file.path, mimeType: 'image/png')],
+                              text: 'Mã tham gia gia tộc: $code',
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.wood,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                          icon: const Icon(LucideIcons.share2, size: 16),
+                          label: Text('Chia sẻ',
+                              style: GoogleFonts.beVietnamPro(
+                                  fontSize: 13, fontWeight: FontWeight.w600)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: IconButton(
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(8),
+                icon: const Icon(
+                  LucideIcons.x,
+                  size: 20,
+                  color: AppColors.textSecondary,
+                ),
+                onPressed: () => Navigator.pop(ctx),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildSectionHeader(String title, String subtitle) {
@@ -809,7 +1048,7 @@ class _QuickStatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
         color: AppColors.wood,
         borderRadius: BorderRadius.circular(16),
@@ -822,31 +1061,36 @@ class _QuickStatsRow extends StatelessWidget {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _StatItem(
-            icon: LucideIcons.users,
-            label: 'Thành viên',
-            value: memberCount,
-            isSelected: selectedTab == _DashboardTab.members,
-            onTap: () => onTabChanged(_DashboardTab.members),
+          Expanded(
+            child: _StatItem(
+              icon: LucideIcons.users,
+              label: 'Thành viên',
+              value: memberCount,
+              isSelected: selectedTab == _DashboardTab.members,
+              onTap: () => onTabChanged(_DashboardTab.members),
+            ),
           ),
           Container(width: 1, height: 32, color: Colors.white24),
-          _StatItem(
-            icon: LucideIcons.gitBranch,
-            label: 'Chi tộc',
-            value: branchCount,
-            isSelected: selectedTab == _DashboardTab.branches,
-            onTap: () => onTabChanged(_DashboardTab.branches),
+          Expanded(
+            child: _StatItem(
+              icon: LucideIcons.gitBranch,
+              label: 'Chi tộc',
+              value: branchCount,
+              isSelected: selectedTab == _DashboardTab.branches,
+              onTap: () => onTabChanged(_DashboardTab.branches),
+            ),
           ),
           Container(width: 1, height: 32, color: Colors.white24),
-          _StatItem(
-            icon: LucideIcons.clock,
-            label: 'Chờ duyệt',
-            value: pendingCount,
-            valueColor: Colors.orange.shade300,
-            isSelected: selectedTab == _DashboardTab.pending,
-            onTap: () => onTabChanged(_DashboardTab.pending),
+          Expanded(
+            child: _StatItem(
+              icon: LucideIcons.clock,
+              label: 'Chờ duyệt',
+              value: pendingCount,
+              valueColor: Colors.orange.shade300,
+              isSelected: selectedTab == _DashboardTab.pending,
+              onTap: () => onTabChanged(_DashboardTab.pending),
+            ),
           ),
         ],
       ),
@@ -873,53 +1117,61 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.white.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.gold.withValues(alpha: 0.3)
+                ? Colors.white.withValues(alpha: 0.1)
                 : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.gold.withValues(alpha: 0.3)
+                  : Colors.transparent,
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon,
-                    color: isSelected ? AppColors.gold : Colors.white70,
-                    size: 14),
-                const SizedBox(width: 4),
-                Text(
-                  label,
-                  style: GoogleFonts.inter(
-                    color: isSelected ? Colors.white : Colors.white60,
-                    fontSize: 11,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon,
+                      color: isSelected ? AppColors.gold : Colors.white70,
+                      size: 14),
+                  const SizedBox(width: 4),
+                  Text(
+                    label,
+                    style: GoogleFonts.inter(
+                      color: isSelected ? Colors.white : Colors.white60,
+                      fontSize: 11,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color:
-                    isSelected ? AppColors.gold : (valueColor ?? Colors.white),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected
+                      ? AppColors.gold
+                      : (valueColor ?? Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

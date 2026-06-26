@@ -11,6 +11,7 @@ import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/user/user.dart';
 import 'features/admin/admin.dart';
+import 'features/family_fund/family_fund.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 
@@ -21,6 +22,10 @@ Future<void> init() async {
       getMembers: sl(),
       getBranches: sl(),
     ),
+  );
+
+  sl.registerFactory(
+    () => FamilyFundBloc(),
   );
 
   sl.registerFactory(

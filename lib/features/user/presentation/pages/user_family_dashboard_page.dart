@@ -66,15 +66,28 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 ),
               ),
             if (state is UserTreeLoaded) ...[
-              // ── Today's Events Banner ──
-              _buildEventsBanner(),
-              // ── Stats Section ──
+              // ── Stats Section (Overlapping Header) ──
               SliverToBoxAdapter(
-                child: _buildStats(
-                  state.members.length,
-                  state.branches.length,
+                child: SizedBox(
+                  height: 75,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        top: -35,
+                        left: 0,
+                        right: 0,
+                        child: _buildStats(
+                          state.members.length,
+                          state.branches.length,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              // ── Today's Events Banner ──
+              _buildEventsBanner(),
               // ── Branches Section ──
               SliverToBoxAdapter(
                 child: _buildSectionTitle('Chi Tộc / Nhánh'),
@@ -197,8 +210,10 @@ Widget _buildHeader(BuildContext context, UserTreeState state) {
     }
   }
 
+  final now = DateTime.now();
+
   return SliverAppBar(
-    expandedHeight: isAdmin ? 220 : 180,
+    expandedHeight: isAdmin ? 230 : 190,
     pinned: true,
     backgroundColor: AppColors.wood,
     flexibleSpace: FlexibleSpaceBar(
@@ -248,24 +263,15 @@ Widget _buildHeader(BuildContext context, UserTreeState state) {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          familyName,
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.gold,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
                         Row(
                           children: [
                             Text(
-                              'CỘI NGUỒN TÂM LINH • VẠN ĐẠI TRƯỜNG TỒN',
-                              style: GoogleFonts.inter(
-                                fontSize: 8,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w500,
+                              familyName,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.gold,
+                                letterSpacing: 1.5,
                               ),
                             ),
                             if (user != null) ...[
@@ -294,6 +300,24 @@ Widget _buildHeader(BuildContext context, UserTreeState state) {
                               ),
                             ],
                           ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'CỘI NGUỒN TÂM LINH • VẠN ĐẠI TRƯỜNG TỒN',
+                          style: GoogleFonts.inter(
+                            fontSize: 8,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Ngày ${now.day}/${now.month}/${now.year} (Nhằm 12/05 Âm Lịch Bính Ngọ)',
+                          style: GoogleFonts.inter(
+                            fontSize: 8,
+                            color: AppColors.gold.withValues(alpha: 0.8),
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),

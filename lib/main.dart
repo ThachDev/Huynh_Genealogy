@@ -8,6 +8,7 @@ import 'injection_container.dart' as di;
 import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/user/user.dart';
+import 'features/admin/admin.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,16 +26,29 @@ class FamilyTreeApp extends StatefulWidget {
     state?.setLocale(newLocale);
   }
 
+  static void setThemeMode(BuildContext context, ThemeMode newThemeMode) {
+    _FamilyTreeAppState? state =
+        context.findAncestorStateOfType<_FamilyTreeAppState>();
+    state?.setThemeMode(newThemeMode);
+  }
+
   @override
   State<FamilyTreeApp> createState() => _FamilyTreeAppState();
 }
 
 class _FamilyTreeAppState extends State<FamilyTreeApp> {
   Locale _locale = const Locale('vi');
+  ThemeMode _themeMode = ThemeMode.light;
 
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
+    });
+  }
+
+  void setThemeMode(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
     });
   }
 
@@ -47,11 +61,15 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         ),
         BlocProvider<UserTreeBloc>(create: (_) => di.sl<UserTreeBloc>()),
         BlocProvider<OnboardingBloc>(create: (_) => di.sl<OnboardingBloc>()),
+        BlocProvider<AdminMemberFormBloc>(create: (_) => di.sl<AdminMemberFormBloc>()),
+        BlocProvider<AdminPendingRequestsBloc>(create: (_) => di.sl<AdminPendingRequestsBloc>()),
       ],
       child: MaterialApp(
         onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: _themeMode,
         locale: _locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -70,3 +88,4 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
     );
   }
 }
+

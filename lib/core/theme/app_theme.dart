@@ -123,4 +123,91 @@ class AppTheme {
     );
     return baseTheme;
   }
+
+  static ThemeData get darkTheme {
+    final baseTheme = ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      colorScheme: ColorScheme.fromSeed(
+        brightness: Brightness.dark,
+        seedColor: AppColors.crimson,
+        primary: AppColors.crimson,
+        secondary: AppColors.gold,
+        surface: const Color(0xFF1E1E1E),
+        error: AppColors.error,
+        onPrimary: AppColors.textOnPrimary,
+      ),
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.wood,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        centerTitle: true,
+        titleTextStyle: GoogleFonts.beVietnamPro(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: const Color(0xFF1E1E1E),
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.gold, width: 0.5),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.crimson,
+          foregroundColor: Colors.white,
+          elevation: 4,
+          shadowColor: AppColors.gold.withValues(alpha: 0.5),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          textStyle: GoogleFonts.inter(fontWeight: FontWeight.bold),
+        ),
+      ),
+      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
+        displayLarge: GoogleFonts.beVietnamPro(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          color: AppColors.gold,
+        ),
+        headlineMedium: GoogleFonts.beVietnamPro(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: AppColors.gold,
+        ),
+        titleLarge: GoogleFonts.beVietnamPro(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        bodyLarge: GoogleFonts.inter(
+          fontSize: 16,
+          color: Colors.white,
+        ),
+        bodyMedium: GoogleFonts.inter(
+          fontSize: 14,
+          color: Colors.white70,
+        ),
+        labelLarge: GoogleFonts.notoSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+        labelMedium: GoogleFonts.notoSans(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: Colors.white70,
+        ),
+        labelSmall: GoogleFonts.notoSans(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: Colors.white60,
+        ),
+      ),
+    );
+    return baseTheme;
+  }
 }

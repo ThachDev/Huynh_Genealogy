@@ -113,71 +113,101 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String password,
   }) async {
-    try {
-      // 1. Firebase Login
-      final UserCredential userCredential =
-          await firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    // Retry logic for Firebase Auth propagation delay after password reset
+    const maxRetries = 3;
+    const retryDelays = [
+      Duration(seconds: 1),
+      Duration(seconds: 3),
+      Duration(seconds: 5)
+    ];
 
-      final User? firebaseUser = userCredential.user;
-      if (firebaseUser == null) {
-        throw const ServerException(message: 'Không thể xác thực với Firebase');
-      }
-
-      // 2. Get Firebase ID Token
-      final String? idToken = await firebaseUser.getIdToken();
-      if (idToken == null) {
-        throw const ServerException(message: 'Không thể lấy Firebase ID Token');
-      }
-
-      // 3. Send token to backend
-      final response = await dio.post(
-        AppConstants.loginEndpoint,
-        data: {
-          'idToken': idToken,
-          'fcmToken': null,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
-        final Map<String, dynamic> userData =
-            data['data']['user'] as Map<String, dynamic>;
-        return UserModel.fromJson(userData);
-      } else {
-        throw ServerException(
-          message:
-              response.data['message']?.toString() ?? 'Lỗi xác thực máy chủ',
-          statusCode: response.statusCode,
+    for (int attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        // 1. Firebase Login
+        final UserCredential userCredential =
+            await firebaseAuth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
         );
+
+        final User? firebaseUser = userCredential.user;
+        if (firebaseUser == null) {
+          throw const ServerException(
+              message: 'Không thể xác thực với Firebase');
+        }
+
+        // 2. Get Firebase ID Token
+        final String? idToken = await firebaseUser.getIdToken();
+        if (idToken == null) {
+          throw const ServerException(
+              message: 'Không thể lấy Firebase ID Token');
+        }
+
+        // 3. Send token to backend
+        final response = await dio.post(
+          AppConstants.loginEndpoint,
+          data: {
+            'idToken': idToken,
+            'fcmToken': null,
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> data =
+              response.data as Map<String, dynamic>;
+          final Map<String, dynamic> userData =
+              data['data']['user'] as Map<String, dynamic>;
+          return UserModel.fromJson(userData);
+        } else {
+          throw ServerException(
+            message:
+                response.data['message']?.toString() ?? 'Lỗi xác thực máy chủ',
+            statusCode: response.statusCode,
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        // Only retry on invalid credential (could be propagation delay after password reset)
+        if (e.code == 'invalid-credential' ||
+            e.code == 'wrong-password' ||
+            e.code == 'user-not-found') {
+          if (attempt < maxRetries - 1) {
+            await Future.delayed(retryDelays[attempt]);
+            continue;
+          }
+        }
+
+        String msg = 'Lỗi đăng nhập';
+        if (e.code == 'user-not-found' ||
+            e.code == 'wrong-password' ||
+            e.code == 'invalid-credential') {
+          msg = 'Email hoặc mật khẩu không chính xác.';
+        } else if (e.code == 'user-disabled') {
+          msg = 'Tài khoản đã bị vô hiệu hoá.';
+        } else if (e.code == 'invalid-email') {
+          msg = 'Địa chỉ email không đúng định dạng.';
+        } else if (e.message != null) {
+          msg = e.message!;
+        }
+        throw ServerException(message: msg, statusCode: 401);
+      } on DioException catch (e) {
+        throw ServerException(
+          message: e.response?.data['message']?.toString() ??
+              e.message ??
+              'Lỗi kết nối máy chủ',
+          statusCode: e.response?.statusCode,
+        );
+      } catch (e) {
+        if (e is ServerException) rethrow;
+        throw ServerException(message: 'Lỗi không xác định: $e');
       }
-    } on FirebaseAuthException catch (e) {
-      String msg = 'Lỗi đăng nhập';
-      if (e.code == 'user-not-found' ||
-          e.code == 'wrong-password' ||
-          e.code == 'invalid-credential') {
-        msg = 'Email hoặc mật khẩu không chính xác.';
-      } else if (e.code == 'user-disabled') {
-        msg = 'Tài khoản đã bị vô hiệu hoá.';
-      } else if (e.code == 'invalid-email') {
-        msg = 'Địa chỉ email không đúng định dạng.';
-      } else if (e.message != null) {
-        msg = e.message!;
-      }
-      throw ServerException(message: msg, statusCode: 401);
-    } on DioException catch (e) {
-      throw ServerException(
-        message: e.response?.data['message']?.toString() ??
-            e.message ??
-            'Lỗi kết nối máy chủ',
-        statusCode: e.response?.statusCode,
-      );
-    } catch (e) {
-      if (e is ServerException) rethrow;
-      throw ServerException(message: 'Lỗi không xác định: $e');
     }
+
+    // All retries exhausted
+    throw const ServerException(
+      message:
+          'Email hoặc mật khẩu không chính xác. Vui lòng thử lại sau vài giây.',
+      statusCode: 401,
+    );
   }
 
   @override
@@ -281,7 +311,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return;
         }
         throw ServerException(
-          message: data['message']?.toString() ?? 'Không thể gửi email đặt lại mật khẩu',
+          message: data['message']?.toString() ??
+              'Không thể gửi email đặt lại mật khẩu',
           statusCode: response.statusCode,
         );
       } else {

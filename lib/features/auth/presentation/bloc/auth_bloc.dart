@@ -100,11 +100,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
     failureOrUser.fold(
       (failure) {
-        print('❌ [AuthBloc] Login failed: ${failure.message}');
         emit(AuthError(message: failure.message));
       },
       (user) {
-        print('✅ [AuthBloc] Login success: ${user.email}, familyId=${user.familyId}');
         emit(Authenticated(user: user));
       },
     );

@@ -9,7 +9,6 @@ import '../../../../core/utils/validators.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'login_page.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   final String email;
@@ -105,10 +104,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 label: l10n.backToLogin,
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
-                  Navigator.of(context).pushAndRemoveUntil(
-                    FadeScalePageRoute(page: const LoginPage()),
-                    (route) => false,
-                  );
+                  // Pop về route đầu tiên (MaterialApp.home chứa BlocBuilder)
+                  // KHÔNG dùng pushAndRemoveUntil vì nó xóa luôn route gốc,
+                  // làm BlocBuilder ở main.dart bị dispose và không rebuild khi state đổi
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 fullWidth: true,
               ),

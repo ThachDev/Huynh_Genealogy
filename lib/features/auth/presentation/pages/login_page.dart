@@ -67,7 +67,6 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          print('🔄 [LoginPage] State changed: ${state.runtimeType}');
           if (state is AuthError) {
             AppSnackBar.error(context, state.message);
           } else if (state is AuthCredentialsLoaded) {

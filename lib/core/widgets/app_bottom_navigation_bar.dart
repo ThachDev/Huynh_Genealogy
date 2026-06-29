@@ -22,6 +22,11 @@ class UserMainNavigationPage extends StatefulWidget {
 class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   int _currentIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   static bool _isAdminRole(String role) {
     final r = role.toUpperCase();
     return r == 'OWNER' ||

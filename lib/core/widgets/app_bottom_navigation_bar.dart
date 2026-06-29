@@ -24,7 +24,10 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 
   static bool _isAdminRole(String role) {
     final r = role.toUpperCase();
-    return r == 'OWNER' || r == 'BRANCH_ADMIN' || r == 'EDITOR' || r == 'CREATOR';
+    return r == 'OWNER' ||
+        r == 'BRANCH_ADMIN' ||
+        r == 'EDITOR' ||
+        r == 'CREATOR';
   }
 
   @override
@@ -122,58 +125,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           ),
           type: BottomNavigationBarType.fixed,
           items: navigationItems,
-        ),
-      ),
-    );
-  }
-}
-
-class _PlaceholderPage extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _PlaceholderPage({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.parchment,
-      appBar: AppBar(
-        backgroundColor: AppColors.wood,
-        elevation: 4,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          title,
-          style: GoogleFonts.beVietnamPro(
-            color: AppColors.gold,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 64, color: AppColors.crimson.withValues(alpha: 0.4)),
-            const SizedBox(height: 16),
-            Text(
-              'Tính năng $title',
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Đang được phát triển',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
         ),
       ),
     );

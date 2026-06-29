@@ -118,4 +118,39 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure(message: 'Lỗi lưu thông tin: $e'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> cacheCredentials({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await localDataSource.cacheCredentials(email: email, password: password);
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(CacheFailure(message: 'Lỗi ghi nhớ thông tin đăng nhập: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, String>?>> getCachedCredentials() async {
+    try {
+      final result = await localDataSource.getCachedCredentials();
+      return Right(result);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> clearCredentials() async {
+    try {
+      await localDataSource.clearCredentials();
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
 }

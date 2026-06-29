@@ -17,4 +17,10 @@ abstract class AuthRepository {
     required String role,
   });
   Future<Either<Failure, void>> cacheUser(UserEntity user);
+  Future<Either<Failure, void>> cacheCredentials({
+    required String email,
+    required String password,
+  });
+  Future<Either<Failure, Map<String, String>?>> getCachedCredentials();
+  Future<Either<Failure, void>> clearCredentials();
 }

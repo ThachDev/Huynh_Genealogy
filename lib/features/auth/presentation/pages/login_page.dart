@@ -28,6 +28,13 @@ class _LoginPageState extends State<LoginPage> {
   bool _rememberPassword = false;
 
   @override
+  void initState() {
+    super.initState();
+    // Tải credentials đã ghi nhớ (nếu có)
+    context.read<AuthBloc>().add(AuthLoadCredentialsRequested());
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -61,6 +68,27 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is AuthError) {
             AppSnackBar.error(context, state.message);
+          } else if (state is AuthCredentialsLoaded) {
+            // Tự động điền email/password đã ghi nhớ
+            if (state.email != null && state.password != null) {
+              setState(() {
+                _emailController.text = state.email!;
+                _passwordController.text = state.password!;
+                _rememberPassword = true;
+              });
+            }
+          } else if (state is Authenticated) {
+            // Lưu hoặc xoá credentials tuỳ theo lựa chọn của user
+            if (_rememberPassword) {
+              context.read<AuthBloc>().add(
+                    AuthCacheCredentialsRequested(
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text.trim(),
+                    ),
+                  );
+            } else {
+              context.read<AuthBloc>().add(AuthClearCredentialsRequested());
+            }
           }
         },
         child: BlocBuilder<AuthBloc, AuthState>(

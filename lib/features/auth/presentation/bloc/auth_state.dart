@@ -31,3 +31,13 @@ class AuthError extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+class AuthCredentialsLoaded extends AuthState {
+  final String? email;
+  final String? password;
+
+  const AuthCredentialsLoaded({this.email, this.password});
+
+  @override
+  List<Object?> get props => [email, password];
+}

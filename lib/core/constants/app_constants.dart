@@ -18,6 +18,7 @@ class AppConstants {
   static const String cachedBranches = 'CACHED_BRANCHES';
   static const String cachedUser = 'CACHED_USER';
   static const String cachedToken = 'CACHED_TOKEN';
+  static const String cachedCredentials = 'CACHED_CREDENTIALS';
 
   // Pagination
   static const int defaultPageSize = 50;

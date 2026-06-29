@@ -8,6 +8,12 @@ abstract class AuthLocalDataSource {
   Future<void> cacheUser(UserModel userToCache);
   Future<UserModel?> getCachedUser();
   Future<void> clearCache();
+  Future<void> cacheCredentials({
+    required String email,
+    required String password,
+  });
+  Future<Map<String, String>?> getCachedCredentials();
+  Future<void> clearCredentials();
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
@@ -44,6 +50,42 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       await sharedPreferences.remove(AppConstants.cachedUser);
     } catch (e) {
       throw const CacheException(message: 'Lỗi xoá thông tin đăng nhập');
+    }
+  }
+
+  @override
+  Future<void> cacheCredentials({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final encoded = base64Url.encode(utf8.encode('$email::$password'));
+      await sharedPreferences.setString(AppConstants.cachedCredentials, encoded);
+    } catch (e) {
+      throw const CacheException(message: 'Lỗi ghi nhớ mật khẩu');
+    }
+  }
+
+  @override
+  Future<Map<String, String>?> getCachedCredentials() async {
+    try {
+      final encoded = sharedPreferences.getString(AppConstants.cachedCredentials);
+      if (encoded == null) return null;
+      final decoded = utf8.decode(base64Url.decode(encoded));
+      final parts = decoded.split('::');
+      if (parts.length != 2) return null;
+      return {'email': parts[0], 'password': parts[1]};
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> clearCredentials() async {
+    try {
+      await sharedPreferences.remove(AppConstants.cachedCredentials);
+    } catch (e) {
+      throw const CacheException(message: 'Lỗi xoá thông tin đăng nhập đã lưu');
     }
   }
 }

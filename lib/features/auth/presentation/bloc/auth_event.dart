@@ -52,3 +52,20 @@ class AuthUserUpdated extends AuthEvent {
   @override
   List<Object?> get props => [user];
 }
+
+class AuthLoadCredentialsRequested extends AuthEvent {}
+
+class AuthCacheCredentialsRequested extends AuthEvent {
+  final String email;
+  final String password;
+
+  const AuthCacheCredentialsRequested({
+    required this.email,
+    required this.password,
+  });
+
+  @override
+  List<Object?> get props => [email, password];
+}
+
+class AuthClearCredentialsRequested extends AuthEvent {}

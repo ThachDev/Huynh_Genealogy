@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
@@ -123,6 +124,7 @@ class AppTextFieldLight extends StatelessWidget {
   final int? maxLength;
   final TextAlign textAlign;
   final TextStyle? style;
+  final List<TextInputFormatter>? inputFormatters;
 
   const AppTextFieldLight({
     super.key,
@@ -140,6 +142,7 @@ class AppTextFieldLight extends StatelessWidget {
     this.maxLength,
     this.textAlign = TextAlign.start,
     this.style,
+    this.inputFormatters,
   });
 
   @override
@@ -165,6 +168,7 @@ class AppTextFieldLight extends StatelessWidget {
           maxLength: maxLength,
           textAlign: textAlign,
           onChanged: onChanged,
+          inputFormatters: inputFormatters,
           style: style ??
               GoogleFonts.inter(
                 color: AppColors.textPrimary,
@@ -192,7 +196,8 @@ class AppTextFieldLight extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.crimson, width: 1.5),
+              borderSide:
+                  const BorderSide(color: AppColors.crimson, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

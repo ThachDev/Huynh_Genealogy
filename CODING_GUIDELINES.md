@@ -12,6 +12,8 @@ Dự án sử dụng **FVM (Flutter Version Management)** để đồng bộ phi
   * Phân tích mã nguồn: `fvm flutter analyze`
   * Chạy tạo file bản dịch l10n: `fvm flutter gen-l10n`
   * Chạy ứng dụng: `fvm flutter run`
+  * Build release: `fvm flutter build apk --release` / `fvm flutter build ios --release`
+  * Chạy tests: `fvm flutter test`
 
 ---
 
@@ -23,12 +25,17 @@ lib/
 ├── core/                  # Các thành phần dùng chung toàn hệ thống
 │   ├── theme/             # Định nghĩa theme sáng/tối (AppTheme, AppColors)
 │   ├── utils/             # Các bộ tiện ích (AppValidators, DateFormatter, ...)
-│   └── widgets/           # Thư viện component dùng chung (AppButton, AppTextField, ...)
-└── features/              # Các chức năng của hệ thống (Ví dụ: auth, family_tree)
+│   ├── widgets/           # Thư viện component dùng chung (AppButton, AppTextField, ...)
+│   ├── network/           # Network layer (Dio client, interceptors)
+│   ├── errors/            # Error handling (Failures, Exceptions)
+│   ├── config/            # App constants, env config
+│   ├── routes/            # GoRouter configuration
+│   └── local/             # Local storage (SharedPreferences, Hive)
+└── features/              # Các chức năng của hệ thống
     └── [chức_năng]/
-        ├── data/          # Mô hình dữ liệu, APIs, Repositories implementation
-        ├── domain/        # Thực thể (Entities), Usecases, Repositories interface
-        └── presentation/  # Giao diện (Bloc/Cubit, Pages, Widgets nội bộ)
+        ├── data/          # Models, Datasources, Repository implementations
+        ├── domain/        # Entities, Usecases, Repository interfaces
+        └── presentation/  # Bloc/Cubit, Pages, Widgets
 ```
 
 ### Quy tắc triển khai:
@@ -40,124 +47,359 @@ lib/
     ├── pages/         # Các màn hình/trang giao diện chính
     └── widgets/       # Các widget dùng chung nội bộ cho feature này
     ```
-  * **Quy tắc tổ chức**: Khi số lượng widget hoặc các file trong thư mục `pages/` quá nhiều (ví dụ như trong feature `family`), ta cần tạo thêm thư mục `widgets/` tại nhánh con `presentation/` (ví dụ: `lib/features/family/presentation/widgets/`) để chứa các widget dùng chung hoặc các widget con được tách ra từ page, giúp thư mục `pages/` luôn gọn gàng và dễ quản lý.
+  * **Quy tắc tổ chức**: Khi số lượng widget hoặc các file trong thư mục `pages/` quá nhiều, tạo thêm thư mục `widgets/` tại nhánh con `presentation/` để chứa các widget dùng chung hoặc widget con được tách ra từ page.
 * **Domain Layer**: Phải độc lập hoàn toàn, không phụ thuộc vào bất kỳ thư viện UI nào.
+* **Data Layer**: Implement repository interfaces, handle data sources (remote/local), mapping DTO ↔ Entity.
 
 ---
 
 ## 3. Giao diện Sáng/Tối & Hệ thống Component dùng chung
 Dự án hỗ trợ song song hai chế độ **Giao diện sáng (Light Mode)** và **Giao diện tối (Dark Mode)**. 
-* **MANDATORY**: Mỗi khi tạo mới hoặc sửa đổi bất kỳ Widget/Component nào, lập trình viên/AI bắt buộc phải lưu ý thiết kế để giao diện hiển thị tốt trên cả hai chế độ sáng và tối (sử dụng màu từ `Theme.of(context)` hoặc `AppColors` phù hợp). Hãy kiểm tra độ tương phản màu sắc của văn bản và background trên cả hai chế độ để tránh hiện tượng chữ bị chìm hoặc hiển thị sai tông màu.
-* Không tự định nghĩa lại hoặc tùy biến thủ công (ad-hoc styling) cho các widget cơ bản. Phải ưu tiên sử dụng thư viện dùng chung trong `core/widgets/widgets.dart` và `core/theme/app_theme.dart`.
+* **MANDATORY**: Mỗi khi tạo mới hoặc sửa đổi Widget/Component, bắt buộc thiết kế cho cả hai chế độ (sử dụng `Theme.of(context)` hoặc `AppColors`).
+* Không tự định nghĩa `InputDecoration`, `ButtonStyle` thủ công. Phải dùng `core/widgets/widgets.dart` và `core/theme/app_theme.dart`.
 
 > [!IMPORTANT]
-> **Quy tắc tạo Widget dùng chung**: Nếu có bất kỳ Widget nào cần tái sử dụng ở nhiều nơi hoặc giữa nhiều feature khác nhau, bắt buộc phải tạo mới tệp tin widget đó trong thư mục `lib/core/widgets/` và cập nhật khai báo export vào tệp tổng hợp [widgets.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/widgets/widgets.dart). Điều này giúp đảm bảo tính nhất quán của giao diện và tránh việc khai báo trùng lặp code.
+> **Quy tắc tạo Widget dùng chung**: Widget tái sử dụng ở nhiều nơi → tạo tại `lib/core/widgets/` và export tại `widgets.dart`.
 
 ### 3.1. Nhập liệu (TextField)
-* **Chế độ nền sáng**: Dùng `AppTextFieldLight`
-* **Chế độ nền tối**: Dùng `AppTextField`
+* **Light**: `AppTextFieldLight` | **Dark**: `AppTextField`
 * *Tuyệt đối không tự viết `InputDecoration`*.
 
 ### 3.2. Nút bấm (Buttons)
-* Sử dụng `AppButton` thay vì `ElevatedButton`, `OutlinedButton`, hoặc `TextButton` trực tiếp.
-* Lựa chọn `AppButtonVariant`:
-  * `primary`: Crimson (Đỏ thẫm dòng họ)
-  * `secondary`: Gold (Vàng kim)
-  * `outline`: Viền vàng kim
-  * `ghost`: Nền mờ nhạt
-  * `danger`: Đỏ cảnh báo
-* Lựa chọn kích thước thông qua `AppButtonSize` (`small`, `medium`, `large`).
+* Dùng `AppButton` thay vì `ElevatedButton`/`OutlinedButton`/`TextButton`.
+* **Variants**: `primary` (Crimson), `secondary` (Gold), `outline`, `ghost`, `danger`
+* **Sizes**: `small`, `medium`, `large`
 
 ### 3.3. Thông báo (SnackBars)
-* Sử dụng `AppSnackBar` thay thế cho `ScaffoldMessenger.of(context).showSnackBar`.
-* Gọi trực tiếp các static helper tương ứng với ngữ cảnh:
-  * Thành công: `AppSnackBar.success(context, message)`
-  * Lỗi: `AppSnackBar.error(context, message)`
-  * Cảnh báo: `AppSnackBar.warning(context, message)`
-  * Thông tin: `AppSnackBar.info(context, message)`
+* Dùng `AppSnackBar`: `.success()`, `.error()`, `.warning()`, `.info()`
 
-### 3.4. Phân cách có chữ (Dividers)
-* Sử dụng `AppLabeledDivider(label: 'TEXT', isLight: true/false)` cho các phần phân tách giữa các khối (ví dụ: dòng chữ "HOẶC").
+### 3.4. Phân cách (Dividers)
+* `AppLabeledDivider(label: 'TEXT', isLight: true/false)`
 
 ### 3.5. Biểu tượng (Icons)
-* Dự án thống nhất sử dụng thư viện **`lucide_icons`** làm gói biểu tượng chính thay cho `Icons` mặc định của Material để mang lại phong cách thiết kế hiện đại, đồng bộ.
-* **Cách sử dụng**:
-  ```dart
-  import 'package:lucide_icons/lucide_icons.dart';
+* Thư viện: **`lucide_icons`** (không dùng `Icons` mặc định)
+* Import: `import 'package:lucide_icons/lucide_icons.dart';`
+
+### 3.6. Chuyển trang (Page Route Transitions)
+* Không lạm dụng Slide. Ưu tiên **`FadeScalePageRoute`** (Material 3).
+* Khai báo tại `app_route_transitions.dart`, export tại `widgets.dart`.
+
+---
+
+## 4. Widget Patterns & Optimization (Theo Flutter-Dev Skill)
+
+### 4.1. Widget Optimization
+```dart
+// ✅ GOOD: const constructors, extract static widgets
+class MyWidget extends StatelessWidget {
+  const MyWidget({super.key}); // const constructor
   
-  // Ví dụ:
-  Icon(LucideIcons.gitBranch)
-  ```
+  @override
+  Widget build(BuildContext context) {
+    return const _StaticContent(); // extracted const widget
+  }
+}
 
-### 3.6. Hiệu ứng chuyển trang (Page Route Transitions)
-* Các ứng dụng lớn cần tính thẩm mỹ cao không lạm dụng hiệu ứng trượt (Slide) toàn trang một cách thô sơ.
-* Ưu tiên sử dụng **`FadeScalePageRoute`** (hiệu ứng phóng to mờ dần chuẩn Material 3) để chuyển đổi giữa các màn hình độc lập (ví dụ: Đăng nhập $\leftrightarrow$ Đăng ký).
-* Mọi hiệu ứng chuyển trang dùng chung phải được khai báo trong [app_route_transitions.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/widgets/app_route_transitions.dart) và export tại [widgets.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/widgets/widgets.dart).
+class _StaticContent extends StatelessWidget {
+  const _StaticContent();
+  @override
+  Widget build(BuildContext context) => const Text('Hello');
+}
+```
 
----
+* **Luôn dùng `const`** cho constructor widget tĩnh
+* Tách widget tĩnh thành class riêng (`_PrivateWidget`)
+* Dùng `Key` cho list items: `ValueKey(item.id)` / `ObjectKey(item)`
+* Ưu tiên `ConsumerWidget` / `HookWidget` thay vì `StatefulWidget`
 
-## 4. Xác thực dữ liệu (Validators)
-Tất cả các biểu mẫu (Form) nhập liệu phải sử dụng các hàm xác thực tập trung để đảm bảo tính nhất quán của thông điệp lỗi và logic nghiệp vụ.
-* **Tệp cấu hình**: [validators.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/utils/validators.dart)
-* **Các hàm có sẵn**:
-  * `AppValidators.validateEmail`
-  * `AppValidators.validatePassword` (Dành cho Đăng nhập)
-  * `AppValidators.validateStrongPassword` (Dành cho Đăng ký/Đổi mật khẩu)
-  * `AppValidators.validateConfirmPassword`
-  * `AppValidators.validateFullName` (Xử lý tốt tiếng Việt unicode)
-  * `AppValidators.validatePhoneNumber` (Định dạng Việt Nam)
-  * `AppValidators.validateYear` (Giới hạn năm hợp lý trong Gia Phả)
-  * `AppValidators.validateRequired`
+### 4.2. Layout & Responsive
+* **Spacing**: 8pt increments (8, 16, 24, 32, 48)
+* **Breakpoints**: mobile (<650), tablet (650-1100), desktop (>1100)
+* Dùng `LayoutBuilder` + `MediaQuery` cho responsive
+* Follow Material 3 design guidelines
 
----
+### 4.3. List & Scrolling
+```dart
+// ✅ GOOD: lazy loading
+ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (context, index) => ItemWidget(item: items[index]),
+)
 
-## 5. Quản lý và xử lý lỗi (Errors & Failures)
-Tất cả các lỗi nghiệp vụ, kết nối mạng, xác thực hoặc sự cố máy chủ phải được quản lý tập trung tại thư mục [errors](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/errors).
-* **MANDATORY**: Nếu phát sinh hoặc cần thêm bất kỳ trường hợp lỗi mới nào (như Exception hoặc Failure), lập trình viên/AI bắt buộc phải định nghĩa và cập nhật ngay vào [exceptions.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/errors/exceptions.dart) và [failures.dart](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/core/errors/failures.dart) để tái sử dụng toàn cục. Không viết các Exception hoặc Failure cục bộ riêng lẻ trong các feature.
-* Mọi lớp `Failure` con bắt buộc phải cài đặt phương thức `getMessage(BuildContext context)` để trả về chuỗi thông báo lỗi đã được bản địa hóa qua tệp `.arb` tương ứng.
-
----
-
-## 6. Đa ngôn ngữ (Localization - l10n)
-Dự án được bản địa hóa hoàn chỉnh sử dụng Flutter Localization chính thống. Không được hardcode bất kỳ chuỗi ký tự hiển thị nào hiển thị lên UI.
-
-### 6.1. Khai báo chuỗi dịch:
-* Thêm các key-value tương ứng vào hai tệp tài nguyên:
-  * Tiếng Việt: [app_vi.arb](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/resources/app_vi.arb)
-  * Tiếng Anh: [app_en.arb](file:///Users/ancq/ThienThach/Code/FE/Gia_Toc_Viet/lib/resources/app_en.arb)
-* Sau khi chỉnh sửa các tệp `.arb`, bắt buộc chạy lệnh sau để sinh mã:
-  ```bash
-  fvm flutter gen-l10n
-  ```
-
-### 6.2. Sử dụng trong code:
-* Import gói thư viện sinh ra:
-  ```dart
-  import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-  ```
-* Truy xuất chuỗi thông qua `AppLocalizations`:
-  ```dart
-  final l10n = AppLocalizations.of(context)!;
-  // Ví dụ sử dụng:
-  Text(l10n.loginTitle)
-  ```
-
-> [!IMPORTANT]
-> **Quy tắc bản địa hóa các giá trị mặc định (Default Parameters)**:
-> Trong Dart, các giá trị mặc định của tham số phương thức/constructor bắt buộc phải là hằng số (compile-time constant), do đó ta không thể gọi `AppLocalizations.of(context)` tại phần khai báo tham số. 
-> * **Giải pháp bắt buộc**: Đặt giá trị mặc định là `null` (ví dụ: `String? confirmLabel`), sau đó trong thân phương thức hoặc hàm dựng `build` (nơi có `BuildContext`), thực hiện gán fallback: `confirmLabel ?? AppLocalizations.of(context)!.confirmLabel` để tránh hardcode ngôn ngữ.
+// ❌ BAD: builds all at once
+Column(children: items.map((e) => ItemWidget(item: e)).toList())
+```
+* Dùng `ListView.builder` / `GridView.builder` cho danh sách lớn
+* Phức tạp: `CustomScrollView` + Slivers (`SliverList`, `SliverGrid`, `SliverAppBar`)
 
 ---
 
-## 7. Tiêu chuẩn viết code (Code Style & Linting)
-* Giữ cấu trúc tệp gọn gàng, tránh các Widget lồng nhau quá sâu. Hãy tách ra các private helper method (ví dụ: `_buildHeader()`) hoặc các Widget class riêng biệt khi vượt quá 200 dòng.
-* Luôn khai báo `const` cho các Constructor của widget tĩnh để tối ưu hiệu năng hiển thị.
-* Khi gặp cảnh báo từ linter, hãy khắc phục triệt để. Nếu là cảnh báo giả (false positive) từ thư viện SDK, hãy sử dụng chú thích `// ignore: lint_rule` cục bộ thay vì tắt diện rộng.
+## 5. State Management (Bloc/Cubit - Theo Skill)
+
+### 5.1. Bloc/Cubit Patterns
+```dart
+// ✅ GOOD: Event-driven, immutable state
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  AuthBloc({required this.loginUseCase}) : super(AuthInitial()) {
+    on<AuthLoginRequested>(_onLoginRequested);
+  }
+
+  Future<void> _onLoginRequested(AuthLoginRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    final result = await loginUseCase(LoginParams(email: event.email, password: event.password));
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(Authenticated(user: user)),
+    );
+  }
+}
+
+// ❌ BAD: mutating state, logic in UI
+```
+
+### 5.2. State Design
+* **Immutable**: `Equatable` + `copyWith()` hoặc Freezed
+* **Granular states**: `Loading`, `Success`, `Error`, `Empty` thay vì boolean flags
+* **Selective rebuild**: `BlocBuilder<AuthBloc, AuthState>(buildWhen: (prev, curr) => prev.user != curr.user)`
+
+### 5.3. Provider Scoping
+* `BlocProvider` ở mức `MaterialApp` cho global (AuthBloc)
+* `BlocProvider` ở feature level cho scoped blocs
+* Dispose controllers/subscriptions trong `close()` / `dispose()`
 
 ---
 
-## 8. Phối hợp Phát triển & Đồng bộ với Backend
-Khi phát triển hoặc nâng cấp tính năng ở Frontend, lập trình viên/AI cần thực hiện:
-* **Rà soát mã nguồn Backend**: Chủ động kiểm tra mã nguồn tại thư mục `/Users/ancq/ThienThach/Code/BE/BE_Huynh_Genealogy` (hoặc đường dẫn tương đương của backend) xem đã có đầy đủ logic nghiệp vụ, cơ sở dữ liệu (Database Schema), hay API endpoints mà Frontend cần chưa (và ngược lại).
-* **Bổ sung logic thiếu**: Nếu Backend chưa hỗ trợ phần nghiệp vụ cần thiết cho Frontend, AI có nhiệm vụ trực tiếp triển khai/xây dựng bổ sung logic đó ở phần Backend để đảm bảo hai bên hoạt động đồng bộ.
+## 6. Navigation (GoRouter)
 
+### 6.1. Route Configuration
+```dart
+final router = GoRouter(
+  initialLocation: '/login',
+  redirect: (context, state) {
+    final authState = context.read<AuthBloc>().state;
+    final isAuthenticated = authState is Authenticated;
+    final isLoginRoute = state.matchedLocation == '/login';
+    
+    if (!isAuthenticated && !isLoginRoute) return '/login';
+    if (isAuthenticated && isLoginRoute) return '/home';
+    return null;
+  },
+  routes: [
+    GoRoute(path: '/login', builder: (c, s) => const LoginPage()),
+    ShellRoute(
+      builder: (c, s, child) => UserMainNavigationPage(child: child),
+      routes: [
+        GoRoute(path: '/home', builder: (c, s) => const DashboardPage()),
+        GoRoute(path: '/tree', builder: (c, s) => const TreeViewPage()),
+        GoRoute(path: '/settings', builder: (c, s) => const SettingsPage()),
+      ],
+    ),
+  ],
+);
+```
+
+* Typed routes với `GoRouteData` (auto-generated)
+* Auth guards via `redirect`
+* Deep linking support
+* State preservation via `ShellRoute`
+
+---
+
+## 7. Performance Optimization (Theo Skill)
+
+### 7.1. Rebuild Prevention
+```dart
+// Selective listening
+BlocBuilder<AuthBloc, AuthState>(
+  buildWhen: (prev, curr) => prev is! Authenticated || curr is! Authenticated || prev.user != curr.user,
+  builder: (context, state) { ... },
+)
+
+// Provider select
+final userName = ref.watch(userProvider.select((u) => u.name));
+```
+
+### 7.2. Repaint Boundary
+```dart
+RepaintBoundary(
+  child: ComplexAnimatedWidget(), // isolates repaints
+)
+```
+
+### 7.3. Heavy Computation
+```dart
+final result = await compute(heavyFunction, input); // isolate
+```
+
+### 7.4. Image Caching
+```dart
+CachedNetworkImage(
+  imageUrl: url,
+  placeholder: (c, u) => const AppLoading(),
+  errorWidget: (c, u, e) => const Icon(Icons.error),
+)
+```
+
+### 7.5. DevTools Profiling
+* `flutter run --profile` → DevTools → Performance tab
+* Target <16ms frame (60fps)
+* Check "Rebuilds" widget count in Flutter Inspector
+
+---
+
+## 8. Xác thực dữ liệu (Validators)
+* File: `lib/core/utils/validators.dart`
+* Hàm có sẵn: `validateEmail`, `validatePassword`, `validateStrongPassword`, `validateConfirmPassword`, `validateFullName`, `validatePhoneNumber`, `validateYear`, `validateRequired`
+* Form validation: `Form(key: _formKey, child: ...)` + `TextFormField(validator: AppValidators.validateEmail)`
+
+---
+
+## 9. Error Handling (Failures & Exceptions)
+* Thư mục: `lib/core/errors/`
+* **Failures**: `ServerFailure`, `CacheFailure`, `NetworkFailure`, `AuthFailure`, `ValidationFailure`, `NotFoundFailure`, `PermissionFailure`, `TimeoutFailure`
+* Tất cả `Failure` phải implement `getMessage(BuildContext context)` → localized message từ `.arb`
+* **Exceptions**: `ServerException`, `CacheException` → map thành Failure ở Repository
+
+---
+
+## 10. Localization (l10n)
+* Files: `lib/resources/app_vi.arb`, `app_en.arb`
+* Chạy `fvm flutter gen-l10n` sau khi sửa `.arb`
+* Usage: `AppLocalizations.of(context)!.keyName`
+* **Default params**: không dùng `AppLocalizations.of(context)` ở default param → dùng `null` fallback trong build
+
+---
+
+## 11. Networking (Dio)
+* `lib/core/network/dio_client.dart` - singleton Dio instance
+* Interceptors: auth token, logging, error handling, retry
+* Timeout: connect 10s, receive 15s
+* Base URL từ `AppConstants.baseUrl`
+
+---
+
+## 12. Forms & Input
+* `Form(key: _formKey)` + `TextFormField`
+* Validators từ `AppValidators`
+* Input formatters: `FilteringTextInputFormatter.digitsOnly`, `LengthLimitingTextInputFormatter`
+* Focus management: `FocusNode`, `FocusScope.of(context).requestFocus()`
+
+---
+
+## 13. Animations (Theo Skill)
+
+### 13.1. Implicit Animations
+```dart
+AnimatedContainer(
+  duration: const Duration(milliseconds: 300),
+  curve: Curves.easeInOut,
+  width: isExpanded ? 200 : 100,
+)
+```
+
+### 13.2. Explicit Animations
+```dart
+AnimationController _controller;
+@override void initState() {
+  super.initState();
+  _controller = AnimationController(vsync: this, duration: 300.ms);
+}
+@override void dispose() { _controller.dispose(); super.dispose(); }
+```
+
+### 13.3. Page Transitions
+* `FadeScalePageRoute` cho màn hình độc lập
+* `SlidePageRoute` cho navigation stack
+* Hero animations cho shared elements
+
+---
+
+## 14. Testing Strategies
+
+### 14.1. Unit Tests (Bloc)
+```dart
+blocTest<AuthBloc, AuthState>(
+  'emits [AuthLoading, Authenticated] when login succeeds',
+  build: () => AuthBloc(loginUseCase: mockLoginUseCase),
+  act: (bloc) => bloc.add(AuthLoginRequested(email: 'a@b.c', password: '123')),
+  expect: () => [AuthLoading(), isA<Authenticated>()],
+);
+```
+
+### 14.2. Widget Tests
+```dart
+testWidgets('LoginPage shows error on invalid email', (tester) async {
+  await tester.pumpWidget(MaterialApp(home: LoginPage()));
+  await tester.enterText(find.byType(TextFormField).first, 'invalid');
+  await tester.tap(find.byType(ElevatedButton));
+  await tester.pump();
+  expect(find.text('Email không hợp lệ'), findsOneWidget);
+});
+```
+
+### 14.2. Integration Tests
+* `integration_test/` - full user flows
+* `flutter test integration_test/app_test.dart`
+
+---
+
+## 15. Platform Integration (iOS/Android)
+
+### 15.1. iOS
+* Info.plist: permissions, URL schemes, LSApplicationQueriesSchemes
+* Push notifications: APNs, Firebase Messaging
+* App Transport Security (ATS)
+
+### 15.2. Android
+* AndroidManifest: permissions, intent-filters, network security config
+* ProGuard/R8 rules for release
+* Keystore signing
+
+### 15.3. Platform Channels
+```dart
+// Dart
+const channel = MethodChannel('com.giatocviet/native');
+final result = await channel.invokeMethod('getBatteryLevel');
+
+// Native (Kotlin/Swift) implements handler
+```
+
+---
+
+## 16. Code Style & Linting
+* `fvm flutter analyze` - zero issues
+* `const` constructors everywhere possible
+* Extract widgets at >200 lines or deep nesting
+* Import sorting: dart: → package: → relative
+* No trailing commas in single-line, required in multi-line
+
+---
+
+## 17. Phối hợp Backend
+* Kiểm tra API contract tại `/Users/ancq/ThienThach/Code/BE/BE_Huynh_Genealogy`
+* Đồng bộ: Database schema, API endpoints, DTOs
+* Nếu BE thiếu logic → AI implement bổ sung tại BE
+
+---
+
+## Quick Reference Card
+
+| Task | Command / Pattern |
+|------|-------------------|
+| Analyze | `fvm flutter analyze` |
+| Gen l10n | `fvm flutter gen-l10n` |
+| Run dev | `fvm flutter run` |
+| Test | `fvm flutter test` |
+| Profile | `fvm flutter run --profile` |
+| Build apk | `fvm flutter build apk --release` |
+| Bloc test | `blocTest<Bloc, State>(...)` |
+| Widget test | `testWidgets('desc', (tester) async {})` |
+| Compute | `await compute(fn, input)` |
+| RepaintBoundary | `RepaintBoundary(child: widget)` |
+| GoRouter push | `context.go('/path')` |
+| SnackBar | `AppSnackBar.success(context, msg)` |
+| Validate | `AppValidators.validateEmail` |
+
+---
+
+**References**: Flutter-Dev Skill references in `/Users/ancq/.cursor/minimax-skills/skills/flutter-dev/references/`

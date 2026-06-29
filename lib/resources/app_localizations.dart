@@ -326,6 +326,126 @@ abstract class AppLocalizations {
   /// **'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.'**
   String get forgotPasswordNotice;
 
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quên mật khẩu'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập email đã đăng ký để nhận mã xác thực đặt lại mật khẩu.'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @forgotPasswordButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'GỬI MÃ XÁC THỰC'**
+  String get forgotPasswordButton;
+
+  /// No description provided for @forgotPasswordSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư (kể cả thư mục spam).'**
+  String get forgotPasswordSuccess;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại đăng nhập'**
+  String get backToLogin;
+
+  /// No description provided for @otpTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác thực OTP'**
+  String get otpTitle;
+
+  /// No description provided for @otpSubtitleStart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúng tôi đã gửi mã xác thực 6 số đến email '**
+  String get otpSubtitleStart;
+
+  /// No description provided for @otpSubtitleEnd.
+  ///
+  /// In vi, this message translates to:
+  /// **'. Vui lòng kiểm tra hộp thư và nhập mã.'**
+  String get otpSubtitleEnd;
+
+  /// No description provided for @otpLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã xác thực'**
+  String get otpLabel;
+
+  /// No description provided for @otpHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'123456'**
+  String get otpHint;
+
+  /// No description provided for @otpRequiredError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập mã OTP'**
+  String get otpRequiredError;
+
+  /// No description provided for @otpInvalidError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã OTP phải có 6 chữ số'**
+  String get otpInvalidError;
+
+  /// No description provided for @otpVerifyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'XÁC THỰC'**
+  String get otpVerifyButton;
+
+  /// No description provided for @otpResendButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lại mã'**
+  String get otpResendButton;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt lại mật khẩu'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập mật khẩu mới cho tài khoản của bạn.'**
+  String get resetPasswordSubtitle;
+
+  /// No description provided for @resetPasswordButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'ĐẶT LẠI MẬT KHẨU'**
+  String get resetPasswordButton;
+
+  /// No description provided for @resetPasswordSuccessTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành công!'**
+  String get resetPasswordSuccessTitle;
+
+  /// No description provided for @resetPasswordSuccessMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu của bạn đã được đặt lại. Vui lòng đăng nhập lại bằng mật khẩu mới.'**
+  String get resetPasswordSuccessMessage;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu mới'**
+  String get newPasswordLabel;
+
   /// No description provided for @enterInviteCodeWarning.
   ///
   /// In vi, this message translates to:

@@ -128,6 +128,70 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please contact the Clan Leader to reset your password.';
 
   @override
+  String get forgotPasswordTitle => 'Forgot password';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'Enter your registered email to receive a 6-digit verification code.';
+
+  @override
+  String get forgotPasswordButton => 'SEND VERIFICATION CODE';
+
+  @override
+  String get forgotPasswordSuccess =>
+      'Password reset email sent. Please check your inbox (including spam folder).';
+
+  @override
+  String get backToLogin => 'Back to login';
+
+  @override
+  String get otpTitle => 'OTP Verification';
+
+  @override
+  String get otpSubtitleStart => 'We have sent a 6-digit verification code to ';
+
+  @override
+  String get otpSubtitleEnd => '. Please check your inbox and enter the code.';
+
+  @override
+  String get otpLabel => 'Verification code';
+
+  @override
+  String get otpHint => '123456';
+
+  @override
+  String get otpRequiredError => 'Please enter the OTP code';
+
+  @override
+  String get otpInvalidError => 'OTP code must be 6 digits';
+
+  @override
+  String get otpVerifyButton => 'VERIFY';
+
+  @override
+  String get otpResendButton => 'Resend code';
+
+  @override
+  String get resetPasswordTitle => 'Reset password';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Enter your new password for your account.';
+
+  @override
+  String get resetPasswordButton => 'RESET PASSWORD';
+
+  @override
+  String get resetPasswordSuccessTitle => 'Success!';
+
+  @override
+  String get resetPasswordSuccessMessage =>
+      'Your password has been reset. Please sign in with your new password.';
+
+  @override
+  String get newPasswordLabel => 'New password';
+
+  @override
   String get enterInviteCodeWarning => 'Please enter the invite code';
 
   @override

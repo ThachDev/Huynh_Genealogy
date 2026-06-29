@@ -53,6 +53,9 @@ Future<void> init() async {
       getCachedCredentials: sl(),
       cacheCredentials: sl(),
       clearCredentials: sl(),
+      forgotPassword: sl(),
+      verifyOtp: sl(),
+      resetPasswordWithOtp: sl(),
       authRepository: sl(),
     ),
   );
@@ -80,6 +83,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetCachedCredentials(sl()));
   sl.registerLazySingleton(() => CacheCredentials(sl()));
   sl.registerLazySingleton(() => ClearCredentials(sl()));
+  sl.registerLazySingleton(() => ForgotPassword(sl()));
+  sl.registerLazySingleton(() => VerifyOtp(sl()));
+  sl.registerLazySingleton(() => ResetPasswordWithOtp(sl()));
 
   // Family Use Cases
   sl.registerLazySingleton(() => CreateFamily(sl()));

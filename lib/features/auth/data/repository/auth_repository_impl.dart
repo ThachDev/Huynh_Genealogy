@@ -153,4 +153,51 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(CacheFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> forgotPassword({required String email}) async {
+    try {
+      await remoteDataSource.forgotPassword(email: email);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Lỗi gửi email đặt lại mật khẩu: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      await remoteDataSource.verifyOtp(email: email, otp: otp);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Lỗi xác thực OTP: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> resetPasswordWithOtp({
+    required String email,
+    required String otp,
+    required String newPassword,
+  }) async {
+    try {
+      await remoteDataSource.resetPasswordWithOtp(
+        email: email,
+        otp: otp,
+        newPassword: newPassword,
+      );
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Lỗi đặt lại mật khẩu: $e'));
+    }
+  }
 }

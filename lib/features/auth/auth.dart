@@ -12,6 +12,9 @@ export 'domain/usecase/register_with_email.dart';
 export 'domain/usecase/cache_credentials.dart';
 export 'domain/usecase/get_cached_credentials.dart';
 export 'domain/usecase/clear_credentials.dart';
+export 'domain/usecase/forgot_password.dart';
+export 'domain/usecase/verify_otp.dart';
+export 'domain/usecase/reset_password_with_otp.dart';
 
 // Data Sources & Models
 export 'data/source/auth_remote_data_source.dart';

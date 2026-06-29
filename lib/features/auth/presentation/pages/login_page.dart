@@ -11,6 +11,7 @@ import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'register_page.dart';
+import 'forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -66,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
+          print('🔄 [LoginPage] State changed: ${state.runtimeType}');
           if (state is AuthError) {
             AppSnackBar.error(context, state.message);
           } else if (state is AuthCredentialsLoaded) {
@@ -288,9 +290,9 @@ class _LoginPageState extends State<LoginPage> {
           onTap: isLoading
               ? null
               : () {
-                  AppSnackBar.info(
+                  Navigator.push(
                     context,
-                    l10n.forgotPasswordNotice,
+                    FadeScalePageRoute(page: const ForgotPasswordPage()),
                   );
                 },
           child: Text(

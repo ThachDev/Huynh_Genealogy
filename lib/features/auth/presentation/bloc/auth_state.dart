@@ -41,3 +41,9 @@ class AuthCredentialsLoaded extends AuthState {
   @override
   List<Object?> get props => [email, password];
 }
+
+class AuthForgotPasswordSent extends AuthState {}
+
+class AuthOtpVerified extends AuthState {}
+
+class AuthResetPasswordSuccess extends AuthState {}

@@ -17,6 +17,13 @@ abstract class AuthRemoteDataSource {
     required String fullName,
     required String role,
   });
+  Future<void> forgotPassword({required String email});
+  Future<void> verifyOtp({required String email, required String otp});
+  Future<void> resetPasswordWithOtp({
+    required String email,
+    required String otp,
+    required String newPassword,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -257,6 +264,125 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         } catch (_) {}
       }
       rethrow;
+    }
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    try {
+      final response = await dio.post(
+        AppConstants.forgotPasswordEndpoint,
+        data: {'email': email},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true) {
+          return;
+        }
+        throw ServerException(
+          message: data['message']?.toString() ?? 'Không thể gửi email đặt lại mật khẩu',
+          statusCode: response.statusCode,
+        );
+      } else {
+        final data = response.data as Map<String, dynamic>;
+        throw ServerException(
+          message: data['message']?.toString() ?? 'Lỗi máy chủ',
+          statusCode: response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message']?.toString() ??
+            e.message ??
+            'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(message: 'Lỗi không xác định: $e');
+    }
+  }
+
+  @override
+  Future<void> verifyOtp({required String email, required String otp}) async {
+    try {
+      final response = await dio.post(
+        AppConstants.verifyOtpEndpoint,
+        data: {'email': email, 'otp': otp},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true) {
+          return;
+        }
+        throw ServerException(
+          message: data['message']?.toString() ?? 'Mã OTP không đúng',
+          statusCode: response.statusCode,
+        );
+      } else {
+        final data = response.data as Map<String, dynamic>;
+        throw ServerException(
+          message: data['message']?.toString() ?? 'Lỗi máy chủ',
+          statusCode: response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message']?.toString() ??
+            e.message ??
+            'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(message: 'Lỗi không xác định: $e');
+    }
+  }
+
+  @override
+  Future<void> resetPasswordWithOtp({
+    required String email,
+    required String otp,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await dio.post(
+        AppConstants.resetPasswordEndpoint,
+        data: {
+          'email': email,
+          'otp': otp,
+          'newPassword': newPassword,
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.data as Map<String, dynamic>;
+        if (data['success'] == true) {
+          return;
+        }
+        throw ServerException(
+          message: data['message']?.toString() ?? 'Không thể đặt lại mật khẩu',
+          statusCode: response.statusCode,
+        );
+      } else {
+        final data = response.data as Map<String, dynamic>;
+        throw ServerException(
+          message: data['message']?.toString() ?? 'Lỗi máy chủ',
+          statusCode: response.statusCode,
+        );
+      }
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message']?.toString() ??
+            e.message ??
+            'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(message: 'Lỗi không xác định: $e');
     }
   }
 }

@@ -9,6 +9,9 @@ import '../../domain/usecase/register_with_email.dart';
 import '../../domain/usecase/cache_credentials.dart';
 import '../../domain/usecase/get_cached_credentials.dart';
 import '../../domain/usecase/clear_credentials.dart';
+import '../../domain/usecase/forgot_password.dart';
+import '../../domain/usecase/verify_otp.dart';
+import '../../domain/usecase/reset_password_with_otp.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -21,6 +24,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetCachedCredentials getCachedCredentials;
   final CacheCredentials cacheCredentials;
   final ClearCredentials clearCredentials;
+  final ForgotPassword forgotPassword;
+  final VerifyOtp verifyOtp;
+  final ResetPasswordWithOtp resetPasswordWithOtp;
   final AuthRepository authRepository;
 
   AuthBloc({
@@ -32,6 +38,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.getCachedCredentials,
     required this.cacheCredentials,
     required this.clearCredentials,
+    required this.forgotPassword,
+    required this.verifyOtp,
+    required this.resetPasswordWithOtp,
     required this.authRepository,
   }) : super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
@@ -43,6 +52,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoadCredentialsRequested>(_onAuthLoadCredentialsRequested);
     on<AuthCacheCredentialsRequested>(_onAuthCacheCredentialsRequested);
     on<AuthClearCredentialsRequested>(_onAuthClearCredentialsRequested);
+    on<AuthForgotPasswordRequested>(_onAuthForgotPasswordRequested);
+    on<AuthVerifyOtpRequested>(_onAuthVerifyOtpRequested);
+    on<AuthResetPasswordRequested>(_onAuthResetPasswordRequested);
   }
 
   Future<void> _onAuthCheckRequested(
@@ -87,8 +99,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
     failureOrUser.fold(
-      (failure) => emit(AuthError(message: failure.message)),
-      (user) => emit(Authenticated(user: user)),
+      (failure) {
+        print('❌ [AuthBloc] Login failed: ${failure.message}');
+        emit(AuthError(message: failure.message));
+      },
+      (user) {
+        print('✅ [AuthBloc] Login success: ${user.email}, familyId=${user.familyId}');
+        emit(Authenticated(user: user));
+      },
     );
   }
 
@@ -169,5 +187,51 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     await clearCredentials(NoParams());
+  }
+
+  Future<void> _onAuthForgotPasswordRequested(
+    AuthForgotPasswordRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final failureOrVoid = await forgotPassword(
+      ForgotPasswordParams(email: event.email),
+    );
+    failureOrVoid.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (_) => emit(AuthForgotPasswordSent()),
+    );
+  }
+
+  Future<void> _onAuthVerifyOtpRequested(
+    AuthVerifyOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final failureOrVoid = await verifyOtp(
+      VerifyOtpParams(email: event.email, otp: event.otp),
+    );
+    failureOrVoid.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (_) => emit(AuthOtpVerified()),
+    );
+  }
+
+  Future<void> _onAuthResetPasswordRequested(
+    AuthResetPasswordRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final failureOrVoid = await resetPasswordWithOtp(
+      ResetPasswordWithOtpParams(
+        email: event.email,
+        otp: event.otp,
+        newPassword: event.newPassword,
+      ),
+    );
+    failureOrVoid.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (_) => emit(AuthResetPasswordSuccess()),
+    );
   }
 }

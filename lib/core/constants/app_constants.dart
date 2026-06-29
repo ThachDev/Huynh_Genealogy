@@ -8,6 +8,9 @@ class AppConstants {
   static const String membersEndpoint = '/members';
   static const String branchesEndpoint = '/branches';
   static const String loginEndpoint = '/auth/login';
+  static const String forgotPasswordEndpoint = '/auth/forgot-password';
+  static const String verifyOtpEndpoint = '/auth/verify-otp';
+  static const String resetPasswordEndpoint = '/auth/reset-password';
   static const String familiesEndpoint = '/families';
   static const String verifyCodeEndpoint = '/families/verify-code';
   static const String joinFamilyEndpoint = '/families/join';

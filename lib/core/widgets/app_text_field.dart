@@ -120,6 +120,9 @@ class AppTextFieldLight extends StatelessWidget {
   final void Function(String)? onChanged;
   final bool enabled;
   final int maxLines;
+  final int? maxLength;
+  final TextAlign textAlign;
+  final TextStyle? style;
 
   const AppTextFieldLight({
     super.key,
@@ -134,6 +137,9 @@ class AppTextFieldLight extends StatelessWidget {
     this.onChanged,
     this.enabled = true,
     this.maxLines = 1,
+    this.maxLength,
+    this.textAlign = TextAlign.start,
+    this.style,
   });
 
   @override
@@ -156,11 +162,14 @@ class AppTextFieldLight extends StatelessWidget {
           obscureText: obscureText,
           enabled: enabled,
           maxLines: maxLines,
+          maxLength: maxLength,
+          textAlign: textAlign,
           onChanged: onChanged,
-          style: GoogleFonts.inter(
-            color: AppColors.textPrimary,
-            fontSize: 14,
-          ),
+          style: style ??
+              GoogleFonts.inter(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+              ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: GoogleFonts.inter(

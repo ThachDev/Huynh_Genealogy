@@ -128,6 +128,70 @@ class AppLocalizationsVi extends AppLocalizations {
       'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.';
 
   @override
+  String get forgotPasswordTitle => 'Quên mật khẩu';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'Nhập email đã đăng ký để nhận mã xác thực đặt lại mật khẩu.';
+
+  @override
+  String get forgotPasswordButton => 'GỬI MÃ XÁC THỰC';
+
+  @override
+  String get forgotPasswordSuccess =>
+      'Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư (kể cả thư mục spam).';
+
+  @override
+  String get backToLogin => 'Quay lại đăng nhập';
+
+  @override
+  String get otpTitle => 'Xác thực OTP';
+
+  @override
+  String get otpSubtitleStart => 'Chúng tôi đã gửi mã xác thực 6 số đến email ';
+
+  @override
+  String get otpSubtitleEnd => '. Vui lòng kiểm tra hộp thư và nhập mã.';
+
+  @override
+  String get otpLabel => 'Mã xác thực';
+
+  @override
+  String get otpHint => '123456';
+
+  @override
+  String get otpRequiredError => 'Vui lòng nhập mã OTP';
+
+  @override
+  String get otpInvalidError => 'Mã OTP phải có 6 chữ số';
+
+  @override
+  String get otpVerifyButton => 'XÁC THỰC';
+
+  @override
+  String get otpResendButton => 'Gửi lại mã';
+
+  @override
+  String get resetPasswordTitle => 'Đặt lại mật khẩu';
+
+  @override
+  String get resetPasswordSubtitle =>
+      'Nhập mật khẩu mới cho tài khoản của bạn.';
+
+  @override
+  String get resetPasswordButton => 'ĐẶT LẠI MẬT KHẨU';
+
+  @override
+  String get resetPasswordSuccessTitle => 'Thành công!';
+
+  @override
+  String get resetPasswordSuccessMessage =>
+      'Mật khẩu của bạn đã được đặt lại. Vui lòng đăng nhập lại bằng mật khẩu mới.';
+
+  @override
+  String get newPasswordLabel => 'Mật khẩu mới';
+
+  @override
   String get enterInviteCodeWarning => 'Vui lòng nhập mã mời';
 
   @override

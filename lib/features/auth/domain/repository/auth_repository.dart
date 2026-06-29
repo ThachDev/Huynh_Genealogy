@@ -23,4 +23,14 @@ abstract class AuthRepository {
   });
   Future<Either<Failure, Map<String, String>?>> getCachedCredentials();
   Future<Either<Failure, void>> clearCredentials();
+  Future<Either<Failure, void>> forgotPassword({required String email});
+  Future<Either<Failure, void>> verifyOtp({
+    required String email,
+    required String otp,
+  });
+  Future<Either<Failure, void>> resetPasswordWithOtp({
+    required String email,
+    required String otp,
+    required String newPassword,
+  });
 }

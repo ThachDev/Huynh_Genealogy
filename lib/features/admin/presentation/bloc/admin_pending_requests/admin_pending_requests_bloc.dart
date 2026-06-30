@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecase/approve_request.dart';
 import '../../../domain/usecase/get_pending_requests.dart';
+import '../../../domain/usecase/get_family_detail.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
+import '../../../../../core/domain/entity/family_entity.dart';
 
 part 'admin_pending_requests_event.dart';
 part 'admin_pending_requests_state.dart';
@@ -9,10 +11,12 @@ part 'admin_pending_requests_state.dart';
 class AdminPendingRequestsBloc extends Bloc<AdminPendingRequestsEvent, AdminPendingRequestsState> {
   final GetPendingRequests getPendingRequests;
   final ApproveRequest approveRequest;
+  final GetFamilyDetail getFamilyDetail;
 
   AdminPendingRequestsBloc({
     required this.getPendingRequests,
     required this.approveRequest,
+    required this.getFamilyDetail,
   }) : super(AdminPendingRequestsInitial()) {
     on<LoadAdminPendingRequestsEvent>(_onLoadPendingRequests);
     on<ApproveAdminRequestEvent>(_onApproveRequest);
@@ -23,10 +27,18 @@ class AdminPendingRequestsBloc extends Bloc<AdminPendingRequestsEvent, AdminPend
     Emitter<AdminPendingRequestsState> emit,
   ) async {
     emit(AdminPendingRequestsLoading());
+    
     final failureOrRequests = await getPendingRequests(event.familyId);
+    final failureOrFamily = await getFamilyDetail(event.familyId);
+
     failureOrRequests.fold(
       (failure) => emit(AdminPendingRequestsFailure(message: failure.message)),
-      (requests) => emit(AdminPendingRequestsLoaded(requests: requests)),
+      (requests) {
+        failureOrFamily.fold(
+          (failure) => emit(AdminPendingRequestsLoaded(requests: requests, family: null)),
+          (family) => emit(AdminPendingRequestsLoaded(requests: requests, family: family)),
+        );
+      },
     );
   }
 

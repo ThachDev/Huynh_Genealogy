@@ -10,7 +10,8 @@ class AdminPendingRequestsLoading extends AdminPendingRequestsState {}
 
 class AdminPendingRequestsLoaded extends AdminPendingRequestsState {
   final List<FamilyUserEntity> requests;
-  const AdminPendingRequestsLoaded({required this.requests});
+  final FamilyEntity? family;
+  const AdminPendingRequestsLoaded({required this.requests, this.family});
 }
 
 class AdminRequestApprovedSuccess extends AdminPendingRequestsState {

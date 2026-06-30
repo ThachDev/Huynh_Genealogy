@@ -14,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
+import '../../../../../core/utils/lunar_date_helper.dart';
 import '../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../../../auth/auth.dart';
@@ -21,6 +22,7 @@ import '../../../../user/user.dart';
 import 'pages/admin_member_form_page.dart';
 import '../../bloc/admin_member_form/admin_member_form_bloc.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
+import '../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
 import '../../widgets/admin_dashboard/quick_stats_row.dart';
 import '../../widgets/admin_dashboard/member_item_widget.dart';
 import '../../widgets/admin_dashboard/branch_item_widget.dart';
@@ -106,9 +108,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final double topPadding = MediaQuery.of(context).padding.top;
     final double headerHeight = 180 + topPadding;
 
-    // Resolve family name dynamically
+    final pendingState = context.watch<AdminPendingRequestsBloc>().state;
+
+    // Resolve family name & invite code dynamically
     String familyName = 'Gia Tộc';
-    if (user != null) {
+    String inviteCode = '';
+    if (pendingState is AdminPendingRequestsLoaded &&
+        pendingState.family != null) {
+      familyName = pendingState.family!.name;
+      inviteCode = pendingState.family!.inviteCode;
+    } else if (user != null) {
       final userTreeState = context.watch<UserTreeBloc>().state;
       if (userTreeState is UserTreeLoaded && userTreeState.members.isNotEmpty) {
         final rootMembers = userTreeState.members.where(
@@ -142,7 +151,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       allBranches = userTreeState.branches;
     }
 
-    final pendingState = context.watch<AdminPendingRequestsBloc>().state;
     String pendingCount = '--';
     List<FamilyUserEntity> pendingRequests = [];
     if (pendingState is AdminPendingRequestsLoaded) {
@@ -177,6 +185,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             }
           },
         ),
+        BlocListener<AdminBranchFormBloc, AdminBranchFormState>(
+          listener: (context, state) {
+            if (state is AdminBranchFormSuccess) {
+              if (state.isDeleted) {
+                AppSnackBar.success(context, 'Đã xoá chi tộc thành công!');
+              } else {
+                AppSnackBar.success(context, 'Đã lưu thông tin chi tộc!');
+              }
+              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+            } else if (state is AdminBranchFormError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
       ],
       child: Scaffold(
         backgroundColor: AppColors.parchment,
@@ -194,7 +216,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 offset: const Offset(0, -45),
                 child: _buildInviteCodeCard(
                   context,
-                  user != null ? 'HGT-${user.familyId ?? 2026}' : 'HGT-2026',
+                  inviteCode,
                 ),
               ),
               Transform.translate(
@@ -302,52 +324,72 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.15),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(LucideIcons.calendar,
-                            color: AppColors.gold, size: 16),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Thứ Sáu, 26/06/2026',
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 12,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  Builder(builder: (context) {
+                    final now = DateTime.now();
+                    final weekdays = [
+                      'Chủ Nhật',
+                      'Thứ Hai',
+                      'Thứ Ba',
+                      'Thứ Tư',
+                      'Thứ Năm',
+                      'Thứ Sáu',
+                      'Thứ Bảy'
+                    ];
+                    final weekday = weekdays[now.weekday % 7];
+                    final day = now.day.toString().padLeft(2, '0');
+                    final month = now.month.toString().padLeft(2, '0');
+                    final year = now.year.toString();
+                    final solarDateString = '$weekday, $day/$month/$year';
+                    final lunarDateString =
+                        LunarDateHelper.getLunarDateString(now);
+
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.15),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            '|',
-                            style: GoogleFonts.inter(
-                              color: Colors.white.withValues(alpha: 0.3),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(LucideIcons.calendar,
+                              color: AppColors.gold, size: 16),
+                          const SizedBox(width: 8),
+                          Text(
+                            solarDateString,
+                            style: GoogleFonts.beVietnamPro(
                               fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                        Text(
-                          '12/05 ÂM LỊCH',
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              '|',
+                              style: GoogleFonts.inter(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                          Text(
+                            lunarDateString,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 11,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -851,13 +893,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 AppSnackBar.error(ctx, 'Vui lòng nhập tên chi tộc');
                 return;
               }
+              final authState = context.read<AuthBloc>().state;
+              final familyId = authState is Authenticated ? authState.user.familyId : null;
+
+              final newBranch = BranchEntity(
+                id: branch?.id ?? 0,
+                name: nameController.text.trim(),
+                founderName: founderController.text.trim(),
+                familyId: branch?.familyId ?? familyId ?? 1,
+              );
+
               Navigator.pop(ctx);
-              AppSnackBar.success(
-                  context,
-                  branch == null
-                      ? 'Đã thêm chi tộc mới thành công!'
-                      : 'Đã cập nhật thông tin chi tộc!');
-              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+              context
+                  .read<AdminBranchFormBloc>()
+                  .add(SaveAdminBranchFormEvent(newBranch));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.wood, foregroundColor: Colors.white),
@@ -893,8 +942,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(ctx);
-              AppSnackBar.success(context, 'Đã xoá chi tộc thành công!');
-              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+              context
+                  .read<AdminBranchFormBloc>()
+                  .add(DeleteAdminBranchFormEvent(branch.id));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.error,

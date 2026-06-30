@@ -94,4 +94,18 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       return Left(NetworkFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, FamilyEntity>> getFamilyDetail({
+    required int familyId,
+  }) async {
+    try {
+      final familyModel = await remoteDataSource.getFamilyDetail(familyId);
+      return Right(familyModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
 }

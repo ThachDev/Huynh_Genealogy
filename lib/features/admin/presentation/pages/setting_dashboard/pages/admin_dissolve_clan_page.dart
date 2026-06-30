@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../core/widgets/app_dialog.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/app_button.dart';
+import '../../../../../../core/widgets/app_text_field.dart';
+import '../../../../../../core/widgets/app_dialog.dart';
+import '../../../../../../core/widgets/app_snackbar.dart';
 
 class AdminDissolveClanPage extends StatefulWidget {
   const AdminDissolveClanPage({super.key});
@@ -45,7 +45,8 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
     AppDialog.confirm(
       context,
       title: 'XÓA GIA PHẢ VĨNH VIỄN',
-      message: 'Hành động này cực kỳ nguy hiểm. Toàn bộ thông tin thành viên, các nhánh dòng họ, lịch sử gia tộc của "$_clanName" sẽ bị xóa vĩnh viễn khỏi máy chủ. Bạn chắc chắn muốn tiếp tục chứ?',
+      message:
+          'Hành động này cực kỳ nguy hiểm. Toàn bộ thông tin thành viên, các nhánh dòng họ, lịch sử gia tộc của "$_clanName" sẽ bị xóa vĩnh viễn khỏi máy chủ. Bạn chắc chắn muốn tiếp tục chứ?',
       confirmLabel: 'ĐỒNG Ý XÓA BỎ',
       cancelLabel: 'HỦY BỎ',
       type: AppDialogType.danger,
@@ -84,12 +85,14 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+                border:
+                    Border.all(color: AppColors.error.withValues(alpha: 0.2)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(LucideIcons.alertOctagon, color: AppColors.error, size: 28),
+                  const Icon(LucideIcons.alertOctagon,
+                      color: AppColors.error, size: 28),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -132,13 +135,15 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
               decoration: BoxDecoration(
                 color: AppColors.wood.withValues(alpha: 0.04),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.gold.withValues(alpha: 0.1)),
+                border:
+                    Border.all(color: AppColors.gold.withValues(alpha: 0.1)),
               ),
               child: Row(
                 children: [
                   Text(
                     'Tên chính xác: ',
-                    style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+                    style: GoogleFonts.inter(
+                        fontSize: 12, color: AppColors.textSecondary),
                   ),
                   Text(
                     _clanName,
@@ -156,7 +161,8 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
               controller: _confirmController,
               label: 'Nhập lại tên dòng họ',
               hintText: 'Nhập đúng từng chữ để xác nhận',
-              prefixIcon: const Icon(LucideIcons.trash2, color: AppColors.error),
+              prefixIcon:
+                  const Icon(LucideIcons.trash2, color: AppColors.error),
             ),
             const SizedBox(height: 32),
             AppButton(

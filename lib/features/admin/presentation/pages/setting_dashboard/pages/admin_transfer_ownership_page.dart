@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_dialog.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/app_button.dart';
+import '../../../../../../core/widgets/app_dialog.dart';
+import '../../../../../../core/widgets/app_snackbar.dart';
 
 class AdminTransferOwnershipPage extends StatefulWidget {
   const AdminTransferOwnershipPage({super.key});
 
   @override
-  State<AdminTransferOwnershipPage> createState() => _AdminTransferOwnershipPageState();
+  State<AdminTransferOwnershipPage> createState() =>
+      _AdminTransferOwnershipPageState();
 }
 
-class _AdminTransferOwnershipPageState extends State<AdminTransferOwnershipPage> {
+class _AdminTransferOwnershipPageState
+    extends State<AdminTransferOwnershipPage> {
   int? _selectedIndex;
 
   // Mock list of eligible members to receive ownership transfer
@@ -42,7 +44,8 @@ class _AdminTransferOwnershipPageState extends State<AdminTransferOwnershipPage>
     AppDialog.confirm(
       context,
       title: 'Xác nhận chuyển nhượng',
-      message: 'Bạn có chắc chắn muốn chuyển giao quyền Trưởng tộc cho ${candidate['name']}? Hành động này sẽ thay đổi vai trò của bạn thành Thành viên và không thể hoàn tác.',
+      message:
+          'Bạn có chắc chắn muốn chuyển giao quyền Trưởng tộc cho ${candidate['name']}? Hành động này sẽ thay đổi vai trò của bạn thành Thành viên và không thể hoàn tác.',
       confirmLabel: 'ĐỒNG Ý CHUYỂN',
       cancelLabel: 'HỦY BỎ',
       type: AppDialogType.danger,
@@ -50,7 +53,8 @@ class _AdminTransferOwnershipPageState extends State<AdminTransferOwnershipPage>
       if (confirmed == true) {
         await Future.delayed(const Duration(milliseconds: 800));
         if (mounted) {
-          AppSnackBar.success(context, 'Chuyển nhượng quyền Trưởng tộc thành công!');
+          AppSnackBar.success(
+              context, 'Chuyển nhượng quyền Trưởng tộc thành công!');
           Navigator.pop(context); // Return from page
         }
       }
@@ -79,12 +83,14 @@ class _AdminTransferOwnershipPageState extends State<AdminTransferOwnershipPage>
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+                border:
+                    Border.all(color: AppColors.error.withValues(alpha: 0.2)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(LucideIcons.alertTriangle, color: AppColors.error, size: 24),
+                  const Icon(LucideIcons.alertTriangle,
+                      color: AppColors.error, size: 24),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -136,7 +142,8 @@ class _AdminTransferOwnershipPageState extends State<AdminTransferOwnershipPage>
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: AppColors.gold.withValues(alpha: 0.15)),
+                  side:
+                      BorderSide(color: AppColors.gold.withValues(alpha: 0.15)),
                 ),
                 child: ListView.separated(
                   itemCount: _candidates.length,
@@ -149,7 +156,8 @@ class _AdminTransferOwnershipPageState extends State<AdminTransferOwnershipPage>
                     final candidate = _candidates[index];
 
                     return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       leading: CircleAvatar(
                         backgroundColor: AppColors.wood.withValues(alpha: 0.08),
                         child: Text(
@@ -181,7 +189,8 @@ class _AdminTransferOwnershipPageState extends State<AdminTransferOwnershipPage>
                         groupValue: _selectedIndex,
                         activeColor: AppColors.crimson,
                         // ignore: deprecated_member_use
-                        onChanged: (val) => setState(() => _selectedIndex = val),
+                        onChanged: (val) =>
+                            setState(() => _selectedIndex = val),
                       ),
                     );
                   },

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../core/widgets/app_snackbar.dart';
-import '../../../../core/utils/validators.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/app_button.dart';
+import '../../../../../../core/widgets/app_text_field.dart';
+import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/utils/validators.dart';
 
 class AdminAccountSecurityPage extends StatefulWidget {
   const AdminAccountSecurityPage({super.key});
 
   @override
-  State<AdminAccountSecurityPage> createState() => _AdminAccountSecurityPageState();
+  State<AdminAccountSecurityPage> createState() =>
+      _AdminAccountSecurityPageState();
 }
 
 class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
@@ -81,7 +82,8 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                 label: 'Mật khẩu hiện tại',
                 hintText: 'Nhập mật khẩu đang sử dụng',
                 obscureText: true,
-                prefixIcon: const Icon(LucideIcons.lock, color: AppColors.crimson),
+                prefixIcon:
+                    const Icon(LucideIcons.lock, color: AppColors.crimson),
                 validator: (val) {
                   if (val == null || val.isEmpty) {
                     return 'Vui lòng nhập mật khẩu hiện tại';
@@ -95,8 +97,10 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                 label: 'Mật khẩu mới',
                 hintText: 'Nhập mật khẩu mới mạnh mẽ',
                 obscureText: true,
-                prefixIcon: const Icon(LucideIcons.key, color: AppColors.crimson),
-                validator: (val) => AppValidators.validateStrongPassword(context, val),
+                prefixIcon:
+                    const Icon(LucideIcons.key, color: AppColors.crimson),
+                validator: (val) =>
+                    AppValidators.validateStrongPassword(context, val),
               ),
               const SizedBox(height: 16),
               AppTextFieldLight(
@@ -104,7 +108,8 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                 label: 'Xác nhận mật khẩu mới',
                 hintText: 'Nhập lại mật khẩu mới',
                 obscureText: true,
-                prefixIcon: const Icon(LucideIcons.checkSquare, color: AppColors.crimson),
+                prefixIcon: const Icon(LucideIcons.checkSquare,
+                    color: AppColors.crimson),
                 validator: (val) => AppValidators.validateConfirmPassword(
                   context,
                   val,

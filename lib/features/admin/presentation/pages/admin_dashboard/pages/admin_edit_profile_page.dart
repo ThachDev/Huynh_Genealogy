@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/app_snackbar.dart';
 
 class AdminEditProfilePage extends StatefulWidget {
   const AdminEditProfilePage({super.key});
@@ -16,7 +16,8 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
   final _nameController = TextEditingController(text: 'Huỳnh Gia Trưởng');
   final _emailController = TextEditingController(text: 'truongtoc@gmail.com');
   final _phoneController = TextEditingController(text: '0987654321');
-  final _addressController = TextEditingController(text: 'Từ đường họ Huỳnh, Quảng Nam');
+  final _addressController =
+      TextEditingController(text: 'Từ đường họ Huỳnh, Quảng Nam');
 
   @override
   void dispose() {
@@ -78,7 +79,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
               controller: _nameController,
               label: 'Họ và tên',
               icon: LucideIcons.user,
-              validator: (val) => val == null || val.trim().isEmpty ? 'Vui lòng nhập họ tên' : null,
+              validator: (val) => val == null || val.trim().isEmpty
+                  ? 'Vui lòng nhập họ tên'
+                  : null,
             ),
             const SizedBox(height: 16),
             _buildTextField(
@@ -86,7 +89,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
               label: 'Email',
               icon: LucideIcons.mail,
               keyboardType: TextInputType.emailAddress,
-              validator: (val) => val == null || !val.contains('@') ? 'Email không hợp lệ' : null,
+              validator: (val) => val == null || !val.contains('@')
+                  ? 'Email không hợp lệ'
+                  : null,
             ),
             const SizedBox(height: 16),
             _buildTextField(
@@ -94,7 +99,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
               label: 'Số điện thoại',
               icon: LucideIcons.phone,
               keyboardType: TextInputType.phone,
-              validator: (val) => val == null || val.trim().length < 10 ? 'Số điện thoại không hợp lệ' : null,
+              validator: (val) => val == null || val.trim().length < 10
+                  ? 'Số điện thoại không hợp lệ'
+                  : null,
             ),
             const SizedBox(height: 16),
             _buildTextField(
@@ -107,7 +114,8 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  AppSnackBar.success(context, 'Đã cập nhật thông tin cá nhân!');
+                  AppSnackBar.success(
+                      context, 'Đã cập nhật thông tin cá nhân!');
                   Navigator.pop(context);
                 }
               },

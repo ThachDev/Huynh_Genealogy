@@ -3,16 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/widgets.dart';
-import '../../../auth/auth.dart';
-import '../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../auth/auth.dart';
+import '../../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
 class AdminPendingRequestsPage extends StatefulWidget {
   const AdminPendingRequestsPage({super.key});
 
   @override
-  State<AdminPendingRequestsPage> createState() => _AdminPendingRequestsPageState();
+  State<AdminPendingRequestsPage> createState() =>
+      _AdminPendingRequestsPageState();
 }
 
 class _AdminPendingRequestsPageState extends State<AdminPendingRequestsPage> {
@@ -80,7 +81,8 @@ class _AdminPendingRequestsPageState extends State<AdminPendingRequestsPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(LucideIcons.alertTriangle, size: 48, color: AppColors.crimson),
+                    const Icon(LucideIcons.alertTriangle,
+                        size: 48, color: AppColors.crimson),
                     const SizedBox(height: 16),
                     Text(
                       state.message,
@@ -175,12 +177,14 @@ class _AdminPendingRequestsPageState extends State<AdminPendingRequestsPage> {
                           children: [
                             CircleAvatar(
                               radius: 24,
-                              backgroundColor: AppColors.wood.withValues(alpha: 0.12),
+                              backgroundColor:
+                                  AppColors.wood.withValues(alpha: 0.12),
                               backgroundImage: request.userAvatarUrl != null
                                   ? NetworkImage(request.userAvatarUrl!)
                                   : null,
                               child: request.userAvatarUrl == null
-                                  ? const Icon(LucideIcons.user, color: AppColors.wood)
+                                  ? const Icon(LucideIcons.user,
+                                      color: AppColors.wood)
                                   : null,
                             ),
                             const SizedBox(width: 12),
@@ -189,7 +193,8 @@ class _AdminPendingRequestsPageState extends State<AdminPendingRequestsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    request.userFullName ?? 'Người dùng ẩn danh',
+                                    request.userFullName ??
+                                        'Người dùng ẩn danh',
                                     style: GoogleFonts.beVietnamPro(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -237,7 +242,8 @@ class _AdminPendingRequestsPageState extends State<AdminPendingRequestsPage> {
                                     vertical: 2,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.wood.withValues(alpha: 0.1),
+                                    color:
+                                        AppColors.wood.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
@@ -255,7 +261,8 @@ class _AdminPendingRequestsPageState extends State<AdminPendingRequestsPage> {
                               label: 'Phê duyệt',
                               onPressed: () {
                                 context.read<AdminPendingRequestsBloc>().add(
-                                      ApproveAdminRequestEvent(requestId: request.id),
+                                      ApproveAdminRequestEvent(
+                                          requestId: request.id),
                                     );
                               },
                               size: AppButtonSize.small,

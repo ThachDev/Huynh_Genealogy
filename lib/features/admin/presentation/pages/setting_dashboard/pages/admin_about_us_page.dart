@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../../../core/theme/app_theme.dart';
 
 class AdminAboutUsPage extends StatelessWidget {
   const AdminAboutUsPage({super.key});
@@ -32,7 +32,8 @@ class AdminAboutUsPage extends StatelessWidget {
                 border: Border.all(color: AppColors.gold, width: 2),
               ),
               child: const Center(
-                child: Icon(LucideIcons.shield, size: 55, color: AppColors.crimson),
+                child: Icon(LucideIcons.shield,
+                    size: 55, color: AppColors.crimson),
               ),
             ),
             const SizedBox(height: 16),
@@ -58,7 +59,8 @@ class AdminAboutUsPage extends StatelessWidget {
             _buildInfoBlock(
               icon: LucideIcons.heart,
               title: 'Sứ mệnh của chúng tôi',
-              content: 'Gia Tộc Việt sinh ra để giúp các thế hệ người Việt gìn giữ cội nguồn dòng tộc. Chúng tôi số hóa cây gia phả truyền thống, mang lại phương thức lưu trữ trường tồn, giúp con cháu dễ dàng kết nối, tìm về tổ tiên và ghi nhận truyền thống vẻ vang của thế hệ đi trước.',
+              content:
+                  'Gia Tộc Việt sinh ra để giúp các thế hệ người Việt gìn giữ cội nguồn dòng tộc. Chúng tôi số hóa cây gia phả truyền thống, mang lại phương thức lưu trữ trường tồn, giúp con cháu dễ dàng kết nối, tìm về tổ tiên và ghi nhận truyền thống vẻ vang của thế hệ đi trước.',
             ),
             const SizedBox(height: 24),
 
@@ -77,15 +79,18 @@ class AdminAboutUsPage extends StatelessWidget {
             const SizedBox(height: 12),
             _buildValueCard(
               title: 'Bảo tồn văn hóa phả hệ',
-              desc: 'Ghi chép chính xác dòng lịch sử, vai vế thế hệ của từng thành viên gia tộc Việt.',
+              desc:
+                  'Ghi chép chính xác dòng lịch sử, vai vế thế hệ của từng thành viên gia tộc Việt.',
             ),
             _buildValueCard(
               title: 'Bảo mật thông tin tối đa',
-              desc: 'Coi trọng quyền riêng tư của dòng họ, chỉ cho phép thành viên dòng tộc chia sẻ thông tin.',
+              desc:
+                  'Coi trọng quyền riêng tư của dòng họ, chỉ cho phép thành viên dòng tộc chia sẻ thông tin.',
             ),
             _buildValueCard(
               title: 'Dễ dàng kết nối',
-              desc: 'Giao diện trực quan giúp người trẻ tiếp cận cội nguồn một cách hiện đại, sinh động nhất.',
+              desc:
+                  'Giao diện trực quan giúp người trẻ tiếp cận cội nguồn một cách hiện đại, sinh động nhất.',
             ),
             const SizedBox(height: 32),
 
@@ -153,7 +158,8 @@ class AdminAboutUsPage extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(LucideIcons.checkCircle2, color: AppColors.crimson, size: 20),
+            const Icon(LucideIcons.checkCircle2,
+                color: AppColors.crimson, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

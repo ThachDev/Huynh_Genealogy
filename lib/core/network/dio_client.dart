@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../constants/app_constants.dart';
 
 class DioClient {
@@ -25,11 +27,7 @@ class DioClient {
     );
 
     dio.interceptors.addAll([
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        error: true,
-      ),
+      _YellowLogInterceptor(),
       _RetryInterceptor(),
       _ErrorInterceptor(),
     ]);
@@ -103,5 +101,91 @@ class _RetryInterceptor extends Interceptor {
     } catch (e) {
       handler.next(err);
     }
+  }
+}
+
+class _YellowLogInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    final method = options.method;
+    final uri = options.uri.toString();
+    final data = options.data;
+
+    // \x1B[33m is ANSI Yellow
+    String logMsg =
+        '\n\x1B[33m┌─── POSTMAN REQUEST ───────────────────────────────────────\n'
+        '│ Method: $method\n'
+        '│ URL: $uri\n';
+    if (data != null) {
+      logMsg += '│ Data: ${_prettyPrintJson(data)}\n';
+    }
+    logMsg +=
+        '└──────────────────────────────────────────────────────────┘\x1B[0m';
+
+    debugPrint(logMsg);
+    handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    final method = response.requestOptions.method;
+    final uri = response.requestOptions.uri.toString();
+    final statusCode = response.statusCode;
+    final data = response.data;
+
+    String logMsg =
+        '\n\x1B[33m┌─── POSTMAN RESPONSE ──────────────────────────────────────\n'
+        '│ Method: $method\n'
+        '│ URL: $uri\n'
+        '│ Status: $statusCode\n';
+    if (data != null) {
+      logMsg += '│ Body: ${_prettyPrintJson(data)}\n';
+    }
+    logMsg +=
+        '└──────────────────────────────────────────────────────────┘\x1B[0m';
+
+    debugPrint(logMsg);
+    handler.next(response);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    final method = err.requestOptions.method;
+    final uri = err.requestOptions.uri.toString();
+    final statusCode = err.response?.statusCode;
+    final message = err.message;
+    final data = err.response?.data;
+
+    String logMsg =
+        '\n\x1B[31m┌─── POSTMAN ERROR ─────────────────────────────────────────\n'
+        '│ Method: $method\n'
+        '│ URL: $uri\n'
+        '│ Status: $statusCode\n'
+        '│ Message: $message\n';
+    if (data != null) {
+      logMsg += '│ Data: ${_prettyPrintJson(data)}\n';
+    }
+    logMsg +=
+        '└──────────────────────────────────────────────────────────┘\x1B[0m';
+
+    debugPrint(logMsg);
+    handler.next(err);
+  }
+
+  String _prettyPrintJson(dynamic data) {
+    if (data == null) return 'null';
+    try {
+      if (data is String) {
+        final decoded = json.decode(data);
+        return const JsonEncoder.withIndent('  ')
+            .convert(decoded)
+            .replaceAll('\n', '\n│ ');
+      } else if (data is Map || data is List) {
+        return const JsonEncoder.withIndent('  ')
+            .convert(data)
+            .replaceAll('\n', '\n│ ');
+      }
+    } catch (_) {}
+    return data.toString();
   }
 }

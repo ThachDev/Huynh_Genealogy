@@ -12,6 +12,9 @@ import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'register_page.dart';
 import 'forgot_password_page.dart';
+import '../../../../injection_container.dart' as di;
+import '../../domain/usecase/get_cached_credentials.dart';
+import '../../../../core/usecases/usecase.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,8 +34,25 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // Tải credentials đã ghi nhớ (nếu có)
-    context.read<AuthBloc>().add(AuthLoadCredentialsRequested());
+    // Tải credentials đã ghi nhớ (nếu có) trực tiếp để không ghi đè AuthState
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final getCachedCredentials = di.sl<GetCachedCredentials>();
+    final result = await getCachedCredentials(NoParams());
+    result.fold(
+      (_) {},
+      (credentials) {
+        if (credentials != null && mounted) {
+          setState(() {
+            _emailController.text = credentials['email'] ?? '';
+            _passwordController.text = credentials['password'] ?? '';
+            _rememberPassword = true;
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -69,15 +89,6 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is AuthError) {
             AppSnackBar.error(context, state.message);
-          } else if (state is AuthCredentialsLoaded) {
-            // Tự động điền email/password đã ghi nhớ
-            if (state.email != null && state.password != null) {
-              setState(() {
-                _emailController.text = state.email!;
-                _passwordController.text = state.password!;
-                _rememberPassword = true;
-              });
-            }
           } else if (state is Authenticated) {
             // Lưu hoặc xoá credentials tuỳ theo lựa chọn của user
             if (_rememberPassword) {

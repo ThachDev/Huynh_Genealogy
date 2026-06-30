@@ -9,8 +9,8 @@ import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
 import '../../features/user/presentation/pages/user_tree_view_page.dart';
 import '../../features/user/presentation/pages/user_settings_page.dart';
 import '../../features/family_fund/family_fund.dart';
-import '../../features/admin/presentation/pages/admin_dashboard_page.dart';
-import '../../features/admin/presentation/pages/admin_settings_page.dart';
+import '../../features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
+import '../../features/admin/presentation/pages/setting_dashboard/admin_settings_page.dart';
 
 class UserMainNavigationPage extends StatefulWidget {
   const UserMainNavigationPage({super.key});

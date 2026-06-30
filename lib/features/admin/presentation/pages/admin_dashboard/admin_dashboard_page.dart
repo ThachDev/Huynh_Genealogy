@@ -11,18 +11,22 @@ import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/widgets.dart';
-import '../../../../core/domain/entity/member_entity.dart';
-import '../../../../core/domain/entity/branch_entity.dart';
-import '../../../../core/domain/entity/family_user_entity.dart';
-import '../../../auth/auth.dart';
-import '../../../user/user.dart';
-import 'admin_member_form_page.dart';
-import '../bloc/admin_member_form/admin_member_form_bloc.dart';
-import '../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
+import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../../../core/domain/entity/member_entity.dart';
+import '../../../../../core/domain/entity/branch_entity.dart';
+import '../../../../../core/domain/entity/family_user_entity.dart';
+import '../../../../auth/auth.dart';
+import '../../../../user/user.dart';
+import 'pages/admin_member_form_page.dart';
+import '../../bloc/admin_member_form/admin_member_form_bloc.dart';
+import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
+import '../../widgets/admin_dashboard/quick_stats_row.dart';
+import '../../widgets/admin_dashboard/member_item_widget.dart';
+import '../../widgets/admin_dashboard/branch_item_widget.dart';
+import '../../widgets/admin_dashboard/pending_request_item_widget.dart';
 
-enum _DashboardTab { members, branches, pending }
+enum AdminDashboardTab { members, branches, pending }
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -57,9 +61,7 @@ class AdminDashboardPage extends StatefulWidget {
 }
 
 class _AdminDashboardPageState extends State<AdminDashboardPage> {
-  _DashboardTab _selectedTab = _DashboardTab.members;
-  bool _isEditMode = false;
-  bool _isDeleteMode = false;
+  AdminDashboardTab _selectedTab = AdminDashboardTab.members;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -112,7 +114,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         final rootMembers = userTreeState.members.where(
           (m) => m.generation == 1 || m.parentId == null,
         );
-        final rootMember = rootMembers.isNotEmpty ? rootMembers.first : userTreeState.members.first;
+        final rootMember = rootMembers.isNotEmpty
+            ? rootMembers.first
+            : userTreeState.members.first;
         final parts = rootMember.fullName.trim().split(' ');
         if (parts.isNotEmpty) {
           familyName = '${parts.first} Gia Tộc';
@@ -195,7 +199,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               ),
               Transform.translate(
                 offset: const Offset(0, -25),
-                child: _QuickStatsRow(
+                child: QuickStatsRow(
                   memberCount: memberCount,
                   branchCount: branchCount,
                   pendingCount: pendingCount,
@@ -204,8 +208,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     setState(() {
                       _selectedTab = tab;
                       _searchController.clear();
-                      _isEditMode = false;
-                      _isDeleteMode = false;
                     });
                   },
                 ),
@@ -300,28 +302,50 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Icon(LucideIcons.calendar,
-                          color: AppColors.gold, size: 14),
-                      const SizedBox(width: 6),
-                      Text(
-                        'Thứ Sáu, 26/06/2026 • 12/05 Âm Lịch',
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w500,
-                        ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.15),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '“Cây có gốc mới nở cành xanh lá, nước có nguồn mới bể rộng sông sâu”',
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 11,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.white54,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(LucideIcons.calendar,
+                            color: AppColors.gold, size: 16),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Thứ Sáu, 26/06/2026',
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            '|',
+                            style: GoogleFonts.inter(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '12/05 ÂM LỊCH',
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 11,
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -341,7 +365,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     required List<FamilyUserEntity> requests,
   }) {
     switch (_selectedTab) {
-      case _DashboardTab.members:
+      case AdminDashboardTab.members:
         if (userTreeState is UserTreeLoading) {
           return const Center(
             child: Padding(
@@ -362,6 +386,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           children: [
             _buildSectionHeader(
               'DANH SÁCH THÀNH VIÊN',
+              addLabel: 'Thêm thành viên',
               onAdd: () {
                 Navigator.push(
                   context,
@@ -370,34 +395,37 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   ),
                 );
               },
-              onEdit: () {
-                setState(() {
-                  _isEditMode = !_isEditMode;
-                  if (_isEditMode) _isDeleteMode = false;
-                });
-              },
-              onDelete: () {
-                setState(() {
-                  _isDeleteMode = !_isDeleteMode;
-                  if (_isDeleteMode) _isEditMode = false;
-                });
-              },
             ),
             _buildSearchBar('Tìm kiếm thành viên hoặc chi tộc...'),
             if (filteredMembers.isEmpty)
               _buildEmptyWidget('Không tìm thấy thành viên phù hợp')
             else
               ListView.builder(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: filteredMembers.length,
-                itemBuilder: (context, index) =>
-                    _buildMemberItem(filteredMembers[index]),
+                itemBuilder: (context, index) {
+                  final member = filteredMembers[index];
+                  return MemberItemWidget(
+                    member: member,
+                    onEdit: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              AdminMemberFormPage(memberId: member.id),
+                        ),
+                      );
+                    },
+                    onDelete: () => _showDeleteConfirmation(context, member),
+                  );
+                },
               ),
           ],
         );
 
-      case _DashboardTab.branches:
+      case AdminDashboardTab.branches:
         if (userTreeState is UserTreeLoading) {
           return const Center(
             child: Padding(
@@ -418,35 +446,34 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           children: [
             _buildSectionHeader(
               'DANH SÁCH CHI TỘC',
+              addLabel: 'Thêm chi tộc',
               onAdd: () => _showBranchDialog(context),
-              onEdit: () {
-                setState(() {
-                  _isEditMode = !_isEditMode;
-                  if (_isEditMode) _isDeleteMode = false;
-                });
-              },
-              onDelete: () {
-                setState(() {
-                  _isDeleteMode = !_isDeleteMode;
-                  if (_isDeleteMode) _isEditMode = false;
-                });
-              },
             ),
             _buildSearchBar('Tìm kiếm chi tộc...'),
             if (filteredBranches.isEmpty)
               _buildEmptyWidget('Không tìm thấy chi tộc phù hợp')
             else
               ListView.builder(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: filteredBranches.length,
-                itemBuilder: (context, index) =>
-                    _buildBranchItem(filteredBranches[index], members),
+                itemBuilder: (context, index) {
+                  final branch = filteredBranches[index];
+                  return BranchItemWidget(
+                    branch: branch,
+                    memberCount:
+                        members.where((m) => m.branchId == branch.id).length,
+                    onEdit: () => _showBranchDialog(context, branch: branch),
+                    onDelete: () =>
+                        _showDeleteBranchConfirmation(context, branch),
+                  );
+                },
               ),
           ],
         );
 
-      case _DashboardTab.pending:
+      case AdminDashboardTab.pending:
         if (pendingState is AdminPendingRequestsLoading) {
           return const Center(
             child: Padding(
@@ -463,11 +490,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               _buildEmptyWidget('Không có yêu cầu tham gia nào đang chờ duyệt')
             else
               ListView.builder(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: requests.length,
                 itemBuilder: (context, index) =>
-                    _buildPendingRequestItem(requests[index]),
+                    PendingRequestItemWidget(request: requests[index]),
               ),
           ],
         );
@@ -701,7 +729,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildSectionHeader(String title,
-      {VoidCallback? onAdd, VoidCallback? onEdit, VoidCallback? onDelete}) {
+      {VoidCallback? onAdd, String? addLabel}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
@@ -716,47 +744,27 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               letterSpacing: 0.5,
             ),
           ),
-          if (onAdd != null || onEdit != null || onDelete != null)
-            Row(
-              children: [
-                if (onAdd != null)
-                  IconButton(
-                    icon: const Icon(LucideIcons.plusCircle,
-                        color: AppColors.wood, size: 20),
-                    onPressed: onAdd,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    tooltip: 'Thêm',
-                  ),
-                if (onEdit != null) ...[
-                  const SizedBox(width: 16),
-                  IconButton(
-                    icon: Icon(
-                      _isEditMode ? LucideIcons.check : LucideIcons.edit3,
-                      color: _isEditMode ? Colors.green : AppColors.wood,
-                      size: 20,
-                    ),
-                    onPressed: onEdit,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    tooltip: 'Sửa',
-                  ),
-                ],
-                if (onDelete != null) ...[
-                  const SizedBox(width: 16),
-                  IconButton(
-                    icon: Icon(
-                      _isDeleteMode ? LucideIcons.check : LucideIcons.trash2,
-                      color: _isDeleteMode ? Colors.red : AppColors.error,
-                      size: 20,
-                    ),
-                    onPressed: onDelete,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    tooltip: 'Xoá',
-                  ),
-                ],
-              ],
+          if (onAdd != null)
+            TextButton.icon(
+              onPressed: onAdd,
+              icon:
+                  const Icon(LucideIcons.plus, size: 14, color: AppColors.wood),
+              label: Text(
+                addLabel ?? 'Thêm mới',
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.wood,
+                ),
+              ),
+              style: TextButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                backgroundColor: AppColors.gold.withValues(alpha: 0.85),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
             ),
         ],
       ),
@@ -900,7 +908,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Widget _buildSearchBar(String hintText) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+      margin: const EdgeInsets.fromLTRB(20, 4, 20, 6),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -961,473 +969,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildMemberItem(MemberEntity member) {
-    final String genderText = member.gender == Gender.male ? 'Nam' : 'Nữ';
-    final String aliveText = member.isAlive ? 'Còn sống' : 'Đã mất';
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: member.gender == Gender.male
-                ? Colors.blue.shade50
-                : Colors.pink.shade50,
-            backgroundImage: member.avatarUrl != null
-                ? NetworkImage(member.avatarUrl!)
-                : null,
-            child: member.avatarUrl == null
-                ? Icon(
-                    member.gender == Gender.male
-                        ? LucideIcons.user
-                        : LucideIcons.user2,
-                    color: member.gender == Gender.male
-                        ? Colors.blue
-                        : Colors.pink,
-                    size: 20,
-                  )
-                : null,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  member.fullName,
-                  style: GoogleFonts.beVietnamPro(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Đời thứ ${member.generation ?? "?"} • $genderText • $aliveText',
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                if (member.branchName != null &&
-                    member.branchName!.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    'Chi tộc: ${member.branchName}',
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: AppColors.wood,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          if (_isEditMode)
-            IconButton(
-              icon: const Icon(LucideIcons.edit, color: Colors.green, size: 20),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AdminMemberFormPage(memberId: member.id),
-                  ),
-                );
-              },
-            ),
-          if (_isDeleteMode)
-            IconButton(
-              icon: const Icon(LucideIcons.trash2, color: Colors.red, size: 20),
-              onPressed: () {
-                _showDeleteConfirmation(context, member);
-              },
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBranchItem(BranchEntity branch, List<MemberEntity> members) {
-    final memberCount = members.where((m) => m.branchId == branch.id).length;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColors.wood.withValues(alpha: 0.08),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(LucideIcons.gitBranch,
-                color: AppColors.wood, size: 20),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  branch.name,
-                  style: GoogleFonts.beVietnamPro(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                if (branch.founderName != null &&
-                    branch.founderName!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    'Đời tổ/Sáng lập: ${branch.founderName}',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Icon(LucideIcons.users,
-                        size: 12, color: Colors.blueGrey.shade400),
-                    const SizedBox(width: 4),
-                    Text(
-                      '$memberCount thành viên',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.blueGrey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          if (_isEditMode)
-            IconButton(
-              icon: const Icon(LucideIcons.edit, color: Colors.green, size: 20),
-              onPressed: () {
-                _showBranchDialog(context, branch: branch);
-              },
-            ),
-          if (_isDeleteMode)
-            IconButton(
-              icon: const Icon(LucideIcons.trash2, color: Colors.red, size: 20),
-              onPressed: () {
-                _showDeleteBranchConfirmation(context, branch);
-              },
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPendingRequestItem(FamilyUserEntity request) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.orange.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: AppColors.wood.withValues(alpha: 0.12),
-                backgroundImage: request.userAvatarUrl != null
-                    ? NetworkImage(request.userAvatarUrl!)
-                    : null,
-                child: request.userAvatarUrl == null
-                    ? const Icon(LucideIcons.user, color: AppColors.wood)
-                    : null,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      request.userFullName ?? 'Người dùng ẩn danh',
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      request.userEmail ?? 'Không có email',
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const Icon(
-                    LucideIcons.shieldAlert,
-                    size: 12,
-                    color: AppColors.gold,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Vai trò: ',
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 1.5),
-                    decoration: BoxDecoration(
-                      color: AppColors.wood.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      request.role.toUpperCase(),
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.wood,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<AdminPendingRequestsBloc>().add(
-                        ApproveAdminRequestEvent(requestId: request.id),
-                      );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.crimson,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: Text(
-                  'Phê duyệt',
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Quick Stats Row ────────────────────────────────────────────────────────────
-class _QuickStatsRow extends StatelessWidget {
-  final String memberCount;
-  final String branchCount;
-  final String pendingCount;
-  final _DashboardTab selectedTab;
-  final ValueChanged<_DashboardTab> onTabChanged;
-
-  const _QuickStatsRow({
-    required this.memberCount,
-    required this.branchCount,
-    required this.pendingCount,
-    required this.selectedTab,
-    required this.onTabChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      decoration: BoxDecoration(
-        color: AppColors.wood,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _StatItem(
-              icon: LucideIcons.users,
-              label: 'Thành viên',
-              value: memberCount,
-              isSelected: selectedTab == _DashboardTab.members,
-              onTap: () => onTabChanged(_DashboardTab.members),
-            ),
-          ),
-          Container(width: 1, height: 32, color: Colors.white24),
-          Expanded(
-            child: _StatItem(
-              icon: LucideIcons.gitBranch,
-              label: 'Chi tộc',
-              value: branchCount,
-              isSelected: selectedTab == _DashboardTab.branches,
-              onTap: () => onTabChanged(_DashboardTab.branches),
-            ),
-          ),
-          Container(width: 1, height: 32, color: Colors.white24),
-          Expanded(
-            child: _StatItem(
-              icon: LucideIcons.clock,
-              label: 'Chờ duyệt',
-              value: pendingCount,
-              valueColor: Colors.orange.shade300,
-              isSelected: selectedTab == _DashboardTab.pending,
-              onTap: () => onTabChanged(_DashboardTab.pending),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color? valueColor;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _StatItem({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.valueColor,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? Colors.white.withValues(alpha: 0.1)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: isSelected
-                  ? AppColors.gold.withValues(alpha: 0.3)
-                  : Colors.transparent,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon,
-                      color: isSelected ? AppColors.gold : Colors.white70,
-                      size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    label,
-                    style: GoogleFonts.inter(
-                      color: isSelected ? Colors.white : Colors.white60,
-                      fontSize: 11,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: isSelected
-                      ? AppColors.gold
-                      : (valueColor ?? Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/widgets.dart';
-import 'admin_dashboard_page.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../admin_dashboard/admin_dashboard_page.dart';
 
 class AdminMemberRolesPage extends StatefulWidget {
   const AdminMemberRolesPage({super.key});
@@ -70,7 +70,8 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
                     'Thay đổi vai trò cho ${user['fullName']}',
                     style: GoogleFonts.beVietnamPro(
@@ -81,10 +82,14 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   ),
                 ),
                 const Divider(),
-                _buildRoleOption(index, 'OWNER', 'Trưởng tộc', 'Toàn quyền cấu hình và bàn giao gia tộc.'),
-                _buildRoleOption(index, 'BRANCH_ADMIN', 'Quản trị chi', 'Quản lý thông tin & thành viên thuộc chi phái.'),
-                _buildRoleOption(index, 'EDITOR', 'Biên soạn', 'Thêm mới, sửa đổi thông tin phả hệ gia tộc.'),
-                _buildRoleOption(index, 'VIEWER', 'Thành viên', 'Chỉ xem phả hệ dòng tộc.'),
+                _buildRoleOption(index, 'OWNER', 'Trưởng tộc',
+                    'Toàn quyền cấu hình và bàn giao gia tộc.'),
+                _buildRoleOption(index, 'BRANCH_ADMIN', 'Quản trị chi',
+                    'Quản lý thông tin & thành viên thuộc chi phái.'),
+                _buildRoleOption(index, 'EDITOR', 'Biên soạn',
+                    'Thêm mới, sửa đổi thông tin phả hệ gia tộc.'),
+                _buildRoleOption(
+                    index, 'VIEWER', 'Thành viên', 'Chỉ xem phả hệ dòng tộc.'),
               ],
             ),
           ),
@@ -93,7 +98,8 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
     );
   }
 
-  Widget _buildRoleOption(int userIndex, String roleValue, String roleTitle, String roleDesc) {
+  Widget _buildRoleOption(
+      int userIndex, String roleValue, String roleTitle, String roleDesc) {
     final currentRole = _users[userIndex]['role'];
     final isSelected = currentRole == roleValue;
 
@@ -217,9 +223,11 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   ),
                 ),
                 trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AdminDashboardPage.roleColor(role).withValues(alpha: 0.15),
+                    color: AdminDashboardPage.roleColor(role)
+                        .withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -232,7 +240,8 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                     ),
                   ),
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),
             );
           },

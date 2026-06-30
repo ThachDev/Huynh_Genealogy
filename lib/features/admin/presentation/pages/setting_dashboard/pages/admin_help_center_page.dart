@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/app_snackbar.dart';
 
 class AdminHelpCenterPage extends StatelessWidget {
   const AdminHelpCenterPage({super.key});
@@ -20,9 +20,7 @@ class AdminHelpCenterPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           // Banner
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -85,7 +83,8 @@ class AdminHelpCenterPage extends StatelessWidget {
                   title: 'Hotline hỗ trợ',
                   value: '1900 8888',
                   onTap: () {
-                    AppSnackBar.info(context, 'Đang chuẩn bị kết nối cuộc gọi tới 1900 8888');
+                    AppSnackBar.info(context,
+                        'Đang chuẩn bị kết nối cuộc gọi tới 1900 8888');
                   },
                 ),
               ),
@@ -97,7 +96,8 @@ class AdminHelpCenterPage extends StatelessWidget {
                   title: 'Email kỹ thuật',
                   value: 'support@giatocviet.vn',
                   onTap: () {
-                    AppSnackBar.info(context, 'Đang mở ứng dụng email gửi tới support@giatocviet.vn');
+                    AppSnackBar.info(context,
+                        'Đang mở ứng dụng email gửi tới support@giatocviet.vn');
                   },
                 ),
               ),
@@ -117,15 +117,18 @@ class AdminHelpCenterPage extends StatelessWidget {
           const SizedBox(height: 12),
           _buildFaqItem(
             question: 'Làm thế nào để thêm thành viên mới vào cây?',
-            answer: 'Bạn cần đăng nhập bằng tài khoản Trưởng tộc hoặc Biên soạn, truy cập cây gia phả và nhấp vào biểu tượng dấu cộng (+) trên nút của thành viên để liên kết con hoặc phối ngẫu.',
+            answer:
+                'Bạn cần đăng nhập bằng tài khoản Trưởng tộc hoặc Biên soạn, truy cập cây gia phả và nhấp vào biểu tượng dấu cộng (+) trên nút của thành viên để liên kết con hoặc phối ngẫu.',
           ),
           _buildFaqItem(
             question: 'Mã mời gia tộc hoạt động như thế nào?',
-            answer: 'Mỗi gia phả có một mã mời duy nhất (ví dụ: HGT-2024). Trưởng tộc gửi mã này cho thành viên để họ nhập lúc đăng ký, kết nối trực tiếp vào cây phả hệ dòng họ.',
+            answer:
+                'Mỗi gia phả có một mã mời duy nhất (ví dụ: HGT-2024). Trưởng tộc gửi mã này cho thành viên để họ nhập lúc đăng ký, kết nối trực tiếp vào cây phả hệ dòng họ.',
           ),
           _buildFaqItem(
             question: 'Tôi có thể phân quyền biên soạn cho người khác không?',
-            answer: 'Có. Tại màn hình Danh sách thành viên trên Dashboard, Trưởng tộc có thể chọn thành viên và nâng cấp vai trò thành Biên soạn hoặc Quản trị chi.',
+            answer:
+                'Có. Tại màn hình Danh sách thành viên trên Dashboard, Trưởng tộc có thể chọn thành viên và nâng cấp vai trò thành Biên soạn hoặc Quản trị chi.',
           ),
           const SizedBox(height: 20),
         ]),

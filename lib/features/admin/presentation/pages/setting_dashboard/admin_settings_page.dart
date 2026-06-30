@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_route_transitions.dart';
-import '../../../auth/auth.dart';
+import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/widgets/app_route_transitions.dart';
+import '../../../../auth/auth.dart';
 
-import 'admin_clan_info_settings_page.dart';
-import 'admin_edit_profile_page.dart';
-import 'admin_language_settings_page.dart';
-import 'admin_account_security_page.dart';
-import 'admin_transfer_ownership_page.dart';
-import 'admin_dissolve_clan_page.dart';
-import 'admin_regulations_page.dart';
-import 'admin_theme_settings_page.dart';
-import 'admin_help_center_page.dart';
-import 'admin_about_us_page.dart';
+import 'pages/admin_clan_info_settings_page.dart';
+import '../admin_dashboard/pages/admin_edit_profile_page.dart';
+import 'pages/admin_language_settings_page.dart';
+import 'pages/admin_account_security_page.dart';
+import 'pages/admin_transfer_ownership_page.dart';
+import 'pages/admin_dissolve_clan_page.dart';
+import 'pages/admin_regulations_page.dart';
+import 'pages/admin_theme_settings_page.dart';
+import 'pages/admin_help_center_page.dart';
+import 'pages/admin_about_us_page.dart';
 
 class AdminSettingsPage extends StatelessWidget {
   const AdminSettingsPage({super.key});

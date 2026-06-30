@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_text_field.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/app_button.dart';
+import '../../../../../../core/widgets/app_text_field.dart';
+import '../../../../../../core/widgets/app_snackbar.dart';
 
 class AdminClanInfoSettingsPage extends StatefulWidget {
   const AdminClanInfoSettingsPage({super.key});
 
   @override
-  State<AdminClanInfoSettingsPage> createState() => _AdminClanInfoSettingsPageState();
+  State<AdminClanInfoSettingsPage> createState() =>
+      _AdminClanInfoSettingsPageState();
 }
 
 class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
@@ -26,7 +27,8 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
     // Default initial mock values representing the Clan Info
     _nameController = TextEditingController(text: 'Huỳnh Gia Tộc');
     _descController = TextEditingController(
-      text: 'Dòng họ Huỳnh phát tích từ vùng đất Quảng Nam, trải qua nhiều đời gìn giữ gia phong và nề nếp gia đình.',
+      text:
+          'Dòng họ Huỳnh phát tích từ vùng đất Quảng Nam, trải qua nhiều đời gìn giữ gia phong và nề nếp gia đình.',
     );
     _originController = TextEditingController(text: 'Điện Bàn, Quảng Nam');
   }
@@ -75,7 +77,8 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                   decoration: BoxDecoration(
                     color: AppColors.crimson.withValues(alpha: 0.15),
                     image: const DecorationImage(
-                      image: NetworkImage('https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600'),
+                      image: NetworkImage(
+                          'https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=600'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -90,9 +93,11 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                     backgroundColor: Colors.white.withValues(alpha: 0.9),
                     radius: 18,
                     child: IconButton(
-                      icon: const Icon(LucideIcons.camera, size: 16, color: AppColors.crimson),
+                      icon: const Icon(LucideIcons.camera,
+                          size: 16, color: AppColors.crimson),
                       onPressed: () {
-                        AppSnackBar.info(context, 'Tính năng tải lên ảnh bìa đang được chuẩn bị');
+                        AppSnackBar.info(context,
+                            'Tính năng tải lên ảnh bìa đang được chuẩn bị');
                       },
                     ),
                   ),
@@ -118,7 +123,8 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                           ],
                         ),
                         child: const Center(
-                          child: Icon(LucideIcons.shield, size: 45, color: AppColors.crimson),
+                          child: Icon(LucideIcons.shield,
+                              size: 45, color: AppColors.crimson),
                         ),
                       ),
                       Positioned(
@@ -129,9 +135,11 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                           radius: 14,
                           child: IconButton(
                             padding: EdgeInsets.zero,
-                            icon: const Icon(LucideIcons.edit2, size: 12, color: Colors.white),
+                            icon: const Icon(LucideIcons.edit2,
+                                size: 12, color: Colors.white),
                             onPressed: () {
-                              AppSnackBar.info(context, 'Tính năng tải lên biểu tượng dòng tộc đang được phát triển');
+                              AppSnackBar.info(context,
+                                  'Tính năng tải lên biểu tượng dòng tộc đang được phát triển');
                             },
                           ),
                         ),
@@ -164,7 +172,8 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                       controller: _nameController,
                       label: 'Tên dòng tộc',
                       hintText: 'Nhập tên dòng tộc của bạn',
-                      prefixIcon: const Icon(LucideIcons.award, color: AppColors.crimson),
+                      prefixIcon: const Icon(LucideIcons.award,
+                          color: AppColors.crimson),
                       validator: (val) {
                         if (val == null || val.trim().isEmpty) {
                           return 'Vui lòng nhập tên dòng tộc';
@@ -177,7 +186,8 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                       controller: _originController,
                       label: 'Quê quán / Nguồn gốc',
                       hintText: 'Nhập quê quán tổ tiên dòng tộc',
-                      prefixIcon: const Icon(LucideIcons.mapPin, color: AppColors.crimson),
+                      prefixIcon: const Icon(LucideIcons.mapPin,
+                          color: AppColors.crimson),
                       validator: (val) {
                         if (val == null || val.trim().isEmpty) {
                           return 'Vui lòng nhập địa chỉ nguồn gốc dòng tộc';

@@ -1,27 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../main.dart';
 
-class AdminThemeSettingsPage extends StatefulWidget {
-  const AdminThemeSettingsPage({super.key});
+class AdminLanguageSettingsPage extends StatefulWidget {
+  const AdminLanguageSettingsPage({super.key});
 
   @override
-  State<AdminThemeSettingsPage> createState() => _AdminThemeSettingsPageState();
+  State<AdminLanguageSettingsPage> createState() =>
+      _AdminLanguageSettingsPageState();
 }
 
-class _AdminThemeSettingsPageState extends State<AdminThemeSettingsPage> {
+class _AdminLanguageSettingsPageState extends State<AdminLanguageSettingsPage> {
+  String _selectedLocale = 'vi';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context);
+    setState(() {
+      _selectedLocale = locale.languageCode;
+    });
+  }
+
+  void _changeLanguage(String langCode) {
+    if (_selectedLocale != langCode) {
+      setState(() {
+        _selectedLocale = langCode;
+      });
+      // Notify main.dart config to update application wide locale
+      FamilyTreeApp.setLocale(context, Locale(langCode));
+      AppSnackBar.success(
+        context,
+        langCode == 'vi'
+            ? 'Đã chuyển đổi sang Tiếng Việt'
+            : 'Language switched to English',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Determine the current system theme state
-    final brightness = Theme.of(context).brightness;
-    final isDark = brightness == Brightness.dark;
-
     return Scaffold(
       backgroundColor: AppColors.parchment,
       appBar: AppBar(
-        title: const Text('GIAO DIỆN HỆ THỐNG'),
+        title: const Text('NGÔN NGỮ HỆ THỐNG'),
         backgroundColor: AppColors.wood,
         foregroundColor: Colors.white,
         centerTitle: true,
@@ -33,7 +58,7 @@ class _AdminThemeSettingsPageState extends State<AdminThemeSettingsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Chọn chế độ hiển thị phù hợp với trải nghiệm đọc phả hệ:',
+              'Chọn ngôn ngữ hiển thị chính cho ứng dụng của bạn:',
               style: GoogleFonts.beVietnamPro(
                 fontSize: 14,
                 color: AppColors.textSecondary,
@@ -49,24 +74,21 @@ class _AdminThemeSettingsPageState extends State<AdminThemeSettingsPage> {
               ),
               child: Column(
                 children: [
-                  _buildThemeOption(
-                    title: 'Giao diện sáng',
-                    subtitle: 'Tối ưu cho việc đọc văn bản trên nền giấy cổ',
-                    icon: LucideIcons.sun,
-                    isSelected: !isDark,
-                    onTap: () {
-                      AppSnackBar.success(context, 'Đã kích hoạt Giao diện Sáng');
-                    },
+                  _buildLanguageOption(
+                    title: 'Tiếng Việt',
+                    subtitle: 'Giao diện tiếng Việt chuẩn',
+                    code: 'vi',
+                    flag: '🇻🇳',
                   ),
-                  Divider(height: 1, thickness: 1, color: AppColors.gold.withValues(alpha: 0.05)),
-                  _buildThemeOption(
-                    title: 'Giao diện tối',
-                    subtitle: 'Giảm mỏi mắt khi tra cứu phả hệ ban đêm',
-                    icon: LucideIcons.moon,
-                    isSelected: isDark,
-                    onTap: () {
-                      AppSnackBar.success(context, 'Đã kích hoạt Giao diện Tối');
-                    },
+                  Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: AppColors.gold.withValues(alpha: 0.05)),
+                  _buildLanguageOption(
+                    title: 'English',
+                    subtitle: 'Standard English interface',
+                    code: 'en',
+                    flag: '🇺🇸',
                   ),
                 ],
               ),
@@ -77,31 +99,23 @@ class _AdminThemeSettingsPageState extends State<AdminThemeSettingsPage> {
     );
   }
 
-  Widget _buildThemeOption({
+  Widget _buildLanguageOption({
     required String title,
     required String subtitle,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
+    required String code,
+    required String flag,
   }) {
+    final isSelected = _selectedLocale == code;
     return InkWell(
-      onTap: onTap,
+      onTap: () => _changeLanguage(code),
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: (isSelected ? AppColors.crimson : AppColors.wood).withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: isSelected ? AppColors.crimson : AppColors.textSecondary,
-              ),
+            Text(
+              flag,
+              style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -113,7 +127,9 @@ class _AdminThemeSettingsPageState extends State<AdminThemeSettingsPage> {
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? AppColors.crimson : AppColors.textPrimary,
+                      color: isSelected
+                          ? AppColors.crimson
+                          : AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),

@@ -20,6 +20,7 @@ import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../../../auth/auth.dart';
 import '../../../../user/user.dart';
 import 'pages/admin_member_form_page.dart';
+import 'pages/admin_branch_form_page.dart';
 import '../../bloc/admin_member_form/admin_member_form_bloc.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 import '../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
@@ -489,7 +490,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             _buildSectionHeader(
               'DANH SÁCH CHI TỘC',
               addLabel: 'Thêm chi tộc',
-              onAdd: () => _showBranchDialog(context),
+              onAdd: () => _openBranchForm(context),
             ),
             _buildSearchBar('Tìm kiếm chi tộc...'),
             if (filteredBranches.isEmpty)
@@ -506,7 +507,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     branch: branch,
                     memberCount:
                         members.where((m) => m.branchId == branch.id).length,
-                    onEdit: () => _showBranchDialog(context, branch: branch),
+                    onEdit: () => _openBranchForm(context, branch: branch),
                     onDelete: () =>
                         _showDeleteBranchConfirmation(context, branch),
                   );
@@ -851,70 +852,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
   }
 
-  void _showBranchDialog(BuildContext context, {BranchEntity? branch}) {
-    final nameController = TextEditingController(text: branch?.name ?? '');
-    final founderController =
-        TextEditingController(text: branch?.founderName ?? '');
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.parchment,
-        title: Text(
-          branch == null ? 'Thêm Chi Tộc' : 'Chỉnh Sửa Chi Tộc',
-          style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: AppColors.wood),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Tên chi tộc'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: founderController,
-              decoration:
-                  const InputDecoration(labelText: 'Tên tổ chi / Sáng lập'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('Hủy',
-                style:
-                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (nameController.text.trim().isEmpty) {
-                AppSnackBar.error(ctx, 'Vui lòng nhập tên chi tộc');
-                return;
-              }
-              final authState = context.read<AuthBloc>().state;
-              final familyId = authState is Authenticated ? authState.user.familyId : null;
-
-              final newBranch = BranchEntity(
-                id: branch?.id ?? 0,
-                name: nameController.text.trim(),
-                founderName: founderController.text.trim(),
-                familyId: branch?.familyId ?? familyId ?? 1,
-              );
-
-              Navigator.pop(ctx);
-              context
-                  .read<AdminBranchFormBloc>()
-                  .add(SaveAdminBranchFormEvent(newBranch));
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.wood, foregroundColor: Colors.white),
-            child: const Text('Lưu'),
-          ),
-        ],
+  void _openBranchForm(BuildContext context, {BranchEntity? branch}) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AdminBranchFormPage(branch: branch),
       ),
     );
+    if (result == true && context.mounted) {
+      // Refresh the branches
+      context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+    }
   }
 
   void _showDeleteBranchConfirmation(

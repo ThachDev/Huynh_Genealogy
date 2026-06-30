@@ -8,7 +8,9 @@ class AdminMemberFormLoading extends AdminMemberFormState {}
 
 class AdminMemberFormReady extends AdminMemberFormState {
   final MemberEntity? member; // null khi tạo mới
-  AdminMemberFormReady({this.member});
+  final List<MemberEntity> members;
+  final List<BranchEntity> branches;
+  AdminMemberFormReady({this.member, this.members = const [], this.branches = const []});
 }
 
 class AdminMemberFormSubmitting extends AdminMemberFormState {}

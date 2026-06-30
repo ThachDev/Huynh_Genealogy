@@ -31,6 +31,7 @@ Future<void> init() async {
   sl.registerFactory(
     () => AdminMemberFormBloc(
       getMembers: sl(),
+      getBranches: sl(),
       saveMember: sl(),
       deleteMember: sl(),
     ),

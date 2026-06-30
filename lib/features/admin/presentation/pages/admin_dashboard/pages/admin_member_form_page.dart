@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -110,9 +111,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       dateOfDeath: _isAlive ? null : _formatBackendDate(_dateOfDeath),
       maritalStatus: _maritalStatus,
       generation: int.tryParse(_generationController.text),
-      branchId: _branchId ?? existingMember?.branchId,
-      parentId: _parentId ?? existingMember?.parentId,
-      spouseId: _spouseId ?? existingMember?.spouseId,
+      branchId: _branchId,
+      parentId: _parentId,
+      spouseId: _spouseId,
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
@@ -205,6 +206,14 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
           final existingMember =
               state is AdminMemberFormReady ? state.member : null;
+          final allMembers =
+              state is AdminMemberFormReady ? state.members : <MemberEntity>[];
+          final allBranches =
+              state is AdminMemberFormReady ? state.branches : <BranchEntity>[];
+
+          // Filter out the current member from the dropdowns to prevent circular relation
+          final parentOptions = allMembers.where((m) => m.id != existingMember?.id).toList();
+          final spouseOptions = allMembers.where((m) => m.id != existingMember?.id).toList();
 
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
@@ -484,7 +493,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                               controller: _notesController,
                               label: 'Tiểu sử',
                               hintText:
-                                  'Nhập thông tin nghề nghiệp, học văn hoặc cột mốc quan trọng...',
+                                  'Nhập thông tin nghề nghiệp, học vấn hoặc cột mốc quan trọng...',
                               maxLines: 5,
                             ),
                           ],
@@ -493,6 +502,53 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
                       // Avatar nổi trên viền trên của card
                       _buildAvatarSection(),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Mối quan hệ gia đình (Cha/Mẹ, Vợ/Chồng, Chi/Nhánh)
+                  _buildSectionCard(
+                    icon: LucideIcons.users,
+                    title: 'QUAN HỆ GIA ĐÌNH',
+                    children: [
+                      _buildLabel('CHA/MẸ'),
+                      _buildDropdown<int?>(
+                        value: _parentId,
+                        items: [
+                          const DropdownItem<int?>(value: null, child: Text('Không chọn (Thủy tổ)')),
+                          ...parentOptions.map((m) => DropdownItem<int?>(
+                                value: m.id,
+                                child: Text('${m.fullName} (Đời ${m.generation})'),
+                              )),
+                        ],
+                        onChanged: (val) => setState(() => _parentId = val),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildLabel('VỢ/CHỒNG'),
+                      _buildDropdown<int?>(
+                        value: _spouseId,
+                        items: [
+                          const DropdownItem<int?>(value: null, child: Text('Không chọn')),
+                          ...spouseOptions.map((m) => DropdownItem<int?>(
+                                value: m.id,
+                                child: Text('${m.fullName} (Đời ${m.generation})'),
+                              )),
+                        ],
+                        onChanged: (val) => setState(() => _spouseId = val),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildLabel('CHI/NHÁNH'),
+                      _buildDropdown<int?>(
+                        value: _branchId,
+                        items: [
+                          const DropdownItem<int?>(value: null, child: Text('Không thuộc chi/nhánh nào')),
+                          ...allBranches.map((b) => DropdownItem<int?>(
+                                value: b.id,
+                                child: Text(b.name),
+                              )),
+                        ],
+                        onChanged: (val) => setState(() => _branchId = val),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),

@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../core/widgets/widgets.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../bloc/family_fund_bloc.dart';
 import '../bloc/family_fund_event.dart';
 import '../bloc/family_fund_state.dart';
@@ -18,9 +19,11 @@ class FamilyFundPage extends StatefulWidget {
   State<FamilyFundPage> createState() => _FamilyFundPageState();
 }
 
-class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProviderStateMixin {
+class _FamilyFundPageState extends State<FamilyFundPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final NumberFormat _currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+  final NumberFormat _currencyFormat =
+      NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
   @override
   void initState() {
@@ -54,7 +57,8 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
       body: BlocBuilder<FamilyFundBloc, FamilyFundState>(
         builder: (context, state) {
           if (state is FamilyFundLoading || state is FamilyFundInitial) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.crimson));
+            return const Center(
+                child: CircularProgressIndicator(color: AppColors.crimson));
           } else if (state is FamilyFundError) {
             return Center(child: Text(state.message));
           } else if (state is FamilyFundLoaded) {
@@ -68,10 +72,14 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                     children: [
                       _buildTransactionList(state.transactions),
                       _buildTransactionList(
-                        state.transactions.where((tx) => tx.type == 'IN').toList(),
+                        state.transactions
+                            .where((tx) => tx.type == 'IN')
+                            .toList(),
                       ),
                       _buildTransactionList(
-                        state.transactions.where((tx) => tx.type == 'OUT').toList(),
+                        state.transactions
+                            .where((tx) => tx.type == 'OUT')
+                            .toList(),
                       ),
                     ],
                   ),
@@ -155,9 +163,14 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildStatItem('Tổng thu', state.totalIncome, LucideIcons.arrowDownLeft, Colors.greenAccent),
-              Container(width: 1, height: 32, color: Colors.white.withValues(alpha: 0.1)),
-              _buildStatItem('Tổng chi', state.totalOutcome, LucideIcons.arrowUpRight, Colors.redAccent),
+              _buildStatItem('Tổng thu', state.totalIncome,
+                  LucideIcons.arrowDownLeft, Colors.greenAccent),
+              Container(
+                  width: 1,
+                  height: 32,
+                  color: Colors.white.withValues(alpha: 0.1)),
+              _buildStatItem('Tổng chi', state.totalOutcome,
+                  LucideIcons.arrowUpRight, Colors.redAccent),
             ],
           ),
           if (!widget.isAdmin) ...[
@@ -190,7 +203,8 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
     );
   }
 
-  Widget _buildStatItem(String label, double amount, IconData icon, Color color) {
+  Widget _buildStatItem(
+      String label, double amount, IconData icon, Color color) {
     return Expanded(
       child: Row(
         children: [
@@ -249,8 +263,10 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
         ),
         labelColor: AppColors.gold,
         unselectedLabelColor: AppColors.textSecondary,
-        labelStyle: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold, fontSize: 13),
-        unselectedLabelStyle: GoogleFonts.beVietnamPro(fontWeight: FontWeight.w500, fontSize: 13),
+        labelStyle:
+            GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold, fontSize: 13),
+        unselectedLabelStyle:
+            GoogleFonts.beVietnamPro(fontWeight: FontWeight.w500, fontSize: 13),
         tabs: const [
           Tab(text: 'Tất cả'),
           Tab(text: 'Khoản thu'),
@@ -266,7 +282,9 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(LucideIcons.receipt, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.3)),
+            Icon(LucideIcons.receipt,
+                size: 48,
+                color: AppColors.textSecondary.withValues(alpha: 0.3)),
             const SizedBox(height: 12),
             Text(
               'Chưa có giao dịch nào',
@@ -349,7 +367,8 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                 if (isPending) ...[
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: Colors.orange.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
@@ -389,7 +408,8 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                     const SizedBox(height: 8),
                     _buildDetailRow('Người thực hiện:', tx.senderName),
                     _buildDetailRow('Mã giao dịch:', tx.id),
-                    _buildDetailRow('Thời gian:', DateFormat('dd/MM/yyyy HH:mm:ss').format(tx.createdAt)),
+                    _buildDetailRow('Thời gian:',
+                        DateFormat('dd/MM/yyyy HH:mm:ss').format(tx.createdAt)),
                     if (tx.evidenceUrl != null) ...[
                       const SizedBox(height: 8),
                       Text(
@@ -408,11 +428,13 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                           height: 120,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Container(
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
                             height: 100,
                             color: Colors.grey.shade200,
                             alignment: Alignment.center,
-                            child: const Icon(LucideIcons.imageOff, color: Colors.grey),
+                            child: const Icon(LucideIcons.imageOff,
+                                color: Colors.grey),
                           ),
                         ),
                       ),
@@ -424,26 +446,33 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                         children: [
                           OutlinedButton(
                             onPressed: () {
-                              context.read<FamilyFundBloc>().add(RejectTransaction(transactionId: tx.id));
-                              AppSnackBar.success(context, 'Đã từ chối giao dịch đóng góp.');
+                              context
+                                  .read<FamilyFundBloc>()
+                                  .add(RejectTransaction(transactionId: tx.id));
+                              AppSnackBar.success(
+                                  context, 'Đã từ chối giao dịch đóng góp.');
                             },
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.red,
                               side: const BorderSide(color: Colors.red),
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
                             ),
                             child: const Text('Từ chối'),
                           ),
                           const SizedBox(width: 8),
                           ElevatedButton(
                             onPressed: () {
-                              context.read<FamilyFundBloc>().add(ApproveTransaction(transactionId: tx.id));
-                              AppSnackBar.success(context, 'Đã phê duyệt giao dịch đóng góp!');
+                              context.read<FamilyFundBloc>().add(
+                                  ApproveTransaction(transactionId: tx.id));
+                              AppSnackBar.success(
+                                  context, 'Đã phê duyệt giao dịch đóng góp!');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
                             ),
                             child: const Text('Phê duyệt'),
                           ),
@@ -468,11 +497,15 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
         children: [
           Text(
             label,
-            style: GoogleFonts.beVietnamPro(fontSize: 13, color: AppColors.textSecondary),
+            style: GoogleFonts.beVietnamPro(
+                fontSize: 13, color: AppColors.textSecondary),
           ),
           Text(
             value,
-            style: GoogleFonts.beVietnamPro(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            style: GoogleFonts.beVietnamPro(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary),
           ),
         ],
       ),
@@ -486,75 +519,116 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
     String selectedType = 'IN';
     String selectedCategory = 'Đóng góp';
 
-    final categories = ['Đóng góp', 'Hiếu hỷ', 'Xây dựng', 'Khuyến học', 'Họp mặt', 'Khác'];
+    final categories = [
+      'Đóng góp',
+      'Hiếu hỷ',
+      'Xây dựng',
+      'Khuyến học',
+      'Họp mặt',
+      'Khác'
+    ];
 
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => AlertDialog(
           backgroundColor: AppColors.parchment,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             'Ghi nhận Thu / Chi',
-            style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold, color: AppColors.wood),
+            style: GoogleFonts.beVietnamPro(
+                fontWeight: FontWeight.bold, color: AppColors.wood),
           ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                DropdownButtonFormField<String>(
-                  initialValue: selectedType,
-                  decoration: const InputDecoration(labelText: 'Loại giao dịch'),
-                  items: const [
-                    DropdownMenuItem(value: 'IN', child: Text('Thu (Quỹ nhận tiền)')),
-                    DropdownMenuItem(value: 'OUT', child: Text('Chi (Quỹ chi tiền)')),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        'LOẠI GIAO DỊCH',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF6B6661),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    AppDropdown<String>(
+                      value: selectedType,
+                      items: const [
+                        DropdownItem(
+                            value: 'IN', child: Text('Thu (Quỹ nhận tiền)')),
+                        DropdownItem(
+                            value: 'OUT', child: Text('Chi (Quỹ chi tiền)')),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) {
+                          setDialogState(() {
+                            selectedType = val;
+                            selectedCategory =
+                                val == 'IN' ? 'Đóng góp' : 'Xây dựng';
+                          });
+                        }
+                      },
+                    ),
                   ],
-                  onChanged: (val) {
-                    if (val != null) {
-                      setDialogState(() {
-                        selectedType = val;
-                        selectedCategory = val == 'IN' ? 'Đóng góp' : 'Xây dựng';
-                      });
-                    }
-                  },
                 ),
                 const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  initialValue: selectedCategory,
-                  decoration: const InputDecoration(labelText: 'Hạng mục'),
-                  items: categories.map((cat) => DropdownMenuItem(value: cat, child: Text(cat))).toList(),
-                  onChanged: (val) {
-                    if (val != null) {
-                      setDialogState(() {
-                        selectedCategory = val;
-                      });
-                    }
-                  },
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        'HẠNG MỤC',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF6B6661),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    AppDropdown<String>(
+                      value: selectedCategory,
+                      items: categories
+                          .map((cat) =>
+                              DropdownItem(value: cat, child: Text(cat)))
+                          .toList(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          setDialogState(() {
+                            selectedCategory = val;
+                          });
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 12),
-                TextField(
+                AppOutlineTextField(
                   controller: amountController,
+                  label: 'Số tiền (VNĐ)',
+                  hintText: 'Ví dụ: 500000',
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Số tiền (VNĐ)',
-                    hintText: 'Ví dụ: 500000',
-                  ),
                 ),
                 const SizedBox(height: 12),
-                TextField(
+                AppOutlineTextField(
                   controller: descController,
-                  decoration: const InputDecoration(
-                    labelText: 'Nội dung chi tiết',
-                    hintText: 'Nhập nội dung giao dịch...',
-                  ),
+                  label: 'Nội dung chi tiết',
+                  hintText: 'Nhập nội dung giao dịch...',
                 ),
                 const SizedBox(height: 12),
-                TextField(
+                AppOutlineTextField(
                   controller: senderController,
-                  decoration: const InputDecoration(
-                    labelText: 'Người thực hiện',
-                    hintText: 'Tên thành viên / Người nhận chi',
-                  ),
+                  label: 'Người thực hiện',
+                  hintText: 'Tên thành viên / Người nhận chi',
                 ),
               ],
             ),
@@ -562,7 +636,9 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text('Hủy', style: GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+              child: Text('Hủy',
+                  style:
+                      GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -581,15 +657,19 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                         type: selectedType,
                         category: selectedCategory,
                         description: descController.text,
-                        senderName: senderController.text.isNotEmpty 
-                            ? senderController.text 
-                            : (selectedType == 'IN' ? 'Ẩn danh' : 'Ban quản trị'),
+                        senderName: senderController.text.isNotEmpty
+                            ? senderController.text
+                            : (selectedType == 'IN'
+                                ? 'Ẩn danh'
+                                : 'Ban quản trị'),
                       ),
                     );
                 Navigator.pop(ctx);
                 AppSnackBar.success(context, 'Đã thêm giao dịch thành công!');
               },
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.wood, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.wood,
+                  foregroundColor: Colors.white),
               child: const Text('Lưu'),
             ),
           ],
@@ -609,7 +689,8 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDialogState) => Dialog(
           backgroundColor: AppColors.parchment,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: 320,
             padding: const EdgeInsets.all(20),
@@ -639,21 +720,17 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                   const Divider(),
                   if (!showQR) ...[
                     const SizedBox(height: 12),
-                    TextField(
+                    AppOutlineTextField(
                       controller: amountController,
+                      label: 'Số tiền đóng góp (VNĐ)',
+                      hintText: 'Nhập số tiền...',
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Số tiền đóng góp (VNĐ)',
-                        hintText: 'Nhập số tiền...',
-                      ),
                     ),
                     const SizedBox(height: 12),
-                    TextField(
+                    AppOutlineTextField(
                       controller: descController,
-                      decoration: const InputDecoration(
-                        labelText: 'Lời chúc / Nội dung',
-                        hintText: 'Ví dụ: Đóng góp sửa nhà thờ tổ...',
-                      ),
+                      label: 'Lời chúc / Nội dung',
+                      hintText: 'Ví dụ: Đóng góp sửa nhà thờ tổ...',
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -661,9 +738,11 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              final amt = double.tryParse(amountController.text) ?? 0;
+                              final amt =
+                                  double.tryParse(amountController.text) ?? 0;
                               if (amt <= 1000) {
-                                AppSnackBar.error(ctx, 'Số tiền tối thiểu là 1.000₫');
+                                AppSnackBar.error(
+                                    ctx, 'Số tiền tối thiểu là 1.000₫');
                                 return;
                               }
                               setDialogState(() {
@@ -709,7 +788,9 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                             width: 170,
                             height: 170,
                             fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) => const Icon(LucideIcons.qrCode, size: 100, color: AppColors.wood),
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(LucideIcons.qrCode,
+                                    size: 100, color: AppColors.wood),
                           ),
                         ],
                       ),
@@ -718,7 +799,10 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                     Text(
                       'STK: 1234567890 • MB Bank\nTên: HUYNH GIA TOC TRUONG\nNội dung: GIA TOC VIET HGT1',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.beVietnamPro(fontSize: 12, color: AppColors.textSecondary, height: 1.5),
+                      style: GoogleFonts.beVietnamPro(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                          height: 1.5),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -731,14 +815,17 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                                       amount: amount,
                                       type: 'IN',
                                       category: 'Đóng góp',
-                                      description: descController.text.isNotEmpty 
-                                          ? descController.text 
+                                      description: descController
+                                              .text.isNotEmpty
+                                          ? descController.text
                                           : 'Đóng góp trực tuyến qua VietQR',
-                                      senderName: 'Thành viên đóng góp (VietQR)',
+                                      senderName:
+                                          'Thành viên đóng góp (VietQR)',
                                     ),
                                   );
                               Navigator.pop(ctx);
-                              AppSnackBar.success(context, 'Hệ thống tự động đối soát ngân hàng thành công! Đã cộng vào số dư.');
+                              AppSnackBar.success(context,
+                                  'Hệ thống tự động đối soát ngân hàng thành công! Đã cộng vào số dư.');
                             },
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.green,
@@ -758,21 +845,25 @@ class _FamilyFundPageState extends State<FamilyFundPage> with SingleTickerProvid
                               context.read<FamilyFundBloc>().add(
                                     SubmitContribution(
                                       amount: amount,
-                                      description: descController.text.isNotEmpty 
-                                          ? descController.text 
-                                          : 'Đóng góp qua ngân hàng',
+                                      description:
+                                          descController.text.isNotEmpty
+                                              ? descController.text
+                                              : 'Đóng góp qua ngân hàng',
                                       senderName: 'Huỳnh Minh Triết',
-                                      evidenceUrl: 'https://images.unsplash.com/photo-1628157582853-a796fa650a6a?q=80&w=200',
+                                      evidenceUrl:
+                                          'https://images.unsplash.com/photo-1628157582853-a796fa650a6a?q=80&w=200',
                                     ),
                                   );
                               Navigator.pop(ctx);
-                              AppSnackBar.success(context, 'Yêu cầu đóng góp đã được gửi. Chờ Admin phê duyệt!');
+                              AppSnackBar.success(context,
+                                  'Yêu cầu đóng góp đã được gửi. Chờ Admin phê duyệt!');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.wood,
                               foregroundColor: Colors.white,
                             ),
-                            child: const Text('Tôi đã chuyển (Gửi bill duyệt tay)'),
+                            child: const Text(
+                                'Tôi đã chuyển (Gửi bill duyệt tay)'),
                           ),
                         ),
                       ],

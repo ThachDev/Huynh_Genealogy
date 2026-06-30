@@ -73,8 +73,7 @@ class AppValidators {
     if (trimmed.length > 50) {
       return l10n.errFullNameTooLong;
     }
-    final nameRegex = RegExp(
-        r'^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂĐÎÔƠƯỨỨỰửữựỳỵỷỹ \s]+$');
+    final nameRegex = RegExp(r'^[\p{L}\s]+$', unicode: true);
     if (!nameRegex.hasMatch(trimmed)) {
       return l10n.errFullNameInvalid;
     }
@@ -120,6 +119,37 @@ class AppValidators {
     final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
       return l10n.errRequiredField(fieldName);
+    }
+    return null;
+  }
+
+  static String? validateGeneration(BuildContext context, String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Vui lòng nhập thế hệ';
+    }
+    if (int.tryParse(value.trim()) == null) {
+      return 'Thế hệ phải là số';
+    }
+    return null;
+  }
+
+  static String? validatePlaceOfBirth(BuildContext context, String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Vui lòng nhập quê quán';
+    }
+    return null;
+  }
+
+  static String? validateDateOfBirth(BuildContext context, String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Vui lòng chọn ngày sinh';
+    }
+    return null;
+  }
+
+  static String? validateDateOfDeath(BuildContext context, String? value, bool isAlive) {
+    if (!isAlive && (value == null || value.trim().isEmpty)) {
+      return 'Vui lòng chọn ngày mất';
     }
     return null;
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../../core/theme/app_theme.dart';
-import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/widgets/widgets.dart';
 
 class AdminEditProfilePage extends StatefulWidget {
   const AdminEditProfilePage({super.key});
@@ -75,39 +75,43 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
               ),
             ),
             const SizedBox(height: 30),
-            _buildTextField(
+            AppOutlineTextField(
               controller: _nameController,
               label: 'Họ và tên',
-              icon: LucideIcons.user,
+              hintText: 'Nhập đầy đủ họ và tên',
+              prefixIcon: const Icon(LucideIcons.user, color: AppColors.wood),
               validator: (val) => val == null || val.trim().isEmpty
                   ? 'Vui lòng nhập họ tên'
                   : null,
             ),
             const SizedBox(height: 16),
-            _buildTextField(
+            AppOutlineTextField(
               controller: _emailController,
               label: 'Email',
-              icon: LucideIcons.mail,
+              hintText: 'example@email.com',
               keyboardType: TextInputType.emailAddress,
+              prefixIcon: const Icon(LucideIcons.mail, color: AppColors.wood),
               validator: (val) => val == null || !val.contains('@')
                   ? 'Email không hợp lệ'
                   : null,
             ),
             const SizedBox(height: 16),
-            _buildTextField(
+            AppOutlineTextField(
               controller: _phoneController,
               label: 'Số điện thoại',
-              icon: LucideIcons.phone,
+              hintText: '0xxxxxxxxx',
               keyboardType: TextInputType.phone,
+              prefixIcon: const Icon(LucideIcons.phone, color: AppColors.wood),
               validator: (val) => val == null || val.trim().length < 10
                   ? 'Số điện thoại không hợp lệ'
                   : null,
             ),
             const SizedBox(height: 16),
-            _buildTextField(
+            AppOutlineTextField(
               controller: _addressController,
               label: 'Địa chỉ sinh sống',
-              icon: LucideIcons.mapPin,
+              hintText: 'Số nhà, đường, quận, thành phố...',
+              prefixIcon: const Icon(LucideIcons.mapPin, color: AppColors.wood),
               maxLines: 2,
             ),
             const SizedBox(height: 40),
@@ -141,29 +145,4 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: AppColors.wood),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        filled: true,
-        fillColor: AppColors.surface,
-      ),
-      style: GoogleFonts.beVietnamPro(fontSize: 14),
-    );
-  }
 }

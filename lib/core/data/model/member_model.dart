@@ -24,24 +24,24 @@ class MemberModel extends MemberEntity {
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
     return MemberModel(
-      id: json['id'] as int,
-      fullName: json['fullName'] as String,
+      id: _parseInt(json['id']) ?? 0,
+      fullName: json['fullName'] as String? ?? '',
       gender: _parseGender(json['gender'] as String?),
       dateOfBirth: json['dateOfBirth'] as String?,
       placeOfBirth: json['placeOfBirth'] as String?,
-      isAlive: json['isAlive'] as bool? ?? true,
+      isAlive: _parseBool(json['isAlive'] ?? true),
       dateOfDeath: json['dateOfDeath'] as String?,
       maritalStatus: _parseMaritalStatus(json['maritalStatus'] as String?),
-      generation: json['generation'] as int?,
-      branchId: json['branchId'] as int?,
+      generation: _parseInt(json['generation']),
+      branchId: _parseInt(json['branchId']),
       branchName: json['branchName'] as String?,
-      parentId: json['parentId'] as int?,
-      spouseId: json['spouseId'] as int?,
+      parentId: _parseInt(json['parentId']),
+      spouseId: _parseInt(json['spouseId']),
       notes: json['notes'] as String?,
       avatarUrl: json['avatarUrl'] as String?,
-      familyId: json['familyId'] as int?,
-      isLunarBirthDate: json['isLunarBirthDate'] as bool? ?? false,
-      isLunarDeathDate: json['isLunarDeathDate'] as bool? ?? false,
+      familyId: _parseInt(json['familyId']),
+      isLunarBirthDate: _parseBool(json['isLunarBirthDate']),
+      isLunarDeathDate: _parseBool(json['isLunarDeathDate']),
     );
   }
 
@@ -88,6 +88,22 @@ class MemberModel extends MemberEntity {
       isLunarBirthDate: entity.isLunarBirthDate,
       isLunarDeathDate: entity.isLunarDeathDate,
     );
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+
+  static bool _parseBool(dynamic value) {
+    if (value == null) return false;
+    if (value is bool) return value;
+    if (value is String) {
+      return value.toLowerCase() == 'true' || value == '1';
+    }
+    return false;
   }
 
   static Gender _parseGender(String? value) {

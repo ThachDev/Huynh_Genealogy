@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../domain/usecase/delete_member.dart';
@@ -7,7 +8,8 @@ import '../../../domain/usecase/save_member.dart';
 part 'admin_member_form_event.dart';
 part 'admin_member_form_state.dart';
 
-class AdminMemberFormBloc extends Bloc<AdminMemberFormEvent, AdminMemberFormState> {
+class AdminMemberFormBloc
+    extends Bloc<AdminMemberFormEvent, AdminMemberFormState> {
   final UserGetMembers getMembers;
   final SaveMember saveMember;
   final DeleteMember deleteMember;
@@ -18,13 +20,13 @@ class AdminMemberFormBloc extends Bloc<AdminMemberFormEvent, AdminMemberFormStat
     required this.deleteMember,
   }) : super(AdminMemberFormInitial()) {
     on<LoadAdminMemberFormEvent>(_onLoad);
-    on<SubmitAdminMemberFormEvent>(_onSubmit);
-    on<DeleteAdminMemberFormEvent>(_onDelete);
+    on<SubmitAdminMemberFormEvent>(_onSubmit, transformer: droppable());
+    on<DeleteAdminMemberFormEvent>(_onDelete, transformer: droppable());
     on<ResetAdminMemberFormEvent>(_onReset);
   }
 
-  Future<void> _onLoad(
-      LoadAdminMemberFormEvent event, Emitter<AdminMemberFormState> emit) async {
+  Future<void> _onLoad(LoadAdminMemberFormEvent event,
+      Emitter<AdminMemberFormState> emit) async {
     emit(AdminMemberFormLoading());
     if (event.memberId == null) {
       // Create mode
@@ -44,8 +46,8 @@ class AdminMemberFormBloc extends Bloc<AdminMemberFormEvent, AdminMemberFormStat
     );
   }
 
-  Future<void> _onSubmit(
-      SubmitAdminMemberFormEvent event, Emitter<AdminMemberFormState> emit) async {
+  Future<void> _onSubmit(SubmitAdminMemberFormEvent event,
+      Emitter<AdminMemberFormState> emit) async {
     emit(AdminMemberFormSubmitting());
     final result = await saveMember(SaveMemberParams(member: event.member));
     result.fold(
@@ -54,8 +56,8 @@ class AdminMemberFormBloc extends Bloc<AdminMemberFormEvent, AdminMemberFormStat
     );
   }
 
-  Future<void> _onDelete(
-      DeleteAdminMemberFormEvent event, Emitter<AdminMemberFormState> emit) async {
+  Future<void> _onDelete(DeleteAdminMemberFormEvent event,
+      Emitter<AdminMemberFormState> emit) async {
     emit(AdminMemberFormSubmitting());
     final result = await deleteMember(DeleteMemberParams(id: event.memberId));
     result.fold(
@@ -72,7 +74,8 @@ class AdminMemberFormBloc extends Bloc<AdminMemberFormEvent, AdminMemberFormStat
     );
   }
 
-  void _onReset(ResetAdminMemberFormEvent event, Emitter<AdminMemberFormState> emit) {
+  void _onReset(
+      ResetAdminMemberFormEvent event, Emitter<AdminMemberFormState> emit) {
     emit(AdminMemberFormInitial());
   }
 }

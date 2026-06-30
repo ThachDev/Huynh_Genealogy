@@ -215,3 +215,70 @@ class AppTextFieldLight extends StatelessWidget {
     );
   }
 }
+
+/// Text field outline với floating label - dùng cho form sáng (admin, form thành viên...)
+class AppOutlineTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String hintText;
+  final TextInputType? keyboardType;
+  final int maxLines;
+  final String? Function(String?)? validator;
+  final Widget? prefixIcon;
+
+  const AppOutlineTextField({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.hintText,
+    this.keyboardType,
+    this.maxLines = 1,
+    this.validator,
+    this.prefixIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      validator: validator,
+      style:
+          GoogleFonts.beVietnamPro(fontSize: 14, color: AppColors.textPrimary),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: GoogleFonts.beVietnamPro(
+            fontSize: 13, color: const Color(0xFF7A7571)),
+        floatingLabelStyle: GoogleFonts.beVietnamPro(
+            fontSize: 12,
+            color: AppColors.crimson,
+            fontWeight: FontWeight.bold),
+        hintText: hintText,
+        hintStyle: GoogleFonts.beVietnamPro(
+            fontSize: 13, color: const Color(0xFFA5A09A)),
+        prefixIcon: prefixIcon,
+        fillColor: const Color(0xFFFCFAF8),
+        filled: true,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.crimson, width: 1.2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+        ),
+      ),
+    );
+  }
+}

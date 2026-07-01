@@ -25,6 +25,8 @@ abstract class OnboardingRemoteDataSource {
 
   Future<bool> approveRequest(int requestId);
 
+  Future<bool> rejectRequest(int requestId);
+
   Future<FamilyModel> getFamilyDetail(int familyId);
 }
 
@@ -136,6 +138,21 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
     } on DioException catch (e) {
       throw ServerException(
         message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi phê duyệt yêu cầu',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  @override
+  Future<bool> rejectRequest(int requestId) async {
+    try {
+      final response = await dio.put(
+        '${AppConstants.familiesEndpoint}/requests/$requestId/reject',
+      );
+      return response.data['success'] as bool? ?? false;
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi từ chối yêu cầu',
         statusCode: e.response?.statusCode,
       );
     }

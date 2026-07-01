@@ -196,6 +196,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               AppSnackBar.success(context, 'Đã phê duyệt yêu cầu thành công!');
               _loadPendingRequests();
               context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+            } else if (state is AdminRequestRejectedSuccess) {
+              AppSnackBar.success(context, 'Đã từ chối yêu cầu thành công!');
+              _loadPendingRequests();
             } else if (state is AdminPendingRequestsFailure) {
               AppSnackBar.error(context, state.message);
             }
@@ -833,8 +836,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           if (onAdd != null)
             TextButton.icon(
               onPressed: onAdd,
-              icon:
-                  const Icon(LucideIcons.plus, size: 14, color: AppColors.wood),
+              icon: Icon(
+                addLabel == 'Xem tất cả' ? LucideIcons.eye : LucideIcons.plus,
+                size: 14,
+                color: AppColors.wood,
+              ),
               label: Text(
                 addLabel ?? 'Thêm mới',
                 style: GoogleFonts.beVietnamPro(

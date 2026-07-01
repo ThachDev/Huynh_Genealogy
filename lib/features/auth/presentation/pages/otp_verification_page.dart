@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -56,14 +57,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
-        title: Text(
-          l10n.otpTitle,
-          style: GoogleFonts.beVietnamPro(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
         centerTitle: true,
       ),
       body: BlocListener<AuthBloc, AuthState>(
@@ -157,7 +150,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               label: l10n.otpLabel,
                               controller: _otpController,
                               keyboardType: TextInputType.number,
-                              maxLength: 6,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(6)
+                              ],
                               enabled: !isLoading,
                               hintText: l10n.otpHint,
                               textAlign: TextAlign.center,

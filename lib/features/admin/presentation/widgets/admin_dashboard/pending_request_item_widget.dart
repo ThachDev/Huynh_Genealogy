@@ -108,30 +108,56 @@ class PendingRequestItemWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<AdminPendingRequestsBloc>().add(
-                        ApproveAdminRequestEvent(requestId: request.id),
-                      );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.crimson,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      context.read<AdminPendingRequestsBloc>().add(
+                            RejectAdminRequestEvent(requestId: request.id),
+                          );
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 6),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Từ chối',
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ),
-                ),
-                child: Text(
-                  'Phê duyệt',
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AdminPendingRequestsBloc>().add(
+                            ApproveAdminRequestEvent(requestId: request.id),
+                          );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.crimson,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    child: Text(
+                      'Phê duyệt',
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),

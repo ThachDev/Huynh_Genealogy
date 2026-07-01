@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:giatocviet/core/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -31,6 +32,8 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
   List<MemberEntity> _familyMembers = [];
   MemberEntity? _selectedMember;
 
+  bool _isNotOnTree = false;
+
   @override
   void dispose() {
     _inviteCodeController.dispose();
@@ -48,11 +51,11 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
   }
 
   void _onJoinFamilyPressed() {
-    if (_verifiedFamily != null && _selectedMember != null) {
+    if (_verifiedFamily != null && (_selectedMember != null || _isNotOnTree)) {
       context.read<OnboardingBloc>().add(
             JoinFamilyEvent(
               familyId: _verifiedFamily!.id,
-              memberNodeId: _selectedMember?.id,
+              memberNodeId: _isNotOnTree ? null : _selectedMember?.id,
               userId: widget.user.id,
             ),
           );
@@ -69,6 +72,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
             _verifiedFamily = state.family;
             _familyMembers = state.members;
             _selectedMember = null;
+            _isNotOnTree = false;
           });
         }
       },
@@ -246,47 +250,97 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.parchment.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color:
-                              AppColors.textSecondary.withValues(alpha: 0.15)),
-                    ),
-                    child: DropdownButton<MemberEntity>(
-                      isExpanded: true,
-                      hint: Text(
-                        l10n.whoAreYouDropdownHint,
-                        style: const TextStyle(color: AppColors.textSecondary),
+                  _isNotOnTree
+                      ? Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFDFCFB),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: const Color(0xFFEFEBE7), width: 1.2),
+                          ),
+                          child: Text(
+                            'Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.',
+                            textAlign: TextAlign.justify,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 13,
+                              color: AppColors.textSecondary,
+                              height: 1.4,
+                            ),
+                          ),
+                        )
+                      : AppDropdown<MemberEntity?>(
+                          value: _selectedMember,
+                          showSearchBox: true,
+                          searchHint: 'Tìm kiếm tên của bạn...',
+                          items: [
+                            const DropdownItem<MemberEntity?>(
+                              value: null,
+                              child: Text('Chọn thành viên...'),
+                            ),
+                            ..._familyMembers
+                                .map((m) => DropdownItem<MemberEntity?>(
+                                      value: m,
+                                      child: Text(
+                                          '${m.fullName} (Đời ${m.generation})'),
+                                    )),
+                          ],
+                          onChanged: (val) {
+                            setState(() {
+                              _selectedMember = val;
+                            });
+                          },
+                        ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Checkbox(
+                          value: _isNotOnTree,
+                          onChanged: (val) {
+                            setState(() {
+                              _isNotOnTree = val ?? false;
+                              if (_isNotOnTree) {
+                                _selectedMember = null;
+                              }
+                            });
+                          },
+                          activeColor: AppColors.crimson,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
                       ),
-                      dropdownColor: AppColors.surface,
-                      underline: const SizedBox(),
-                      value: _selectedMember,
-                      style: GoogleFonts.inter(color: AppColors.textPrimary),
-                      items: _familyMembers.map((MemberEntity m) {
-                        return DropdownMenuItem<MemberEntity>(
-                          value: m,
-                          child: Text(m.fullName,
-                              style: const TextStyle(
-                                  color: AppColors.textPrimary)),
-                        );
-                      }).toList(),
-                      onChanged: (val) {
-                        setState(() {
-                          _selectedMember = val;
-                        });
-                      },
-                    ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isNotOnTree = !_isNotOnTree;
+                            if (_isNotOnTree) {
+                              _selectedMember = null;
+                            }
+                          });
+                        },
+                        child: Text(
+                          'Tên tôi chưa có trên cây gia phả',
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 32),
                   BlocBuilder<OnboardingBloc, OnboardingState>(
                     builder: (context, state) {
                       return AppButton(
                         label: l10n.sendJoinRequestButton,
-                        onPressed: _selectedMember != null
+                        onPressed: (_selectedMember != null || _isNotOnTree)
                             ? _onJoinFamilyPressed
                             : null,
                         isLoading: state is OnboardingLoading,

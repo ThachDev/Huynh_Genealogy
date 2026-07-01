@@ -453,7 +453,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inviteCodeDescription =>
-      'Enter the 9-character code provided by your family leader or administrator.';
+      'Enter the 6-character code provided by your family leader or administrator.';
 
   @override
   String get confirmJoinButton => 'CONFIRM JOIN';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lottie/lottie.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -22,11 +22,11 @@ class PendingApprovalWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 48),
-          const Icon(
-            LucideIcons.hourglass,
-            size: 80,
-            color: AppColors.gold,
+          const SizedBox(height: 16),
+          Lottie.asset(
+            'assets/json/loading.json',
+            height: 180,
+            repeat: true,
           ),
           const SizedBox(height: 24),
           Text(

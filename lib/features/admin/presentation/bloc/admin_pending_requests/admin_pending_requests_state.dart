@@ -19,6 +19,11 @@ class AdminRequestApprovedSuccess extends AdminPendingRequestsState {
   const AdminRequestApprovedSuccess({required this.requestId});
 }
 
+class AdminRequestRejectedSuccess extends AdminPendingRequestsState {
+  final int requestId;
+  const AdminRequestRejectedSuccess({required this.requestId});
+}
+
 class AdminPendingRequestsFailure extends AdminPendingRequestsState {
   final String message;
   const AdminPendingRequestsFailure({required this.message});

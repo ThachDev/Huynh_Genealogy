@@ -11,3 +11,8 @@ class ApproveAdminRequestEvent extends AdminPendingRequestsEvent {
   final int requestId;
   ApproveAdminRequestEvent({required this.requestId});
 }
+
+class RejectAdminRequestEvent extends AdminPendingRequestsEvent {
+  final int requestId;
+  RejectAdminRequestEvent({required this.requestId});
+}

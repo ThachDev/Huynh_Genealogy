@@ -73,9 +73,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _onGoogleLoginPressed() {
-    context.read<AuthBloc>().add(AuthLoginRequested());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,13 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                                     isLoading, l10n),
                                 const SizedBox(height: 28.0),
                                 _buildLoginButton(isLoading, l10n),
-                                const SizedBox(height: 24.0),
-                                AppLabeledDivider(
-                                  label: l10n.orDivider,
-                                  isLight: true,
-                                ),
-                                const SizedBox(height: 24.0),
-                                _buildGoogleLoginButton(l10n),
+
                                 const Spacer(),
                                 if (bottomInset == 0) ...[
                                   const SizedBox(height: 24.0),
@@ -329,20 +320,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildGoogleLoginButton(AppLocalizations l10n) {
-    return AppButton(
-      label: l10n.googleLoginButton,
-      onPressed: _onGoogleLoginPressed,
-      variant: AppButtonVariant.outline,
-      size: AppButtonSize.large,
-      fullWidth: true,
-      prefixIcon: Image.asset(
-        'assets/images/google.png',
-        width: 20,
-        height: 20,
-      ),
-    );
-  }
 
   Widget _buildRegisterFooter(bool isLoading, AppLocalizations l10n) {
     return Align(

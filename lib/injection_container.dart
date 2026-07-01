@@ -41,6 +41,7 @@ Future<void> init() async {
     () => AdminPendingRequestsBloc(
       getPendingRequests: sl(),
       approveRequest: sl(),
+      rejectRequest: sl(),
       getFamilyDetail: sl(),
     ),
   );
@@ -102,6 +103,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => JoinFamily(sl()));
   sl.registerLazySingleton(() => GetPendingRequests(sl()));
   sl.registerLazySingleton(() => ApproveRequest(sl()));
+  sl.registerLazySingleton(() => RejectRequest(sl()));
   sl.registerLazySingleton(() => GetFamilyDetail(sl()));
   sl.registerLazySingleton(() => SaveBranch(sl()));
   sl.registerLazySingleton(() => DeleteBranch(sl()));

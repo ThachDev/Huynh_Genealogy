@@ -96,6 +96,20 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> rejectRequest({
+    required int requestId,
+  }) async {
+    try {
+      final result = await remoteDataSource.rejectRequest(requestId);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
   Future<Either<Failure, FamilyEntity>> getFamilyDetail({
     required int familyId,
   }) async {

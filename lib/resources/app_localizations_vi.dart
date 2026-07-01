@@ -453,7 +453,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get inviteCodeDescription =>
-      'Nhập mã định danh 9 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.';
+      'Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.';
 
   @override
   String get confirmJoinButton => 'XÁC NHẬN THAM GIA';

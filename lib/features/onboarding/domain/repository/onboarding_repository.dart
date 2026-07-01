@@ -29,6 +29,10 @@ abstract class OnboardingRepository {
     required int requestId,
   });
 
+  Future<Either<Failure, bool>> rejectRequest({
+    required int requestId,
+  });
+
   Future<Either<Failure, FamilyEntity>> getFamilyDetail({
     required int familyId,
   });

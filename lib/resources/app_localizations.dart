@@ -893,7 +893,7 @@ abstract class AppLocalizations {
   /// No description provided for @inviteCodeDescription.
   ///
   /// In vi, this message translates to:
-  /// **'Nhập mã định danh 9 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.'**
+  /// **'Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.'**
   String get inviteCodeDescription;
 
   /// No description provided for @confirmJoinButton.

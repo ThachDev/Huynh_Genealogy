@@ -75,7 +75,8 @@ class MemberItemWidget extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
                         color: AppColors.gold.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
@@ -91,9 +92,12 @@ class MemberItemWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: member.isAlive ? Colors.green.shade50 : Colors.grey.shade100,
+                        color: member.isAlive
+                            ? Colors.green.shade50
+                            : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
@@ -101,7 +105,9 @@ class MemberItemWidget extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
-                          color: member.isAlive ? Colors.green : Colors.grey.shade600,
+                          color: member.isAlive
+                              ? Colors.green
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ),
@@ -120,7 +126,8 @@ class MemberItemWidget extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(LucideIcons.gitBranch, size: 12, color: AppColors.wood),
+                      const Icon(LucideIcons.gitBranch,
+                          size: 12, color: AppColors.wood),
                       const SizedBox(width: 4),
                       Text(
                         'Chi tộc: ${member.branchName}',
@@ -137,7 +144,8 @@ class MemberItemWidget extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(LucideIcons.moreVertical, color: AppColors.textSecondary, size: 20),
+            icon: const Icon(LucideIcons.moreVertical,
+                color: AppColors.textSecondary, size: 20),
             onSelected: (value) {
               if (value == 'edit') {
                 onEdit();
@@ -167,7 +175,8 @@ class MemberItemWidget extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       'Xóa',
-                      style: GoogleFonts.beVietnamPro(fontSize: 13, color: Colors.red),
+                      style: GoogleFonts.beVietnamPro(
+                          fontSize: 13, color: Colors.red),
                     ),
                   ],
                 ),

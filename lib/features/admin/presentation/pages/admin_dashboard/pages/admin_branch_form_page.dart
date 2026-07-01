@@ -3,11 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/domain/entity/branch_entity.dart';
+import '../../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../auth/auth.dart';
+import '../../../../../user/presentation/bloc/user_tree_bloc.dart';
 import '../../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
+import 'admin_member_form_page.dart';
 
 class AdminBranchFormPage extends StatefulWidget {
   final BranchEntity? branch; // null = Thêm mới, có giá trị = Chỉnh sửa
@@ -27,14 +31,21 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
   late TextEditingController _foundingYearController;
   late TextEditingController _regionController;
 
+  bool _useDropdown = true;
+  bool _isFounderNameInitialized = false;
+
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.branch?.name ?? '');
-    _founderController = TextEditingController(text: widget.branch?.founderName ?? '');
-    _descriptionController = TextEditingController(text: widget.branch?.description ?? '');
-    _foundingYearController = TextEditingController(text: widget.branch?.foundingYear?.toString() ?? '');
-    _regionController = TextEditingController(text: widget.branch?.region ?? '');
+    _founderController =
+        TextEditingController(text: widget.branch?.founderName ?? '');
+    _descriptionController =
+        TextEditingController(text: widget.branch?.description ?? '');
+    _foundingYearController = TextEditingController(
+        text: widget.branch?.foundingYear?.toString() ?? '');
+    _regionController =
+        TextEditingController(text: widget.branch?.region ?? '');
   }
 
   @override
@@ -66,7 +77,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text('Hủy',
-                style: GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+                style:
+                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -93,19 +105,43 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     }
 
     final authState = context.read<AuthBloc>().state;
-    final familyId = authState is Authenticated ? authState.user.familyId : null;
+    final familyId =
+        authState is Authenticated ? authState.user.familyId : null;
 
     final newBranch = BranchEntity(
       id: widget.branch?.id ?? 0,
       name: _nameController.text.trim(),
-      founderName: _founderController.text.trim().isEmpty ? null : _founderController.text.trim(),
-      description: _descriptionController.text.trim().isEmpty ? null : _descriptionController.text.trim(),
+      founderName: _founderController.text.trim().isEmpty
+          ? null
+          : _founderController.text.trim(),
+      description: _descriptionController.text.trim().isEmpty
+          ? null
+          : _descriptionController.text.trim(),
       foundingYear: int.tryParse(_foundingYearController.text),
-      region: _regionController.text.trim().isEmpty ? null : _regionController.text.trim(),
+      region: _regionController.text.trim().isEmpty
+          ? null
+          : _regionController.text.trim(),
       familyId: widget.branch?.familyId ?? familyId ?? 1,
     );
 
-    context.read<AdminBranchFormBloc>().add(SaveAdminBranchFormEvent(newBranch));
+    context
+        .read<AdminBranchFormBloc>()
+        .add(SaveAdminBranchFormEvent(newBranch));
+  }
+
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(
+        text.toUpperCase(),
+        style: GoogleFonts.inter(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF6B6661),
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
   }
 
   Widget _buildTextField({
@@ -115,35 +151,18 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     TextInputType? keyboardType,
     int maxLines = 1,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Text(
-            label.toUpperCase(),
-            style: GoogleFonts.inter(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF6B6661),
-              letterSpacing: 0.5,
-            ),
-          ),
-        ),
-        AppOutlineTextField(
-          controller: controller,
-          label: label,
-          hintText: hintText,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          validator: (val) {
-            if (label == 'Tên chi tộc' && (val == null || val.trim().isEmpty)) {
-              return 'Không được để trống';
-            }
-            return null;
-          },
-        ),
-      ],
+    return AppOutlineTextField(
+      controller: controller,
+      label: label,
+      hintText: hintText,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      validator: (val) {
+        if (label == 'Tên chi tộc' && (val == null || val.trim().isEmpty)) {
+          return 'Không được để trống';
+        }
+        return null;
+      },
     );
   }
 
@@ -204,7 +223,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
         backgroundColor: const Color(0xFF2B2825),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(LucideIcons.arrowLeft, color: AppColors.gold, size: 20),
+          icon: const Icon(LucideIcons.arrowLeft,
+              color: AppColors.gold, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -220,7 +240,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
         actions: [
           if (isEdit)
             IconButton(
-              icon: const Icon(LucideIcons.trash2, color: Colors.redAccent, size: 20),
+              icon: const Icon(LucideIcons.trash2,
+                  color: Colors.redAccent, size: 20),
               onPressed: _showDeleteConfirmDialog,
               tooltip: 'Xóa chi tộc',
             ),
@@ -231,7 +252,9 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
           if (state is AdminBranchFormSuccess) {
             AppSnackBar.success(
               context,
-              state.isDeleted ? 'Đã xóa chi tộc thành công' : 'Đã lưu thông tin chi tộc thành công',
+              state.isDeleted
+                  ? 'Đã xóa chi tộc thành công'
+                  : 'Đã lưu thông tin chi tộc thành công',
             );
             Navigator.pop(context, true);
           } else if (state is AdminBranchFormError) {
@@ -245,11 +268,28 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
             );
           }
 
+          final userTreeState = context.watch<UserTreeBloc>().state;
+          final members = userTreeState is UserTreeLoaded
+              ? userTreeState.members
+              : <MemberEntity>[];
+
+          if (!_isFounderNameInitialized &&
+              members.isNotEmpty &&
+              _founderController.text.isNotEmpty) {
+            final hasMatch =
+                members.any((m) => m.fullName == _founderController.text);
+            if (!hasMatch) {
+              _useDropdown = false;
+            }
+            _isFounderNameInitialized = true;
+          }
+
           return Column(
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -262,19 +302,126 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                             _buildTextField(
                               controller: _nameController,
                               label: 'Tên chi tộc',
-                              hintText: 'Nhập tên chi tộc (VD: Chi Trưởng, Chi Hai...)',
+                              hintText: 'VD: Chi Trưởng, Chi Hai...',
                             ),
                             const SizedBox(height: 16),
-                            _buildTextField(
-                              controller: _founderController,
-                              label: 'Tên tổ chi / Sáng lập',
-                              hintText: 'Nhập tên người lập chi (tùy chọn)',
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: _useDropdown
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            _buildLabel('Tên tổ chi'),
+                                            AppDropdown<String?>(
+                                              value: members.any((m) =>
+                                                      m.fullName ==
+                                                      _founderController.text)
+                                                  ? _founderController.text
+                                                  : null,
+                                              items: [
+                                                const DropdownItem<String?>(
+                                                  value: '__ADD_NEW__',
+                                                  child: Text(
+                                                    '✦ Thêm thành viên mới...',
+                                                    style: TextStyle(
+                                                      color: AppColors.crimson,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const DropdownItem<String?>(
+                                                  value: null,
+                                                  child: Text('Không chọn'),
+                                                ),
+                                                ...members.map((m) =>
+                                                    DropdownItem<String?>(
+                                                      value: m.fullName,
+                                                      child: Text(
+                                                          '${m.fullName} (Đời ${m.generation})'),
+                                                    )),
+                                              ],
+                                              onChanged: (val) {
+                                                if (val == '__ADD_NEW__') {
+                                                  // Reset selection value
+                                                  setState(() {});
+
+                                                  WidgetsBinding.instance
+                                                      .addPostFrameCallback(
+                                                          (_) async {
+                                                    final result =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const AdminMemberFormPage(),
+                                                      ),
+                                                    );
+                                                    if (result == true) {
+                                                      if (context.mounted) {
+                                                        context
+                                                            .read<
+                                                                UserTreeBloc>()
+                                                            .add(
+                                                                UserTreeLoadEvent());
+                                                      }
+                                                    }
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    _founderController.text =
+                                                        val ?? '';
+                                                  });
+                                                }
+                                              },
+                                              showSearchBox: true,
+                                            ),
+                                          ],
+                                        )
+                                      : _buildTextField(
+                                          controller: _founderController,
+                                          label: 'Tên tổ chi (Tự nhập)',
+                                          hintText: 'Người lập chi (tùy chọn)',
+                                        ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: const Color(0xFFEFEBE7),
+                                        width: 1.2),
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: const Color(0xFFFCFAF8),
+                                  ),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _useDropdown = !_useDropdown;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _useDropdown
+                                          ? LucideIcons.keyboard
+                                          : LucideIcons.listStart,
+                                      color: AppColors.wood,
+                                      size: 20,
+                                    ),
+                                    tooltip: _useDropdown
+                                        ? 'Tự nhập tên'
+                                        : 'Chọn từ danh sách',
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 16),
                             Row(
                               children: [
                                 Expanded(
-                                  flex: 1,
+                                  flex: 2,
                                   child: _buildTextField(
                                     controller: _foundingYearController,
                                     label: 'Năm lập chi',
@@ -284,10 +431,10 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
-                                  flex: 2,
+                                  flex: 3,
                                   child: _buildTextField(
                                     controller: _regionController,
-                                    label: 'Vùng miền / Địa phương',
+                                    label: 'Địa phương',
                                     hintText: 'VD: Làng X, Huyện Y',
                                   ),
                                 ),

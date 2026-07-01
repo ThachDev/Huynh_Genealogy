@@ -388,7 +388,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   const SizedBox(height: 16),
                                   _buildLabel('CHA/MẸ'),
                                   _buildDropdown<int?>(
-                                    value: _parentId,
+                                    value: parentIds.contains(_parentId) ? _parentId : null,
                                     items: [
                                       const DropdownItem<int?>(
                                           value: null,
@@ -420,7 +420,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   const SizedBox(height: 16),
                                   _buildLabel('VỢ/CHỒNG'),
                                   _buildDropdown<int?>(
-                                    value: _spouseId,
+                                    value: spouseIds.contains(_spouseId) ? _spouseId : null,
                                     items: [
                                       const DropdownItem<int?>(
                                           value: null,
@@ -457,7 +457,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       });
 
                                     return _buildDropdown<int?>(
-                                      value: _branchId,
+                                      value: allBranches.any((b) => b.id == _branchId) ? _branchId : null,
                                       items: [
                                         const DropdownItem<int?>(
                                             value: null,

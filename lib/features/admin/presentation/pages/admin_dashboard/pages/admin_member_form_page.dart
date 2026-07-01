@@ -164,15 +164,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             letterSpacing: 0.5,
           ),
         ),
-        actions: [
-          if (isEdit)
-            IconButton(
-              icon: const Icon(LucideIcons.trash2,
-                  color: Colors.redAccent, size: 20),
-              onPressed: _showDeleteConfirmDialog,
-              tooltip: 'Xóa thành viên',
-            ),
-        ],
       ),
       body: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
         listener: (context, state) {
@@ -270,421 +261,428 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                 .addPostFrameCallback((_) => setState(() => _spouseId = null));
           }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Stack: avatar nổi trên viền trên của card
-                  Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topCenter,
-                    children: [
-                      // Card đẩy xuống để nhường chỗ nửa avatar (55px)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 55),
-                        child: _buildSectionCard(
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Stack: avatar nổi trên viền trên của card
+                        Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topCenter,
                           children: [
-                            // Khoảng trống phần nửa dưới avatar + label
-                            const SizedBox(height: 70),
+                            // Card đẩy xuống để nhường chỗ nửa avatar (55px)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 55),
+                              child: _buildSectionCard(
+                                children: [
+                                  // Khoảng trống phần nửa dưới avatar + label
+                                  const SizedBox(height: 70),
 
-                            // Hàng 1: Họ và tên + Thế hệ
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: _buildTextField(
-                                    controller: _fullNameController,
-                                    label: 'Họ và tên',
-                                    hintText: 'Nhập họ và tên',
+                                  // Hàng 1: Họ và tên + Thế hệ
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        flex: 3,
+                                        child: _buildTextField(
+                                          controller: _fullNameController,
+                                          label: 'Họ và tên',
+                                          hintText: 'Nhập họ và tên',
+                                          validator: (val) =>
+                                              AppValidators.validateFullName(
+                                                  context, val),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        flex: 2,
+                                        child: _buildGenerationField(),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Hàng 2: Giới tính + Quan hệ / Hôn nhân
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 3,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            _buildLabel('QUAN HỆ / HÔN NHÂN'),
+                                            _buildDropdown<MaritalStatus>(
+                                              value: _maritalStatus,
+                                              items: const [
+                                                DropdownItem(
+                                                    value: MaritalStatus.single,
+                                                    child: Text('Độc thân')),
+                                                DropdownItem(
+                                                    value:
+                                                        MaritalStatus.married,
+                                                    child: Text('Đã kết hôn')),
+                                                DropdownItem(
+                                                    value:
+                                                        MaritalStatus.divorced,
+                                                    child: Text('Ly hôn')),
+                                                DropdownItem(
+                                                    value:
+                                                        MaritalStatus.widowed,
+                                                    child: Text('Góa phụ')),
+                                                DropdownItem(
+                                                    value:
+                                                        MaritalStatus.unknown,
+                                                    child: Text('Chưa rõ')),
+                                              ],
+                                              onChanged: (val) {
+                                                if (val != null) {
+                                                  setState(() =>
+                                                      _maritalStatus = val);
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 14),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            _buildLabel('GIỚI TÍNH'),
+                                            _buildDropdown<Gender>(
+                                              value: _gender,
+                                              items: const [
+                                                DropdownItem(
+                                                    value: Gender.male,
+                                                    child: Text('Nam')),
+                                                DropdownItem(
+                                                    value: Gender.female,
+                                                    child: Text('Nữ')),
+                                                DropdownItem(
+                                                    value: Gender.unknown,
+                                                    child: Text('Chưa rõ')),
+                                              ],
+                                              onChanged: (val) {
+                                                if (val != null) {
+                                                  setState(() => _gender = val);
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  _buildLabel('CHA/MẸ'),
+                                  _buildDropdown<int?>(
+                                    value: _parentId,
+                                    items: [
+                                      const DropdownItem<int?>(
+                                          value: null,
+                                          child: Text('Không chọn')),
+                                      ...parentOptions
+                                          .map((m) => DropdownItem<int?>(
+                                                value: m.id,
+                                                child: Text(
+                                                    '${m.fullName} (Đời ${m.generation})'),
+                                              )),
+                                    ],
+                                    onChanged: (val) {
+                                      final selectedParent = val == null
+                                          ? null
+                                          : allMembers
+                                              .where((m) => m.id == val)
+                                              .firstOrNull;
+                                      setState(() {
+                                        _parentId = val;
+                                        // Tự động gán chi tộc theo cha/mẹ
+                                        // nếu chưa chọn chi hoặc đang theo chi tộc cũ của cha
+                                        if (selectedParent?.branchId != null) {
+                                          _branchId = selectedParent!.branchId;
+                                        }
+                                      });
+                                    },
+                                    showSearchBox: true,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  _buildLabel('VỢ/CHỒNG'),
+                                  _buildDropdown<int?>(
+                                    value: _spouseId,
+                                    items: [
+                                      const DropdownItem<int?>(
+                                          value: null,
+                                          child: Text('Không chọn')),
+                                      ...spouseOptions
+                                          .map((m) => DropdownItem<int?>(
+                                                value: m.id,
+                                                child: Text(
+                                                    '${m.fullName} (Đời ${m.generation})'),
+                                              )),
+                                    ],
+                                    onChanged: (val) =>
+                                        setState(() => _spouseId = val),
+                                    showSearchBox: true,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  _buildLabel('CHI/NHÁNH'),
+                                  Builder(builder: (context) {
+                                    // Lấy chi tộc của cha/mẹ (nếu có) để hiển thị gợi ý
+                                    final parentMember = _parentId == null
+                                        ? null
+                                        : allMembers
+                                            .where((m) => m.id == _parentId)
+                                            .firstOrNull;
+                                    final parentBranchId =
+                                        parentMember?.branchId;
+
+                                    // Sắp xếp: chi tộc của cha/mẹ lên đầu
+                                    final sortedBranches = [...allBranches]
+                                      ..sort((a, b) {
+                                        if (a.id == parentBranchId) return -1;
+                                        if (b.id == parentBranchId) return 1;
+                                        return 0;
+                                      });
+
+                                    return _buildDropdown<int?>(
+                                      value: _branchId,
+                                      items: [
+                                        const DropdownItem<int?>(
+                                            value: null,
+                                            child: Text('Không thuộc chi nào')),
+                                        ...sortedBranches
+                                            .map((b) => DropdownItem<int?>(
+                                                  value: b.id,
+                                                  child: Text(
+                                                    b.id == parentBranchId
+                                                        ? '${b.name} ✦ (Chi của cha/mẹ)'
+                                                        : b.name,
+                                                  ),
+                                                )),
+                                      ],
+                                      onChanged: (val) =>
+                                          setState(() => _branchId = val),
+                                      showSearchBox: true,
+                                    );
+                                  }),
+                                  const SizedBox(height: 16),
+                                  // Quê quán
+                                  _buildTextField(
+                                    controller: _placeOfBirthController,
+                                    label: 'Quê quán',
+                                    hintText: 'Quê quán hoặc nơi sinh',
                                     validator: (val) =>
-                                        AppValidators.validateFullName(
+                                        AppValidators.validatePlaceOfBirth(
                                             context, val),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  flex: 2,
-                                  child: _buildGenerationField(),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Hàng 2: Giới tính + Quan hệ / Hôn nhân
-                            Row(
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildLabel('QUAN HỆ / HÔN NHÂN'),
-                                      _buildDropdown<MaritalStatus>(
-                                        value: _maritalStatus,
-                                        items: const [
-                                          DropdownItem(
-                                              value: MaritalStatus.single,
-                                              child: Text('Độc thân')),
-                                          DropdownItem(
-                                              value: MaritalStatus.married,
-                                              child: Text('Đã kết hôn')),
-                                          DropdownItem(
-                                              value: MaritalStatus.divorced,
-                                              child: Text('Ly hôn')),
-                                          DropdownItem(
-                                              value: MaritalStatus.widowed,
-                                              child: Text('Góa phụ')),
-                                          DropdownItem(
-                                              value: MaritalStatus.unknown,
-                                              child: Text('Chưa rõ')),
-                                        ],
-                                        onChanged: (val) {
-                                          if (val != null) {
-                                            setState(
-                                                () => _maritalStatus = val);
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 14),
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildLabel('GIỚI TÍNH'),
-                                      _buildDropdown<Gender>(
-                                        value: _gender,
-                                        items: const [
-                                          DropdownItem(
-                                              value: Gender.male,
-                                              child: Text('Nam')),
-                                          DropdownItem(
-                                              value: Gender.female,
-                                              child: Text('Nữ')),
-                                          DropdownItem(
-                                              value: Gender.unknown,
-                                              child: Text('Chưa rõ')),
-                                        ],
-                                        onChanged: (val) {
-                                          if (val != null) {
-                                            setState(() => _gender = val);
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            _buildLabel('CHA/MẸ'),
-                            _buildDropdown<int?>(
-                              value: _parentId,
-                              items: [
-                                const DropdownItem<int?>(
-                                    value: null, child: Text('Không chọn')),
-                                ...parentOptions.map((m) => DropdownItem<int?>(
-                                      value: m.id,
-                                      child: Text(
-                                          '${m.fullName} (Đời ${m.generation})'),
-                                    )),
-                              ],
-                              onChanged: (val) {
-                                final selectedParent = val == null
-                                    ? null
-                                    : allMembers
-                                        .where((m) => m.id == val)
-                                        .firstOrNull;
-                                setState(() {
-                                  _parentId = val;
-                                  // Tự động gán chi tộc theo cha/mẹ
-                                  // nếu chưa chọn chi hoặc đang theo chi tộc cũ của cha
-                                  if (selectedParent?.branchId != null) {
-                                    _branchId = selectedParent!.branchId;
-                                  }
-                                });
-                              },
-                              showSearchBox: true,
-                            ),
-                            const SizedBox(height: 16),
-                            _buildLabel('VỢ/CHỒNG'),
-                            _buildDropdown<int?>(
-                              value: _spouseId,
-                              items: [
-                                const DropdownItem<int?>(
-                                    value: null, child: Text('Không chọn')),
-                                ...spouseOptions.map((m) => DropdownItem<int?>(
-                                      value: m.id,
-                                      child: Text(
-                                          '${m.fullName} (Đời ${m.generation})'),
-                                    )),
-                              ],
-                              onChanged: (val) =>
-                                  setState(() => _spouseId = val),
-                              showSearchBox: true,
-                            ),
-                            const SizedBox(height: 16),
-                            _buildLabel('CHI/NHÁNH'),
-                            Builder(builder: (context) {
-                              // Lấy chi tộc của cha/mẹ (nếu có) để hiển thị gợi ý
-                              final parentMember = _parentId == null
-                                  ? null
-                                  : allMembers
-                                      .where((m) => m.id == _parentId)
-                                      .firstOrNull;
-                              final parentBranchId = parentMember?.branchId;
-
-                              // Sắp xếp: chi tộc của cha/mẹ lên đầu
-                              final sortedBranches = [...allBranches]
-                                ..sort((a, b) {
-                                  if (a.id == parentBranchId) return -1;
-                                  if (b.id == parentBranchId) return 1;
-                                  return 0;
-                                });
-
-                              return _buildDropdown<int?>(
-                                value: _branchId,
-                                items: [
-                                  const DropdownItem<int?>(
-                                      value: null,
-                                      child: Text('Không thuộc chi nào')),
-                                  ...sortedBranches
-                                      .map((b) => DropdownItem<int?>(
-                                            value: b.id,
-                                            child: Text(
-                                              b.id == parentBranchId
-                                                  ? '${b.name} ✦ (Chi của cha/mẹ)'
-                                                  : b.name,
-                                            ),
-                                          )),
-                                ],
-                                onChanged: (val) =>
-                                    setState(() => _branchId = val),
-                                showSearchBox: true,
-                              );
-                            }),
-                            const SizedBox(height: 16),
-                            // Quê quán
-                            _buildTextField(
-                              controller: _placeOfBirthController,
-                              label: 'Quê quán',
-                              hintText: 'Quê quán hoặc nơi sinh',
-                              validator: (val) =>
-                                  AppValidators.validatePlaceOfBirth(
-                                      context, val),
-                            ),
-                            const SizedBox(height: 16),
-                            // Ngày sinh
-                            FormField<String>(
-                              validator: (val) =>
-                                  AppValidators.validateDateOfBirth(
-                                      context, _dateOfBirth),
-                              builder: (formState) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: AppDatePickerField(
-                                            dateString: _dateOfBirth,
-                                            label: 'Ngày sinh',
-                                            hintText: 'dd/mm/yyyy',
-                                            onDateSelected: (date) {
-                                              final formattedDate =
-                                                  "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                              setState(() {
-                                                _dateOfBirth = formattedDate;
-                                              });
-                                              formState
-                                                  .didChange(formattedDate);
-                                            },
-                                          ),
-                                        ),
-                                        const SizedBox(width: 14),
-                                        Expanded(
-                                          flex: 2,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              _buildLabel('LỊCH SINH'),
-                                              _buildCalendarToggle(
-                                                isLunar: _isLunarBirthDate,
-                                                onChanged: (val) {
-                                                  setState(() =>
-                                                      _isLunarBirthDate = val);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    if (formState.hasError)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 6.0, left: 16.0),
-                                        child: Text(
-                                          formState.errorText ?? '',
-                                          style: GoogleFonts.beVietnamPro(
-                                            color: Colors.redAccent,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Trạng thái
-                            _buildStatusSwitchRow(),
-
-                            // Nếu đã mất thì hiện ngày mất
-                            if (!_isAlive) ...[
-                              const SizedBox(height: 16),
-                              const Divider(
-                                  height: 1, color: Color(0xFFECE7E3)),
-                              const SizedBox(height: 16),
-                              FormField<String>(
-                                validator: (val) =>
-                                    AppValidators.validateDateOfDeath(
-                                        context, _dateOfDeath, _isAlive),
-                                builder: (formState) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                  const SizedBox(height: 16),
+                                  // Ngày sinh
+                                  FormField<String>(
+                                    validator: (val) =>
+                                        AppValidators.validateDateOfBirth(
+                                            context, _dateOfBirth),
+                                    builder: (formState) {
+                                      return Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: AppDatePickerField(
-                                              dateString: _dateOfDeath,
-                                              label: 'Ngày mất',
-                                              hintText: 'dd/mm/yyyy',
-                                              onDateSelected: (date) {
-                                                final formattedDate =
-                                                    "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                                setState(() {
-                                                  _dateOfDeath = formattedDate;
-                                                });
-                                                formState
-                                                    .didChange(formattedDate);
-                                              },
-                                            ),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                flex: 3,
+                                                child: AppDatePickerField(
+                                                  dateString: _dateOfBirth,
+                                                  label: 'Ngày sinh',
+                                                  hintText: 'dd/mm/yyyy',
+                                                  onDateSelected: (date) {
+                                                    final formattedDate =
+                                                        "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                                    setState(() {
+                                                      _dateOfBirth =
+                                                          formattedDate;
+                                                    });
+                                                    formState.didChange(
+                                                        formattedDate);
+                                                  },
+                                                ),
+                                              ),
+                                              const SizedBox(width: 14),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    _buildLabel('LỊCH SINH'),
+                                                    _buildCalendarToggle(
+                                                      isLunar:
+                                                          _isLunarBirthDate,
+                                                      onChanged: (val) {
+                                                        setState(() =>
+                                                            _isLunarBirthDate =
+                                                                val);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(width: 14),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Column(
+                                          if (formState.hasError)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 6.0, left: 16.0),
+                                              child: Text(
+                                                formState.errorText ?? '',
+                                                style: GoogleFonts.beVietnamPro(
+                                                  color: Colors.redAccent,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Trạng thái
+                                  _buildStatusSwitchRow(),
+
+                                  // Nếu đã mất thì hiện ngày mất
+                                  if (!_isAlive) ...[
+                                    const SizedBox(height: 16),
+                                    const Divider(
+                                        height: 1, color: Color(0xFFECE7E3)),
+                                    const SizedBox(height: 16),
+                                    FormField<String>(
+                                      validator: (val) =>
+                                          AppValidators.validateDateOfDeath(
+                                              context, _dateOfDeath, _isAlive),
+                                      builder: (formState) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                _buildLabel('LỊCH MẤT'),
-                                                _buildCalendarToggle(
-                                                  isLunar: _isLunarDeathDate,
-                                                  onChanged: (val) {
-                                                    setState(() =>
-                                                        _isLunarDeathDate =
-                                                            val);
-                                                  },
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: AppDatePickerField(
+                                                    dateString: _dateOfDeath,
+                                                    label: 'Ngày mất',
+                                                    hintText: 'dd/mm/yyyy',
+                                                    onDateSelected: (date) {
+                                                      final formattedDate =
+                                                          "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                                      setState(() {
+                                                        _dateOfDeath =
+                                                            formattedDate;
+                                                      });
+                                                      formState.didChange(
+                                                          formattedDate);
+                                                    },
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 14),
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      _buildLabel('LỊCH MẤT'),
+                                                      _buildCalendarToggle(
+                                                        isLunar:
+                                                            _isLunarDeathDate,
+                                                        onChanged: (val) {
+                                                          setState(() =>
+                                                              _isLunarDeathDate =
+                                                                  val);
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      if (formState.hasError)
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 6.0, left: 16.0),
-                                          child: Text(
-                                            formState.errorText ?? '',
-                                            style: GoogleFonts.beVietnamPro(
-                                              color: Colors.redAccent,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ],
-                            const SizedBox(height: 16),
+                                            if (formState.hasError)
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 6.0, left: 16.0),
+                                                child: Text(
+                                                  formState.errorText ?? '',
+                                                  style:
+                                                      GoogleFonts.beVietnamPro(
+                                                    color: Colors.redAccent,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                  const SizedBox(height: 16),
 
-                            // Tiểu sử
-                            _buildTextField(
-                              controller: _notesController,
-                              label: 'Tiểu sử',
-                              hintText:
-                                  'Nhập thông tin nghề nghiệp, học vấn hoặc cột mốc quan trọng...',
-                              maxLines: 5,
+                                  // Tiểu sử
+                                  _buildTextField(
+                                    controller: _notesController,
+                                    label: 'Tiểu sử',
+                                    hintText:
+                                        'Nhập thông tin nghề nghiệp, học vấn hoặc cột mốc quan trọng...',
+                                    maxLines: 5,
+                                  ),
+                                ],
+                              ),
                             ),
+
+                            // Avatar nổi trên viền trên của card
+                            _buildAvatarSection(),
                           ],
                         ),
-                      ),
-
-                      // Avatar nổi trên viền trên của card
-                      _buildAvatarSection(),
-                    ],
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  // Save & Cancel buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            side: const BorderSide(
-                                color: AppColors.wood, width: 1.2),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          child: Text(
-                            'HỦY BỎ',
-                            style: GoogleFonts.beVietnamPro(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.wood,
-                              fontSize: 13,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: AppButton(
-                          label: 'LƯU LẠI',
-                          onPressed: () => _submitForm(existingMember),
-                          size: AppButtonSize.large,
-                          variant: AppButtonVariant.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            ),
+              // Sticky bottom buttons
+              Container(
+                padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7F5F2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.06),
+                      blurRadius: 8,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: AppFormActionButtons(
+                  saveLabel: 'LƯU LẠI',
+                  onSave: () => _submitForm(existingMember),
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -1033,40 +1031,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       hintText: 'VD: 3',
       keyboardType: TextInputType.number,
       validator: (val) => AppValidators.validateGeneration(context, val),
-    );
-  }
-
-  void _showDeleteConfirmDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: AppColors.parchment,
-          title: Text('Xác nhận xóa',
-              style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold)),
-          content: Text(
-              'Bạn có chắc chắn muốn xóa thành viên này khỏi gia phả? Hành động này không thể hoàn tác.',
-              style: GoogleFonts.beVietnamPro()),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('HỦY BỎ',
-                  style: GoogleFonts.beVietnamPro(color: Colors.grey)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                context
-                    .read<AdminMemberFormBloc>()
-                    .add(DeleteAdminMemberFormEvent(widget.memberId!));
-              },
-              child: Text('XÓA',
-                  style: GoogleFonts.beVietnamPro(
-                      color: Colors.redAccent, fontWeight: FontWeight.bold)),
-            ),
-          ],
-        );
-      },
     );
   }
 

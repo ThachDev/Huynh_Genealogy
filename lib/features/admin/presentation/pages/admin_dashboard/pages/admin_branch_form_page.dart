@@ -245,110 +245,87 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
             );
           }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildSectionCard(
-                    icon: LucideIcons.gitBranch,
-                    title: 'THÔNG TIN CƠ BẢN',
-                    children: [
-                      _buildTextField(
-                        controller: _nameController,
-                        label: 'Tên chi tộc',
-                        hintText: 'Nhập tên chi tộc (VD: Chi Trưởng, Chi Hai...)',
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        controller: _founderController,
-                        label: 'Tên tổ chi / Sáng lập',
-                        hintText: 'Nhập tên người lập chi (tùy chọn)',
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: _buildTextField(
-                              controller: _foundingYearController,
-                              label: 'Năm lập chi',
-                              hintText: 'VD: 1980',
-                              keyboardType: TextInputType.number,
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildSectionCard(
+                          icon: LucideIcons.gitBranch,
+                          title: 'THÔNG TIN CƠ BẢN',
+                          children: [
+                            _buildTextField(
+                              controller: _nameController,
+                              label: 'Tên chi tộc',
+                              hintText: 'Nhập tên chi tộc (VD: Chi Trưởng, Chi Hai...)',
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            flex: 2,
-                            child: _buildTextField(
-                              controller: _regionController,
-                              label: 'Vùng miền / Địa phương',
-                              hintText: 'VD: Làng X, Huyện Y',
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _founderController,
+                              label: 'Tên tổ chi / Sáng lập',
+                              hintText: 'Nhập tên người lập chi (tùy chọn)',
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        controller: _descriptionController,
-                        label: 'Mô tả chi tộc',
-                        hintText: 'Nhập thêm thông tin mô tả chi tiết...',
-                        maxLines: 4,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            side: const BorderSide(color: AppColors.wood, width: 1.2),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          child: Text(
-                            'HỦY BỎ',
-                            style: GoogleFonts.beVietnamPro(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.wood,
-                              fontSize: 13,
-                              letterSpacing: 0.5,
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: _buildTextField(
+                                    controller: _foundingYearController,
+                                    label: 'Năm lập chi',
+                                    hintText: 'VD: 1980',
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  flex: 2,
+                                  child: _buildTextField(
+                                    controller: _regionController,
+                                    label: 'Vùng miền / Địa phương',
+                                    hintText: 'VD: Làng X, Huyện Y',
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _descriptionController,
+                              label: 'Mô tả chi tộc',
+                              hintText: 'Nhập thêm thông tin mô tả chi tiết...',
+                              maxLines: 4,
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: _submitForm,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.wood,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          child: Text(
-                            'LƯU CHI TỘC',
-                            style: GoogleFonts.beVietnamPro(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
-            ),
+              // Sticky bottom buttons
+              Container(
+                padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7F5F2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.06),
+                      blurRadius: 8,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: AppFormActionButtons(
+                  saveLabel: 'LƯU CHI TỘC',
+                  onSave: _submitForm,
+                ),
+              ),
+            ],
           );
         },
       ),

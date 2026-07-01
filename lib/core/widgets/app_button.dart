@@ -149,6 +149,89 @@ class AppButton extends StatelessWidget {
   }
 }
 
+class AppFormActionButtons extends StatelessWidget {
+  /// Nhãn nút lưu (mặc định 'LƯU LẠI')
+  final String saveLabel;
+
+  /// Nhãn nút hủy (mặc định 'HỦY BỎ')
+  final String cancelLabel;
+
+  /// Callback khi nhấn nút lưu
+  final VoidCallback? onSave;
+
+  /// Callback khi nhấn nút hủy — mặc định pop navigation
+  final VoidCallback? onCancel;
+
+  /// Hiển thị loading trên nút lưu
+  final bool isLoading;
+
+  const AppFormActionButtons({
+    super.key,
+    this.saveLabel = 'LƯU LẠI',
+    this.cancelLabel = 'HỦY BỎ',
+    this.onSave,
+    this.onCancel,
+    this.isLoading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            onPressed: onCancel ?? () => Navigator.pop(context),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              side: const BorderSide(color: AppColors.wood, width: 1.2),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: Text(
+              cancelLabel,
+              style: GoogleFonts.beVietnamPro(
+                fontWeight: FontWeight.bold,
+                color: AppColors.wood,
+                fontSize: 13,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: isLoading ? null : onSave,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.crimson,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                        color: Colors.white, strokeWidth: 2),
+                  )
+                : Text(
+                    saveLabel,
+                    style: GoogleFonts.beVietnamPro(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// Icon button tròn dùng chung
 class AppIconButton extends StatelessWidget {
   final Widget icon;

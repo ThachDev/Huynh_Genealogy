@@ -115,34 +115,19 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
               maxLines: 2,
             ),
             const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: () {
+            AppFormActionButtons(
+              saveLabel: 'LƯU THAY ĐỔI',
+              onSave: () {
                 if (_formKey.currentState!.validate()) {
                   AppSnackBar.success(
                       context, 'Đã cập nhật thông tin cá nhân!');
                   Navigator.pop(context);
                 }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.wood,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Lưu thay đổi',
-                style: GoogleFonts.beVietnamPro(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
             ),
           ],
         ),
       ),
     );
   }
-
 }

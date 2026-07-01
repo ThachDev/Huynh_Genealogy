@@ -15,7 +15,7 @@ class CreateFamily implements UseCase<FamilyEntity, CreateFamilyParams> {
     return repository.createFamily(
       name: params.name,
       description: params.description,
-      coverImageUrl: params.coverImageUrl,
+      logoUrl: params.logoUrl,
       userId: params.userId,
     );
   }
@@ -24,16 +24,16 @@ class CreateFamily implements UseCase<FamilyEntity, CreateFamilyParams> {
 class CreateFamilyParams extends Equatable {
   final String name;
   final String? description;
-  final String? coverImageUrl;
+  final String? logoUrl;
   final int userId;
 
   const CreateFamilyParams({
     required this.name,
     this.description,
-    this.coverImageUrl,
+    this.logoUrl,
     required this.userId,
   });
 
   @override
-  List<Object?> get props => [name, description, coverImageUrl, userId];
+  List<Object?> get props => [name, description, logoUrl, userId];
 }

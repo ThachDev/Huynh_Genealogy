@@ -7,6 +7,8 @@ export 'domain/usecase/delete_member.dart';
 export 'domain/usecase/get_family_detail.dart';
 export 'domain/usecase/save_branch.dart';
 export 'domain/usecase/delete_branch.dart';
+export 'domain/usecase/update_family.dart';
+export 'domain/usecase/get_member_detail.dart';
 
 // Presentation Blocs
 export 'presentation/bloc/admin_member_form/admin_member_form_bloc.dart';

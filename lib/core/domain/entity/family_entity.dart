@@ -6,7 +6,8 @@ class FamilyEntity extends Equatable {
   final String inviteCode;
   final int creatorId;
   final String? description;
-  final String? coverImageUrl;
+  final String? origin;
+  final String? logoUrl;
 
   const FamilyEntity({
     required this.id,
@@ -14,9 +15,10 @@ class FamilyEntity extends Equatable {
     required this.inviteCode,
     required this.creatorId,
     this.description,
-    this.coverImageUrl,
+    this.origin,
+    this.logoUrl,
   });
 
   @override
-  List<Object?> get props => [id, name, inviteCode, creatorId, description, coverImageUrl];
+  List<Object?> get props => [id, name, inviteCode, creatorId, description, origin, logoUrl];
 }

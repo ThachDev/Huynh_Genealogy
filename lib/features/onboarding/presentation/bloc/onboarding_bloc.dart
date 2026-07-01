@@ -31,7 +31,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       CreateFamilyParams(
         name: event.name,
         description: event.description,
-        coverImageUrl: event.coverImageUrl,
+        logoUrl: event.logoUrl,
         userId: event.userId,
       ),
     );

@@ -110,7 +110,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
             CreateFamilyEvent(
               name: _familyNameController.text.trim(),
               description: _familyDescriptionController.text.trim(),
-              coverImageUrl: _imageFile?.path,
+              logoUrl: _imageFile?.path,
               userId: widget.user.id,
             ),
           );

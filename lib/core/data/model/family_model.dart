@@ -7,7 +7,8 @@ class FamilyModel extends FamilyEntity {
     required super.inviteCode,
     required super.creatorId,
     super.description,
-    super.coverImageUrl,
+    super.origin,
+    super.logoUrl,
   });
 
   factory FamilyModel.fromJson(Map<String, dynamic> json) {
@@ -17,7 +18,8 @@ class FamilyModel extends FamilyEntity {
       inviteCode: json['inviteCode'] as String? ?? '',
       creatorId: json['creatorId'] as int? ?? 0,
       description: json['description'] as String?,
-      coverImageUrl: json['coverImageUrl'] as String?,
+      origin: json['origin'] as String?,
+      logoUrl: json['logoUrl'] as String?,
     );
   }
 
@@ -28,7 +30,8 @@ class FamilyModel extends FamilyEntity {
       'inviteCode': inviteCode,
       'creatorId': creatorId,
       'description': description,
-      'coverImageUrl': coverImageUrl,
+      'origin': origin,
+      'logoUrl': logoUrl,
     };
   }
 
@@ -39,7 +42,8 @@ class FamilyModel extends FamilyEntity {
       inviteCode: entity.inviteCode,
       creatorId: entity.creatorId,
       description: entity.description,
-      coverImageUrl: entity.coverImageUrl,
+      origin: entity.origin,
+      logoUrl: entity.logoUrl,
     );
   }
 }

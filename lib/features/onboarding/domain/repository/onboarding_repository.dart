@@ -7,7 +7,7 @@ abstract class OnboardingRepository {
   Future<Either<Failure, FamilyEntity>> createFamily({
     required String name,
     String? description,
-    String? coverImageUrl,
+    String? logoUrl,
     required int userId,
   });
 
@@ -35,5 +35,13 @@ abstract class OnboardingRepository {
 
   Future<Either<Failure, FamilyEntity>> getFamilyDetail({
     required int familyId,
+  });
+
+  Future<Either<Failure, FamilyEntity>> updateFamily({
+    required int id,
+    String? name,
+    String? description,
+    String? origin,
+    String? logoUrl,
   });
 }

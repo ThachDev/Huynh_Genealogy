@@ -107,6 +107,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetFamilyDetail(sl()));
   sl.registerLazySingleton(() => SaveBranch(sl()));
   sl.registerLazySingleton(() => DeleteBranch(sl()));
+  sl.registerLazySingleton(() => UpdateFamily(sl()));
+  sl.registerLazySingleton(() => GetMemberDetail(sl()));
 
   // ─── Repository ───────────────────────────────────────────────────────────
   sl.registerLazySingleton<OnboardingRepository>(

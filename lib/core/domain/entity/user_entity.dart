@@ -8,6 +8,7 @@ class UserEntity extends Equatable {
   final String? fcmToken;
   final String role; // 'OWNER' | 'BRANCH_ADMIN' | 'EDITOR' | 'VIEWER'
   final int? familyId;
+  final int? memberId;
 
   const UserEntity({
     required this.id,
@@ -17,10 +18,12 @@ class UserEntity extends Equatable {
     this.fcmToken,
     this.role = 'VIEWER',
     this.familyId,
+    this.memberId,
   });
 
   @override
-  List<Object?> get props => [id, email, fullName, avatarUrl, fcmToken, role, familyId];
+  List<Object?> get props =>
+      [id, email, fullName, avatarUrl, fcmToken, role, familyId, memberId];
 
   UserEntity copyWith({
     int? id,
@@ -30,6 +33,7 @@ class UserEntity extends Equatable {
     String? fcmToken,
     String? role,
     int? familyId,
+    int? memberId,
   }) {
     return UserEntity(
       id: id ?? this.id,
@@ -39,6 +43,7 @@ class UserEntity extends Equatable {
       fcmToken: fcmToken ?? this.fcmToken,
       role: role ?? this.role,
       familyId: familyId ?? this.familyId,
+      memberId: memberId ?? this.memberId,
     );
   }
 }

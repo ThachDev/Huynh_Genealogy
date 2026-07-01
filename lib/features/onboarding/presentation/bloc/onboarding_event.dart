@@ -10,18 +10,18 @@ abstract class OnboardingEvent extends Equatable {
 class CreateFamilyEvent extends OnboardingEvent {
   final String name;
   final String? description;
-  final String? coverImageUrl;
+  final String? logoUrl;
   final int userId;
 
   const CreateFamilyEvent({
     required this.name,
     this.description,
-    this.coverImageUrl,
+    this.logoUrl,
     required this.userId,
   });
 
   @override
-  List<Object?> get props => [name, description, coverImageUrl, userId];
+  List<Object?> get props => [name, description, logoUrl, userId];
 }
 
 class VerifyInviteCodeEvent extends OnboardingEvent {

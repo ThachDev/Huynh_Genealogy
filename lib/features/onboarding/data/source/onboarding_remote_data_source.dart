@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'dart:io';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
@@ -9,7 +10,7 @@ abstract class OnboardingRemoteDataSource {
   Future<FamilyModel> createFamily({
     required String name,
     String? description,
-    String? coverImageUrl,
+    String? logoUrl,
     required int userId,
   });
 
@@ -28,6 +29,14 @@ abstract class OnboardingRemoteDataSource {
   Future<bool> rejectRequest(int requestId);
 
   Future<FamilyModel> getFamilyDetail(int familyId);
+
+  Future<FamilyModel> updateFamily({
+    required int id,
+    String? name,
+    String? description,
+    String? origin,
+    String? logoUrl,
+  });
 }
 
 class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
@@ -39,18 +48,38 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
   Future<FamilyModel> createFamily({
     required String name,
     String? description,
-    String? coverImageUrl,
+    String? logoUrl,
     required int userId,
   }) async {
     try {
+      dynamic dataPayload = {
+        'name': name,
+        'description': description,
+        'userId': userId,
+      };
+
+      if (logoUrl != null &&
+          logoUrl.isNotEmpty &&
+          !logoUrl.startsWith('http') &&
+          !logoUrl.startsWith('https')) {
+        final file = File(logoUrl);
+        if (file.existsSync()) {
+          final Map<String, dynamic> formDataMap = {
+            'name': name,
+            'description': description,
+            'userId': userId,
+            'avatar': await MultipartFile.fromFile(
+              logoUrl,
+              filename: logoUrl.split('/').last,
+            ),
+          };
+          dataPayload = FormData.fromMap(formDataMap);
+        }
+      }
+
       final response = await dio.post(
         AppConstants.familiesEndpoint,
-        data: {
-          'name': name,
-          'description': description,
-          'coverImageUrl': coverImageUrl,
-          'userId': userId,
-        },
+        data: dataPayload,
       );
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
@@ -168,6 +197,55 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
     } on DioException catch (e) {
       throw ServerException(
         message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi tải thông tin dòng họ',
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  @override
+  Future<FamilyModel> updateFamily({
+    required int id,
+    String? name,
+    String? description,
+    String? origin,
+    String? logoUrl,
+  }) async {
+    try {
+      final Map<String, dynamic> dataMap = {
+        if (name != null) 'name': name,
+        if (description != null) 'description': description,
+        if (origin != null) 'origin': origin,
+      };
+
+      dynamic payload = dataMap;
+
+      // Handle logo upload
+      if (logoUrl != null && logoUrl.isNotEmpty) {
+        if (!logoUrl.startsWith('http') && !logoUrl.startsWith('https')) {
+          final file = File(logoUrl);
+          if (file.existsSync()) {
+            dataMap['avatar'] = await MultipartFile.fromFile(
+              logoUrl,
+              filename: logoUrl.split('/').last,
+            );
+          }
+        } else {
+          dataMap['logoUrl'] = logoUrl;
+        }
+      }
+
+      if (dataMap.containsKey('avatar')) {
+        payload = FormData.fromMap(dataMap);
+      }
+
+      final response = await dio.put(
+        '${AppConstants.familiesEndpoint}/$id',
+        data: payload,
+      );
+      return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi cập nhật thông tin dòng họ',
         statusCode: e.response?.statusCode,
       );
     }

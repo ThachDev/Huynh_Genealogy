@@ -9,6 +9,7 @@ class UserModel extends UserEntity {
     super.fcmToken,
     super.role = 'VIEWER',
     super.familyId,
+    super.memberId,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +21,7 @@ class UserModel extends UserEntity {
       fcmToken: json['fcmToken'] as String?,
       role: json['role'] as String? ?? 'VIEWER',
       familyId: json['familyId'] as int?,
+      memberId: json['memberId'] as int?,
     );
   }
 
@@ -32,6 +34,7 @@ class UserModel extends UserEntity {
       'fcmToken': fcmToken,
       'role': role,
       'familyId': familyId,
+      'memberId': memberId,
     };
   }
 
@@ -44,6 +47,7 @@ class UserModel extends UserEntity {
       fcmToken: entity.fcmToken,
       role: entity.role,
       familyId: entity.familyId,
+      memberId: entity.memberId,
     );
   }
 
@@ -56,6 +60,7 @@ class UserModel extends UserEntity {
     String? fcmToken,
     String? role,
     int? familyId,
+    int? memberId,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -65,6 +70,7 @@ class UserModel extends UserEntity {
       fcmToken: fcmToken ?? this.fcmToken,
       role: role ?? this.role,
       familyId: familyId ?? this.familyId,
+      memberId: memberId ?? this.memberId,
     );
   }
 }

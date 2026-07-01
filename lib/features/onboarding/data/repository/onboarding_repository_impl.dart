@@ -15,14 +15,14 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   Future<Either<Failure, FamilyEntity>> createFamily({
     required String name,
     String? description,
-    String? coverImageUrl,
+    String? logoUrl,
     required int userId,
   }) async {
     try {
       final familyModel = await remoteDataSource.createFamily(
         name: name,
         description: description,
-        coverImageUrl: coverImageUrl,
+        logoUrl: logoUrl,
         userId: userId,
       );
       return Right(familyModel);
@@ -115,6 +115,30 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   }) async {
     try {
       final familyModel = await remoteDataSource.getFamilyDetail(familyId);
+      return Right(familyModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, FamilyEntity>> updateFamily({
+    required int id,
+    String? name,
+    String? description,
+    String? origin,
+    String? logoUrl,
+  }) async {
+    try {
+      final familyModel = await remoteDataSource.updateFamily(
+        id: id,
+        name: name,
+        description: description,
+        origin: origin,
+        logoUrl: logoUrl,
+      );
       return Right(familyModel);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));

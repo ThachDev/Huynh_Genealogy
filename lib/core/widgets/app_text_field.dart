@@ -194,6 +194,12 @@ class AppTextFieldLight extends StatelessWidget {
                 color: AppColors.textSecondary.withValues(alpha: 0.2),
               ),
             ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: AppColors.textSecondary.withValues(alpha: 0.15),
+              ),
+            ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide:
@@ -225,6 +231,7 @@ class AppOutlineTextField extends StatelessWidget {
   final int maxLines;
   final String? Function(String?)? validator;
   final Widget? prefixIcon;
+  final bool enabled;
 
   const AppOutlineTextField({
     super.key,
@@ -235,6 +242,7 @@ class AppOutlineTextField extends StatelessWidget {
     this.maxLines = 1,
     this.validator,
     this.prefixIcon,
+    this.enabled = true,
   });
 
   @override
@@ -244,6 +252,7 @@ class AppOutlineTextField extends StatelessWidget {
       keyboardType: keyboardType,
       maxLines: maxLines,
       validator: validator,
+      enabled: enabled,
       style:
           GoogleFonts.beVietnamPro(fontSize: 14, color: AppColors.textPrimary),
       decoration: InputDecoration(
@@ -265,6 +274,10 @@ class AppOutlineTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFFF3EFEA), width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

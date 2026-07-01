@@ -4,10 +4,12 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/widgets/app_route_transitions.dart';
+import '../../../../../core/domain/entity/family_entity.dart';
 import '../../../../auth/auth.dart';
+import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
 import 'pages/admin_clan_info_settings_page.dart';
-import '../admin_dashboard/pages/admin_edit_profile_page.dart';
+import 'pages/admin_edit_profile_page.dart';
 import 'pages/admin_language_settings_page.dart';
 import 'pages/admin_account_security_page.dart';
 import 'pages/admin_transfer_ownership_page.dart';
@@ -22,6 +24,12 @@ class AdminSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pendingState = context.watch<AdminPendingRequestsBloc>().state;
+    final FamilyEntity? family =
+        pendingState is AdminPendingRequestsLoaded ? pendingState.family : null;
+    final authState = context.watch<AuthBloc>().state;
+    final user = authState is Authenticated ? authState.user : null;
+
     return Scaffold(
       backgroundColor: AppColors.parchment,
       appBar: AppBar(
@@ -40,14 +48,14 @@ class AdminSettingsPage extends StatelessWidget {
               context: context,
               icon: LucideIcons.home,
               title: 'Thông tin dòng tộc',
-              destination: const AdminClanInfoSettingsPage(),
+              destination: AdminClanInfoSettingsPage(family: family),
             ),
             _buildDivider(),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.user,
               title: 'Chỉnh sửa người dùng',
-              destination: const AdminEditProfilePage(),
+              destination: AdminEditProfilePage(user: user),
             ),
             _buildDivider(),
             _buildSettingsTile(

@@ -80,10 +80,21 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     context
         .read<AdminMemberFormBloc>()
         .add(LoadAdminMemberFormEvent(memberId: widget.memberId));
+    _generationController.addListener(_onGenerationChanged);
+  }
+
+  void _onGenerationChanged() {
+    // Re-render để cập nhật danh sách lọc theo thế hệ
+    // Đồng thời reset parentId/spouseId nếu không còn hợp lệ
+    setState(() {
+      // Không reset trực tiếp ở đây vì chưa có allMembers
+      // – logic reset sẽ xảy ra khi build() tính lại filteredLists
+    });
   }
 
   @override
   void dispose() {
+    _generationController.removeListener(_onGenerationChanged);
     _fullNameController.dispose();
     _placeOfBirthController.dispose();
     _generationController.dispose();
@@ -211,9 +222,53 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
           final allBranches =
               state is AdminMemberFormReady ? state.branches : <BranchEntity>[];
 
-          // Filter out the current member from the dropdowns to prevent circular relation
-          final parentOptions = allMembers.where((m) => m.id != existingMember?.id).toList();
-          final spouseOptions = allMembers.where((m) => m.id != existingMember?.id).toList();
+          // ── Smart filtering for dropdowns ─────────────────────────────────
+          final int? currentGeneration =
+              int.tryParse(_generationController.text.trim());
+
+          // Cha/Mẹ: ưu tiên thế hệ trước (gen - 1), nếu chưa rõ thế hệ → tất cả
+          final parentOptions = allMembers.where((m) {
+            if (m.id == existingMember?.id) return false;
+            if (currentGeneration != null && m.generation != null) {
+              return m.generation == currentGeneration - 1;
+            }
+            return true;
+          }).toList();
+
+          // Vợ/Chồng: cùng thế hệ + ngược giới tính + chưa có vợ/chồng
+          // (hoặc spouse của họ chính là member hiện tại)
+          final spouseOptions = allMembers.where((m) {
+            if (m.id == existingMember?.id) return false;
+            // Lọc cùng thế hệ
+            if (currentGeneration != null && m.generation != null) {
+              if (m.generation != currentGeneration) return false;
+            }
+            // Lọc ngược giới tính
+            if (_gender == Gender.male && m.gender == Gender.male) return false;
+            if (_gender == Gender.female && m.gender == Gender.female) {
+              return false;
+            }
+            // Bỏ những người đã có vợ/chồng khác
+            if (m.spouseId != null &&
+                m.spouseId != existingMember?.id &&
+                m.spouseId != _spouseId) {
+              return false;
+            }
+            return true;
+          }).toList();
+
+          // Reset _parentId nếu người đã chọn không còn thuộc danh sách
+          final parentIds = parentOptions.map((m) => m.id).toSet();
+          if (_parentId != null && !parentIds.contains(_parentId)) {
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => setState(() => _parentId = null));
+          }
+          // Reset _spouseId nếu người đã chọn không còn thuộc danh sách
+          final spouseIds = spouseOptions.map((m) => m.id).toSet();
+          if (_spouseId != null && !spouseIds.contains(_spouseId)) {
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => setState(() => _spouseId = null));
+          }
 
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
@@ -330,6 +385,93 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 16),
+                            _buildLabel('CHA/MẸ'),
+                            _buildDropdown<int?>(
+                              value: _parentId,
+                              items: [
+                                const DropdownItem<int?>(
+                                    value: null, child: Text('Không chọn')),
+                                ...parentOptions.map((m) => DropdownItem<int?>(
+                                      value: m.id,
+                                      child: Text(
+                                          '${m.fullName} (Đời ${m.generation})'),
+                                    )),
+                              ],
+                              onChanged: (val) {
+                                final selectedParent = val == null
+                                    ? null
+                                    : allMembers
+                                        .where((m) => m.id == val)
+                                        .firstOrNull;
+                                setState(() {
+                                  _parentId = val;
+                                  // Tự động gán chi tộc theo cha/mẹ
+                                  // nếu chưa chọn chi hoặc đang theo chi tộc cũ của cha
+                                  if (selectedParent?.branchId != null) {
+                                    _branchId = selectedParent!.branchId;
+                                  }
+                                });
+                              },
+                              showSearchBox: true,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildLabel('VỢ/CHỒNG'),
+                            _buildDropdown<int?>(
+                              value: _spouseId,
+                              items: [
+                                const DropdownItem<int?>(
+                                    value: null, child: Text('Không chọn')),
+                                ...spouseOptions.map((m) => DropdownItem<int?>(
+                                      value: m.id,
+                                      child: Text(
+                                          '${m.fullName} (Đời ${m.generation})'),
+                                    )),
+                              ],
+                              onChanged: (val) =>
+                                  setState(() => _spouseId = val),
+                              showSearchBox: true,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildLabel('CHI/NHÁNH'),
+                            Builder(builder: (context) {
+                              // Lấy chi tộc của cha/mẹ (nếu có) để hiển thị gợi ý
+                              final parentMember = _parentId == null
+                                  ? null
+                                  : allMembers
+                                      .where((m) => m.id == _parentId)
+                                      .firstOrNull;
+                              final parentBranchId = parentMember?.branchId;
+
+                              // Sắp xếp: chi tộc của cha/mẹ lên đầu
+                              final sortedBranches = [...allBranches]
+                                ..sort((a, b) {
+                                  if (a.id == parentBranchId) return -1;
+                                  if (b.id == parentBranchId) return 1;
+                                  return 0;
+                                });
+
+                              return _buildDropdown<int?>(
+                                value: _branchId,
+                                items: [
+                                  const DropdownItem<int?>(
+                                      value: null,
+                                      child: Text('Không thuộc chi nào')),
+                                  ...sortedBranches
+                                      .map((b) => DropdownItem<int?>(
+                                            value: b.id,
+                                            child: Text(
+                                              b.id == parentBranchId
+                                                  ? '${b.name} ✦ (Chi của cha/mẹ)'
+                                                  : b.name,
+                                            ),
+                                          )),
+                                ],
+                                onChanged: (val) =>
+                                    setState(() => _branchId = val),
+                                showSearchBox: true,
+                              );
+                            }),
                             const SizedBox(height: 16),
                             // Quê quán
                             _buildTextField(
@@ -505,54 +647,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                     ],
                   ),
                   const SizedBox(height: 24),
-
-                  // Mối quan hệ gia đình (Cha/Mẹ, Vợ/Chồng, Chi/Nhánh)
-                  _buildSectionCard(
-                    icon: LucideIcons.users,
-                    title: 'QUAN HỆ GIA ĐÌNH',
-                    children: [
-                      _buildLabel('CHA/MẸ'),
-                      _buildDropdown<int?>(
-                        value: _parentId,
-                        items: [
-                          const DropdownItem<int?>(value: null, child: Text('Không chọn (Thủy tổ)')),
-                          ...parentOptions.map((m) => DropdownItem<int?>(
-                                value: m.id,
-                                child: Text('${m.fullName} (Đời ${m.generation})'),
-                              )),
-                        ],
-                        onChanged: (val) => setState(() => _parentId = val),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildLabel('VỢ/CHỒNG'),
-                      _buildDropdown<int?>(
-                        value: _spouseId,
-                        items: [
-                          const DropdownItem<int?>(value: null, child: Text('Không chọn')),
-                          ...spouseOptions.map((m) => DropdownItem<int?>(
-                                value: m.id,
-                                child: Text('${m.fullName} (Đời ${m.generation})'),
-                              )),
-                        ],
-                        onChanged: (val) => setState(() => _spouseId = val),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildLabel('CHI/NHÁNH'),
-                      _buildDropdown<int?>(
-                        value: _branchId,
-                        items: [
-                          const DropdownItem<int?>(value: null, child: Text('Không thuộc chi/nhánh nào')),
-                          ...allBranches.map((b) => DropdownItem<int?>(
-                                value: b.id,
-                                child: Text(b.name),
-                              )),
-                        ],
-                        onChanged: (val) => setState(() => _branchId = val),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-
                   // Save & Cancel buttons
                   Row(
                     children: [
@@ -768,11 +862,13 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     required T value,
     required List<DropdownItem<T>> items,
     required ValueChanged<T?> onChanged,
+    bool showSearchBox = false,
   }) {
     return AppDropdown<T>(
       value: value,
       items: items,
       onChanged: onChanged,
+      showSearchBox: showSearchBox,
     );
   }
 
@@ -806,7 +902,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Sức khỏe / Sự sống',
+                      'Sự sống',
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,

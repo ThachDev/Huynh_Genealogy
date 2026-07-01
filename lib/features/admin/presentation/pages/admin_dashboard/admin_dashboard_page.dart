@@ -68,10 +68,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
+  final ScrollController _scrollController = ScrollController();
+  int _memberLimit = 5;
+  int _branchLimit = 5;
+  int _pendingLimit = 5;
+
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    _scrollController.addListener(_onScroll);
 
     // Dispatch events to fetch latest data on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -82,6 +88,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
@@ -90,7 +98,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text.trim().toLowerCase();
+      _memberLimit = 5;
+      _branchLimit = 5;
+      _pendingLimit = 5;
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(0);
+      }
     });
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 50) {
+      setState(() {
+        if (_selectedTab == AdminDashboardTab.members) {
+          _memberLimit += 5;
+        } else if (_selectedTab == AdminDashboardTab.branches) {
+          _branchLimit += 5;
+        } else if (_selectedTab == AdminDashboardTab.pending) {
+          _pendingLimit += 5;
+        }
+      });
+    }
   }
 
   void _loadPendingRequests() {
@@ -203,49 +232,54 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ],
       child: Scaffold(
         backgroundColor: AppColors.parchment,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  _buildHeader(context, user, headerHeight, familyName),
-                ],
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                _buildHeader(context, user, headerHeight, familyName),
+              ],
+            ),
+            Transform.translate(
+              offset: const Offset(0, -45),
+              child: _buildInviteCodeCard(
+                context,
+                inviteCode,
               ),
-              Transform.translate(
-                offset: const Offset(0, -45),
-                child: _buildInviteCodeCard(
-                  context,
-                  inviteCode,
-                ),
+            ),
+            Transform.translate(
+              offset: const Offset(0, -25),
+              child: QuickStatsRow(
+                memberCount: memberCount,
+                branchCount: branchCount,
+                pendingCount: pendingCount,
+                selectedTab: _selectedTab,
+                onTabChanged: (tab) {
+                  setState(() {
+                    _selectedTab = tab;
+                    _searchController.clear();
+                    _memberLimit = 5;
+                    _branchLimit = 5;
+                    _pendingLimit = 5;
+                    if (_scrollController.hasClients) {
+                      _scrollController.jumpTo(0);
+                    }
+                  });
+                },
               ),
-              Transform.translate(
-                offset: const Offset(0, -25),
-                child: QuickStatsRow(
-                  memberCount: memberCount,
-                  branchCount: branchCount,
-                  pendingCount: pendingCount,
-                  selectedTab: _selectedTab,
-                  onTabChanged: (tab) {
-                    setState(() {
-                      _selectedTab = tab;
-                      _searchController.clear();
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 8),
-              _buildContentSection(
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: _buildContentSection(
                 userTreeState: userTreeState,
                 pendingState: pendingState,
                 members: allMembers,
                 branches: allBranches,
                 requests: pendingRequests,
               ),
-              const SizedBox(height: 30),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -443,27 +477,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             if (filteredMembers.isEmpty)
               _buildEmptyWidget('Không tìm thấy thành viên phù hợp')
             else
-              ListView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredMembers.length,
-                itemBuilder: (context, index) {
-                  final member = filteredMembers[index];
-                  return MemberItemWidget(
-                    member: member,
-                    onEdit: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              AdminMemberFormPage(memberId: member.id),
-                        ),
-                      );
-                    },
-                    onDelete: () => _showDeleteConfirmation(context, member),
-                  );
-                },
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.only(bottom: 30),
+                  itemCount: filteredMembers.length > _memberLimit
+                      ? _memberLimit
+                      : filteredMembers.length,
+                  itemBuilder: (context, index) {
+                    final member = filteredMembers[index];
+                    return MemberItemWidget(
+                      member: member,
+                      onEdit: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AdminMemberFormPage(memberId: member.id),
+                          ),
+                        );
+                      },
+                      onDelete: () => _showDeleteConfirmation(context, member),
+                    );
+                  },
+                ),
               ),
           ],
         );
@@ -496,22 +533,25 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             if (filteredBranches.isEmpty)
               _buildEmptyWidget('Không tìm thấy chi tộc phù hợp')
             else
-              ListView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredBranches.length,
-                itemBuilder: (context, index) {
-                  final branch = filteredBranches[index];
-                  return BranchItemWidget(
-                    branch: branch,
-                    memberCount:
-                        members.where((m) => m.branchId == branch.id).length,
-                    onEdit: () => _openBranchForm(context, branch: branch),
-                    onDelete: () =>
-                        _showDeleteBranchConfirmation(context, branch),
-                  );
-                },
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.only(bottom: 30),
+                  itemCount: filteredBranches.length > _branchLimit
+                      ? _branchLimit
+                      : filteredBranches.length,
+                  itemBuilder: (context, index) {
+                    final branch = filteredBranches[index];
+                    return BranchItemWidget(
+                      branch: branch,
+                      memberCount:
+                          members.where((m) => m.branchId == branch.id).length,
+                      onEdit: () => _openBranchForm(context, branch: branch),
+                      onDelete: () =>
+                          _showDeleteBranchConfirmation(context, branch),
+                    );
+                  },
+                ),
               ),
           ],
         );
@@ -532,13 +572,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             if (requests.isEmpty)
               _buildEmptyWidget('Không có yêu cầu tham gia nào đang chờ duyệt')
             else
-              ListView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: requests.length,
-                itemBuilder: (context, index) =>
-                    PendingRequestItemWidget(request: requests[index]),
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.only(bottom: 30),
+                  itemCount: requests.length > _pendingLimit
+                      ? _pendingLimit
+                      : requests.length,
+                  itemBuilder: (context, index) =>
+                      PendingRequestItemWidget(request: requests[index]),
+                ),
               ),
           ],
         );

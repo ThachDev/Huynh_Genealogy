@@ -23,7 +23,8 @@ class FamilyCreationSuccessDialog extends StatefulWidget {
 }
 
 class _FamilyCreationSuccessDialogState
-    extends State<FamilyCreationSuccessDialog> with SingleTickerProviderStateMixin {
+    extends State<FamilyCreationSuccessDialog>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _animController;
   late final Animation<double> _scaleAnimation;
   late final Animation<double> _fadeAnimation;
@@ -60,41 +61,6 @@ class _FamilyCreationSuccessDialogState
     );
   }
 
-  Widget _buildCorner({required bool isTop, required bool isLeft}) {
-    const double lineLength = 16.0;
-    const double thickness = 2.0;
-    const Color cornerColor = AppColors.gold;
-
-    return SizedBox(
-      width: lineLength,
-      height: lineLength,
-      child: Stack(
-        children: [
-          Positioned(
-            top: isTop ? 0 : null,
-            bottom: !isTop ? 0 : null,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: thickness,
-              color: cornerColor,
-            ),
-          ),
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: isLeft ? 0 : null,
-            right: !isLeft ? 0 : null,
-            child: Container(
-              width: thickness,
-              color: cornerColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
@@ -122,12 +88,6 @@ class _FamilyCreationSuccessDialogState
             ),
             child: Stack(
               children: [
-                // Fine-art traditional corners
-                Positioned(top: 8, left: 8, child: _buildCorner(isTop: true, isLeft: true)),
-                Positioned(top: 8, right: 8, child: _buildCorner(isTop: true, isLeft: false)),
-                Positioned(bottom: 8, left: 8, child: _buildCorner(isTop: false, isLeft: true)),
-                Positioned(bottom: 8, right: 8, child: _buildCorner(isTop: false, isLeft: false)),
-
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
                   child: Column(
@@ -146,7 +106,7 @@ class _FamilyCreationSuccessDialogState
                           ),
                         ),
                         child: const Icon(
-                          LucideIcons.sparkles,
+                          LucideIcons.check,
                           color: AppColors.gold,
                           size: 36,
                         ),
@@ -177,21 +137,10 @@ class _FamilyCreationSuccessDialogState
                       ),
                       const SizedBox(height: 12),
 
-                      // Description / Message
-                      Text(
-                        'Dòng họ của bạn đã được khởi tạo thành công trên hệ thống Gia Tộc Việt. Hãy dùng mã mời dưới đây để kết nối người thân.',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                          height: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
                       // Invite Code Box
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
                           color: AppColors.parchment,
                           borderRadius: BorderRadius.circular(10),
@@ -227,7 +176,8 @@ class _FamilyCreationSuccessDialogState
                               ],
                             ),
                             IconButton(
-                              icon: const Icon(LucideIcons.copy, color: AppColors.gold),
+                              icon: const Icon(LucideIcons.copy,
+                                  color: AppColors.gold),
                               tooltip: 'Sao chép mã',
                               onPressed: () => _copyToClipboard(context),
                             ),
@@ -251,12 +201,15 @@ class _FamilyCreationSuccessDialogState
                         onPressed: () {
                           Clipboard.setData(
                             ClipboardData(
-                              text: 'Tham gia gia phả "${widget.family.name}" trên ứng dụng Gia Tộc Việt. Mã mời của dòng họ là: ${widget.family.inviteCode}',
+                              text:
+                                  'Tham gia gia phả "${widget.family.name}" trên ứng dụng Gia Tộc Việt. Mã mời của dòng họ là: ${widget.family.inviteCode}',
                             ),
                           );
-                          AppSnackBar.success(context, 'Đã sao chép nội dung chia sẻ!');
+                          AppSnackBar.success(
+                              context, 'Đã sao chép nội dung chia sẻ!');
                         },
-                        icon: const Icon(LucideIcons.share2, size: 16, color: AppColors.crimson),
+                        icon: const Icon(LucideIcons.share2,
+                            size: 16, color: AppColors.crimson),
                         label: Text(
                           'CHIA SẺ CHO GIA ĐÌNH',
                           style: GoogleFonts.inter(

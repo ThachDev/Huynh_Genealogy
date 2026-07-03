@@ -44,4 +44,19 @@ abstract class OnboardingRepository {
     String? origin,
     String? logoUrl,
   });
+
+  Future<Either<Failure, List<FamilyUserEntity>>> getApprovedMembers({
+    required int familyId,
+  });
+
+  Future<Either<Failure, bool>> updateMemberRole({
+    required int familyId,
+    required int userId,
+    required String role,
+  });
+
+  Future<Either<Failure, bool>> linkMemberToUser({
+    required int userId,
+    required int memberId,
+  });
 }

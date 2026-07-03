@@ -18,6 +18,7 @@ import 'pages/admin_regulations_page.dart';
 import 'pages/admin_theme_settings_page.dart';
 import 'pages/admin_help_center_page.dart';
 import 'pages/admin_about_us_page.dart';
+import 'pages/admin_member_roles_page.dart';
 
 class AdminSettingsPage extends StatelessWidget {
   const AdminSettingsPage({super.key});
@@ -29,6 +30,11 @@ class AdminSettingsPage extends StatelessWidget {
         pendingState is AdminPendingRequestsLoaded ? pendingState.family : null;
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
+
+    final role = user?.role ?? 'VIEWER';
+    final roleUpper = role.toUpperCase();
+    final isOwner = roleUpper == 'OWNER' || roleUpper == 'CREATOR';
+    final isEditor = roleUpper == 'EDITOR';
 
     return Scaffold(
       backgroundColor: AppColors.parchment,
@@ -44,13 +50,15 @@ class AdminSettingsPage extends StatelessWidget {
         children: [
           _buildSectionHeader(context, 'TÀI KHOẢN VÀ DÒNG TỘC'),
           _buildSettingsCard(children: [
-            _buildSettingsTile(
-              context: context,
-              icon: LucideIcons.home,
-              title: 'Thông tin dòng tộc',
-              destination: AdminClanInfoSettingsPage(family: family),
-            ),
-            _buildDivider(),
+            if (!isEditor) ...[
+              _buildSettingsTile(
+                context: context,
+                icon: LucideIcons.home,
+                title: 'Thông tin dòng tộc',
+                destination: AdminClanInfoSettingsPage(family: family),
+              ),
+              _buildDivider(),
+            ],
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.user,
@@ -63,6 +71,24 @@ class AdminSettingsPage extends StatelessWidget {
               icon: LucideIcons.lock,
               title: 'Bảo mật tài khoản',
               destination: const AdminAccountSecurityPage(),
+            ),
+            if (isOwner) ...[
+              _buildDivider(),
+              _buildSettingsTile(
+                context: context,
+                icon: LucideIcons.users,
+                title: 'Phân quyền thành viên',
+                destination: const AdminMemberRolesPage(),
+              ),
+            ],
+            _buildDivider(),
+            _buildSettingsTile(
+              context: context,
+              icon: LucideIcons.userCheck,
+              title: 'Chuyển sang trang Thành viên',
+              onTap: () {
+                UserMainNavigationPage.adminModeNotifier.value = false;
+              },
             ),
           ]),
           const SizedBox(height: 24),
@@ -106,25 +132,27 @@ class AdminSettingsPage extends StatelessWidget {
               destination: const AdminAboutUsPage(),
             ),
           ]),
-          const SizedBox(height: 24),
-          _buildSectionHeader(context, 'QUẢN TRỊ NÂNG CAO'),
-          _buildSettingsCard(children: [
-            _buildSettingsTile(
-              context: context,
-              icon: LucideIcons.shieldAlert,
-              title: 'Chuyển nhượng quyền Trưởng tộc',
-              destination: const AdminTransferOwnershipPage(),
-            ),
-            _buildDivider(),
-            _buildSettingsTile(
-              context: context,
-              icon: LucideIcons.trash2,
-              title: 'Giải tán dòng họ',
-              destination: const AdminDissolveClanPage(),
-              titleColor: AppColors.error,
-              iconColor: AppColors.error,
-            ),
-          ]),
+          if (isOwner) ...[
+            const SizedBox(height: 24),
+            _buildSectionHeader(context, 'QUẢN TRỊ NÂNG CAO'),
+            _buildSettingsCard(children: [
+              _buildSettingsTile(
+                context: context,
+                icon: LucideIcons.shieldAlert,
+                title: 'Chuyển nhượng quyền Trưởng tộc',
+                destination: const AdminTransferOwnershipPage(),
+              ),
+              _buildDivider(),
+              _buildSettingsTile(
+                context: context,
+                icon: LucideIcons.trash2,
+                title: 'Giải tán dòng họ',
+                destination: const AdminDissolveClanPage(),
+                titleColor: AppColors.error,
+                iconColor: AppColors.error,
+              ),
+            ]),
+          ],
           const SizedBox(height: 24),
           OutlinedButton.icon(
             onPressed: () {

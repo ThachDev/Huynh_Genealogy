@@ -135,6 +135,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget build(BuildContext context) {
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
+    final role = user?.role ?? 'VIEWER';
+    final isEditor = role.toUpperCase() == 'EDITOR';
     final double topPadding = MediaQuery.of(context).padding.top;
     final double headerHeight = 180 + topPadding;
 
@@ -254,6 +256,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             Transform.translate(
               offset: const Offset(0, -25),
               child: QuickStatsRow(
+                showPending: !isEditor,
                 memberCount: memberCount,
                 branchCount: branchCount,
                 pendingCount: pendingCount,
@@ -444,6 +447,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     required List<BranchEntity> branches,
     required List<FamilyUserEntity> requests,
   }) {
+    final authState = context.read<AuthBloc>().state;
+    final user = authState is Authenticated ? authState.user : null;
+    final role = user?.role ?? 'VIEWER';
+    final isEditor = role.toUpperCase() == 'EDITOR';
+
     switch (_selectedTab) {
       case AdminDashboardTab.members:
         if (userTreeState is UserTreeLoading) {
@@ -500,7 +508,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           ),
                         );
                       },
-                      onDelete: () => _showDeleteConfirmation(context, member),
+                      onDelete: isEditor
+                          ? null
+                          : () => _showDeleteConfirmation(context, member),
                     );
                   },
                 ),
@@ -550,8 +560,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       memberCount:
                           members.where((m) => m.branchId == branch.id).length,
                       onEdit: () => _openBranchForm(context, branch: branch),
-                      onDelete: () =>
-                          _showDeleteBranchConfirmation(context, branch),
+                      onDelete: isEditor
+                          ? null
+                          : () =>
+                              _showDeleteBranchConfirmation(context, branch),
                     );
                   },
                 ),
@@ -560,6 +572,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         );
 
       case AdminDashboardTab.pending:
+        if (isEditor) {
+          return const SizedBox.shrink();
+        }
         if (pendingState is AdminPendingRequestsLoading) {
           return const Center(
             child: Padding(

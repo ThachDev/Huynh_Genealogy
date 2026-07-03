@@ -10,6 +10,7 @@ class QuickStatsRow extends StatelessWidget {
   final String pendingCount;
   final AdminDashboardTab selectedTab;
   final ValueChanged<AdminDashboardTab> onTabChanged;
+  final bool showPending;
 
   const QuickStatsRow({
     super.key,
@@ -18,6 +19,7 @@ class QuickStatsRow extends StatelessWidget {
     required this.pendingCount,
     required this.selectedTab,
     required this.onTabChanged,
+    this.showPending = true,
   });
 
   @override
@@ -58,16 +60,18 @@ class QuickStatsRow extends StatelessWidget {
               onTap: () => onTabChanged(AdminDashboardTab.branches),
             ),
           ),
-          Container(width: 1, height: 32, color: Colors.grey.shade100),
-          Expanded(
-            child: StatItem(
-              icon: LucideIcons.clock,
-              label: 'CHỜ DUYỆT',
-              value: pendingCount,
-              isSelected: selectedTab == AdminDashboardTab.pending,
-              onTap: () => onTabChanged(AdminDashboardTab.pending),
+          if (showPending) ...[
+            Container(width: 1, height: 32, color: Colors.grey.shade100),
+            Expanded(
+              child: StatItem(
+                icon: LucideIcons.clock,
+                label: 'CHỜ DUYỆT',
+                value: pendingCount,
+                isSelected: selectedTab == AdminDashboardTab.pending,
+                onTap: () => onTabChanged(AdminDashboardTab.pending),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

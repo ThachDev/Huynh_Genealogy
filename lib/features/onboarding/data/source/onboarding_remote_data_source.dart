@@ -37,6 +37,19 @@ abstract class OnboardingRemoteDataSource {
     String? origin,
     String? logoUrl,
   });
+
+  Future<List<FamilyUserModel>> getApprovedMembers(int familyId);
+
+  Future<bool> updateMemberRole({
+    required int familyId,
+    required int userId,
+    required String role,
+  });
+
+  Future<bool> linkMemberToUser({
+    required int userId,
+    required int memberId,
+  });
 }
 
 class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
@@ -246,6 +259,65 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
     } on DioException catch (e) {
       throw ServerException(
         message: _getErrorMessage(e, 'Lỗi cập nhật thông tin dòng họ'),
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  @override
+  Future<List<FamilyUserModel>> getApprovedMembers(int familyId) async {
+    try {
+      final response = await dio.get(
+        '${AppConstants.familiesEndpoint}/members',
+        queryParameters: {'familyId': familyId},
+      );
+      final list = response.data['data'] as List<dynamic>;
+      return list
+          .map((item) => FamilyUserModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ServerException(
+        message: _getErrorMessage(e, 'Lỗi tải danh sách thành viên'),
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  @override
+  Future<bool> updateMemberRole({
+    required int familyId,
+    required int userId,
+    required String role,
+  }) async {
+    try {
+      final response = await dio.put(
+        '${AppConstants.familiesEndpoint}/members/$userId/role',
+        queryParameters: {'familyId': familyId},
+        data: {'role': role},
+      );
+      return response.data['success'] as bool? ?? false;
+    } on DioException catch (e) {
+      throw ServerException(
+        message: _getErrorMessage(e, 'Lỗi phân quyền thành viên'),
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  @override
+  Future<bool> linkMemberToUser({
+    required int userId,
+    required int memberId,
+  }) async {
+    try {
+      final response = await dio.patch(
+        '${AppConstants.familiesEndpoint}/members/$userId/link-member',
+        data: {'memberId': memberId},
+      );
+      return response.data['success'] as bool? ?? false;
+    } on DioException catch (e) {
+      throw ServerException(
+        message: _getErrorMessage(e, 'Lỗi liên kết hồ sơ gia phả'),
         statusCode: e.response?.statusCode,
       );
     }

@@ -54,6 +54,13 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
+    () => AdminMemberRolesBloc(
+      getApprovedMembers: sl(),
+      updateMemberRole: sl(),
+    ),
+  );
+
+  sl.registerFactory(
     () => AuthBloc(
       loginWithGoogle: sl(),
       loginWithEmail: sl(),
@@ -67,6 +74,7 @@ Future<void> init() async {
       verifyOtp: sl(),
       resetPasswordWithOtp: sl(),
       authRepository: sl(),
+      refreshProfile: sl(),
     ),
   );
 
@@ -95,6 +103,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ClearCredentials(sl()));
   sl.registerLazySingleton(() => ForgotPassword(sl()));
   sl.registerLazySingleton(() => VerifyOtp(sl()));
+  sl.registerLazySingleton(() => RefreshProfile(sl()));
   sl.registerLazySingleton(() => ResetPasswordWithOtp(sl()));
 
   // Family Use Cases
@@ -109,6 +118,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeleteBranch(sl()));
   sl.registerLazySingleton(() => UpdateFamily(sl()));
   sl.registerLazySingleton(() => GetMemberDetail(sl()));
+  sl.registerLazySingleton(() => GetApprovedMembers(sl()));
+  sl.registerLazySingleton(() => UpdateMemberRole(sl()));
+  sl.registerLazySingleton(() => LinkMemberToUser(sl()));
 
   // ─── Repository ───────────────────────────────────────────────────────────
   sl.registerLazySingleton<OnboardingRepository>(

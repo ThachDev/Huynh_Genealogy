@@ -12,13 +12,27 @@ import 'package:path_provider/path_provider.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
+import '../../../../../../injection_container.dart';
 import '../../../../../auth/auth.dart';
+import '../../../../../onboarding/onboarding.dart';
 import '../../../bloc/admin_member_form/admin_member_form_bloc.dart';
 
 class AdminMemberFormPage extends StatefulWidget {
   final int? memberId; // null = Thêm mới, có giá trị = Chỉnh sửa
+  /// Nếu true: sau khi tạo thành viên mới sẽ tự động liên kết với tài khoản OWNER
+  final bool isOwnerSelfSetup;
+  final int? ownerUserId;
+  final String? initialFullName;
+  final String? initialAvatarUrl;
 
-  const AdminMemberFormPage({super.key, this.memberId});
+  const AdminMemberFormPage({
+    super.key,
+    this.memberId,
+    this.isOwnerSelfSetup = false,
+    this.ownerUserId,
+    this.initialFullName,
+    this.initialAvatarUrl,
+  });
 
   @override
   State<AdminMemberFormPage> createState() => _AdminMemberFormPageState();
@@ -33,6 +47,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   final _generationController = TextEditingController();
   final _notesController = TextEditingController();
   final _avatarUrlController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   // Selected values
   Gender _gender = Gender.male;
@@ -77,9 +92,19 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<AdminMemberFormBloc>()
-        .add(LoadAdminMemberFormEvent(memberId: widget.memberId));
+    if (widget.initialFullName != null) {
+      _fullNameController.text = widget.initialFullName!;
+    }
+    if (widget.initialAvatarUrl != null) {
+      _avatarUrlController.text = widget.initialAvatarUrl!;
+    }
+
+    // Nếu là chế độ cập nhật, lấy data
+    if (widget.memberId != null) {
+      context
+          .read<AdminMemberFormBloc>()
+          .add(LoadAdminMemberFormEvent(memberId: widget.memberId));
+    }
     _generationController.addListener(_onGenerationChanged);
   }
 
@@ -100,6 +125,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     _generationController.dispose();
     _notesController.dispose();
     _avatarUrlController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -134,6 +160,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       familyId: familyId ?? existingMember?.familyId,
       isLunarBirthDate: _isLunarBirthDate,
       isLunarDeathDate: _isLunarDeathDate,
+      phone: _phoneController.text.trim().isEmpty
+          ? null
+          : _phoneController.text.trim(),
     );
 
     context.read<AdminMemberFormBloc>().add(SubmitAdminMemberFormEvent(member));
@@ -166,15 +195,37 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
         ),
       ),
       body: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is AdminMemberFormSuccess) {
-            AppSnackBar.success(
-              context,
-              state.isDeleted
-                  ? 'Đã xóa thành viên thành công'
-                  : 'Đã lưu thông tin thành viên thành công',
-            );
-            Navigator.pop(context, true);
+            if (!state.isDeleted && widget.isOwnerSelfSetup) {
+              // Link newly created member to the OWNER's account
+              final linkUsecase = sl<LinkMemberToUser>();
+              final result = await linkUsecase(LinkMemberToUserParams(
+                userId: widget.ownerUserId ?? 0,
+                memberId: state.member.id,
+              ));
+              if (mounted) {
+                result.fold(
+                  (failure) => AppSnackBar.error(context,
+                      'Tạo hồ sơ thành công nhưng không thể liên kết tài khoản: ${failure.message}'),
+                  (_) {
+                    // Refresh auth profile to sync new member_id
+                    context.read<AuthBloc>().add(AuthProfileRefreshSilent());
+                    AppSnackBar.success(context,
+                        'Đã tạo và liên kết hồ sơ gia phả thành công!');
+                    Navigator.pop(context, true);
+                  },
+                );
+              }
+            } else {
+              AppSnackBar.success(
+                context,
+                state.isDeleted
+                    ? 'Đã xóa thành viên thành công'
+                    : 'Đã lưu thông tin thành viên thành công',
+              );
+              Navigator.pop(context, true);
+            }
           } else if (state is AdminMemberFormError) {
             AppSnackBar.error(context, state.message);
           } else if (state is AdminMemberFormReady) {
@@ -185,6 +236,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               _generationController.text = m.generation?.toString() ?? '';
               _notesController.text = m.notes ?? '';
               _avatarUrlController.text = m.avatarUrl ?? '';
+              _phoneController.text = m.phone ?? '';
               _gender = m.gender;
               _maritalStatus = m.maritalStatus;
               _isAlive = m.isAlive;
@@ -388,7 +440,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   const SizedBox(height: 16),
                                   _buildLabel('CHA/MẸ'),
                                   _buildDropdown<int?>(
-                                    value: parentIds.contains(_parentId) ? _parentId : null,
+                                    value: parentIds.contains(_parentId)
+                                        ? _parentId
+                                        : null,
                                     items: [
                                       const DropdownItem<int?>(
                                           value: null,
@@ -420,7 +474,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   const SizedBox(height: 16),
                                   _buildLabel('VỢ/CHỒNG'),
                                   _buildDropdown<int?>(
-                                    value: spouseIds.contains(_spouseId) ? _spouseId : null,
+                                    value: spouseIds.contains(_spouseId)
+                                        ? _spouseId
+                                        : null,
                                     items: [
                                       const DropdownItem<int?>(
                                           value: null,
@@ -457,7 +513,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       });
 
                                     return _buildDropdown<int?>(
-                                      value: allBranches.any((b) => b.id == _branchId) ? _branchId : null,
+                                      value: allBranches
+                                              .any((b) => b.id == _branchId)
+                                          ? _branchId
+                                          : null,
                                       items: [
                                         const DropdownItem<int?>(
                                             value: null,
@@ -481,8 +540,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   // Quê quán
                                   _buildTextField(
                                     controller: _placeOfBirthController,
-                                    label: 'Quê quán',
-                                    hintText: 'Quê quán hoặc nơi sinh',
+                                    label: 'Quê quán / Địa chỉ',
+                                    hintText:
+                                        'Nhập thông tin quê quán, nơi ở...',
                                     validator: (val) =>
                                         AppValidators.validatePlaceOfBirth(
                                             context, val),
@@ -650,6 +710,15 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     hintText:
                                         'Nhập thông tin nghề nghiệp, học vấn hoặc cột mốc quan trọng...',
                                     maxLines: 5,
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Số điện thoại
+                                  _buildTextField(
+                                    controller: _phoneController,
+                                    label: 'Số điện thoại',
+                                    hintText: '0xxxxxxxxx',
+                                    keyboardType: TextInputType.phone,
                                   ),
                                 ],
                               ),

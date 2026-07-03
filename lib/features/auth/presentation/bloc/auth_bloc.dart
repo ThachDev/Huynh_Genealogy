@@ -12,6 +12,7 @@ import '../../domain/usecase/clear_credentials.dart';
 import '../../domain/usecase/forgot_password.dart';
 import '../../domain/usecase/verify_otp.dart';
 import '../../domain/usecase/reset_password_with_otp.dart';
+import '../../domain/usecase/refresh_profile.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -28,6 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final VerifyOtp verifyOtp;
   final ResetPasswordWithOtp resetPasswordWithOtp;
   final AuthRepository authRepository;
+  final RefreshProfile refreshProfile;
 
   AuthBloc({
     required this.loginWithGoogle,
@@ -42,6 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.verifyOtp,
     required this.resetPasswordWithOtp,
     required this.authRepository,
+    required this.refreshProfile,
   }) : super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<AuthLoginRequested>(_onAuthLoginRequested);
@@ -55,6 +58,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthForgotPasswordRequested>(_onAuthForgotPasswordRequested);
     on<AuthVerifyOtpRequested>(_onAuthVerifyOtpRequested);
     on<AuthResetPasswordRequested>(_onAuthResetPasswordRequested);
+    on<AuthProfileRefreshRequested>(_onAuthProfileRefreshRequested);
+    on<AuthProfileRefreshSilent>(_onAuthProfileRefreshSilent);
   }
 
   Future<void> _onAuthCheckRequested(
@@ -230,6 +235,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     failureOrVoid.fold(
       (failure) => emit(AuthError(message: failure.message)),
       (_) => emit(AuthResetPasswordSuccess()),
+    );
+  }
+
+  Future<void> _onAuthProfileRefreshRequested(
+    AuthProfileRefreshRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final failureOrUser = await refreshProfile(NoParams());
+    failureOrUser.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (user) => emit(Authenticated(user: user)),
+    );
+  }
+
+  Future<void> _onAuthProfileRefreshSilent(
+    AuthProfileRefreshSilent event,
+    Emitter<AuthState> emit,
+  ) async {
+    final failureOrUser = await refreshProfile(NoParams());
+    failureOrUser.fold(
+      (failure) => {}, // Silently ignore failures on background sync
+      (user) => emit(Authenticated(user: user)),
     );
   }
 }

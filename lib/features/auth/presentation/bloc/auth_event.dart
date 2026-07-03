@@ -10,6 +10,10 @@ abstract class AuthEvent extends Equatable {
 
 class AuthCheckRequested extends AuthEvent {}
 
+class AuthProfileRefreshRequested extends AuthEvent {}
+
+class AuthProfileRefreshSilent extends AuthEvent {}
+
 class AuthLoginRequested extends AuthEvent {}
 
 class AuthLoginWithEmailRequested extends AuthEvent {

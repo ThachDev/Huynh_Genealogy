@@ -200,4 +200,17 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure(message: 'Lỗi đặt lại mật khẩu: $e'));
     }
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> refreshProfile() async {
+    try {
+      final userModel = await remoteDataSource.refreshProfile();
+      await cacheUser(userModel); // Cache the fresh user info locally
+      return Right(userModel);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Lỗi nạp lại thông tin người dùng: $e'));
+    }
+  }
 }

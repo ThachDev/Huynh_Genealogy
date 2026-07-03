@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../../../../../core/theme/app_theme.dart';
-import '../../../../../../core/widgets/widgets.dart';
-import '../../admin_dashboard/admin_dashboard_page.dart';
+import 'package:giatocviet/core/theme/app_theme.dart';
+import 'package:giatocviet/core/widgets/widgets.dart';
+import 'package:giatocviet/core/domain/entity/family_user_entity.dart';
+import 'package:giatocviet/features/auth/auth.dart';
+import 'package:giatocviet/features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
+import 'package:giatocviet/features/admin/presentation/bloc/admin_member_roles/admin_member_roles_bloc.dart';
 
 class AdminMemberRolesPage extends StatefulWidget {
   const AdminMemberRolesPage({super.key});
@@ -14,47 +18,20 @@ class AdminMemberRolesPage extends StatefulWidget {
 }
 
 class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
-  // Mock list of users in the family tree with roles
-  final List<Map<String, dynamic>> _users = [
-    {
-      'id': 1,
-      'fullName': 'Huỳnh Kim Hùng',
-      'email': 'kimhung.huynh@gmail.com',
-      'role': 'OWNER',
-      'avatarUrl': null,
-    },
-    {
-      'id': 2,
-      'fullName': 'Huỳnh Thế Anh',
-      'email': 'theanh.huynh@gmail.com',
-      'role': 'BRANCH_ADMIN',
-      'avatarUrl': null,
-    },
-    {
-      'id': 3,
-      'fullName': 'Huỳnh Mỹ Linh',
-      'email': 'mylinh.huynh@gmail.com',
-      'role': 'EDITOR',
-      'avatarUrl': null,
-    },
-    {
-      'id': 4,
-      'fullName': 'Huỳnh Minh Triết',
-      'email': 'minhtriet.huynh@gmail.com',
-      'role': 'VIEWER',
-      'avatarUrl': null,
-    },
-    {
-      'id': 5,
-      'fullName': 'Huỳnh Quốc Bảo',
-      'email': 'quocbao.huynh@gmail.com',
-      'role': 'VIEWER',
-      'avatarUrl': null,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authState = context.read<AuthBloc>().state;
+      if (authState is Authenticated && authState.user.familyId != null) {
+        context.read<AdminMemberRolesBloc>().add(
+              LoadAdminMemberRolesEvent(familyId: authState.user.familyId!),
+            );
+      }
+    });
+  }
 
-  void _showRoleSelector(int index) {
-    final user = _users[index];
+  void _showRoleSelector(FamilyUserEntity user, int familyId) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.parchment,
@@ -73,7 +50,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    'Thay đổi vai trò cho ${user['fullName']}',
+                    'Thay đổi vai trò cho ${user.userFullName ?? 'Thành viên'}',
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -82,14 +59,12 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   ),
                 ),
                 const Divider(),
-                _buildRoleOption(index, 'OWNER', 'Trưởng tộc',
-                    'Toàn quyền cấu hình và bàn giao gia tộc.'),
-                _buildRoleOption(index, 'BRANCH_ADMIN', 'Quản trị chi',
+                _buildRoleOption(user, familyId, 'BRANCH_ADMIN', 'Quản trị chi',
                     'Quản lý thông tin & thành viên thuộc chi phái.'),
-                _buildRoleOption(index, 'EDITOR', 'Biên soạn',
+                _buildRoleOption(user, familyId, 'EDITOR', 'Biên soạn',
                     'Thêm mới, sửa đổi thông tin phả hệ gia tộc.'),
-                _buildRoleOption(
-                    index, 'VIEWER', 'Thành viên', 'Chỉ xem phả hệ dòng tộc.'),
+                _buildRoleOption(user, familyId, 'VIEWER', 'Thành viên',
+                    'Chỉ xem phả hệ dòng tộc.'),
               ],
             ),
           ),
@@ -98,21 +73,20 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
     );
   }
 
-  Widget _buildRoleOption(
-      int userIndex, String roleValue, String roleTitle, String roleDesc) {
-    final currentRole = _users[userIndex]['role'];
-    final isSelected = currentRole == roleValue;
+  Widget _buildRoleOption(FamilyUserEntity user, int familyId, String roleValue,
+      String roleTitle, String roleDesc) {
+    final isSelected = user.role == roleValue;
 
     return ListTile(
       onTap: () {
-        setState(() {
-          _users[userIndex]['role'] = roleValue;
-        });
         Navigator.pop(context);
-        AppSnackBar.success(
-          context,
-          'Đã cập nhật vai trò của ${_users[userIndex]['fullName']} thành $roleTitle!',
-        );
+        context.read<AdminMemberRolesBloc>().add(
+              UpdateAdminMemberRoleEvent(
+                familyId: familyId,
+                userId: user.userId,
+                role: roleValue,
+              ),
+            );
       },
       leading: Container(
         padding: const EdgeInsets.all(8),
@@ -156,6 +130,10 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthBloc>().state;
+    final familyId =
+        authState is Authenticated ? authState.user.familyId : null;
+
     return Scaffold(
       backgroundColor: AppColors.parchment,
       appBar: AppBar(
@@ -172,77 +150,166 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
         ),
       ),
       body: SafeArea(
-        child: ListView.separated(
-          padding: const EdgeInsets.all(20),
-          itemCount: _users.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final user = _users[index];
-            final role = user['role'] as String;
+        child: BlocConsumer<AdminMemberRolesBloc, AdminMemberRolesState>(
+          listener: (context, state) {
+            if (state is AdminMemberRoleUpdatedSuccess) {
+              AppSnackBar.success(context, 'Cập nhật vai trò thành công!');
+              if (familyId != null) {
+                context.read<AdminMemberRolesBloc>().add(
+                      LoadAdminMemberRolesEvent(familyId: familyId),
+                    );
+              }
+            } else if (state is AdminMemberRolesFailure) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is AdminMemberRolesLoading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.wood,
+                ),
+              );
+            }
 
-            return Container(
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.gold.withValues(alpha: 0.25),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: ListTile(
-                onTap: () => _showRoleSelector(index),
-                leading: CircleAvatar(
-                  backgroundColor: AppColors.wood.withValues(alpha: 0.1),
+            if (state is AdminMemberRolesFailure) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
                   child: Text(
-                    user['fullName'][0].toUpperCase(),
-                    style: GoogleFonts.beVietnamPro(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.wood,
-                    ),
+                    state.message,
+                    style: GoogleFonts.beVietnamPro(color: AppColors.error),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                title: Text(
-                  user['fullName'],
+              );
+            }
+
+            List<FamilyUserEntity> members = [];
+            if (state is AdminMemberRolesLoaded) {
+              members = state.members;
+            } else {
+              final blocState = context.read<AdminMemberRolesBloc>().state;
+              if (blocState is AdminMemberRolesLoaded) {
+                members = blocState.members;
+              }
+            }
+
+            if (members.isEmpty) {
+              return Center(
+                child: Text(
+                  'Không có thành viên nào.',
                   style: GoogleFonts.beVietnamPro(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                subtitle: Text(
-                  user['email'],
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
                     color: AppColors.textSecondary,
+                    fontSize: 14,
                   ),
                 ),
-                trailing: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              );
+            }
+
+            return ListView.separated(
+              padding: const EdgeInsets.all(20),
+              itemCount: members.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final user = members[index];
+                final role = user.role;
+
+                return Container(
                   decoration: BoxDecoration(
-                    color: AdminDashboardPage.roleColor(role)
-                        .withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    AdminDashboardPage.roleLabel(role),
-                    style: GoogleFonts.inter(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: AdminDashboardPage.roleColor(role),
-                      letterSpacing: 0.5,
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.gold.withValues(alpha: 0.25),
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.03),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              ),
+                  child: ListTile(
+                    onTap: familyId == null
+                        ? null
+                        : () {
+                            final currentUserId = authState is Authenticated
+                                ? authState.user.id
+                                : null;
+                            if (user.userId == currentUserId) {
+                              AppSnackBar.warning(
+                                context,
+                                'Bạn không thể tự hạ quyền của mình tại đây. Vui lòng sử dụng chức năng Chuyển nhượng quyền Trưởng tộc.',
+                              );
+                            } else {
+                              _showRoleSelector(user, familyId);
+                            }
+                          },
+                    leading: CircleAvatar(
+                      backgroundColor: AppColors.wood.withValues(alpha: 0.1),
+                      backgroundImage: user.userAvatarUrl != null
+                          ? NetworkImage(user.userAvatarUrl!)
+                          : null,
+                      child: user.userAvatarUrl == null
+                          ? Text(
+                              (user.userFullName ?? 'U')[0].toUpperCase(),
+                              style: GoogleFonts.beVietnamPro(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.wood,
+                              ),
+                            )
+                          : null,
+                    ),
+                    title: Text(
+                      user.userFullName ?? 'Thành viên dòng họ',
+                      style: GoogleFonts.beVietnamPro(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    subtitle: Text(
+                      user.userEmail ?? 'No email',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AdminDashboardPage.roleColor(role)
+                                .withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            AdminDashboardPage.roleLabel(role),
+                            style: GoogleFonts.inter(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: AdminDashboardPage.roleColor(role),
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          LucideIcons.chevronRight,
+                          color: AppColors.textSecondary,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                );
+              },
             );
           },
         ),

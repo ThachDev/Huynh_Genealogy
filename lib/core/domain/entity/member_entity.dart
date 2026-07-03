@@ -26,7 +26,6 @@ class MemberEntity extends Equatable {
   final bool isLunarBirthDate;
   final bool isLunarDeathDate;
   final String? phone;
-  final String? address;
 
   const MemberEntity({
     required this.id,
@@ -48,7 +47,6 @@ class MemberEntity extends Equatable {
     this.isLunarBirthDate = false,
     this.isLunarDeathDate = false,
     this.phone,
-    this.address,
   });
 
   @override
@@ -72,6 +70,5 @@ class MemberEntity extends Equatable {
         isLunarBirthDate,
         isLunarDeathDate,
         phone,
-        address,
       ];
 }

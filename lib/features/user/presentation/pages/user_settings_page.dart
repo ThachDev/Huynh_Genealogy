@@ -5,9 +5,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../auth/auth.dart';
+import 'package:giatocviet/core/widgets/app_bottom_navigation_bar.dart';
 
-class UserSettingsPage extends StatelessWidget {
+class UserSettingsPage extends StatefulWidget {
   const UserSettingsPage({super.key});
+
+  @override
+  State<UserSettingsPage> createState() => _UserSettingsPageState();
+}
+
+class _UserSettingsPageState extends State<UserSettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthBloc>().add(AuthProfileRefreshSilent());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +89,9 @@ class UserSettingsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user.fullName.isNotEmpty ? user.fullName : 'Thành viên',
+                          user.fullName.isNotEmpty
+                              ? user.fullName
+                              : 'Thành viên',
                           style: GoogleFonts.beVietnamPro(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -99,8 +115,6 @@ class UserSettingsPage extends StatelessWidget {
             const SizedBox(height: 24),
           ],
 
-
-
           _buildSectionHeader('TÀI KHOẢN'),
           _buildSettingsCard(
             children: [
@@ -117,6 +131,21 @@ class UserSettingsPage extends StatelessWidget {
                 title: 'Bảo mật tài khoản',
                 onTap: () {},
               ),
+              if (user != null &&
+                  (user.role == 'OWNER' ||
+                      user.role == 'BRANCH_ADMIN' ||
+                      user.role == 'EDITOR' ||
+                      user.role == 'CREATOR')) ...[
+                _buildDivider(),
+                _buildSettingsTile(
+                  context: context,
+                  icon: LucideIcons.shieldAlert,
+                  title: 'Chuyển sang trang Quản trị',
+                  onTap: () {
+                    UserMainNavigationPage.adminModeNotifier.value = true;
+                  },
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 24),
@@ -181,7 +210,8 @@ class UserSettingsPage extends StatelessWidget {
                     ),
                     content: Text(
                       'Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?',
-                      style: GoogleFonts.inter(color: AppColors.textSecondary),
+                      style:
+                          GoogleFonts.inter(color: AppColors.textSecondary),
                     ),
                     actions: [
                       TextButton(
@@ -195,9 +225,7 @@ class UserSettingsPage extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           Navigator.of(ctx).pop();
-                          context
-                              .read<AuthBloc>()
-                              .add(AuthLogoutRequested());
+                          context.read<AuthBloc>().add(AuthLogoutRequested());
                         },
                         child: Text(
                           'Đăng xuất',

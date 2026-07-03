@@ -24,6 +24,7 @@ abstract class AuthRemoteDataSource {
     required String otp,
     required String newPassword,
   });
+  Future<UserModel> refreshProfile();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -394,6 +395,50 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           statusCode: response.statusCode,
         );
       }
+    } on DioException catch (e) {
+      throw ServerException(
+        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      if (e is ServerException) rethrow;
+      throw ServerException(message: 'Lỗi không xác định: $e');
+    }
+  }
+
+  @override
+  Future<UserModel> refreshProfile() async {
+    try {
+      final User? firebaseUser = firebaseAuth.currentUser;
+      if (firebaseUser == null) {
+        throw const ServerException(message: 'Không tìm thấy phiên đăng nhập Firebase');
+      }
+      final String? idToken = await firebaseUser.getIdToken(true);
+      if (idToken == null) {
+        throw const ServerException(message: 'Không thể lấy Firebase ID Token');
+      }
+
+      final response = await dio.post(
+        AppConstants.loginEndpoint,
+        data: {
+          'idToken': idToken,
+          'fcmToken': null,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
+        final Map<String, dynamic> userData =
+            data['data']['user'] as Map<String, dynamic>;
+        return UserModel.fromJson(userData);
+      } else {
+        throw ServerException(
+          message: response.data['message']?.toString() ?? 'Lỗi xác thực máy chủ',
+          statusCode: response.statusCode,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      throw ServerException(message: e.message ?? 'Lỗi Firebase Auth', statusCode: 401);
     } on DioException catch (e) {
       throw ServerException(
         message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),

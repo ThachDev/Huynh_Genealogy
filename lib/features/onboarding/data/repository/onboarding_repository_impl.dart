@@ -146,4 +146,56 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       return Left(NetworkFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, List<FamilyUserEntity>>> getApprovedMembers({
+    required int familyId,
+  }) async {
+    try {
+      final list = await remoteDataSource.getApprovedMembers(familyId);
+      return Right(list);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> updateMemberRole({
+    required int familyId,
+    required int userId,
+    required String role,
+  }) async {
+    try {
+      final result = await remoteDataSource.updateMemberRole(
+        familyId: familyId,
+        userId: userId,
+        role: role,
+      );
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> linkMemberToUser({
+    required int userId,
+    required int memberId,
+  }) async {
+    try {
+      final result = await remoteDataSource.linkMemberToUser(
+        userId: userId,
+        memberId: memberId,
+      );
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
 }

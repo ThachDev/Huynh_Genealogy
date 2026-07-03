@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme.dart';
-import '../../../../../core/widgets/app_route_transitions.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/domain/entity/family_entity.dart';
 import '../../../../auth/auth.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
@@ -190,13 +190,18 @@ class AdminSettingsPage extends StatelessWidget {
     required BuildContext context,
     required IconData icon,
     required String title,
-    required Widget destination,
+    Widget? destination,
+    VoidCallback? onTap,
     Color? titleColor,
     Color? iconColor,
   }) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(FadeScalePageRoute(page: destination));
+        if (onTap != null) {
+          onTap();
+        } else if (destination != null) {
+          Navigator.of(context).push(FadeScalePageRoute(page: destination));
+        }
       },
       borderRadius: BorderRadius.circular(16),
       child: Padding(

@@ -47,11 +47,17 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
     final List<BottomNavigationBarItem> navigationItems = [];
 
     if (isAdmin) {
-      // Admin: Tổng quan, Quỹ gia tộc, Cài đặt
+      // Admin: Tổng quan, Cây gia phả, Quỹ gia tộc, Cài đặt
       pages.add(const AdminDashboardPage());
       navigationItems.add(const BottomNavigationBarItem(
         icon: Icon(LucideIcons.layoutDashboard),
         label: 'Tổng quan',
+      ));
+
+      pages.add(const UserTreeViewPage());
+      navigationItems.add(const BottomNavigationBarItem(
+        icon: Icon(LucideIcons.gitBranch),
+        label: 'Cây gia phả',
       ));
 
       pages.add(const FamilyFundPage(isAdmin: true));

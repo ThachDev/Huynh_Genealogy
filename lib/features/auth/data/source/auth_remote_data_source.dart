@@ -97,9 +97,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           message: e.message ?? 'Lỗi Firebase Auth', statusCode: 401);
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ??
-            e.message ??
-            'Lỗi kết nối máy chủ',
+        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -191,9 +189,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerException(message: msg, statusCode: 401);
       } on DioException catch (e) {
         throw ServerException(
-          message: e.response?.data['message']?.toString() ??
-              e.message ??
-              'Lỗi kết nối máy chủ',
+          message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
           statusCode: e.response?.statusCode,
         );
       } catch (e) {
@@ -280,9 +276,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerException(message: msg, statusCode: 400);
       } on DioException catch (e) {
         throw ServerException(
-          message: e.response?.data['message']?.toString() ??
-              e.message ??
-              'Lỗi kết nối máy chủ',
+          message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
           statusCode: e.response?.statusCode,
         );
       }
@@ -324,9 +318,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ??
-            e.message ??
-            'Lỗi kết nối máy chủ',
+        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -361,9 +353,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ??
-            e.message ??
-            'Lỗi kết nối máy chủ',
+        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -406,14 +396,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ??
-            e.message ??
-            'Lỗi kết nối máy chủ',
+        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
       if (e is ServerException) rethrow;
       throw ServerException(message: 'Lỗi không xác định: $e');
     }
+  }
+
+  String _getErrorMessage(DioException e, String fallback) {
+    final data = e.response?.data;
+    if (data is Map && data['message'] != null) {
+      return data['message'].toString();
+    }
+    return e.message ?? fallback;
   }
 }

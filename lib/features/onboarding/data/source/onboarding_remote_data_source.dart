@@ -84,7 +84,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi tạo dòng họ',
+        message: _getErrorMessage(e, 'Lỗi tạo dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -108,7 +108,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       };
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi xác nhận mã mời',
+        message: _getErrorMessage(e, 'Lỗi xác nhận mã mời'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -132,7 +132,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyUserModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi gửi yêu cầu gia nhập',
+        message: _getErrorMessage(e, 'Lỗi gửi yêu cầu gia nhập'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -151,7 +151,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
           .toList();
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi tải yêu cầu gia nhập',
+        message: _getErrorMessage(e, 'Lỗi tải yêu cầu gia nhập'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -166,7 +166,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi phê duyệt yêu cầu',
+        message: _getErrorMessage(e, 'Lỗi phê duyệt yêu cầu'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -181,7 +181,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi từ chối yêu cầu',
+        message: _getErrorMessage(e, 'Lỗi từ chối yêu cầu'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -196,7 +196,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi tải thông tin dòng họ',
+        message: _getErrorMessage(e, 'Lỗi tải thông tin dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -245,9 +245,17 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: e.response?.data['message']?.toString() ?? e.message ?? 'Lỗi cập nhật thông tin dòng họ',
+        message: _getErrorMessage(e, 'Lỗi cập nhật thông tin dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }
+  }
+
+  String _getErrorMessage(DioException e, String fallback) {
+    final data = e.response?.data;
+    if (data is Map && data['message'] != null) {
+      return data['message'].toString();
+    }
+    return e.message ?? fallback;
   }
 }

@@ -10,19 +10,24 @@ import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
 import 'pages/admin_clan_info_settings_page.dart';
 import 'pages/admin_edit_profile_page.dart';
-import 'pages/admin_language_settings_page.dart';
 import 'pages/admin_account_security_page.dart';
 import 'pages/admin_transfer_ownership_page.dart';
 import 'pages/admin_dissolve_clan_page.dart';
 import 'pages/admin_regulations_page.dart';
-import 'pages/admin_theme_settings_page.dart';
 import 'pages/admin_help_center_page.dart';
 import 'pages/admin_about_us_page.dart';
 import 'pages/admin_member_roles_page.dart';
 
-class AdminSettingsPage extends StatelessWidget {
+import '../../../../../main.dart';
+
+class AdminSettingsPage extends StatefulWidget {
   const AdminSettingsPage({super.key});
 
+  @override
+  State<AdminSettingsPage> createState() => _AdminSettingsPageState();
+}
+
+class _AdminSettingsPageState extends State<AdminSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
@@ -36,6 +41,12 @@ class AdminSettingsPage extends StatelessWidget {
     final isOwner = roleUpper == 'OWNER' || roleUpper == 'CREATOR';
     final isEditor = roleUpper == 'EDITOR';
 
+    final locale = Localizations.localeOf(context);
+    final isEn = locale.languageCode == 'en';
+
+    final brightness = Theme.of(context).brightness;
+    final isDark = brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: AppColors.parchment,
       appBar: AppBar(
@@ -48,8 +59,8 @@ class AdminSettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
-          _buildSectionHeader(context, 'TÀI KHOẢN VÀ DÒNG TỘC'),
           _buildSettingsCard(children: [
+            _buildSectionHeaderInsideCard(context, 'TÀI KHOẢN VÀ DÒNG TỘC'),
             if (!isEditor) ...[
               _buildSettingsTile(
                 context: context,
@@ -57,7 +68,6 @@ class AdminSettingsPage extends StatelessWidget {
                 title: 'Thông tin dòng tộc',
                 destination: AdminClanInfoSettingsPage(family: family),
               ),
-              _buildDivider(),
             ],
             _buildSettingsTile(
               context: context,
@@ -65,7 +75,6 @@ class AdminSettingsPage extends StatelessWidget {
               title: 'Chỉnh sửa người dùng',
               destination: AdminEditProfilePage(user: user),
             ),
-            _buildDivider(),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.lock,
@@ -73,7 +82,6 @@ class AdminSettingsPage extends StatelessWidget {
               destination: const AdminAccountSecurityPage(),
             ),
             if (isOwner) ...[
-              _buildDivider(),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.users,
@@ -81,7 +89,6 @@ class AdminSettingsPage extends StatelessWidget {
                 destination: const AdminMemberRolesPage(),
               ),
             ],
-            _buildDivider(),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.userCheck,
@@ -90,59 +97,118 @@ class AdminSettingsPage extends StatelessWidget {
                 UserMainNavigationPage.adminModeNotifier.value = false;
               },
             ),
-          ]),
-          const SizedBox(height: 24),
-          _buildSectionHeader(context, 'THIẾT LẬP ỨNG DỤNG'),
-          _buildSettingsCard(children: [
-            _buildSettingsTile(
-              context: context,
-              icon: LucideIcons.globe,
-              title: 'Ngôn ngữ',
-              destination: const AdminLanguageSettingsPage(),
+            _buildSectionHeaderInsideCard(context, 'THIẾT LẬP ỨNG DỤNG'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        LucideIcons.globe,
+                        size: 22,
+                        color: AppColors.crimson,
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        'Ngôn ngữ',
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  AppCustomSwitch(
+                    value: isEn,
+                    activeColor: AppColors.crimson,
+                    inactiveColor: AppColors.crimson,
+                    onChanged: (val) {
+                      final newLang = val ? 'en' : 'vi';
+                      FamilyTreeApp.setLocale(context, Locale(newLang));
+                      setState(() {});
+                    },
+                    activeText: 'EN',
+                    inactiveText: 'VI',
+                    activeIcon:
+                        const Text('🇺🇸', style: TextStyle(fontSize: 16)),
+                    inactiveIcon:
+                        const Text('🇻🇳', style: TextStyle(fontSize: 16)),
+                  ),
+                ],
+              ),
             ),
-            _buildDivider(),
-            _buildSettingsTile(
-              context: context,
-              icon: LucideIcons.palette,
-              title: 'Giao diện',
-              destination: const AdminThemeSettingsPage(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        LucideIcons.palette,
+                        size: 22,
+                        color: AppColors.crimson,
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        'Giao diện',
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  AppCustomSwitch(
+                    value: isDark,
+                    activeColor: AppColors.crimson,
+                    inactiveColor: AppColors.crimson,
+                    onChanged: (val) {
+                      final mode = val ? ThemeMode.dark : ThemeMode.light;
+                      FamilyTreeApp.setThemeMode(context, mode);
+                      setState(() {});
+                    },
+                    activeText: 'Dark',
+                    inactiveText: 'Light',
+                    activeIcon: const Icon(LucideIcons.moon,
+                        size: 14, color: AppColors.crimson),
+                    inactiveIcon: const Icon(LucideIcons.sun,
+                        size: 14, color: Color(0xFF6B7280)),
+                  ),
+                ],
+              ),
             ),
-          ]),
-          const SizedBox(height: 24),
-          _buildSectionHeader(context, 'THÔNG TIN & TRỢ GIÚP'),
-          _buildSettingsCard(children: [
+            _buildSectionHeaderInsideCard(context, 'THÔNG TIN & TRỢ GIÚP'),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.fileText,
               title: 'Quy định & Điều khoản',
               destination: const AdminRegulationsPage(),
             ),
-            _buildDivider(),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.helpCircle,
               title: 'Trung tâm hỗ trợ',
               destination: const AdminHelpCenterPage(),
             ),
-            _buildDivider(),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.info,
               title: 'Về chúng tôi',
               destination: const AdminAboutUsPage(),
             ),
-          ]),
-          if (isOwner) ...[
-            const SizedBox(height: 24),
-            _buildSectionHeader(context, 'QUẢN TRỊ NÂNG CAO'),
-            _buildSettingsCard(children: [
+            if (isOwner) ...[
+              _buildSectionHeaderInsideCard(context, 'QUẢN TRỊ NÂNG CAO'),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.shieldAlert,
                 title: 'Chuyển nhượng quyền Trưởng tộc',
                 destination: const AdminTransferOwnershipPage(),
               ),
-              _buildDivider(),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.trash2,
@@ -151,8 +217,8 @@ class AdminSettingsPage extends StatelessWidget {
                 titleColor: AppColors.error,
                 iconColor: AppColors.error,
               ),
-            ]),
-          ],
+            ],
+          ]),
           const SizedBox(height: 24),
           OutlinedButton.icon(
             onPressed: () {
@@ -178,21 +244,6 @@ class AdminSettingsPage extends StatelessWidget {
           ),
           const SizedBox(height: 32),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, bottom: 8),
-      child: Text(
-        title,
-        style: GoogleFonts.beVietnamPro(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textSecondary.withValues(alpha: 0.7),
-          letterSpacing: 1.0,
-        ),
       ),
     );
   }
@@ -236,17 +287,10 @@ class AdminSettingsPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: (iconColor ?? AppColors.crimson).withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: iconColor ?? AppColors.crimson,
-              ),
+            Icon(
+              icon,
+              size: 22,
+              color: iconColor ?? AppColors.crimson,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -270,13 +314,19 @@ class AdminSettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDivider() {
-    return Divider(
-      height: 1,
-      thickness: 1,
-      color: AppColors.gold.withValues(alpha: 0.05),
-      indent: 60,
-      endIndent: 16,
+  Widget _buildSectionHeaderInsideCard(BuildContext context, String title) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(left: 16, top: 20, bottom: 8),
+      child: Text(
+        title,
+        style: GoogleFonts.beVietnamPro(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: AppColors.crimson,
+          letterSpacing: 1.0,
+        ),
+      ),
     );
   }
 }

@@ -231,7 +231,9 @@ class AppOutlineTextField extends StatelessWidget {
   final int maxLines;
   final String? Function(String?)? validator;
   final Widget? prefixIcon;
+  final Widget? suffixIcon;
   final bool enabled;
+  final bool obscureText;
 
   const AppOutlineTextField({
     super.key,
@@ -242,7 +244,9 @@ class AppOutlineTextField extends StatelessWidget {
     this.maxLines = 1,
     this.validator,
     this.prefixIcon,
+    this.suffixIcon,
     this.enabled = true,
+    this.obscureText = false,
   });
 
   @override
@@ -251,6 +255,7 @@ class AppOutlineTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      obscureText: obscureText,
       validator: validator,
       enabled: enabled,
       style:
@@ -267,6 +272,7 @@ class AppOutlineTextField extends StatelessWidget {
         hintStyle: GoogleFonts.beVietnamPro(
             fontSize: 13, color: const Color(0xFFA5A09A)),
         prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
         fillColor: const Color(0xFFFCFAF8),
         filled: true,
         contentPadding:

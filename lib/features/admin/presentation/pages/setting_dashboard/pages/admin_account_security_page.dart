@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:dio/dio.dart';
+import '../../../../../../core/network/dio_client.dart';
+import '../../../../../../core/constants/app_constants.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/widgets/app_button.dart';
 import '../../../../../../core/widgets/app_text_field.dart';
@@ -33,11 +37,49 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
   void _updatePassword() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isSaving = true);
-      await Future.delayed(const Duration(milliseconds: 1000));
-      if (mounted) {
-        setState(() => _isSaving = false);
-        AppSnackBar.success(context, 'Thay đổi mật khẩu thành công!');
-        Navigator.pop(context);
+      try {
+        final fbUser = fb.FirebaseAuth.instance.currentUser;
+        if (fbUser == null) {
+          throw Exception('Người dùng chưa đăng nhập');
+        }
+
+        final idToken = await fbUser.getIdToken();
+        if (idToken == null) {
+          throw Exception('Không thể lấy mã xác thực phiên đăng nhập');
+        }
+
+        final response = await DioClient.instance.post(
+          AppConstants.changePasswordEndpoint,
+          data: {
+            'idToken': idToken,
+            'currentPassword': _currentPasswordController.text,
+            'newPassword': _newPasswordController.text,
+          },
+        );
+
+        if (mounted) {
+          setState(() => _isSaving = false);
+          if (response.statusCode == 200 && response.data['success'] == true) {
+            AppSnackBar.success(context, 'Thay đổi mật khẩu thành công!');
+            Navigator.pop(context);
+          } else {
+            final msg =
+                response.data['message'] ?? 'Thay đổi mật khẩu thất bại';
+            AppSnackBar.error(context, msg);
+          }
+        }
+      } on DioException catch (e) {
+        if (mounted) {
+          setState(() => _isSaving = false);
+          final errorMsg = e.response?.data['message'] ?? 'Lỗi kết nối máy chủ';
+          AppSnackBar.error(context, errorMsg);
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() => _isSaving = false);
+          AppSnackBar.error(
+              context, e.toString().replaceAll('Exception: ', ''));
+        }
       }
     }
   }
@@ -77,7 +119,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                 ),
               ),
               const SizedBox(height: 24),
-              AppTextFieldLight(
+              AppOutlineTextField(
                 controller: _currentPasswordController,
                 label: 'Mật khẩu hiện tại',
                 hintText: 'Nhập mật khẩu đang sử dụng',
@@ -92,10 +134,10 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                 },
               ),
               const SizedBox(height: 16),
-              AppTextFieldLight(
+              AppOutlineTextField(
                 controller: _newPasswordController,
                 label: 'Mật khẩu mới',
-                hintText: 'Nhập mật khẩu mới mạnh mẽ',
+                hintText: 'Nhập mật khẩu mới',
                 obscureText: true,
                 prefixIcon:
                     const Icon(LucideIcons.key, color: AppColors.crimson),
@@ -103,7 +145,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                     AppValidators.validateStrongPassword(context, val),
               ),
               const SizedBox(height: 16),
-              AppTextFieldLight(
+              AppOutlineTextField(
                 controller: _confirmPasswordController,
                 label: 'Xác nhận mật khẩu mới',
                 hintText: 'Nhập lại mật khẩu mới',

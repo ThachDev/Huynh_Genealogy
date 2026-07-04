@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
-    as picker;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:vnlunar/vnlunar.dart';
 import '../theme/app_theme.dart';
+import 'app_lunar_calendar_picker.dart';
 
 class AppDatePickerField extends StatelessWidget {
   final String? dateString;
@@ -19,90 +19,135 @@ class AppDatePickerField extends StatelessWidget {
     required this.onDateSelected,
   });
 
+  /// Returns {solar, lunar} or null if can't parse
+  Map<String, String>? _parseDateParts() {
+    if (dateString == null) return null;
+    final parts = dateString!.split('/');
+    if (parts.length != 3) return null;
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+    if (day == null || month == null || year == null) return null;
+    try {
+      final lunar =
+          Lunar(createdFromSolar: true, date: DateTime(year, month, day));
+      final sd = day.toString().padLeft(2, '0');
+      final sm = month.toString().padLeft(2, '0');
+      final ld = lunar.day.toString().padLeft(2, '0');
+      final lm = lunar.month.toString().padLeft(2, '0');
+      final leap = lunar.leapMonth == true ? ' Nhuận' : '';
+      return {
+        'solar': '$sd/$sm/$year',
+        'lunar': '$ld/$lm$leap ÂL',
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Widget _buildDisplayText() {
+    final parsed = _parseDateParts();
+    if (parsed == null) {
+      return Text(
+        dateString ?? hintText,
+        style: GoogleFonts.beVietnamPro(
+          fontSize: 14,
+          color: dateString != null
+              ? AppColors.textPrimary
+              : AppColors.textSecondary,
+        ),
+      );
+    }
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: parsed['solar'],
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          TextSpan(
+            text: '  •  ${parsed['lunar']}',
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 12,
+              color: const Color(0xFF9E9892),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Text(
-            label.toUpperCase(),
-            style: GoogleFonts.inter(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF6B6661),
-              letterSpacing: 0.5,
-            ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () async {
+        final now = DateTime.now();
+        DateTime? parsedDate;
+        if (dateString != null) {
+          final parts = dateString!.split('/');
+          if (parts.length == 3) {
+            final day = int.tryParse(parts[0]);
+            final month = int.tryParse(parts[1]);
+            final year = int.tryParse(parts[2]);
+            if (day != null && month != null && year != null) {
+              parsedDate = DateTime(year, month, day);
+            }
+          }
+          parsedDate ??= DateTime.tryParse(dateString!);
+        }
+        final initialDate =
+            parsedDate != null && !parsedDate.isAfter(now) ? parsedDate : now;
+        final picked = await showLunarCalendarPicker(
+          context: context,
+          initialDate: initialDate,
+          firstDate: DateTime(1800, 1, 1),
+          lastDate: now,
+        );
+        if (picked != null) {
+          onDateSelected(picked);
+        }
+      },
+      child: InputDecorator(
+        decoration: InputDecoration(
+          fillColor: const Color(0xFFFCFAF8),
+          filled: true,
+          labelText: label.toUpperCase(),
+          labelStyle: GoogleFonts.inter(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF6B6661),
+            letterSpacing: 0.5,
+          ),
+          floatingLabelStyle: GoogleFonts.inter(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF6B6661),
+            letterSpacing: 0.5,
+          ),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.crimson, width: 1.2),
+          ),
+          suffixIcon: const Icon(
+            LucideIcons.calendar,
+            size: 18,
+            color: Color(0xFF7A7571),
           ),
         ),
-        InkWell(
-          onTap: () {
-            final now = DateTime.now();
-            final initialDate = dateString != null
-                ? (DateTime.tryParse(dateString!) ?? now)
-                : now;
-            picker.DatePicker.showDatePicker(
-              context,
-              showTitleActions: true,
-              minTime: DateTime(1800, 1, 1),
-              maxTime: now,
-              onConfirm: onDateSelected,
-              currentTime: initialDate,
-              locale: picker.LocaleType.vi,
-              theme: picker.DatePickerTheme(
-                headerColor: Colors.white,
-                backgroundColor: Colors.white,
-                itemStyle: GoogleFonts.beVietnamPro(
-                  color: AppColors.textPrimary,
-                  fontSize: 18,
-                ),
-                cancelStyle: GoogleFonts.beVietnamPro(
-                  color: const Color(0xFF7A7571),
-                  fontSize: 16,
-                ),
-                doneStyle: GoogleFonts.beVietnamPro(
-                  color: AppColors.crimson,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            );
-          },
-          child: InputDecorator(
-            decoration: InputDecoration(
-              fillColor: const Color(0xFFFCFAF8),
-              filled: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide:
-                    const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide:
-                    const BorderSide(color: AppColors.crimson, width: 1.2),
-              ),
-              suffixIcon: const Icon(
-                LucideIcons.calendar,
-                size: 18,
-                color: Color(0xFF7A7571),
-              ),
-            ),
-            child: Text(
-              dateString ?? hintText,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 14,
-                color: dateString != null
-                    ? AppColors.textPrimary
-                    : const Color(0xFFA5A09A),
-              ),
-            ),
-          ),
-        ),
-      ],
+        child: _buildDisplayText(),
+      ),
     );
   }
 }

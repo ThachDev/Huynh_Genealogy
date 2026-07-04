@@ -18,8 +18,8 @@ class MemberModel extends MemberEntity {
     super.notes,
     super.avatarUrl,
     super.familyId,
-    super.isLunarBirthDate,
-    super.isLunarDeathDate,
+    super.lunarBirthDate,
+    super.lunarDeathDate,
     super.phone,
   });
 
@@ -41,8 +41,8 @@ class MemberModel extends MemberEntity {
       notes: json['notes'] as String?,
       avatarUrl: json['avatarUrl'] as String?,
       familyId: _parseInt(json['familyId']),
-      isLunarBirthDate: _parseBool(json['isLunarBirthDate']),
-      isLunarDeathDate: _parseBool(json['isLunarDeathDate']),
+      lunarBirthDate: json['lunarBirthDate'] as String?,
+      lunarDeathDate: json['lunarDeathDate'] as String?,
       phone: json['phone'] as String?,
     );
   }
@@ -64,8 +64,8 @@ class MemberModel extends MemberEntity {
       'notes': notes,
       'avatarUrl': avatarUrl,
       'familyId': familyId,
-      'isLunarBirthDate': isLunarBirthDate,
-      'isLunarDeathDate': isLunarDeathDate,
+      'lunarBirthDate': lunarBirthDate,
+      'lunarDeathDate': lunarDeathDate,
       'phone': phone,
     };
   }
@@ -88,8 +88,8 @@ class MemberModel extends MemberEntity {
       notes: entity.notes,
       avatarUrl: entity.avatarUrl,
       familyId: entity.familyId,
-      isLunarBirthDate: entity.isLunarBirthDate,
-      isLunarDeathDate: entity.isLunarDeathDate,
+      lunarBirthDate: entity.lunarBirthDate,
+      lunarDeathDate: entity.lunarDeathDate,
       phone: entity.phone,
     );
   }

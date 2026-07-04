@@ -10,6 +10,7 @@ class AppDropdown<T> extends StatefulWidget {
   final ValueChanged<T?> onChanged;
   final bool showSearchBox;
   final String searchHint;
+  final String? label;
 
   const AppDropdown({
     super.key,
@@ -18,6 +19,7 @@ class AppDropdown<T> extends StatefulWidget {
     required this.onChanged,
     this.showSearchBox = false,
     this.searchHint = 'Tìm kiếm...',
+    this.label,
   });
 
   @override
@@ -130,6 +132,20 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         fillColor: const Color(0xFFFCFAF8),
         filled: true,
         contentPadding: EdgeInsets.zero,
+        labelText: widget.label,
+        labelStyle: GoogleFonts.inter(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF6B6661),
+          letterSpacing: 0.5,
+        ),
+        floatingLabelStyle: GoogleFonts.inter(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF6B6661),
+          letterSpacing: 0.5,
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),

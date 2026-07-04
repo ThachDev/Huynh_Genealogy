@@ -23,8 +23,8 @@ class MemberEntity extends Equatable {
   final String? notes;
   final String? avatarUrl;
   final int? familyId;
-  final bool isLunarBirthDate;
-  final bool isLunarDeathDate;
+  final String? lunarBirthDate;
+  final String? lunarDeathDate;
   final String? phone;
 
   const MemberEntity({
@@ -44,8 +44,8 @@ class MemberEntity extends Equatable {
     this.notes,
     this.avatarUrl,
     this.familyId,
-    this.isLunarBirthDate = false,
-    this.isLunarDeathDate = false,
+    this.lunarBirthDate,
+    this.lunarDeathDate,
     this.phone,
   });
 
@@ -67,8 +67,8 @@ class MemberEntity extends Equatable {
         notes,
         avatarUrl,
         familyId,
-        isLunarBirthDate,
-        isLunarDeathDate,
+        lunarBirthDate,
+        lunarDeathDate,
         phone,
       ];
 }

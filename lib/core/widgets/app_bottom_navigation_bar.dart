@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../theme/app_theme.dart';
+import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
 import '../../features/user/presentation/pages/user_tree_view_page.dart';
@@ -56,6 +57,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
       valueListenable: UserMainNavigationPage.adminModeNotifier,
       builder: (context, isCurrentlyAdminMode, _) {
         final showAdminInterface = hasAdminPrivileges && isCurrentlyAdminMode;
+        final l10n = AppLocalizations.of(context)!;
 
         // Xây dựng danh sách các trang dựa trên chế độ hiển thị
         final List<Widget> pages = [];
@@ -64,54 +66,54 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         if (showAdminInterface) {
           // Admin: Tổng quan, Cây gia phả, Quỹ gia tộc, Cài đặt
           pages.add(const AdminDashboardPage());
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.layoutDashboard),
-            label: 'Tổng quan',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.layoutDashboard),
+            label: l10n.navOverview,
           ));
 
           pages.add(const UserTreeViewPage());
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.gitBranch),
-            label: 'Cây gia phả',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.gitBranch),
+            label: l10n.navFamilyTree,
           ));
 
           final canManageFund =
               role == 'OWNER' || role == 'CREATOR' || role == 'BRANCH_ADMIN';
           pages.add(FamilyFundPage(isAdmin: canManageFund));
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.wallet),
-            label: 'Quỹ gia tộc',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.wallet),
+            label: l10n.navFamilyFund,
           ));
 
           pages.add(const AdminSettingsPage());
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.settings),
-            label: 'Cài đặt',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.settings),
+            label: l10n.navSettings,
           ));
         } else {
           // User thường: Tổng quan, Cây gia phả, Quỹ gia tộc, Cài đặt
           pages.add(const UserFamilyDashboardPage());
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.home),
-            label: 'Tổng quan',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.home),
+            label: l10n.navOverview,
           ));
 
           pages.add(const UserTreeViewPage());
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.gitBranch),
-            label: 'Cây gia phả',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.gitBranch),
+            label: l10n.navFamilyTree,
           ));
 
           pages.add(const FamilyFundPage(isAdmin: false));
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.wallet),
-            label: 'Quỹ gia tộc',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.wallet),
+            label: l10n.navFamilyFund,
           ));
 
           pages.add(const UserSettingsPage());
-          navigationItems.add(const BottomNavigationBarItem(
-            icon: Icon(LucideIcons.settings),
-            label: 'Cài đặt',
+          navigationItems.add(BottomNavigationBarItem(
+            icon: const Icon(LucideIcons.settings),
+            label: l10n.navSettings,
           ));
         }
 
@@ -141,9 +143,12 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                   _currentIndex = index;
                 });
               },
-              backgroundColor: AppColors.surface,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               selectedItemColor: AppColors.crimson,
-              unselectedItemColor: AppColors.textSecondary.withValues(alpha: 0.6),
+              unselectedItemColor: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.6),
               selectedLabelStyle: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
                 fontSize: 12,

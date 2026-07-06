@@ -124,32 +124,36 @@ class AppValidators {
   }
 
   static String? validateGeneration(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng nhập thế hệ';
+      return l10n.errGenerationRequired;
     }
     if (int.tryParse(value.trim()) == null) {
-      return 'Thế hệ phải là số';
+      return l10n.errGenerationMustBeNumber;
     }
     return null;
   }
 
   static String? validatePlaceOfBirth(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng nhập quê quán';
+      return l10n.errPlaceOfBirthRequired;
     }
     return null;
   }
 
   static String? validateDateOfBirth(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Vui lòng chọn ngày sinh';
+      return l10n.errDateOfBirthRequired;
     }
     return null;
   }
 
   static String? validateDateOfDeath(BuildContext context, String? value, bool isAlive) {
+    final l10n = AppLocalizations.of(context)!;
     if (!isAlive && (value == null || value.trim().isEmpty)) {
-      return 'Vui lòng chọn ngày mất';
+      return l10n.errDateOfDeathRequired;
     }
     return null;
   }

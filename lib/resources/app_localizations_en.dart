@@ -457,4 +457,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmJoinButton => 'CONFIRM JOIN';
+
+  @override
+  String get navOverview => 'Overview';
+
+  @override
+  String get navFamilyTree => 'Family Tree';
+
+  @override
+  String get navFamilyFund => 'Family Fund';
+
+  @override
+  String get navSettings => 'Settings';
+
+  @override
+  String get errGenerationRequired => 'Please enter the generation number';
+
+  @override
+  String get errGenerationMustBeNumber => 'Generation must be a number';
+
+  @override
+  String get errPlaceOfBirthRequired => 'Please enter place of birth';
+
+  @override
+  String get errDateOfBirthRequired => 'Please select date of birth';
+
+  @override
+  String get errDateOfDeathRequired => 'Please select date of death';
+
+  @override
+  String get formSave => 'SAVE';
+
+  @override
+  String get formCancel => 'CANCEL';
+
+  @override
+  String get lunarSuffix => 'LUNAR';
+
+  @override
+  String get leapMonthSuffix => '(Leap)';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import 'app_common_widgets.dart';
+import '../../resources/app_localizations.dart';
 
 enum AppButtonVariant { primary, secondary, outline, ghost, danger }
 
@@ -151,10 +152,10 @@ class AppButton extends StatelessWidget {
 
 class AppFormActionButtons extends StatelessWidget {
   /// Nhãn nút lưu (mặc định 'LƯU LẠI')
-  final String saveLabel;
+  final String? saveLabel;
 
   /// Nhãn nút hủy (mặc định 'HỦY BỎ')
-  final String cancelLabel;
+  final String? cancelLabel;
 
   /// Callback khi nhấn nút lưu
   final VoidCallback? onSave;
@@ -167,8 +168,8 @@ class AppFormActionButtons extends StatelessWidget {
 
   const AppFormActionButtons({
     super.key,
-    this.saveLabel = 'LƯU LẠI',
-    this.cancelLabel = 'HỦY BỎ',
+    this.saveLabel,
+    this.cancelLabel,
     this.onSave,
     this.onCancel,
     this.isLoading = false,
@@ -176,6 +177,11 @@ class AppFormActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final save = saveLabel ?? l10n.formSave;
+    final cancel = cancelLabel ?? l10n.formCancel;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cancelColor = isDark ? Colors.white70 : AppColors.wood;
     return Row(
       children: [
         Expanded(
@@ -183,15 +189,15 @@ class AppFormActionButtons extends StatelessWidget {
             onPressed: onCancel ?? () => Navigator.pop(context),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
-              side: const BorderSide(color: AppColors.wood, width: 1.2),
+              side: BorderSide(color: cancelColor, width: 1.2),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
             ),
             child: Text(
-              cancelLabel,
+              cancel,
               style: GoogleFonts.beVietnamPro(
                 fontWeight: FontWeight.bold,
-                color: AppColors.wood,
+                color: cancelColor,
                 fontSize: 13,
                 letterSpacing: 0.5,
               ),
@@ -217,8 +223,8 @@ class AppFormActionButtons extends StatelessWidget {
                     child: CircularProgressIndicator(
                         color: Colors.white, strokeWidth: 2),
                   )
-                : Text(
-                    saveLabel,
+                    : Text(
+                    save,
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,

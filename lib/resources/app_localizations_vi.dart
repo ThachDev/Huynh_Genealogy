@@ -457,4 +457,43 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get confirmJoinButton => 'XÁC NHẬN THAM GIA';
+
+  @override
+  String get navOverview => 'Tổng quan';
+
+  @override
+  String get navFamilyTree => 'Cây gia phả';
+
+  @override
+  String get navFamilyFund => 'Quỹ gia tộc';
+
+  @override
+  String get navSettings => 'Cài đặt';
+
+  @override
+  String get errGenerationRequired => 'Vui lòng nhập thế hệ';
+
+  @override
+  String get errGenerationMustBeNumber => 'Thế hệ phải là số';
+
+  @override
+  String get errPlaceOfBirthRequired => 'Vui lòng nhập quê quán';
+
+  @override
+  String get errDateOfBirthRequired => 'Vui lòng chọn ngày sinh';
+
+  @override
+  String get errDateOfDeathRequired => 'Vui lòng chọn ngày mất';
+
+  @override
+  String get formSave => 'LƯU LẠI';
+
+  @override
+  String get formCancel => 'HỦY BỎ';
+
+  @override
+  String get lunarSuffix => 'ÂM LỊCH';
+
+  @override
+  String get leapMonthSuffix => '(Nhuận)';
 }

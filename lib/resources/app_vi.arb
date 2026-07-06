@@ -181,5 +181,18 @@
   "enterInviteCodeLabel": "NHẬP MÃ THAM GIA",
   "inviteCodeHintNew": "VD: HGT-2024",
   "inviteCodeDescription": "Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.",
-  "confirmJoinButton": "XÁC NHẬN THAM GIA"
+  "confirmJoinButton": "XÁC NHẬN THAM GIA",
+  "navOverview": "Tổng quan",
+  "navFamilyTree": "Cây gia phả",
+  "navFamilyFund": "Quỹ gia tộc",
+  "navSettings": "Cài đặt",
+  "errGenerationRequired": "Vui lòng nhập thế hệ",
+  "errGenerationMustBeNumber": "Thế hệ phải là số",
+  "errPlaceOfBirthRequired": "Vui lòng nhập quê quán",
+  "errDateOfBirthRequired": "Vui lòng chọn ngày sinh",
+  "errDateOfDeathRequired": "Vui lòng chọn ngày mất",
+  "formSave": "LƯU LẠI",
+  "formCancel": "HỦY BỎ",
+  "lunarSuffix": "ÂM LỊCH",
+  "leapMonthSuffix": "(Nhuận)"
 }

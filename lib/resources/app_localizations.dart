@@ -901,6 +901,84 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'XÁC NHẬN THAM GIA'**
   String get confirmJoinButton;
+
+  /// No description provided for @navOverview.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng quan'**
+  String get navOverview;
+
+  /// No description provided for @navFamilyTree.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cây gia phả'**
+  String get navFamilyTree;
+
+  /// No description provided for @navFamilyFund.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quỹ gia tộc'**
+  String get navFamilyFund;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get navSettings;
+
+  /// No description provided for @errGenerationRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập thế hệ'**
+  String get errGenerationRequired;
+
+  /// No description provided for @errGenerationMustBeNumber.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thế hệ phải là số'**
+  String get errGenerationMustBeNumber;
+
+  /// No description provided for @errPlaceOfBirthRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập quê quán'**
+  String get errPlaceOfBirthRequired;
+
+  /// No description provided for @errDateOfBirthRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chọn ngày sinh'**
+  String get errDateOfBirthRequired;
+
+  /// No description provided for @errDateOfDeathRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chọn ngày mất'**
+  String get errDateOfDeathRequired;
+
+  /// No description provided for @formSave.
+  ///
+  /// In vi, this message translates to:
+  /// **'LƯU LẠI'**
+  String get formSave;
+
+  /// No description provided for @formCancel.
+  ///
+  /// In vi, this message translates to:
+  /// **'HỦY BỎ'**
+  String get formCancel;
+
+  /// No description provided for @lunarSuffix.
+  ///
+  /// In vi, this message translates to:
+  /// **'ÂM LỊCH'**
+  String get lunarSuffix;
+
+  /// No description provided for @leapMonthSuffix.
+  ///
+  /// In vi, this message translates to:
+  /// **'(Nhuận)'**
+  String get leapMonthSuffix;
 }
 
 class _AppLocalizationsDelegate

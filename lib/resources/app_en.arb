@@ -181,5 +181,18 @@
   "enterInviteCodeLabel": "ENTER INVITE CODE",
   "inviteCodeHintNew": "EG: HGT-2024",
   "inviteCodeDescription": "Enter the 6-character code provided by your family leader or administrator.",
-  "confirmJoinButton": "CONFIRM JOIN"
+  "confirmJoinButton": "CONFIRM JOIN",
+  "navOverview": "Overview",
+  "navFamilyTree": "Family Tree",
+  "navFamilyFund": "Family Fund",
+  "navSettings": "Settings",
+  "errGenerationRequired": "Please enter the generation number",
+  "errGenerationMustBeNumber": "Generation must be a number",
+  "errPlaceOfBirthRequired": "Please enter place of birth",
+  "errDateOfBirthRequired": "Please select date of birth",
+  "errDateOfDeathRequired": "Please select date of death",
+  "formSave": "SAVE",
+  "formCancel": "CANCEL",
+  "lunarSuffix": "LUNAR",
+  "leapMonthSuffix": "(Leap)"
 }

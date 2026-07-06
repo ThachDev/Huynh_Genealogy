@@ -28,6 +28,20 @@ class AdminSettingsPage extends StatefulWidget {
 }
 
 class _AdminSettingsPageState extends State<AdminSettingsPage> {
+  bool _isEn = false;
+  bool _isDark = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context);
+    final brightness = Theme.of(context).brightness;
+    setState(() {
+      _isEn = locale.languageCode == 'en';
+      _isDark = brightness == Brightness.dark;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
@@ -40,12 +54,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     final roleUpper = role.toUpperCase();
     final isOwner = roleUpper == 'OWNER' || roleUpper == 'CREATOR';
     final isEditor = roleUpper == 'EDITOR';
-
-    final locale = Localizations.localeOf(context);
-    final isEn = locale.languageCode == 'en';
-
-    final brightness = Theme.of(context).brightness;
-    final isDark = brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: AppColors.parchment,
@@ -122,13 +130,15 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     ],
                   ),
                   AppCustomSwitch(
-                    value: isEn,
+                    value: _isEn,
                     activeColor: AppColors.crimson,
                     inactiveColor: AppColors.crimson,
                     onChanged: (val) {
+                      setState(() {
+                        _isEn = val;
+                      });
                       final newLang = val ? 'en' : 'vi';
                       FamilyTreeApp.setLocale(context, Locale(newLang));
-                      setState(() {});
                     },
                     activeText: 'EN',
                     inactiveText: 'VI',
@@ -164,13 +174,15 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     ],
                   ),
                   AppCustomSwitch(
-                    value: isDark,
+                    value: _isDark,
                     activeColor: AppColors.crimson,
                     inactiveColor: AppColors.crimson,
                     onChanged: (val) {
+                      setState(() {
+                        _isDark = val;
+                      });
                       final mode = val ? ThemeMode.dark : ThemeMode.light;
                       FamilyTreeApp.setThemeMode(context, mode);
-                      setState(() {});
                     },
                     activeText: 'Dark',
                     inactiveText: 'Light',

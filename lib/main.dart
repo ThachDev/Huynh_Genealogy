@@ -39,6 +39,7 @@ class FamilyTreeApp extends StatefulWidget {
 }
 
 class _FamilyTreeAppState extends State<FamilyTreeApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
   Locale _locale = const Locale('vi');
   ThemeMode _themeMode = ThemeMode.light;
 
@@ -52,6 +53,16 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
     setState(() {
       _themeMode = themeMode;
     });
+  }
+
+  Widget _homeForAuth(AuthState state) {
+    if (state is Authenticated) {
+      if (state.user.familyId != null) {
+        return const UserMainNavigationPage();
+      }
+      return const OnboardingPage();
+    }
+    return const LoginPage();
   }
 
   @override
@@ -77,25 +88,29 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         BlocProvider<AdminDissolveClanBloc>(
             create: (_) => di.sl<AdminDissolveClanBloc>()),
       ],
-      child: MaterialApp(
-        onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: _themeMode,
-        locale: _locale,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is Authenticated) {
-              if (state.user.familyId != null) {
-                return const UserMainNavigationPage();
-              }
-              return const OnboardingPage();
-            }
-            return const LoginPage();
-          },
+      child: BlocListener<AuthBloc, AuthState>(
+        listenWhen: (previous, current) {
+          if (previous is Authenticated && current is Authenticated) {
+            return (previous.user.familyId != null) != (current.user.familyId != null);
+          }
+          return previous.runtimeType != current.runtimeType;
+        },
+        listener: (context, state) {
+          _navigatorKey.currentState?.popUntil((route) => route.isFirst);
+        },
+        child: MaterialApp(
+          navigatorKey: _navigatorKey,
+          onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: _themeMode,
+          locale: _locale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) => _homeForAuth(state),
+          ),
         ),
       ),
     );

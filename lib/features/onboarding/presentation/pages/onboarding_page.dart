@@ -86,7 +86,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
               builder: (dialogCtx) => FamilyCreationSuccessDialog(
                 family: state.family,
                 onProceed: () {
-                  final updatedUser = user.copyWith(familyId: state.family.id);
+                  final updatedUser = user.copyWith(
+                    familyId: state.family.id,
+                    role: 'OWNER',
+                  );
                   context.read<AuthBloc>().add(AuthUserUpdated(user: updatedUser));
                 },
               ),

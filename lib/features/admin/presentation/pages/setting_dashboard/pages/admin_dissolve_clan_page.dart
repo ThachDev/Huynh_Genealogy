@@ -7,6 +7,7 @@ import '../../../../../../core/widgets/app_button.dart';
 import '../../../../../../core/widgets/app_text_field.dart';
 import '../../../../../../core/widgets/app_dialog.dart';
 import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../features/auth/auth.dart';
 import '../../../bloc/admin_dissolve_clan_bloc/admin_dissolve_clan_bloc.dart';
 
 class AdminDissolveClanPage extends StatefulWidget {
@@ -71,11 +72,19 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
     return BlocListener<AdminDissolveClanBloc, AdminDissolveClanState>(
       listener: (context, state) {
         if (state is AdminDissolveClanSuccess) {
+          final authState = context.read<AuthBloc>().state;
+          if (authState is Authenticated) {
+            final updatedUser = authState.user.copyWith(
+              familyId: null,
+              role: 'VIEWER',
+            );
+            context.read<AuthBloc>().add(AuthUserUpdated(user: updatedUser));
+          }
           AppSnackBar.success(
             context,
             'Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.',
           );
-          Navigator.pop(context);
+          Navigator.of(context).popUntil((route) => route.isFirst);
         } else if (state is AdminDissolveClanFailure) {
           AppSnackBar.error(context, state.message);
         }

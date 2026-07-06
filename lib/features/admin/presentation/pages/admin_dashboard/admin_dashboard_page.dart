@@ -287,7 +287,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 },
               ),
             ),
-            const SizedBox(height: 8),
             Expanded(
               child: _buildContentSection(
                 userTreeState: userTreeState,

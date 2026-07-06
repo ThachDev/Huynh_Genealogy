@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../../../core/theme/app_theme.dart';
-import '../../../../../../core/widgets/app_snackbar.dart';
 
 class AdminHelpCenterPage extends StatelessWidget {
   const AdminHelpCenterPage({super.key});
@@ -169,12 +169,7 @@ class AdminHelpCenterPage extends StatelessWidget {
             title: 'Hotline hỗ trợ',
             value: '1900 8888',
             subtitle: '8:00 - 17:30 (T2-T6)',
-            onTap: () {
-              AppSnackBar.info(
-                context,
-                'Đang chuẩn bị kết nối cuộc gọi tới 1900 8888',
-              );
-            },
+            onTap: () => launchUrl(Uri.parse('tel:19008888')),
           ),
         ),
         const SizedBox(width: 16),
@@ -186,12 +181,13 @@ class AdminHelpCenterPage extends StatelessWidget {
             title: 'Email hỗ trợ',
             value: 'thachhuynh.dev@gmail.com',
             subtitle: 'Phản hồi trong 24h',
-            onTap: () {
-              AppSnackBar.info(
-                context,
-                'Đang mở ứng dụng email gửi tới thachhuynh.dev@gmail.com',
-              );
-            },
+            onTap: () => launchUrl(
+              Uri(
+                scheme: 'mailto',
+                path: 'thachhuynh.dev@gmail.com',
+                query: 'subject=${Uri.encodeComponent('Hỗ Trợ Gia Tộc Việt')}',
+              ),
+            ),
           ),
         ),
       ],

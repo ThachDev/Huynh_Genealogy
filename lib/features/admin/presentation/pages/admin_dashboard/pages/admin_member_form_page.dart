@@ -103,10 +103,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     // Nếu là chế độ cập nhật, lấy data
     if (widget.memberId != null) {
       final authState = context.read<AuthBloc>().state;
-      final familyId = authState is Authenticated ? authState.user.familyId : null;
-      context
-          .read<AdminMemberFormBloc>()
-          .add(LoadAdminMemberFormEvent(memberId: widget.memberId, familyId: familyId));
+      final familyId =
+          authState is Authenticated ? authState.user.familyId : null;
+      context.read<AdminMemberFormBloc>().add(LoadAdminMemberFormEvent(
+          memberId: widget.memberId, familyId: familyId));
     }
     _generationController.addListener(_onGenerationChanged);
   }
@@ -392,8 +392,13 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                           ],
                                           onChanged: (val) {
                                             if (val != null) {
-                                              setState(
-                                                  () => _maritalStatus = val);
+                                              setState(() {
+                                                _maritalStatus = val;
+                                                if (val !=
+                                                    MaritalStatus.married) {
+                                                  _spouseId = null;
+                                                }
+                                              });
                                             }
                                           },
                                         ),
@@ -434,51 +439,18 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       // Ngày sinh – flex 3
                                       Expanded(
                                         flex: 3,
-                                        child: FormField<String>(
-                                          validator: (val) =>
-                                              AppValidators.validateDateOfBirth(
-                                                  context, _dateOfBirth),
-                                          builder: (formState) {
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                AppDatePickerField(
-                                                  dateString: _dateOfBirth,
-                                                  label: 'Ngày sinh',
-                                                  hintText: 'dd/mm/yyyy',
-                                                  onDateSelected: (date) {
-                                                    final formattedDate =
-                                                        "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                                    setState(() {
-                                                      _dateOfBirth =
-                                                          formattedDate;
-                                                      _lunarBirthDate =
-                                                          LunarDateHelper
-                                                              .getLunarDateString(
-                                                                  date);
-                                                    });
-                                                    formState.didChange(
-                                                        formattedDate);
-                                                  },
-                                                ),
-                                                if (formState.hasError)
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 6.0,
-                                                            left: 16.0),
-                                                    child: Text(
-                                                      formState.errorText ?? '',
-                                                      style: GoogleFonts
-                                                          .beVietnamPro(
-                                                        color: Colors.redAccent,
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            );
+                                        child: AppDatePickerField(
+                                          dateString: _dateOfBirth,
+                                          label: 'Ngày sinh',
+                                          hintText: 'dd/mm/yyyy',
+                                          onDateSelected: (date) {
+                                            final formattedDate =
+                                                "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                            setState(() {
+                                              _dateOfBirth = formattedDate;
+                                              _lunarBirthDate = LunarDateHelper
+                                                  .getLunarDateString(date);
+                                            });
                                           },
                                         ),
                                       ),
@@ -582,48 +554,18 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   // Nếu đã mất thì hiện ngày mất
                                   if (!_isAlive) ...[
                                     const SizedBox(height: 12),
-                                    FormField<String>(
-                                      validator: (val) =>
-                                          AppValidators.validateDateOfDeath(
-                                              context, _dateOfDeath, _isAlive),
-                                      builder: (formState) {
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            AppDatePickerField(
-                                              dateString: _dateOfDeath,
-                                              label: 'Ngày mất',
-                                              hintText: 'dd/mm/yyyy',
-                                              onDateSelected: (date) {
-                                                final formattedDate =
-                                                    "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                                setState(() {
-                                                  _dateOfDeath = formattedDate;
-                                                  _lunarDeathDate =
-                                                      LunarDateHelper
-                                                          .getLunarDateString(
-                                                              date);
-                                                });
-                                                formState
-                                                    .didChange(formattedDate);
-                                              },
-                                            ),
-                                            if (formState.hasError)
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 6.0, left: 16.0),
-                                                child: Text(
-                                                  formState.errorText ?? '',
-                                                  style:
-                                                      GoogleFonts.beVietnamPro(
-                                                    color: Colors.redAccent,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
-                                        );
+                                    AppDatePickerField(
+                                      dateString: _dateOfDeath,
+                                      label: 'Ngày mất',
+                                      hintText: 'dd/mm/yyyy',
+                                      onDateSelected: (date) {
+                                        final formattedDate =
+                                            "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                        setState(() {
+                                          _dateOfDeath = formattedDate;
+                                          _lunarDeathDate = LunarDateHelper
+                                              .getLunarDateString(date);
+                                        });
                                       },
                                     ),
                                   ],
@@ -644,9 +586,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     label: 'Quê quán / Địa chỉ',
                                     hintText:
                                         'Nhập thông tin quê quán, nơi ở...',
-                                    validator: (val) =>
-                                        AppValidators.validatePlaceOfBirth(
-                                            context, val),
                                   ),
                                   const SizedBox(height: 16),
                                   _buildDropdown<int?>(
@@ -680,27 +619,30 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     },
                                     showSearchBox: true,
                                   ),
-                                  const SizedBox(height: 16),
-                                  _buildDropdown<int?>(
-                                    label: 'VỢ/CHỒNG',
-                                    value: spouseIds.contains(_spouseId)
-                                        ? _spouseId
-                                        : null,
-                                    items: [
-                                      const DropdownItem<int?>(
-                                          value: null,
-                                          child: Text('Không chọn')),
-                                      ...spouseOptions
-                                          .map((m) => DropdownItem<int?>(
-                                                value: m.id,
-                                                child: Text(
-                                                    '${m.fullName} (Đời ${m.generation})'),
-                                              )),
-                                    ],
-                                    onChanged: (val) =>
-                                        setState(() => _spouseId = val),
-                                    showSearchBox: true,
-                                  ),
+                                  if (_maritalStatus ==
+                                      MaritalStatus.married) ...[
+                                    const SizedBox(height: 16),
+                                    _buildDropdown<int?>(
+                                      label: 'VỢ/CHỒNG',
+                                      value: spouseIds.contains(_spouseId)
+                                          ? _spouseId
+                                          : null,
+                                      items: [
+                                        const DropdownItem<int?>(
+                                            value: null,
+                                            child: Text('Không chọn')),
+                                        ...spouseOptions
+                                            .map((m) => DropdownItem<int?>(
+                                                  value: m.id,
+                                                  child: Text(
+                                                      '${m.fullName} (Đời ${m.generation})'),
+                                                )),
+                                      ],
+                                      onChanged: (val) =>
+                                          setState(() => _spouseId = val),
+                                      showSearchBox: true,
+                                    ),
+                                  ],
                                   const SizedBox(height: 16),
 
                                   Builder(builder: (context) {

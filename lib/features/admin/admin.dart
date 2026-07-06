@@ -12,6 +12,7 @@ export 'domain/usecase/get_member_detail.dart';
 export 'domain/usecase/get_approved_members.dart';
 export 'domain/usecase/update_member_role.dart';
 export 'domain/usecase/delete_family.dart';
+export 'domain/usecase/transfer_ownership.dart';
 
 // Presentation Blocs
 export 'presentation/bloc/admin_member_form/admin_member_form_bloc.dart';
@@ -19,6 +20,7 @@ export 'presentation/bloc/admin_pending_requests/admin_pending_requests_bloc.dar
 export 'presentation/bloc/admin_branch_form/admin_branch_form_bloc.dart';
 export 'presentation/bloc/admin_member_roles/admin_member_roles_bloc.dart';
 export 'presentation/bloc/admin_dissolve_clan_bloc/admin_dissolve_clan_bloc.dart';
+export 'presentation/bloc/admin_transfer_ownership_bloc/admin_transfer_ownership_bloc.dart';
 
 // Presentation Pages
 export 'presentation/pages/admin_dashboard/admin_dashboard_page.dart';

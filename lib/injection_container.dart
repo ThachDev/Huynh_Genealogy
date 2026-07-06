@@ -67,6 +67,13 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
+    () => AdminTransferOwnershipBloc(
+      getApprovedMembers: sl(),
+      transferOwnership: sl(),
+    ),
+  );
+
+  sl.registerFactory(
     () => AuthBloc(
       loginWithGoogle: sl(),
       loginWithEmail: sl(),
@@ -128,6 +135,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateMemberRole(sl()));
   sl.registerLazySingleton(() => LinkMemberToUser(sl()));
   sl.registerLazySingleton(() => DeleteFamily(sl()));
+  sl.registerLazySingleton(() => TransferOwnership(sl()));
 
   // ─── Repository ───────────────────────────────────────────────────────────
   sl.registerLazySingleton<OnboardingRepository>(

@@ -87,6 +87,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
             create: (_) => di.sl<AdminMemberRolesBloc>()),
         BlocProvider<AdminDissolveClanBloc>(
             create: (_) => di.sl<AdminDissolveClanBloc>()),
+        BlocProvider<AdminTransferOwnershipBloc>(
+            create: (_) => di.sl<AdminTransferOwnershipBloc>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) {

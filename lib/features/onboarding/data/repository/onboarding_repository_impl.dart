@@ -212,4 +212,22 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       return Left(NetworkFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> transferOwnership({
+    required int familyId,
+    required int newOwnerUserId,
+  }) async {
+    try {
+      final result = await remoteDataSource.transferOwnership(
+        familyId: familyId,
+        newOwnerUserId: newOwnerUserId,
+      );
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
 }

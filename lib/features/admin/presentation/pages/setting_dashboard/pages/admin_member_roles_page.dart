@@ -18,6 +18,9 @@ class AdminMemberRolesPage extends StatefulWidget {
 }
 
 class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
+  bool _isSearching = false;
+  final _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +32,12 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
             );
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _showRoleSelector(FamilyUserEntity user, int familyId) {
@@ -50,7 +59,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    'Thay đổi vai trò cho ${user.userFullName ?? 'Thành viên'}',
+                    'Vai trò của ${user.userFullName ?? 'thành viên'}',
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -59,12 +68,12 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   ),
                 ),
                 const Divider(),
-                _buildRoleOption(user, familyId, 'BRANCH_ADMIN', 'Quản trị chi',
-                    'Quản lý thông tin & thành viên thuộc chi phái.'),
-                _buildRoleOption(user, familyId, 'EDITOR', 'Biên soạn',
-                    'Thêm mới, sửa đổi thông tin phả hệ gia tộc.'),
+                _buildRoleOption(user, familyId, 'BRANCH_ADMIN', 'Trưởng chi',
+                    'Quản lý nhân sự và nội dung của chi tộc.'),
+                _buildRoleOption(user, familyId, 'EDITOR', 'Biên tập viên',
+                    'Đóng góp và chỉnh sửa thông tin gia phả.'),
                 _buildRoleOption(user, familyId, 'VIEWER', 'Thành viên',
-                    'Chỉ xem phả hệ dòng tộc.'),
+                    'Chỉ được xem thông tin gia tộc.'),
               ],
             ),
           ),
@@ -88,23 +97,16 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
               ),
             );
       },
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: AdminDashboardPage.roleColor(roleValue).withValues(alpha: 0.1),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          roleValue == 'OWNER'
-              ? LucideIcons.crown
-              : roleValue == 'BRANCH_ADMIN'
-                  ? LucideIcons.shield
-                  : roleValue == 'EDITOR'
-                      ? LucideIcons.edit3
-                      : LucideIcons.user,
-          color: AdminDashboardPage.roleColor(roleValue),
-          size: 18,
-        ),
+      leading: Icon(
+        roleValue == 'OWNER'
+            ? LucideIcons.crown
+            : roleValue == 'BRANCH_ADMIN'
+                ? LucideIcons.shield
+                : roleValue == 'EDITOR'
+                    ? LucideIcons.edit3
+                    : LucideIcons.user,
+        color: AppColors.textSecondary,
+        size: 22,
       ),
       title: Text(
         roleTitle,
@@ -140,14 +142,40 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
         backgroundColor: AppColors.wood,
         elevation: 4,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          'Phân quyền thành viên',
-          style: GoogleFonts.beVietnamPro(
-            color: AppColors.gold,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                style: GoogleFonts.beVietnamPro(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Tìm thành viên...',
+                  hintStyle:
+                      GoogleFonts.beVietnamPro(color: Colors.white70),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) => setState(() {}),
+              )
+            : Text(
+                'Phân quyền thành viên',
+                style: GoogleFonts.beVietnamPro(
+                  color: AppColors.gold,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+        actions: [
+          IconButton(
+            icon: Icon(
+                _isSearching ? LucideIcons.x : LucideIcons.search,
+                color: Colors.white),
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching;
+                if (!_isSearching) _searchController.clear();
+              });
+            },
           ),
-        ),
+        ],
       ),
       body: SafeArea(
         child: BlocConsumer<AdminMemberRolesBloc, AdminMemberRolesState>(
@@ -195,10 +223,31 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
               }
             }
 
+            final allMembers = members;
+            final query = _searchController.text.trim().toLowerCase();
+            if (query.isNotEmpty) {
+              members = members
+                  .where((m) =>
+                      (m.userFullName ?? '').toLowerCase().contains(query))
+                  .toList();
+            }
+
+            if (allMembers.isEmpty) {
+              return Center(
+                child: Text(
+                  'Chưa có thành viên nào trong gia tộc.',
+                  style: GoogleFonts.beVietnamPro(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                ),
+              );
+            }
+
             if (members.isEmpty) {
               return Center(
                 child: Text(
-                  'Không có thành viên nào.',
+                  'Không tìm thấy thành viên phù hợp.',
                   style: GoogleFonts.beVietnamPro(
                     color: AppColors.textSecondary,
                     fontSize: 14,
@@ -240,7 +289,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                             if (user.userId == currentUserId) {
                               AppSnackBar.warning(
                                 context,
-                                'Bạn không thể tự hạ quyền của mình tại đây. Vui lòng sử dụng chức năng Chuyển nhượng quyền Trưởng tộc.',
+                                'Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng "Chuyển nhượng quyền Trưởng tộc".',
                               );
                             } else {
                               _showRoleSelector(user, familyId);
@@ -262,7 +311,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                           : null,
                     ),
                     title: Text(
-                      user.userFullName ?? 'Thành viên dòng họ',
+                      user.userFullName ?? 'Thành viên',
                       style: GoogleFonts.beVietnamPro(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -270,7 +319,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                       ),
                     ),
                     subtitle: Text(
-                      user.userEmail ?? 'No email',
+                      user.userEmail ?? 'Chưa có email',
                       style: GoogleFonts.inter(
                         fontSize: 12,
                         color: AppColors.textSecondary,

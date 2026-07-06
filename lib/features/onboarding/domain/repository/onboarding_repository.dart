@@ -63,4 +63,9 @@ abstract class OnboardingRepository {
     required int userId,
     required int memberId,
   });
+
+  Future<Either<Failure, bool>> transferOwnership({
+    required int familyId,
+    required int newOwnerUserId,
+  });
 }

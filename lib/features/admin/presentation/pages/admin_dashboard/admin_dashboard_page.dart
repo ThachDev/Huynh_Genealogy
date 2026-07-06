@@ -40,11 +40,13 @@ class AdminDashboardPage extends StatefulWidget {
       case 'OWNER':
         return 'TRƯỞNG TỘC';
       case 'BRANCH_ADMIN':
-        return 'QUẢN TRỊ CHI';
+        return 'TRƯỞNG CHI';
       case 'EDITOR':
-        return 'BIÊN SOẠN';
+        return 'BIÊN TẬP VIÊN';
+      case 'VIEWER':
+        return 'THÀNH VIÊN';
       default:
-        return 'QUẢN TRỊ';
+        return 'THÀNH VIÊN';
     }
   }
 

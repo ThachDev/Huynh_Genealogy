@@ -52,6 +52,11 @@ abstract class OnboardingRemoteDataSource {
     required int userId,
     required int memberId,
   });
+
+  Future<bool> transferOwnership({
+    required int familyId,
+    required int newOwnerUserId,
+  });
 }
 
 class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
@@ -335,6 +340,28 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
     } on DioException catch (e) {
       throw ServerException(
         message: _getErrorMessage(e, 'Lỗi liên kết hồ sơ gia phả'),
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  @override
+  Future<bool> transferOwnership({
+    required int familyId,
+    required int newOwnerUserId,
+  }) async {
+    try {
+      final response = await dio.post(
+        AppConstants.transferOwnershipEndpoint,
+        data: {
+          'familyId': familyId,
+          'newOwnerUserId': newOwnerUserId,
+        },
+      );
+      return response.data['success'] as bool? ?? false;
+    } on DioException catch (e) {
+      throw ServerException(
+        message: _getErrorMessage(e, 'Lỗi chuyển nhượng quyền Trưởng tộc'),
         statusCode: e.response?.statusCode,
       );
     }

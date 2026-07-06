@@ -17,6 +17,7 @@ class AppConstants {
   static const String verifyCodeEndpoint = '/families/verify-code';
   static const String joinFamilyEndpoint = '/families/join';
   static const String approveRequestEndpoint = '/families/requests';
+  static const String transferOwnershipEndpoint = '/families/transfer-ownership';
 
   // Storage keys
   static const String cachedMembers = 'CACHED_MEMBERS';

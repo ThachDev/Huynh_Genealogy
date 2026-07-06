@@ -42,11 +42,16 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   String _selectedGender = 'Tất cả';
   final ScrollController _scrollController = ScrollController();
 
+  int? _familyId() {
+    final authState = context.read<AuthBloc>().state;
+    return authState is Authenticated ? authState.user.familyId : null;
+  }
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+    context.read<UserTreeBloc>().add(UserTreeLoadEvent(familyId: _familyId()));
     context.read<FamilyFundBloc>().add(FetchFundSummary());
   }
 
@@ -107,7 +112,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             ElevatedButton(
                               onPressed: () => context
                                   .read<UserTreeBloc>()
-                                  .add(UserTreeLoadEvent()),
+                                  .add(UserTreeLoadEvent(familyId: _familyId())),
                               child: const Text('Thử lại'),
                             ),
                           ],

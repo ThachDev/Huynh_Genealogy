@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../../core/theme/app_theme.dart';
@@ -6,9 +7,17 @@ import '../../../../../../core/widgets/app_button.dart';
 import '../../../../../../core/widgets/app_text_field.dart';
 import '../../../../../../core/widgets/app_dialog.dart';
 import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../bloc/admin_dissolve_clan_bloc/admin_dissolve_clan_bloc.dart';
 
 class AdminDissolveClanPage extends StatefulWidget {
-  const AdminDissolveClanPage({super.key});
+  final int familyId;
+  final String familyName;
+
+  const AdminDissolveClanPage({
+    super.key,
+    required this.familyId,
+    required this.familyName,
+  });
 
   @override
   State<AdminDissolveClanPage> createState() => _AdminDissolveClanPageState();
@@ -16,9 +25,7 @@ class AdminDissolveClanPage extends StatefulWidget {
 
 class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
   final _confirmController = TextEditingController();
-  final String _clanName = 'Huỳnh Gia Tộc';
   bool _canDissolve = false;
-  bool _isSaving = false;
 
   @override
   void initState() {
@@ -35,7 +42,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
 
   void _onTextChanged() {
     setState(() {
-      _canDissolve = _confirmController.text.trim() == _clanName;
+      _canDissolve = _confirmController.text.trim() == widget.familyName;
     });
   }
 
@@ -46,174 +53,189 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
       context,
       title: 'XÓA GIA PHẢ VĨNH VIỄN',
       message:
-          'Hành động này cực kỳ nguy hiểm. Toàn bộ thông tin thành viên, các nhánh dòng họ, lịch sử gia tộc của "$_clanName" sẽ bị xóa vĩnh viễn khỏi máy chủ. Bạn chắc chắn muốn tiếp tục chứ?',
+          'Hành động này cực kỳ nguy hiểm. Toàn bộ thông tin thành viên, các nhánh dòng họ, lịch sử gia tộc của "${widget.familyName}" sẽ bị xóa vĩnh viễn khỏi máy chủ. Bạn chắc chắn muốn tiếp tục chứ?',
       confirmLabel: 'ĐỒNG Ý XÓA BỎ',
       cancelLabel: 'HỦY BỎ',
       type: AppDialogType.danger,
-    ).then((confirmed) async {
-      if (confirmed == true) {
-        setState(() => _isSaving = true);
-        await Future.delayed(const Duration(milliseconds: 1200));
-        if (mounted) {
-          setState(() => _isSaving = false);
-          AppSnackBar.success(context,
-              'Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.');
-          Navigator.pop(context);
-        }
+    ).then((confirmed) {
+      if (confirmed == true && mounted) {
+        context
+            .read<AdminDissolveClanBloc>()
+            .add(DeleteFamilyRequested(familyId: widget.familyId));
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.parchment,
-      appBar: AppBar(
-        title: const Text('GIẢI TÁN GIA PHẢ'),
-        backgroundColor: AppColors.wood,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            // Danger warning card
-            Card(
-              elevation: 0,
-              color: AppColors.error.withValues(alpha: 0.06),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: AppColors.error.withValues(alpha: 0.2)),
-              ),
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.error.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(LucideIcons.alertOctagon,
-                          color: AppColors.error, size: 22),
+    return BlocListener<AdminDissolveClanBloc, AdminDissolveClanState>(
+      listener: (context, state) {
+        if (state is AdminDissolveClanSuccess) {
+          AppSnackBar.success(
+            context,
+            'Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.',
+          );
+          Navigator.pop(context);
+        } else if (state is AdminDissolveClanFailure) {
+          AppSnackBar.error(context, state.message);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.parchment,
+        appBar: AppBar(
+          title: const Text('GIẢI TÁN GIA PHẢ'),
+          backgroundColor: AppColors.wood,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          elevation: 0,
+        ),
+        body: BlocBuilder<AdminDissolveClanBloc, AdminDissolveClanState>(
+          builder: (context, state) {
+            final isLoading = state is AdminDissolveClanLoading;
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Card(
+                    elevation: 0,
+                    color: AppColors.error.withValues(alpha: 0.06),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                          color: AppColors.error.withValues(alpha: 0.2)),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
+                    margin: EdgeInsets.zero,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.error.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(LucideIcons.alertOctagon,
+                                color: AppColors.error, size: 22),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Hành động không thể hoàn tác',
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.error,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Việc này KHÔNG THỂ hoàn tác. Toàn bộ cây gia phả, thông tin các đời, thành viên và dữ liệu sẽ bị xóa vĩnh viễn khỏi hệ thống.',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    height: 1.5,
+                                    color:
+                                        AppColors.error.withValues(alpha: 0.8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Card(
+                    elevation: 0,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                          color: AppColors.gold.withValues(alpha: 0.1)),
+                    ),
+                    margin: EdgeInsets.zero,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Hành động không thể hoàn tác',
+                            'Xác nhận giải tán',
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.error,
+                              color: AppColors.wood,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 12),
                           Text(
-                            'Việc này KHÔNG THỂ hoàn tác. Toàn bộ cây gia phả, thông tin các đời, thành viên và dữ liệu sẽ bị xóa vĩnh viễn khỏi hệ thống.',
+                            'Để xác nhận, vui lòng nhập chính xác tên dòng họ bên dưới:',
                             style: GoogleFonts.inter(
                               fontSize: 12,
-                              height: 1.5,
-                              color: AppColors.error.withValues(alpha: 0.8),
+                              color: AppColors.textSecondary,
                             ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: AppColors.crimson.withValues(alpha: 0.04),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color:
+                                      AppColors.crimson.withValues(alpha: 0.15)),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Nhập: ',
+                                  style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: AppColors.textSecondary),
+                                ),
+                                Text(
+                                  widget.familyName,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.crimson,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          AppTextFieldLight(
+                            controller: _confirmController,
+                            label: 'Nhập lại tên dòng họ',
+                            hintText: 'Nhập đúng từng chữ để xác nhận',
+                            prefixIcon: const Icon(LucideIcons.trash2,
+                                color: AppColors.error),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 24),
+                  AppButton(
+                    label: 'GIẢI TÁN DÒNG HỌ VĨNH VIỄN',
+                    onPressed: _canDissolve ? _dissolveClan : null,
+                    isLoading: isLoading,
+                    fullWidth: true,
+                    size: AppButtonSize.large,
+                    variant: AppButtonVariant.danger,
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 24),
-
-            // Confirmation card
-            Card(
-              elevation: 0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: AppColors.gold.withValues(alpha: 0.1)),
-              ),
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Xác nhận giải tán',
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.wood,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Để xác nhận, vui lòng nhập chính xác tên dòng họ bên dưới:',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: AppColors.crimson.withValues(alpha: 0.04),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: AppColors.crimson.withValues(alpha: 0.15)),
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Nhập: ',
-                            style: GoogleFonts.inter(
-                                fontSize: 12, color: AppColors.textSecondary),
-                          ),
-                          Text(
-                            _clanName,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.crimson,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    AppTextFieldLight(
-                      controller: _confirmController,
-                      label: 'Nhập lại tên dòng họ',
-                      hintText: 'Nhập đúng từng chữ để xác nhận',
-                      prefixIcon: const Icon(LucideIcons.trash2,
-                          color: AppColors.error),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            AppButton(
-              label: 'GIẢI TÁN DÒNG HỌ VĨNH VIỄN',
-              onPressed: _canDissolve ? _dissolveClan : null,
-              isLoading: _isSaving,
-              fullWidth: true,
-              size: AppButtonSize.large,
-              variant: AppButtonVariant.danger,
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

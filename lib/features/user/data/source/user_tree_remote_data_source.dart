@@ -6,12 +6,12 @@ import 'package:giatocviet/core/data/model/branch_model.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
 
 abstract class UserTreeRemoteDataSource {
-  Future<List<MemberModel>> getMembers({int? branchId});
+  Future<List<MemberModel>> getMembers({int? branchId, int? familyId});
   Future<MemberModel> getMemberById(int id);
   Future<MemberModel> saveMember(MemberModel member);
   Future<bool> deleteMember(int id);
 
-  Future<List<BranchModel>> getBranches();
+  Future<List<BranchModel>> getBranches({int? familyId});
   Future<BranchModel> getBranchById(int id);
   Future<BranchModel> saveBranch(BranchModel branch);
   Future<bool> deleteBranch(int id);
@@ -23,12 +23,14 @@ class UserTreeRemoteDataSourceImpl implements UserTreeRemoteDataSource {
   UserTreeRemoteDataSourceImpl({required this.dio});
 
   @override
-  Future<List<MemberModel>> getMembers({int? branchId}) async {
+  Future<List<MemberModel>> getMembers({int? branchId, int? familyId}) async {
     try {
-      final queryParams = branchId != null ? {'branchId': branchId} : null;
+      final Map<String, dynamic> queryParams = {};
+      if (branchId != null) queryParams['branchId'] = branchId;
+      if (familyId != null) queryParams['familyId'] = familyId;
       final response = await dio.get(
         AppConstants.membersEndpoint,
-        queryParameters: queryParams,
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
       );
       final Map<String, dynamic> responseData =
           response.data as Map<String, dynamic>;
@@ -147,9 +149,13 @@ class UserTreeRemoteDataSourceImpl implements UserTreeRemoteDataSource {
   }
 
   @override
-  Future<List<BranchModel>> getBranches() async {
+  Future<List<BranchModel>> getBranches({int? familyId}) async {
     try {
-      final response = await dio.get(AppConstants.branchesEndpoint);
+      final queryParams = familyId != null ? {'familyId': familyId} : null;
+      final response = await dio.get(
+        AppConstants.branchesEndpoint,
+        queryParameters: queryParams,
+      );
       final Map<String, dynamic> responseData =
           response.data as Map<String, dynamic>;
       final List<dynamic> data = responseData['data'] as List<dynamic>;

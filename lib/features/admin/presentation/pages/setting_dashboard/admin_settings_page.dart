@@ -89,14 +89,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               title: 'Bảo mật tài khoản',
               destination: const AdminAccountSecurityPage(),
             ),
-            if (isOwner) ...[
-              _buildSettingsTile(
-                context: context,
-                icon: LucideIcons.users,
-                title: 'Phân quyền thành viên',
-                destination: const AdminMemberRolesPage(),
-              ),
-            ],
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.userCheck,
@@ -217,6 +209,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               _buildSectionHeaderInsideCard(context, 'QUẢN TRỊ NÂNG CAO'),
               _buildSettingsTile(
                 context: context,
+                icon: LucideIcons.users,
+                title: 'Phân quyền thành viên',
+                destination: const AdminMemberRolesPage(),
+              ),
+              _buildSettingsTile(
+                context: context,
                 icon: LucideIcons.shieldAlert,
                 title: 'Chuyển nhượng quyền Trưởng tộc',
                 destination: const AdminTransferOwnershipPage(),
@@ -225,7 +223,10 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 context: context,
                 icon: LucideIcons.trash2,
                 title: 'Giải tán dòng họ',
-                destination: const AdminDissolveClanPage(),
+                destination: AdminDissolveClanPage(
+                  familyId: family?.id ?? 0,
+                  familyName: family?.name ?? 'Huỳnh Gia Tộc',
+                ),
                 titleColor: AppColors.error,
                 iconColor: AppColors.error,
               ),

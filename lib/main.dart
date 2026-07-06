@@ -74,6 +74,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
             create: (_) => di.sl<AdminBranchFormBloc>()),
         BlocProvider<AdminMemberRolesBloc>(
             create: (_) => di.sl<AdminMemberRolesBloc>()),
+        BlocProvider<AdminDissolveClanBloc>(
+            create: (_) => di.sl<AdminDissolveClanBloc>()),
       ],
       child: MaterialApp(
         onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,

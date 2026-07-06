@@ -61,6 +61,12 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
+    () => AdminDissolveClanBloc(
+      deleteFamily: sl(),
+    ),
+  );
+
+  sl.registerFactory(
     () => AuthBloc(
       loginWithGoogle: sl(),
       loginWithEmail: sl(),
@@ -121,6 +127,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetApprovedMembers(sl()));
   sl.registerLazySingleton(() => UpdateMemberRole(sl()));
   sl.registerLazySingleton(() => LinkMemberToUser(sl()));
+  sl.registerLazySingleton(() => DeleteFamily(sl()));
 
   // ─── Repository ───────────────────────────────────────────────────────────
   sl.registerLazySingleton<OnboardingRepository>(

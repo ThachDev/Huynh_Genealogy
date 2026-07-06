@@ -55,6 +55,10 @@ abstract class OnboardingRepository {
     required String role,
   });
 
+  Future<Either<Failure, bool>> deleteFamily({
+    required int familyId,
+  });
+
   Future<Either<Failure, bool>> linkMemberToUser({
     required int userId,
     required int memberId,

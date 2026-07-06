@@ -362,11 +362,14 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                     );
                                                     if (result == true) {
                                                       if (context.mounted) {
+                                                        final familyId = context.read<AuthBloc>().state is Authenticated
+                                                            ? (context.read<AuthBloc>().state as Authenticated).user.familyId
+                                                            : null;
                                                         context
                                                             .read<
                                                                 UserTreeBloc>()
                                                             .add(
-                                                                UserTreeLoadEvent());
+                                                                UserTreeLoadEvent(familyId: familyId));
                                                       }
                                                     }
                                                   });

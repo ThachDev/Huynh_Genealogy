@@ -182,6 +182,20 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> deleteFamily({
+    required int familyId,
+  }) async {
+    try {
+      final result = await remoteDataSource.deleteFamily(familyId);
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> linkMemberToUser({
     required int userId,
     required int memberId,

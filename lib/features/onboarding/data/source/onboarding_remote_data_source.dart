@@ -46,6 +46,8 @@ abstract class OnboardingRemoteDataSource {
     required String role,
   });
 
+  Future<bool> deleteFamily(int familyId);
+
   Future<bool> linkMemberToUser({
     required int userId,
     required int memberId,
@@ -299,6 +301,21 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
     } on DioException catch (e) {
       throw ServerException(
         message: _getErrorMessage(e, 'Lỗi phân quyền thành viên'),
+        statusCode: e.response?.statusCode,
+      );
+    }
+  }
+
+  @override
+  Future<bool> deleteFamily(int familyId) async {
+    try {
+      final response = await dio.delete(
+        '${AppConstants.familiesEndpoint}/$familyId',
+      );
+      return response.data['success'] as bool? ?? false;
+    } on DioException catch (e) {
+      throw ServerException(
+        message: _getErrorMessage(e, 'Lỗi xóa dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }

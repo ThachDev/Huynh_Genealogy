@@ -16,9 +16,9 @@ class UserTreeRepositoryImpl implements UserTreeRepository {
   // ---------- Members ----------
 
   @override
-  Future<Either<Failure, List<MemberEntity>>> getMembers({int? branchId}) async {
+  Future<Either<Failure, List<MemberEntity>>> getMembers({int? branchId, int? familyId}) async {
     try {
-      final models = await remoteDataSource.getMembers(branchId: branchId);
+      final models = await remoteDataSource.getMembers(branchId: branchId, familyId: familyId);
       return Right(models);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
@@ -69,9 +69,9 @@ class UserTreeRepositoryImpl implements UserTreeRepository {
   // ---------- Branches ----------
 
   @override
-  Future<Either<Failure, List<BranchEntity>>> getBranches() async {
+  Future<Either<Failure, List<BranchEntity>>> getBranches({int? familyId}) async {
     try {
-      final models = await remoteDataSource.getBranches();
+      final models = await remoteDataSource.getBranches(familyId: familyId);
       return Right(models);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));

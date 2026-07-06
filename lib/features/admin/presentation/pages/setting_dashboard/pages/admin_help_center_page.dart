@@ -32,12 +32,7 @@ class AdminHelpCenterPage extends StatelessWidget {
             _buildFaqItem(
               question: 'Làm sao để đăng ký tài khoản?',
               answer:
-                  'Tải ứng dụng Gia Tộc Việt từ CH Play (Android). Mở ứng dụng, nhấn "Đăng ký" và điền đầy đủ họ tên, email, số điện thoại và mật khẩu. Bạn cũng có thể đăng ký nhanh bằng tài khoản Google.',
-            ),
-            _buildFaqItem(
-              question: 'Làm sao để đăng nhập bằng Google?',
-              answer:
-                  'Trên màn hình đăng nhập, nhấn nút "Đăng nhập với Google". Hệ thống sẽ chuyển hướng đến tài khoản Google của bạn để xác thực. Sau khi xác thực thành công, bạn sẽ được đăng nhập tự động.',
+                  'Tải ứng dụng Gia Tộc Việt từ CH Play (Android). Mở ứng dụng, nhấn "Đăng ký" và điền đầy đủ họ tên, email, số điện thoại và mật khẩu.',
             ),
             _buildFaqItem(
               question: 'Tôi quên mật khẩu, phải làm sao?',

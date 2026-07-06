@@ -2,7 +2,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
-import '../../../../../core/usecases/usecase.dart';
 import '../../../domain/usecase/delete_member.dart';
 import '../../../../user/domain/usecase/user_get_members.dart';
 import '../../../../user/domain/usecase/user_get_branches.dart';
@@ -34,8 +33,8 @@ class AdminMemberFormBloc
       Emitter<AdminMemberFormState> emit) async {
     emit(AdminMemberFormLoading());
     // Fetch both members and branches
-    final membersResult = await getMembers(const UserGetMembersParams());
-    final branchesResult = await getBranches(NoParams());
+    final membersResult = await getMembers(UserGetMembersParams(familyId: event.familyId));
+    final branchesResult = await getBranches(UserGetBranchesParams(familyId: event.familyId));
 
     List<MemberEntity> allMembers = [];
     List<BranchEntity> allBranches = [];

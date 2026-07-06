@@ -4,7 +4,8 @@ abstract class AdminMemberFormEvent {}
 
 class LoadAdminMemberFormEvent extends AdminMemberFormEvent {
   final int? memberId; // null = create new
-  LoadAdminMemberFormEvent({this.memberId});
+  final int? familyId;
+  LoadAdminMemberFormEvent({this.memberId, this.familyId});
 }
 
 class SubmitAdminMemberFormEvent extends AdminMemberFormEvent {

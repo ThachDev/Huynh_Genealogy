@@ -4,7 +4,8 @@ abstract class UserTreeEvent {}
 
 class UserTreeLoadEvent extends UserTreeEvent {
   final int? branchId;
-  UserTreeLoadEvent({this.branchId});
+  final int? familyId;
+  UserTreeLoadEvent({this.branchId, this.familyId});
 }
 
 class UserTreeSelectMemberEvent extends UserTreeEvent {

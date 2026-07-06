@@ -102,9 +102,11 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
     // Nếu là chế độ cập nhật, lấy data
     if (widget.memberId != null) {
+      final authState = context.read<AuthBloc>().state;
+      final familyId = authState is Authenticated ? authState.user.familyId : null;
       context
           .read<AdminMemberFormBloc>()
-          .add(LoadAdminMemberFormEvent(memberId: widget.memberId));
+          .add(LoadAdminMemberFormEvent(memberId: widget.memberId, familyId: familyId));
     }
     _generationController.addListener(_onGenerationChanged);
   }

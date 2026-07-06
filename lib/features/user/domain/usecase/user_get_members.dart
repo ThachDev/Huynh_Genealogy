@@ -12,15 +12,16 @@ class UserGetMembers implements UseCase<List<MemberEntity>, UserGetMembersParams
 
   @override
   Future<Either<Failure, List<MemberEntity>>> call(UserGetMembersParams params) {
-    return repository.getMembers(branchId: params.branchId);
+    return repository.getMembers(branchId: params.branchId, familyId: params.familyId);
   }
 }
 
 class UserGetMembersParams extends Equatable {
   final int? branchId;
+  final int? familyId;
 
-  const UserGetMembersParams({this.branchId});
+  const UserGetMembersParams({this.branchId, this.familyId});
 
   @override
-  List<Object?> get props => [branchId];
+  List<Object?> get props => [branchId, familyId];
 }

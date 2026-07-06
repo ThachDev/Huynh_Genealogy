@@ -81,7 +81,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
     // Dispatch events to fetch latest data on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+      _loadTree();
       _loadPendingRequests();
     });
   }
@@ -122,11 +122,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
-  void _loadPendingRequests() {
+  int? _familyId() {
     final authState = context.read<AuthBloc>().state;
-    if (authState is Authenticated && authState.user.familyId != null) {
+    return authState is Authenticated ? authState.user.familyId : null;
+  }
+
+  void _loadTree() {
+    final familyId = _familyId();
+    if (familyId != null) {
+      context.read<UserTreeBloc>().add(UserTreeLoadEvent(familyId: familyId));
+    }
+  }
+
+  void _loadPendingRequests() {
+    final familyId = _familyId();
+    if (familyId != null) {
       context.read<AdminPendingRequestsBloc>().add(
-            LoadAdminPendingRequestsEvent(familyId: authState.user.familyId!),
+            LoadAdminPendingRequestsEvent(familyId: familyId),
           );
     }
   }
@@ -197,7 +209,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             if (state is AdminRequestApprovedSuccess) {
               AppSnackBar.success(context, 'Đã phê duyệt yêu cầu thành công!');
               _loadPendingRequests();
-              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+              _loadTree();
             } else if (state is AdminRequestRejectedSuccess) {
               AppSnackBar.success(context, 'Đã từ chối yêu cầu thành công!');
               _loadPendingRequests();
@@ -214,7 +226,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               } else {
                 AppSnackBar.success(context, 'Đã lưu thông tin thành viên!');
               }
-              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+              _loadTree();
             } else if (state is AdminMemberFormError) {
               AppSnackBar.error(context, state.message);
             }
@@ -228,7 +240,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               } else {
                 AppSnackBar.success(context, 'Đã lưu thông tin chi tộc!');
               }
-              context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+              _loadTree();
             } else if (state is AdminBranchFormError) {
               AppSnackBar.error(context, state.message);
             }
@@ -924,8 +936,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ),
     );
     if (result == true && context.mounted) {
-      // Refresh the branches
-      context.read<UserTreeBloc>().add(UserTreeLoadEvent());
+      _loadTree();
     }
   }
 

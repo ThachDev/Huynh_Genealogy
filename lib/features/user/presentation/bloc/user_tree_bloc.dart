@@ -3,7 +3,6 @@ import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../domain/usecase/user_get_branches.dart';
 import '../../domain/usecase/user_get_members.dart';
-import '../../../../core/usecases/usecase.dart';
 
 part 'user_tree_event.dart';
 part 'user_tree_state.dart';
@@ -26,9 +25,11 @@ class UserTreeBloc extends Bloc<UserTreeEvent, UserTreeState> {
     emit(UserTreeLoading());
 
     final membersResult = await getMembers(
-      UserGetMembersParams(branchId: event.branchId),
+      UserGetMembersParams(branchId: event.branchId, familyId: event.familyId),
     );
-    final branchesResult = await getBranches(NoParams());
+    final branchesResult = await getBranches(
+      UserGetBranchesParams(familyId: event.familyId),
+    );
 
     membersResult.fold(
       (failure) => emit(UserTreeError(failure.message)),
@@ -39,6 +40,7 @@ class UserTreeBloc extends Bloc<UserTreeEvent, UserTreeState> {
             members: members,
             branches: branches,
             filterBranchId: event.branchId,
+            familyId: event.familyId,
           )),
         );
       },
@@ -53,6 +55,7 @@ class UserTreeBloc extends Bloc<UserTreeEvent, UserTreeState> {
 
   Future<void> _onFilterByBranch(
       UserTreeFilterByBranchEvent event, Emitter<UserTreeState> emit) async {
-    add(UserTreeLoadEvent(branchId: event.branchId));
+    final familyId = state is UserTreeLoaded ? (state as UserTreeLoaded).familyId : null;
+    add(UserTreeLoadEvent(branchId: event.branchId, familyId: familyId));
   }
 }

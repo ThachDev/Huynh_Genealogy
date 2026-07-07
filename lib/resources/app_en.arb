@@ -88,6 +88,8 @@
   "familyDescriptionLabel": "Biography / Description",
   "familyDescriptionHint": "Home town, origins...",
   "initFamilyButton": "INITIALIZE FAMILY",
+  "initFamilySectionDesc": "Create a digital family tree today to connect generations and preserve your family's heritage.",
+  "initFamilySectionTitle": "Start a new family tree",
   "welcomeViewerTitle": "Welcome {name}!",
   "@welcomeViewerTitle": {
     "placeholders": {
@@ -115,7 +117,9 @@
   "createFamilyCardTitle": "Create a new Family",
   "createFamilyCardDesc": "For Clan Leaders/Genealogists who want to build a completely new family tree.",
   "joinFamilyCardTitle": "Connect with Family",
+  "joinRequestDescription": "Your join request will be sent to the Clan Leader. The Clan Leader will add you to the correct position on the family tree after approval.",
   "joinFamilyCardDesc": "For members who have an invite code from the Clan Leader to view and update the family tree.",
+  "familyPhotoSectionLabel": "FAMILY REPRESENTATIVE PHOTO",
   "errEmailRequired": "Please enter your email address",
   "errEmailInvalid": "Invalid email format (e.g. name@gmail.com)",
   "errPasswordRequired": "Please enter password",
@@ -181,6 +185,9 @@
   "enterInviteCodeLabel": "ENTER INVITE CODE",
   "inviteCodeHintNew": "EG: HGT-2024",
   "inviteCodeDescription": "Enter the 6-character code provided by your family leader or administrator.",
+  "connectFamilySectionTitle": "Connect with Family",
+  "copiedShareContent": "Copied share content!",
+  "creationSuccessTitle": "CREATION SUCCESS",
   "confirmJoinButton": "CONFIRM JOIN",
   "navOverview": "Overview",
   "navFamilyTree": "Family Tree",
@@ -195,6 +202,21 @@
   "formCancel": "CANCEL",
   "lunarSuffix": "LUNAR",
   "leapMonthSuffix": "(Leap)",
+  "searchNameHint": "Search your name...",
+  "selectMemberHint": "Select member...",
+  "shareFamilyButton": "SHARE WITH FAMILY",
+  "shareFamilyContent": "Join the \"{name}\" family tree on Gia Toc Viet app. The family invite code is: {code}",
+  "@shareFamilyContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "startExploringButton": "START EXPLORING",
   "searchHint": "Search...",
   "selectDate": "Select date",
   "selectMonthYear": "Select month and year",
@@ -487,6 +509,7 @@
   "generationFieldLabel": "Generation",
   "generationFieldHint": "E.g: 3",
   "familyNameFormat": "{name} Family",
+  "notOnTreeLabel": "My name is not on the family tree",
   "notLoggedIn": "User not logged in",
   "sessionTokenError": "Could not get session token",
   "passwordChangeFailed": "Password change failed",

@@ -209,6 +209,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get joinRequestDescription => 'Your join request will be sent to the Clan Leader. The Clan Leader will add you to the correct position on the family tree after approval.';
+
+  @override
   String get joinRequestSuccess => 'Join request sent successfully!';
 
   @override
@@ -246,7 +249,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyDescriptionHint => 'Home town, origins...';
 
   @override
+  String get familyPhotoSectionLabel => 'FAMILY REPRESENTATIVE PHOTO';
+
+  @override
   String get initFamilyButton => 'INITIALIZE FAMILY';
+
+  @override
+  String get initFamilySectionDesc => 'Create a digital family tree today to connect generations and preserve your family\'s heritage.';
+
+  @override
+  String get initFamilySectionTitle => 'Start a new family tree';
 
   @override
   String welcomeViewerTitle(String name) {
@@ -459,6 +471,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmJoinButton => 'CONFIRM JOIN';
 
   @override
+  String get connectFamilySectionTitle => 'Connect with Family';
+
+  @override
+  String get copiedShareContent => 'Copied share content!';
+
+  @override
+  String get creationSuccessTitle => 'CREATION SUCCESS';
+
+  @override
   String get navOverview => 'Overview';
 
   @override
@@ -496,6 +517,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leapMonthSuffix => '(Leap)';
+
+  @override
+  String get searchNameHint => 'Search your name...';
+
+  @override
+  String get selectMemberHint => 'Select member...';
+
+  @override
+  String get shareFamilyButton => 'SHARE WITH FAMILY';
+
+  @override
+  String shareFamilyContent(String name, String code) {
+    return 'Join the "$name" family tree on Gia Toc Viet app. The family invite code is: $code';
+  }
+
+  @override
+  String get startExploringButton => 'START EXPLORING';
 
   @override
   String get searchHint => 'Search...';
@@ -1052,6 +1090,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generationFieldHint => 'E.g: 3';
   @override
   String familyNameFormat(String name) => '$name Family';
+  @override
+  String get notOnTreeLabel => 'My name is not on the family tree';
+
   @override
   String get notLoggedIn => 'User not logged in';
   @override

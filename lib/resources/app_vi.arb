@@ -88,6 +88,8 @@
   "familyDescriptionLabel": "Mô tả Gia Tộc",
   "familyDescriptionHint": "Quê quán, nguồn gốc gia tộc...",
   "initFamilyButton": "KHỞI TẠO GIA TỘC",
+  "initFamilySectionDesc": "Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.",
+  "initFamilySectionTitle": "Khởi tạo gia tộc mới",
   "welcomeViewerTitle": "Chào {name}!",
   "@welcomeViewerTitle": {
     "placeholders": {
@@ -115,7 +117,9 @@
   "createFamilyCardTitle": "Khởi tạo Gia tộc mới",
   "createFamilyCardDesc": "Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.",
   "joinFamilyCardTitle": "Kết nối dòng tộc",
+  "joinRequestDescription": "Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.",
   "joinFamilyCardDesc": "Dành cho thành viên đã có mã mời từ Trưởng tộc để xem và cập nhật cây gia phả.",
+  "familyPhotoSectionLabel": "ẢNH ĐẠI DIỆN DÒNG HỌ",
   "errEmailRequired": "Vui lòng nhập địa chỉ email",
   "errEmailInvalid": "Email không đúng định dạng (Ví dụ: ten@gmail.com)",
   "errPasswordRequired": "Vui lòng nhập mật khẩu",
@@ -181,6 +185,9 @@
   "enterInviteCodeLabel": "NHẬP MÃ THAM GIA",
   "inviteCodeHintNew": "VD: HGT-2024",
   "inviteCodeDescription": "Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.",
+  "connectFamilySectionTitle": "Kết nối dòng tộc",
+  "copiedShareContent": "Đã sao chép nội dung chia sẻ!",
+  "creationSuccessTitle": "KHỞI TẠO THÀNH CÔNG",
   "confirmJoinButton": "XÁC NHẬN THAM GIA",
   "navOverview": "Tổng quan",
   "navFamilyTree": "Cây gia phả",
@@ -195,6 +202,21 @@
   "formCancel": "HỦY BỎ",
   "lunarSuffix": "ÂM LỊCH",
   "leapMonthSuffix": "(Nhuận)",
+  "searchNameHint": "Tìm kiếm tên của bạn...",
+  "selectMemberHint": "Chọn thành viên...",
+  "shareFamilyButton": "CHIA SẺ CHO GIA ĐÌNH",
+  "shareFamilyContent": "Tham gia gia phả \"{name}\" trên ứng dụng Gia Tộc Việt. Mã mời của dòng họ là: {code}",
+  "@shareFamilyContent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "startExploringButton": "BẮT ĐẦU KHÁM PHÁ",
   "searchHint": "Tìm kiếm...",
   "selectDate": "Chọn ngày",
   "selectMonthYear": "Chọn tháng và năm",
@@ -487,6 +509,7 @@
   "generationFieldLabel": "Thế hệ",
   "generationFieldHint": "VD: 3",
   "familyNameFormat": "{name} Gia Tộc",
+  "notOnTreeLabel": "Tên tôi chưa có trên cây gia phả",
   "notLoggedIn": "Người dùng chưa đăng nhập",
   "sessionTokenError": "Không thể lấy mã xác thực phiên đăng nhập",
   "passwordChangeFailed": "Thay đổi mật khẩu thất bại",

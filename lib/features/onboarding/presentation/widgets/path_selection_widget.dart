@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/domain/entity/user_entity.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 import 'selection_card.dart';
@@ -37,7 +37,7 @@ class PathSelectionWidget extends StatelessWidget {
         // Card 1: Khởi tạo gia tộc
         SelectionCard(
           iconAssetPath: 'assets/icons/add_Family.png',
-          iconColor: AppColors.crimson,
+          iconColor: context.primary,
           title: l10n.createFamilyCardTitle,
           subtitle: l10n.createFamilyCardDesc,
           isSelected: selectedPath == 1,
@@ -49,7 +49,7 @@ class PathSelectionWidget extends StatelessWidget {
         // Card 2: Gia nhập gia tộc có sẵn
         SelectionCard(
           iconAssetPath: 'assets/icons/family.png',
-          iconColor: AppColors.gold,
+          iconColor: context.accent,
           title: l10n.joinFamilyCardTitle,
           subtitle: l10n.joinFamilyCardDesc,
           isSelected: selectedPath == 2,

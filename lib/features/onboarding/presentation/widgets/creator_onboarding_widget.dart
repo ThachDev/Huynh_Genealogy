@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 import '../bloc/onboarding_bloc.dart';
@@ -53,10 +53,10 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
     }
   }
 
-  Widget _buildCorner({required bool isTop, required bool isLeft}) {
+  Widget _buildCorner({required bool isTop, required bool isLeft, required BuildContext context}) {
     const double lineLength = 12.0;
     const double thickness = 2.0;
-    const Color cornerColor = Colors.amber;
+    final Color cornerColor = context.accent;
 
     return SizedBox(
       width: lineLength,
@@ -124,15 +124,15 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
       child: Container(
         constraints: const BoxConstraints(maxHeight: 500),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: AppColors.gold.withValues(alpha: 0.5),
+            color: context.accent.withValues(alpha: 0.5),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: context.resolve(Colors.black.withValues(alpha: 0.15), Colors.transparent),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -150,11 +150,11 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.crimson,
+                  color: context.primary,
                 ),
               ),
             ),
-            const Divider(height: 1, color: AppColors.parchment),
+            Divider(height: 1, color: context.background),
             // Body
             Expanded(
               child: SingleChildScrollView(
@@ -163,13 +163,13 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                   l10n.termsContent,
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: AppColors.textPrimary,
+                    color: context.textPrimary,
                     height: 1.6,
                   ),
                 ),
               ),
             ),
-            const Divider(height: 1, color: AppColors.parchment),
+            Divider(height: 1, color: context.background),
             // Footer
             Padding(
               padding: const EdgeInsets.all(16),
@@ -194,10 +194,9 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          const AppSectionHeader(
-            title: "Khởi tạo gia tộc mới",
-            description:
-                "Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.",
+          AppSectionHeader(
+            title: l10n.initFamilySectionTitle,
+            description: l10n.initFamilySectionDesc,
             titleSize: 20,
             spacing: 8,
           ),
@@ -205,11 +204,11 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.surface,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
+                  color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -218,15 +217,15 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "ẢNH ĐẠI DIỆN DÒNG HỌ",
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.crimson,
-                    letterSpacing: 1.2,
+                  Text(
+                    l10n.familyPhotoSectionLabel,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: context.primary,
+                      letterSpacing: 1.2,
+                    ),
                   ),
-                ),
                 const SizedBox(height: 12),
                 GestureDetector(
                   onTap: _pickImage,
@@ -236,7 +235,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                         height: 140,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2C1E1C),
+                          color: context.resolve(const Color(0xFF2C1E1C), const Color(0xFF3D2C28)),
                           borderRadius: BorderRadius.circular(8),
                           image: _imageFile != null
                               ? DecorationImage(
@@ -253,16 +252,16 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                         child: _imageFile != null
                             ? Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.45),
+                                  color: context.resolve(Colors.black.withValues(alpha: 0.45), Colors.white.withValues(alpha: 0.45)),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       LucideIcons.edit2,
                                       size: 32,
-                                      color: Colors.amber,
+                                      color: context.accent,
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
@@ -270,7 +269,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                                       style: GoogleFonts.inter(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.amber,
+                                        color: context.accent,
                                         letterSpacing: 1.0,
                                       ),
                                     ),
@@ -280,10 +279,10 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     LucideIcons.camera,
                                     size: 38,
-                                    color: Colors.amber,
+                                    color: context.accent,
                                   ),
                                   const SizedBox(height: 10),
                                   Text(
@@ -291,7 +290,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                                     style: GoogleFonts.inter(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.amber,
+                                      color: context.accent,
                                       letterSpacing: 1.0,
                                     ),
                                   ),
@@ -302,62 +301,62 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                       Positioned(
                         top: 6,
                         left: 6,
-                        child: _buildCorner(isTop: true, isLeft: true),
+                        child: _buildCorner(isTop: true, isLeft: true, context: context),
                       ),
                       // Top Right Corner
                       Positioned(
                         top: 6,
                         right: 6,
-                        child: _buildCorner(isTop: true, isLeft: false),
+                        child: _buildCorner(isTop: true, isLeft: false, context: context),
                       ),
                       // Bottom Left Corner
                       Positioned(
                         bottom: 6,
                         left: 6,
-                        child: _buildCorner(isTop: false, isLeft: true),
+                        child: _buildCorner(isTop: false, isLeft: true, context: context),
                       ),
                       // Bottom Right Corner
                       Positioned(
                         bottom: 6,
                         right: 6,
-                        child: _buildCorner(isTop: false, isLeft: false),
+                        child: _buildCorner(isTop: false, isLeft: false, context: context),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  l10n.familyNameLabel.toUpperCase(),
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.crimson,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.parchment.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.03),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller: _familyNameController,
+                  Text(
+                    l10n.familyNameLabel.toUpperCase(),
                     style: GoogleFonts.inter(
-                        color: AppColors.textPrimary, fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: l10n.familyNameHint,
-                      hintStyle: GoogleFonts.inter(
-                        color: AppColors.textSecondary.withValues(alpha: 0.4),
-                        fontSize: 14,
-                      ),
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: context.primary,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: context.background.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextFormField(
+                      controller: _familyNameController,
+                      style: GoogleFonts.inter(
+                          color: context.textPrimary, fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: l10n.familyNameHint,
+                        hintStyle: GoogleFonts.inter(
+                          color: context.textSecondary.withValues(alpha: 0.4),
+                          fontSize: 14,
+                        ),
                       filled: true,
                       fillColor: Colors.transparent,
                       contentPadding: const EdgeInsets.symmetric(
@@ -377,39 +376,39 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  l10n.familyDescriptionLabel.toUpperCase(),
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.crimson,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.parchment.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.03),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller: _familyDescriptionController,
+                  Text(
+                    l10n.familyDescriptionLabel.toUpperCase(),
                     style: GoogleFonts.inter(
-                        color: AppColors.textPrimary, fontSize: 14),
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText: l10n.familyDescriptionHint,
-                      hintStyle: GoogleFonts.inter(
-                        color: AppColors.textSecondary.withValues(alpha: 0.4),
-                        fontSize: 14,
-                      ),
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: context.primary,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: context.background.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextFormField(
+                      controller: _familyDescriptionController,
+                      style: GoogleFonts.inter(
+                          color: context.textPrimary, fontSize: 14),
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        hintText: l10n.familyDescriptionHint,
+                        hintStyle: GoogleFonts.inter(
+                          color: context.textSecondary.withValues(alpha: 0.4),
+                          fontSize: 14,
+                        ),
                       filled: true,
                       fillColor: Colors.transparent,
                       contentPadding: const EdgeInsets.all(16),
@@ -440,7 +439,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                       style: GoogleFonts.inter(
                         fontSize: 9,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textSecondary.withValues(alpha: 0.6),
+                        color: context.textSecondary.withValues(alpha: 0.6),
                         letterSpacing: 0.6,
                         height: 1.3,
                       ),
@@ -450,7 +449,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                           style: GoogleFonts.inter(
                             fontSize: 9,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.crimson,
+                            color: context.primary,
                             decoration: TextDecoration.underline,
                             letterSpacing: 0.6,
                             height: 1.3,

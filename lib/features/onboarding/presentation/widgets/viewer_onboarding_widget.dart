@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:giatocviet/core/theme/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/domain/entity/user_entity.dart';
 import '../../../../resources/app_localizations.dart';
@@ -81,7 +81,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
         children: [
           const SizedBox(height: 16),
           AppSectionHeader(
-            title: "Kết nối dòng tộc",
+            title: l10n.connectFamilySectionTitle,
             description: l10n.welcomeViewerSubtitle,
             titleSize: 20,
             indicatorHeight: 20,
@@ -91,11 +91,11 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: context.surface,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
+                  color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -109,7 +109,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.crimson,
+                    color: context.primary,
                     letterSpacing: 1.2,
                   ),
                 ),
@@ -121,11 +121,11 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                       child: Container(
                         height: 52,
                         decoration: BoxDecoration(
-                          color: AppColors.parchment.withValues(alpha: 0.5),
+                          color: context.background.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(6),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.03),
+                              color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
@@ -134,9 +134,9 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                         child: Row(
                           children: [
                             const SizedBox(width: 12),
-                            const Icon(
+                            Icon(
                               LucideIcons.layoutGrid,
-                              color: AppColors.crimson,
+                              color: context.primary,
                               size: 20,
                             ),
                             const SizedBox(width: 12),
@@ -144,7 +144,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                               child: TextFormField(
                                 controller: _inviteCodeController,
                                 style: GoogleFonts.inter(
-                                  color: AppColors.textPrimary,
+                                  color: context.textPrimary,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.5,
@@ -152,7 +152,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                                 decoration: InputDecoration(
                                   hintText: l10n.inviteCodeHintNew,
                                   hintStyle: GoogleFonts.inter(
-                                    color: AppColors.textSecondary
+                                    color: context.textSecondary
                                         .withValues(alpha: 0.4),
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -184,20 +184,20 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                         width: 52,
                         height: 52,
                         decoration: BoxDecoration(
-                          color: AppColors.parchment.withValues(alpha: 0.5),
+                          color: context.background.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(6),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.03),
+                              color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
                           ],
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Icon(
                             LucideIcons.qrCode,
-                            color: AppColors.crimson,
+                            color: context.primary,
                             size: 22,
                           ),
                         ),
@@ -210,7 +210,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                   l10n.inviteCodeDescription,
                   style: GoogleFonts.inter(
                     fontSize: 11,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -231,14 +231,14 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
 
                 if (_verifiedFamily != null) ...[
                   const SizedBox(height: 32),
-                  const Divider(color: AppColors.parchment, thickness: 1),
+                  Divider(color: context.background, thickness: 1),
                   const SizedBox(height: 20),
                   Text(
                     l10n.familyFoundTitle(_verifiedFamily!.name.toUpperCase()),
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: AppColors.crimson,
+                      color: context.primary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -246,7 +246,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                     l10n.selectMemberPrompt,
                     style: GoogleFonts.inter(
                       fontSize: 13,
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -255,17 +255,17 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFDFCFB),
+                            color: context.resolve(const Color(0xFFFDFCFB), const Color(0xFF3D2C28)),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                                color: const Color(0xFFEFEBE7), width: 1.2),
+                                color: context.resolve(const Color(0xFFEFEBE7), const Color(0xFF5A4A44)), width: 1.2),
                           ),
                           child: Text(
-                            'Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.',
+                            l10n.joinRequestDescription,
                             textAlign: TextAlign.justify,
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 13,
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                               height: 1.4,
                             ),
                           ),
@@ -273,11 +273,11 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                       : AppDropdown<MemberEntity?>(
                           value: _selectedMember,
                           showSearchBox: true,
-                          searchHint: 'Tìm kiếm tên của bạn...',
+                          searchHint: l10n.searchNameHint,
                           items: [
-                            const DropdownItem<MemberEntity?>(
+                            DropdownItem<MemberEntity?>(
                               value: null,
-                              child: Text('Chọn thành viên...'),
+                              child: Text(l10n.selectMemberHint),
                             ),
                             ..._familyMembers
                                 .map((m) => DropdownItem<MemberEntity?>(
@@ -308,7 +308,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                               }
                             });
                           },
-                          activeColor: AppColors.crimson,
+                          activeColor: context.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -325,11 +325,11 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                           });
                         },
                         child: Text(
-                          'Tên tôi chưa có trên cây gia phả',
+                          l10n.notOnTreeLabel,
                           style: GoogleFonts.beVietnamPro(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.textPrimary,
+                            color: context.textPrimary,
                           ),
                         ),
                       ),

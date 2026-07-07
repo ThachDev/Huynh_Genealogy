@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 
@@ -34,7 +34,7 @@ class PendingApprovalWidget extends StatelessWidget {
             style: GoogleFonts.beVietnamPro(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: AppColors.crimson,
+              color: context.primary,
             ),
           ),
           const SizedBox(height: 12),
@@ -45,7 +45,7 @@ class PendingApprovalWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
                 height: 1.5,
               ),
             ),

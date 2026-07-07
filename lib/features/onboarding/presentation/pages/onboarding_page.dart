@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 import '../bloc/onboarding_bloc.dart';
@@ -49,7 +50,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             color: AppColors.crimson,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBarBg,
         elevation: 0,
         centerTitle: true,
         leading: (_selectedPath != null && !_isRequestSent)

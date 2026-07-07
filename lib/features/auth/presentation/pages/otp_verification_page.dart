@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -52,11 +52,11 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBarBg,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: context.textPrimary),
         centerTitle: true,
       ),
       body: BlocListener<AuthBloc, AuthState>(
@@ -118,7 +118,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.crimson,
+                                color: context.primary,
                                 height: 1.2,
                               ),
                             ),
@@ -128,7 +128,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               text: TextSpan(
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
-                                  color: AppColors.textSecondary,
+                                  color: context.textSecondary,
                                   height: 1.5,
                                 ),
                                 children: [
@@ -138,7 +138,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
+                                      color: context.textPrimary,
                                     ),
                                   ),
                                   TextSpan(text: l10n.otpSubtitleEnd),
@@ -160,12 +160,12 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 8,
-                                color: AppColors.textPrimary,
+                                color: context.textPrimary,
                               ),
                               prefixIcon: Icon(
                                 LucideIcons.keyRound,
                                 size: 20,
-                                color: AppColors.textSecondary
+                                color: context.textSecondary
                                     .withValues(alpha: 0.5),
                               ),
                               validator: (val) {
@@ -194,7 +194,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                                 style: GoogleFonts.inter(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.gold,
+                                  color: context.accent,
                                 ),
                               ),
                             ),

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../core/utils/validators.dart';
 import '../bloc/auth_bloc.dart';
@@ -57,7 +57,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          backgroundColor: Colors.white,
+          backgroundColor: context.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -67,13 +67,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withValues(alpha: 0.15),
+                  color: context.accent.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   LucideIcons.checkCircle2,
                   size: 40,
-                  color: AppColors.gold,
+                  color: context.accent,
                 ),
               ),
               const SizedBox(height: 16),
@@ -83,7 +83,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                 ),
               ),
             ],
@@ -93,7 +93,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
               height: 1.4,
             ),
           ),
@@ -125,17 +125,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBarBg,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: context.textPrimary),
         title: Text(
           l10n.resetPasswordTitle,
           style: GoogleFonts.beVietnamPro(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: context.textPrimary,
           ),
         ),
         centerTitle: true,
@@ -191,7 +191,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.crimson,
+                                color: context.primary,
                                 height: 1.2,
                               ),
                             ),
@@ -201,7 +201,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
                                 fontSize: 14,
-                                color: AppColors.textSecondary,
+                                color: context.textSecondary,
                                 height: 1.5,
                               ),
                             ),
@@ -215,7 +215,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               prefixIcon: Icon(
                                 LucideIcons.lock,
                                 size: 20,
-                                color: AppColors.textSecondary
+                                color: context.textSecondary
                                     .withValues(alpha: 0.5),
                               ),
                               suffixIcon: IconButton(
@@ -223,7 +223,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   _isObscureNew
                                       ? LucideIcons.eyeOff
                                       : LucideIcons.eye,
-                                  color: AppColors.textSecondary
+                                  color: context.textSecondary
                                       .withValues(alpha: 0.5),
                                   size: 20,
                                 ),
@@ -247,7 +247,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               prefixIcon: Icon(
                                 LucideIcons.lock,
                                 size: 20,
-                                color: AppColors.textSecondary
+                                color: context.textSecondary
                                     .withValues(alpha: 0.5),
                               ),
                               suffixIcon: IconButton(
@@ -255,7 +255,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   _isObscureConfirm
                                       ? LucideIcons.eyeOff
                                       : LucideIcons.eye,
-                                  color: AppColors.textSecondary
+                                  color: context.textSecondary
                                       .withValues(alpha: 0.5),
                                   size: 20,
                                 ),

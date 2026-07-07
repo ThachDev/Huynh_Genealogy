@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../core/utils/validators.dart';
 import '../bloc/auth_bloc.dart';
@@ -43,17 +43,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.appBarBg,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: context.textPrimary),
         title: Text(
           l10n.forgotPasswordTitle,
           style: GoogleFonts.beVietnamPro(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
+            color: context.textPrimary,
           ),
         ),
         centerTitle: true,
@@ -114,7 +114,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.crimson,
+                                color: context.primary,
                                 height: 1.2,
                               ),
                             ),
@@ -124,7 +124,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
                                 fontSize: 14,
-                                color: AppColors.textSecondary,
+                                color: context.textSecondary,
                                 height: 1.5,
                               ),
                             ),
@@ -138,7 +138,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               prefixIcon: Icon(
                                 LucideIcons.mail,
                                 size: 20,
-                                color: AppColors.textSecondary
+                                color: context.textSecondary
                                     .withValues(alpha: 0.5),
                               ),
                               validator: (val) =>

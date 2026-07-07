@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 
 class SelectionCard extends StatelessWidget {
   final String iconAssetPath;
@@ -25,13 +26,13 @@ class SelectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: isSelected
                 ? AppColors.crimson.withValues(alpha: 0.12)
-                : Colors.black.withValues(alpha: 0.04),
+                : context.resolve(Colors.black.withValues(alpha: 0.04), Colors.transparent),
             blurRadius: isSelected ? 20 : 12,
             offset: isSelected ? const Offset(0, 8) : const Offset(0, 4),
             spreadRadius: isSelected ? 1 : 0,

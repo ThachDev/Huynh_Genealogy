@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../main.dart';
@@ -63,7 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final isEnglish = Localizations.localeOf(context).languageCode == 'en';
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.background,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -170,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
             style: GoogleFonts.beVietnamPro(
               fontSize: 26,
               fontWeight: FontWeight.bold,
-              color: AppColors.crimson,
+              color: context.primary,
               height: 1.2,
             ),
           ),
@@ -180,7 +180,7 @@ class _RegisterPageState extends State<RegisterPage> {
             style: GoogleFonts.inter(
               fontSize: 11,
               fontWeight: FontWeight.bold,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
               letterSpacing: 0.6,
             ),
           ),
@@ -221,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
       suffixIcon: IconButton(
         icon: Icon(
           _isPasswordObscure ? LucideIcons.eyeOff : LucideIcons.eye,
-          color: AppColors.textSecondary.withValues(alpha: 0.5),
+          color: context.textSecondary.withValues(alpha: 0.5),
           size: 20,
         ),
         onPressed: () {
@@ -244,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
       suffixIcon: IconButton(
         icon: Icon(
           _isConfirmPasswordObscure ? LucideIcons.eyeOff : LucideIcons.eye,
-          color: AppColors.textSecondary.withValues(alpha: 0.5),
+          color: context.textSecondary.withValues(alpha: 0.5),
           size: 20,
         ),
         onPressed: () {
@@ -280,7 +280,7 @@ class _RegisterPageState extends State<RegisterPage> {
           text: TextSpan(
             style: GoogleFonts.inter(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
             children: [
               TextSpan(
@@ -290,7 +290,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 text: l10n.loginNow,
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.crimson,
+                  color: context.primary,
                 ),
               ),
             ],
@@ -310,10 +310,10 @@ class _RegisterPageState extends State<RegisterPage> {
         width: 76,
         height: 26,
         decoration: BoxDecoration(
-          color: AppColors.textSecondary.withValues(alpha: 0.08),
+          color: context.textSecondary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(13.0),
           border: Border.all(
-            color: AppColors.textSecondary.withValues(alpha: 0.12),
+            color: context.textSecondary.withValues(alpha: 0.12),
             width: 1,
           ),
         ),
@@ -330,11 +330,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 34,
                   height: 20,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: context.surface,
                     borderRadius: BorderRadius.circular(10.0),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
+                        color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
                         blurRadius: 4,
                         offset: const Offset(0, 1),
                       ),
@@ -354,8 +354,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight:
                             !isEnglish ? FontWeight.bold : FontWeight.w600,
                         color: !isEnglish
-                            ? AppColors.crimson
-                            : AppColors.textSecondary,
+                            ? context.primary
+                            : context.textSecondary,
                       ),
                     ),
                   ),
@@ -369,8 +369,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontWeight:
                             isEnglish ? FontWeight.bold : FontWeight.w600,
                         color: isEnglish
-                            ? AppColors.gold
-                            : AppColors.textSecondary,
+                            ? context.accent
+                            : context.textSecondary,
                       ),
                     ),
                   ),
@@ -407,13 +407,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         _isTermsAccepted = value ?? false;
                       });
                     },
-              activeColor: AppColors.crimson,
+              activeColor: context.primary,
               checkColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(4.0),
               ),
               side: BorderSide(
-                color: AppColors.textSecondary.withValues(alpha: 0.5),
+                color: context.textSecondary.withValues(alpha: 0.5),
                 width: 1.5,
               ),
             ),
@@ -424,7 +424,7 @@ class _RegisterPageState extends State<RegisterPage> {
               text: TextSpan(
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                   height: 1.4,
                 ),
                 children: [
@@ -438,7 +438,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         l10n.termsOfService,
                         style: GoogleFonts.inter(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.crimson,
+                          color: context.primary,
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -454,7 +454,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         l10n.privacyPolicy,
                         style: GoogleFonts.inter(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.crimson,
+                          color: context.primary,
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -474,12 +474,12 @@ class _RegisterPageState extends State<RegisterPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: context.surface,
         title: Text(
           title,
           style: GoogleFonts.beVietnamPro(
             fontWeight: FontWeight.bold,
-            color: AppColors.crimson,
+            color: context.primary,
           ),
         ),
         content: SizedBox(
@@ -490,7 +490,7 @@ class _RegisterPageState extends State<RegisterPage> {
               textAlign: TextAlign.justify,
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -503,7 +503,7 @@ class _RegisterPageState extends State<RegisterPage> {
               l10n.closeButton,
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
-                color: AppColors.crimson,
+                color: context.primary,
               ),
             ),
           ),
@@ -517,12 +517,12 @@ class _RegisterPageState extends State<RegisterPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: context.surface,
         title: Text(
           title,
           style: GoogleFonts.beVietnamPro(
             fontWeight: FontWeight.bold,
-            color: AppColors.crimson,
+            color: context.primary,
           ),
         ),
         content: SizedBox(
@@ -533,7 +533,7 @@ class _RegisterPageState extends State<RegisterPage> {
               textAlign: TextAlign.justify,
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: AppColors.textSecondary,
+                color: context.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -546,7 +546,7 @@ class _RegisterPageState extends State<RegisterPage> {
               l10n.closeButton,
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.bold,
-                color: AppColors.crimson,
+                color: context.primary,
               ),
             ),
           ),

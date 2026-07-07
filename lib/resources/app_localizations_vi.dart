@@ -209,6 +209,9 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get joinRequestDescription => 'Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.';
+
+  @override
   String get joinRequestSuccess => 'Yêu cầu tham gia đã gửi thành công!';
 
   @override
@@ -246,7 +249,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get familyDescriptionHint => 'Quê quán, nguồn gốc gia tộc...';
 
   @override
+  String get familyPhotoSectionLabel => 'ẢNH ĐẠI DIỆN DÒNG HỌ';
+
+  @override
   String get initFamilyButton => 'KHỞI TẠO GIA TỘC';
+
+  @override
+  String get initFamilySectionDesc => 'Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.';
+
+  @override
+  String get initFamilySectionTitle => 'Khởi tạo gia tộc mới';
 
   @override
   String welcomeViewerTitle(String name) {
@@ -459,6 +471,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get confirmJoinButton => 'XÁC NHẬN THAM GIA';
 
   @override
+  String get connectFamilySectionTitle => 'Kết nối dòng tộc';
+
+  @override
+  String get copiedShareContent => 'Đã sao chép nội dung chia sẻ!';
+
+  @override
+  String get creationSuccessTitle => 'KHỞI TẠO THÀNH CÔNG';
+
+  @override
   String get navOverview => 'Tổng quan';
 
   @override
@@ -496,6 +517,23 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get leapMonthSuffix => '(Nhuận)';
+
+  @override
+  String get searchNameHint => 'Tìm kiếm tên của bạn...';
+
+  @override
+  String get selectMemberHint => 'Chọn thành viên...';
+
+  @override
+  String get shareFamilyButton => 'CHIA SẺ CHO GIA ĐÌNH';
+
+  @override
+  String shareFamilyContent(String name, String code) {
+    return 'Tham gia gia phả "$name" trên ứng dụng Gia Tộc Việt. Mã mời của dòng họ là: $code';
+  }
+
+  @override
+  String get startExploringButton => 'BẮT ĐẦU KHÁM PHÁ';
 
   @override
   String get searchHint => 'Tìm kiếm...';
@@ -1052,6 +1090,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get generationFieldHint => 'VD: 3';
   @override
   String familyNameFormat(String name) => '$name Gia Tộc';
+  @override
+  String get notOnTreeLabel => 'Tên tôi chưa có trên cây gia phả';
+
   @override
   String get notLoggedIn => 'Người dùng chưa đăng nhập';
   @override

@@ -476,6 +476,12 @@ abstract class AppLocalizations {
   /// **'Xác thực mã mời thành công: {familyName}'**
   String verifyInviteSuccess(String familyName);
 
+  /// No description provided for @joinRequestDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.'**
+  String get joinRequestDescription;
+
   /// No description provided for @joinRequestSuccess.
   ///
   /// In vi, this message translates to:
@@ -542,11 +548,29 @@ abstract class AppLocalizations {
   /// **'Quê quán, nguồn gốc gia tộc...'**
   String get familyDescriptionHint;
 
+  /// No description provided for @familyPhotoSectionLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'ẢNH ĐẠI DIỆN DÒNG HỌ'**
+  String get familyPhotoSectionLabel;
+
   /// No description provided for @initFamilyButton.
   ///
   /// In vi, this message translates to:
   /// **'KHỞI TẠO GIA TỘC'**
   String get initFamilyButton;
+
+  /// No description provided for @initFamilySectionDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.'**
+  String get initFamilySectionDesc;
+
+  /// No description provided for @initFamilySectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khởi tạo gia tộc mới'**
+  String get initFamilySectionTitle;
 
   /// No description provided for @welcomeViewerTitle.
   ///
@@ -715,6 +739,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Họ và tên chỉ được chứa chữ cái và khoảng trắng'**
   String get errFullNameInvalid;
+
+  /// No description provided for @notOnTreeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên tôi chưa có trên cây gia phả'**
+  String get notOnTreeLabel;
 
   /// No description provided for @errPhoneNumberRequired.
   ///
@@ -902,6 +932,24 @@ abstract class AppLocalizations {
   /// **'XÁC NHẬN THAM GIA'**
   String get confirmJoinButton;
 
+  /// No description provided for @connectFamilySectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối dòng tộc'**
+  String get connectFamilySectionTitle;
+
+  /// No description provided for @copiedShareContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép nội dung chia sẻ!'**
+  String get copiedShareContent;
+
+  /// No description provided for @creationSuccessTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'KHỞI TẠO THÀNH CÔNG'**
+  String get creationSuccessTitle;
+
   /// No description provided for @navOverview.
   ///
   /// In vi, this message translates to:
@@ -985,6 +1033,36 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tìm kiếm...'**
   String get searchHint;
+
+  /// No description provided for @searchNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm tên của bạn...'**
+  String get searchNameHint;
+
+  /// No description provided for @selectMemberHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thành viên...'**
+  String get selectMemberHint;
+
+  /// No description provided for @shareFamilyButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'CHIA SẺ CHO GIA ĐÌNH'**
+  String get shareFamilyButton;
+
+  /// No description provided for @shareFamilyContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tham gia gia phả "{name}" trên ứng dụng Gia Tộc Việt. Mã mời của dòng họ là: {code}'**
+  String shareFamilyContent(String name, String code);
+
+  /// No description provided for @startExploringButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'BẮT ĐẦU KHÁM PHÁ'**
+  String get startExploringButton;
 
   /// No description provided for @selectDate.
   ///

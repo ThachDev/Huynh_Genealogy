@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../core/domain/entity/family_entity.dart';
@@ -54,15 +55,17 @@ class _FamilyCreationSuccessDialogState
   }
 
   void _copyToClipboard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: widget.family.inviteCode));
     AppSnackBar.success(
       context,
-      'Đã sao chép mã mời: ${widget.family.inviteCode}',
+      l10n.inviteCodeCopied(widget.family.inviteCode),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ScaleTransition(
       scale: _scaleAnimation,
       child: FadeTransition(
@@ -72,15 +75,15 @@ class _FamilyCreationSuccessDialogState
           insetPadding: const EdgeInsets.symmetric(horizontal: 20),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.gold.withValues(alpha: 0.6),
+                color: context.accent.withValues(alpha: 0.6),
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
+                  color: context.resolve(Colors.black.withValues(alpha: 0.3), Colors.transparent),
                   blurRadius: 25,
                   offset: const Offset(0, 10),
                 ),
@@ -98,16 +101,16 @@ class _FamilyCreationSuccessDialogState
                         width: 72,
                         height: 72,
                         decoration: BoxDecoration(
-                          color: AppColors.crimson.withValues(alpha: 0.08),
+                          color: context.primary.withValues(alpha: 0.08),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: AppColors.gold,
+                            color: context.accent,
                             width: 1.5,
                           ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           LucideIcons.check,
-                          color: AppColors.gold,
+                          color: context.accent,
                           size: 36,
                         ),
                       ),
@@ -115,11 +118,11 @@ class _FamilyCreationSuccessDialogState
 
                       // Success Title
                       Text(
-                        'KHỞI TẠO THÀNH CÔNG',
+                        l10n.creationSuccessTitle,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.gold,
+                          color: context.accent,
                           letterSpacing: 1.5,
                         ),
                       ),
@@ -132,7 +135,7 @@ class _FamilyCreationSuccessDialogState
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: AppColors.crimson,
+                          color: context.primary,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -142,10 +145,10 @@ class _FamilyCreationSuccessDialogState
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.parchment,
+                          color: context.background,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: AppColors.gold.withValues(alpha: 0.3),
+                            color: context.accent.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
@@ -155,11 +158,11 @@ class _FamilyCreationSuccessDialogState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'MÃ MỜI GIA TỘC',
+                                  l10n.inviteCodeSectionLabel,
                                   style: GoogleFonts.inter(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.textSecondary,
+                                    color: context.textSecondary,
                                     letterSpacing: 1.0,
                                   ),
                                 ),
@@ -169,16 +172,16 @@ class _FamilyCreationSuccessDialogState
                                   style: GoogleFonts.beVietnamPro(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.crimson,
+                                    color: context.primary,
                                     letterSpacing: 3.0,
                                   ),
                                 ),
                               ],
                             ),
                             IconButton(
-                              icon: const Icon(LucideIcons.copy,
-                                  color: AppColors.gold),
-                              tooltip: 'Sao chép mã',
+                              icon: Icon(LucideIcons.copy,
+                                  color: context.accent),
+                              tooltip: l10n.copyCodeTooltip,
                               onPressed: () => _copyToClipboard(context),
                             ),
                           ],
@@ -188,7 +191,7 @@ class _FamilyCreationSuccessDialogState
 
                       // Action Buttons
                       AppButton(
-                        label: 'BẮT ĐẦU KHÁM PHÁ',
+                        label: l10n.startExploringButton,
                         onPressed: () {
                           Navigator.of(context).pop();
                           widget.onProceed();
@@ -199,23 +202,24 @@ class _FamilyCreationSuccessDialogState
                       const SizedBox(height: 10),
                       TextButton.icon(
                         onPressed: () {
+                          final shareText = l10n.shareFamilyContent(
+                            widget.family.name,
+                            widget.family.inviteCode,
+                          );
                           Clipboard.setData(
-                            ClipboardData(
-                              text:
-                                  'Tham gia gia phả "${widget.family.name}" trên ứng dụng Gia Tộc Việt. Mã mời của dòng họ là: ${widget.family.inviteCode}',
-                            ),
+                            ClipboardData(text: shareText),
                           );
                           AppSnackBar.success(
-                              context, 'Đã sao chép nội dung chia sẻ!');
+                              context, l10n.copiedShareContent);
                         },
-                        icon: const Icon(LucideIcons.share2,
-                            size: 16, color: AppColors.crimson),
+                        icon: Icon(LucideIcons.share2,
+                            size: 16, color: context.primary),
                         label: Text(
-                          'CHIA SẺ CHO GIA ĐÌNH',
+                          l10n.shareFamilyButton,
                           style: GoogleFonts.inter(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.crimson,
+                            color: context.primary,
                           ),
                         ),
                       ),

@@ -32,9 +32,8 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         AppConstants.membersEndpoint,
         queryParameters: queryParams.isNotEmpty ? queryParams : null,
       );
-      final Map<String, dynamic> responseData =
-          response.data as Map<String, dynamic>;
-      final List<dynamic> data = responseData['data'] as List<dynamic>;
+      final responseData = _parseMapResponse(response.data);
+      final data = _parseListData(responseData);
       return data
           .map((json) => MemberModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -43,16 +42,46 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         message: e.message ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
       );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
+      );
     }
+  }
+
+  Map<String, dynamic> _parseMapResponse(dynamic data) {
+    if (data is Map<String, dynamic>) return data;
+    throw const ServerException(
+      message: 'Dữ liệu trả về không đúng định dạng',
+      statusCode: null,
+    );
+  }
+
+  Map<String, dynamic> _parseMapData(Map<String, dynamic> responseData) {
+    final raw = responseData['data'];
+    if (raw is Map<String, dynamic>) return raw;
+    throw const ServerException(
+      message: 'Dữ liệu trả về không đúng định dạng',
+      statusCode: null,
+    );
+  }
+
+  List<dynamic> _parseListData(Map<String, dynamic> responseData) {
+    final raw = responseData['data'];
+    if (raw is List<dynamic>) return raw;
+    throw const ServerException(
+      message: 'Dữ liệu danh sách trả về không đúng định dạng',
+      statusCode: null,
+    );
   }
 
   @override
   Future<MemberModel> getMemberById(int id) async {
     try {
       final response = await dio.get('${AppConstants.membersEndpoint}/$id');
-      final Map<String, dynamic> responseData =
-          response.data as Map<String, dynamic>;
-      return MemberModel.fromJson(responseData['data'] as Map<String, dynamic>);
+      final responseData = _parseMapResponse(response.data);
+      return MemberModel.fromJson(_parseMapData(responseData));
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         throw const NotFoundException(message: 'Không tìm thấy thành viên');
@@ -60,6 +89,11 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       throw ServerException(
         message: e.message ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
       );
     }
   }
@@ -111,9 +145,8 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
               '${AppConstants.membersEndpoint}/${member.id}',
               data: dataPayload,
             );
-      final Map<String, dynamic> responseData =
-          response.data as Map<String, dynamic>;
-      final dynamic rawData = responseData['data'];
+      final responseData = _parseMapResponse(response.data);
+      final rawData = responseData['data'];
       if (rawData is Map<String, dynamic>) {
         return MemberModel.fromJson(rawData);
       } else if (rawData is List &&
@@ -125,12 +158,16 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       final fallbackResponse = await dio.get(
         '${AppConstants.membersEndpoint}/${member.id}',
       );
-      final fallbackData = fallbackResponse.data as Map<String, dynamic>;
-      return MemberModel.fromJson(fallbackData['data'] as Map<String, dynamic>);
+      return MemberModel.fromJson(_parseMapData(_parseMapResponse(fallbackResponse.data)));
     } on DioException catch (e) {
       throw ServerException(
         message: e.message ?? 'Lỗi lưu thành viên',
         statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
       );
     }
   }
@@ -145,6 +182,11 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         message: e.message ?? 'Lỗi xoá thành viên',
         statusCode: e.response?.statusCode,
       );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
+      );
     }
   }
 
@@ -156,9 +198,8 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         AppConstants.branchesEndpoint,
         queryParameters: queryParams,
       );
-      final Map<String, dynamic> responseData =
-          response.data as Map<String, dynamic>;
-      final List<dynamic> data = responseData['data'] as List<dynamic>;
+      final responseData = _parseMapResponse(response.data);
+      final data = _parseListData(responseData);
       return data
           .map((json) => BranchModel.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -167,6 +208,11 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         message: e.message ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
       );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
+      );
     }
   }
 
@@ -174,9 +220,8 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
   Future<BranchModel> getBranchById(int id) async {
     try {
       final response = await dio.get('${AppConstants.branchesEndpoint}/$id');
-      final Map<String, dynamic> responseData =
-          response.data as Map<String, dynamic>;
-      return BranchModel.fromJson(responseData['data'] as Map<String, dynamic>);
+      final responseData = _parseMapResponse(response.data);
+      return BranchModel.fromJson(_parseMapData(responseData));
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         throw const NotFoundException(message: 'Không tìm thấy chi/nhánh');
@@ -184,6 +229,11 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       throw ServerException(
         message: e.message ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
       );
     }
   }
@@ -211,9 +261,8 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
               '${AppConstants.branchesEndpoint}/${branch.id}',
               data: cleanMap,
             );
-      final Map<String, dynamic> responseData =
-          response.data as Map<String, dynamic>;
-      final dynamic rawData = responseData['data'];
+      final responseData = _parseMapResponse(response.data);
+      final rawData = responseData['data'];
       if (rawData is Map<String, dynamic>) {
         return BranchModel.fromJson(rawData);
       }
@@ -221,12 +270,16 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       final fallbackResponse = await dio.get(
         '${AppConstants.branchesEndpoint}/${branch.id}',
       );
-      final fallbackData = fallbackResponse.data as Map<String, dynamic>;
-      return BranchModel.fromJson(fallbackData['data'] as Map<String, dynamic>);
+      return BranchModel.fromJson(_parseMapData(_parseMapResponse(fallbackResponse.data)));
     } on DioException catch (e) {
       throw ServerException(
         message: e.message ?? 'Lỗi lưu chi/nhánh',
         statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
       );
     }
   }
@@ -240,6 +293,11 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       throw ServerException(
         message: e.message ?? 'Lỗi xoá chi/nhánh',
         statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(
+        message: e.toString(),
+        statusCode: null,
       );
     }
   }

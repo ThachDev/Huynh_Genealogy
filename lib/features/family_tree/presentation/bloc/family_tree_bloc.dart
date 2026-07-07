@@ -24,27 +24,31 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
       FamilyTreeLoadEvent event, Emitter<FamilyTreeState> emit) async {
     emit(FamilyTreeLoading());
 
-    final membersResult = await getMembers(
-      GetMembersParams(branchId: event.branchId, familyId: event.familyId),
-    );
-    final branchesResult = await getBranches(
-      GetBranchesParams(familyId: event.familyId),
-    );
+    try {
+      final membersResult = await getMembers(
+        GetMembersParams(branchId: event.branchId, familyId: event.familyId),
+      );
+      final branchesResult = await getBranches(
+        GetBranchesParams(familyId: event.familyId),
+      );
 
-    membersResult.fold(
-      (failure) => emit(FamilyTreeError(failure.message)),
-      (members) {
-        branchesResult.fold(
-          (failure) => emit(FamilyTreeError(failure.message)),
-          (branches) => emit(FamilyTreeLoaded(
-            members: members,
-            branches: branches,
-            filterBranchId: event.branchId,
-            familyId: event.familyId,
-          )),
-        );
-      },
-    );
+      membersResult.fold(
+        (failure) => emit(FamilyTreeError(failure.message)),
+        (members) {
+          branchesResult.fold(
+            (failure) => emit(FamilyTreeError(failure.message)),
+            (branches) => emit(FamilyTreeLoaded(
+              members: members,
+              branches: branches,
+              filterBranchId: event.branchId,
+              familyId: event.familyId,
+            )),
+          );
+        },
+      );
+    } catch (e) {
+      emit(FamilyTreeError('Có lỗi xảy ra khi tải dữ liệu: $e'));
+    }
   }
 
   void _onSelectMember(FamilyTreeSelectMemberEvent event, Emitter<FamilyTreeState> emit) {

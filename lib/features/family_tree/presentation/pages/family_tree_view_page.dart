@@ -62,9 +62,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       }
     }
 
-    if (roots.length == 1) {
+    if (roots.isEmpty) {
+      // Không tìm thấy root — dựng tất cả member làm root ảo
+      final virtualNode = Node.Id(_virtualRootId);
+      for (final member in members) {
+        graph.addEdge(virtualNode, nodeMap[member.id]!, paint: edgePaint);
+      }
+    } else if (roots.length == 1) {
       graph.addNode(nodeMap[roots.first.id]!);
-    } else if (roots.length > 1) {
+    } else {
       final virtualNode = Node.Id(_virtualRootId);
       for (final root in roots) {
         graph.addEdge(virtualNode, nodeMap[root.id]!, paint: edgePaint);
@@ -125,53 +131,48 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                 if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
                   return const SizedBox.shrink();
                 }
-                return InteractiveViewer(
-                  constrained: false,
-                  boundaryMargin: const EdgeInsets.all(500),
-                  minScale: 0.1,
-                  maxScale: 2.5,
-                  child: GraphView(
-                    key: ValueKey(state.members.length),
-                    graph: graph,
-                    algorithm: BuchheimWalkerAlgorithm(
-                      _algorithm,
-                      TreeEdgeRenderer(_algorithm),
-                    ),
-                    paint: Paint()
-                      ..color = context.connectionLine
-                      ..strokeWidth = 2.0
-                      ..style = PaintingStyle.stroke,
-                    builder: (Node node) {
-                      final memberId = node.key?.value as int?;
-
-                      if (memberId == _virtualRootId) {
-                        return const SizedBox.shrink();
-                      }
-
-                      final member =
-                          memberId != null ? memberMap[memberId] : null;
-                      if (member == null) {
-                        return const SizedBox(width: 80, height: 40);
-                      }
-
-                      return FamilyMemberNodeWidget(
-                        member: member,
-                        isSelected: state.selectedMemberId == member.id,
-                        onTap: () {
-                          context
-                              .read<FamilyTreeBloc>()
-                              .add(FamilyTreeSelectMemberEvent(member.id));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  FamilyMemberDetailPage(member: member),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                return GraphView.builder(
+                  key: ValueKey(state.members.length),
+                  graph: graph,
+                  algorithm: BuchheimWalkerAlgorithm(
+                    _algorithm,
+                    TreeEdgeRenderer(_algorithm),
                   ),
+                  paint: Paint()
+                    ..color = context.connectionLine
+                    ..strokeWidth = 2.0
+                    ..style = PaintingStyle.stroke,
+                  centerGraph: true,
+                  builder: (Node node) {
+                    final memberId = node.key?.value as int?;
+
+                    if (memberId == _virtualRootId) {
+                      return const SizedBox.shrink();
+                    }
+
+                    final member =
+                        memberId != null ? memberMap[memberId] : null;
+                    if (member == null) {
+                      return const SizedBox(width: 80, height: 40);
+                    }
+
+                    return FamilyMemberNodeWidget(
+                      member: member,
+                      isSelected: state.selectedMemberId == member.id,
+                      onTap: () {
+                        context
+                            .read<FamilyTreeBloc>()
+                            .add(FamilyTreeSelectMemberEvent(member.id));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                FamilyMemberDetailPage(member: member),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 );
               },
             );

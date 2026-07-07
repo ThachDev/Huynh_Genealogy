@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
 
 class MemberItemWidget extends StatelessWidget {
@@ -23,11 +23,11 @@ class MemberItemWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.wood.withValues(alpha: 0.06),
+            color: context.textPrimary.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -40,8 +40,8 @@ class MemberItemWidget extends StatelessWidget {
             border: Border(
               left: BorderSide(
                 color: member.gender == Gender.male
-                    ? AppColors.nodeMale
-                    : AppColors.nodeFemale,
+                    ? context.nodeMale
+                    : context.nodeFemale,
                 width: 4,
               ),
             ),
@@ -50,22 +50,21 @@ class MemberItemWidget extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Avatar with Gender Badge overlay
               Stack(
                 children: [
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppColors.gold.withValues(alpha: 0.2),
+                        color: context.accent.withValues(alpha: 0.2),
                         width: 2,
                       ),
                     ),
                     child: CircleAvatar(
                       radius: 26,
                       backgroundColor: member.gender == Gender.male
-                          ? AppColors.nodeMale.withValues(alpha: 0.5)
-                          : AppColors.nodeFemale.withValues(alpha: 0.5),
+                          ? context.nodeMale.withValues(alpha: 0.5)
+                          : context.nodeFemale.withValues(alpha: 0.5),
                       backgroundImage: member.avatarUrl != null
                           ? NetworkImage(member.avatarUrl!)
                           : null,
@@ -74,7 +73,7 @@ class MemberItemWidget extends StatelessWidget {
                               member.gender == Gender.male
                                   ? LucideIcons.user
                                   : LucideIcons.user2,
-                              color: AppColors.textSecondary,
+                              color: context.textSecondary,
                               size: 24,
                             )
                           : null,
@@ -87,8 +86,8 @@ class MemberItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         color: member.gender == Gender.male
-                            ? AppColors.nodeMale
-                            : AppColors.nodeFemale,
+                            ? context.nodeMale
+                            : context.nodeFemale,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 1.5),
                       ),
@@ -97,8 +96,8 @@ class MemberItemWidget extends StatelessWidget {
                             ? Icons.male
                             : Icons.female,
                         color: member.gender == Gender.male
-                            ? AppColors.crimson
-                            : AppColors.gold,
+                            ? context.primary
+                            : context.accent,
                         size: 10,
                       ),
                     ),
@@ -106,7 +105,6 @@ class MemberItemWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(width: 16),
-              // Member Info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,36 +115,34 @@ class MemberItemWidget extends StatelessWidget {
                       style: GoogleFonts.beVietnamPro(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
-                        color: AppColors.textPrimary,
+                        color: context.textPrimary,
                         letterSpacing: -0.1,
                       ),
                     ),
                     const SizedBox(height: 6),
-                    // Badges row
                     Wrap(
                       spacing: 8,
                       runSpacing: 4,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        // Generation Badge
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: AppColors.gold.withValues(alpha: 0.08),
+                            color: context.accent.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
-                              color: AppColors.gold.withValues(alpha: 0.15),
+                              color: context.accent.withValues(alpha: 0.15),
                               width: 1,
                             ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 LucideIcons.gitCommit,
                                 size: 10,
-                                color: AppColors.gold,
+                                color: context.accent,
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -154,26 +150,25 @@ class MemberItemWidget extends StatelessWidget {
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.gold,
+                                  color: context.accent,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        // Status Badge (Alive / Deceased)
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: member.isAlive
-                                ? AppColors.crimson.withValues(alpha: 0.06)
-                                : AppColors.nodeDeceased
+                                ? context.primary.withValues(alpha: 0.06)
+                                : context.nodeDeceased
                                     .withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                               color: member.isAlive
-                                  ? AppColors.crimson.withValues(alpha: 0.15)
-                                  : AppColors.nodeDeceased
+                                  ? context.primary.withValues(alpha: 0.15)
+                                  : context.nodeDeceased
                                       .withValues(alpha: 0.3),
                               width: 1,
                             ),
@@ -187,8 +182,8 @@ class MemberItemWidget extends StatelessWidget {
                                     : LucideIcons.heartCrack,
                                 size: 10,
                                 color: member.isAlive
-                                    ? AppColors.crimson
-                                    : AppColors.textSecondary,
+                                    ? context.primary
+                                    : context.textSecondary,
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -197,8 +192,8 @@ class MemberItemWidget extends StatelessWidget {
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
                                   color: member.isAlive
-                                      ? AppColors.crimson
-                                      : AppColors.textSecondary,
+                                      ? context.primary
+                                      : context.textSecondary,
                                 ),
                               ),
                             ],
@@ -209,7 +204,6 @@ class MemberItemWidget extends StatelessWidget {
                     if (member.branchName != null &&
                         member.branchName!.isNotEmpty) ...[
                       const SizedBox(height: 8),
-                      // Branch Badge
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -217,7 +211,7 @@ class MemberItemWidget extends StatelessWidget {
                             LucideIcons.gitBranch,
                             size: 12,
                             color:
-                                AppColors.textSecondary.withValues(alpha: 0.7),
+                                context.textSecondary.withValues(alpha: 0.7),
                           ),
                           const SizedBox(width: 4),
                           Flexible(
@@ -225,7 +219,7 @@ class MemberItemWidget extends StatelessWidget {
                               'Chi tộc: ${member.branchName}',
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 11,
-                                color: AppColors.textSecondary,
+                                color: context.textSecondary,
                                 fontWeight: FontWeight.w500,
                               ),
                               maxLines: 1,
@@ -239,12 +233,11 @@ class MemberItemWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              // Dropdown Actions Button
               PopupMenuButton<String>(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                color: Colors.white,
+                color: context.surface,
                 elevation: 4,
                 offset: const Offset(18, 30),
                 onSelected: (value) {
@@ -288,11 +281,11 @@ class MemberItemWidget extends StatelessWidget {
                       ),
                     ),
                 ],
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Icon(
                     LucideIcons.moreVertical,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     size: 20,
                   ),
                 ),

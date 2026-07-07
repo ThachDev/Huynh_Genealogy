@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
 import '../../../../../../core/utils/lunar_date_helper.dart';
@@ -177,20 +178,20 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     final title = isEdit ? 'SỬA THÀNH VIÊN' : 'THÊM THÀNH VIÊN';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F5F2),
+      backgroundColor: context.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2B2825),
+        backgroundColor: context.appBarBg,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(LucideIcons.arrowLeft,
-              color: AppColors.gold, size: 20),
+          icon: Icon(LucideIcons.arrowLeft,
+              color: context.accent, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
           title,
           style: GoogleFonts.beVietnamPro(
-            color: AppColors.gold,
+            color: context.accent,
             fontWeight: FontWeight.bold,
             fontSize: 16,
             letterSpacing: 0.5,
@@ -256,8 +257,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
         builder: (context, state) {
           if (state is AdminMemberFormLoading ||
               state is AdminMemberFormSubmitting) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.gold),
+            return Center(
+              child: CircularProgressIndicator(color: context.accent),
             );
           }
 
@@ -336,6 +337,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 55),
                               child: _buildSectionCard(
+                                context,
                                 children: [
                                   // Khoảng trống phần nửa dưới avatar + label
                                   const SizedBox(height: 70),
@@ -463,21 +465,23 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                               () => _isAlive = !_isAlive),
                                           child: InputDecorator(
                                             decoration: InputDecoration(
-                                              fillColor:
-                                                  const Color(0xFFFCFAF8),
+                                              fillColor: context.resolve(
+                                                const Color(0xFFFCFAF8),
+                                                AppColors.surfaceDark,
+                                              ),
                                               filled: true,
                                               labelText: 'TÌNH TRẠNG',
                                               labelStyle: GoogleFonts.inter(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
-                                                color: const Color(0xFF6B6661),
+                                                color: context.textSecondary,
                                                 letterSpacing: 0.5,
                                               ),
                                               floatingLabelStyle:
                                                   GoogleFonts.inter(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
-                                                color: const Color(0xFF6B6661),
+                                                color: context.textSecondary,
                                                 letterSpacing: 0.5,
                                               ),
                                               floatingLabelBehavior:
@@ -491,8 +495,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                     BorderRadius.circular(12),
                                                 borderSide: BorderSide(
                                                   color: _isAlive
-                                                      ? AppColors.crimson
-                                                      : const Color(0xFF9E9892),
+                                                      ? context.primary
+                                                      : context.textSecondary.withValues(alpha: 0.5),
                                                   width: 1.2,
                                                 ),
                                               ),
@@ -501,8 +505,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                     BorderRadius.circular(12),
                                                 borderSide: BorderSide(
                                                   color: _isAlive
-                                                      ? AppColors.crimson
-                                                      : const Color(0xFF9E9892),
+                                                      ? context.primary
+                                                      : context.textSecondary.withValues(alpha: 0.5),
                                                   width: 1.2,
                                                 ),
                                               ),
@@ -522,9 +526,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                             .heartCrack,
                                                     size: 14,
                                                     color: _isAlive
-                                                        ? AppColors.crimson
-                                                        : const Color(
-                                                            0xFF9E9892),
+                                                        ? context.primary
+                                                        : context.textSecondary.withValues(alpha: 0.5),
                                                   ),
                                                   const SizedBox(width: 6),
                                                   Text(
@@ -534,9 +537,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                     style: GoogleFonts
                                                         .beVietnamPro(
                                                       color: _isAlive
-                                                          ? AppColors.crimson
-                                                          : const Color(
-                                                              0xFF9E9892),
+                                                          ? context.primary
+                                                          : context.textSecondary.withValues(alpha: 0.5),
                                                       fontSize: 13,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -704,7 +706,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                             ),
 
                             // Avatar nổi trên viền trên của card
-                            _buildAvatarSection(),
+                            _buildAvatarSection(context),
                           ],
                         ),
                       ],
@@ -716,10 +718,13 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               Container(
                 padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF7F5F2),
+                  color: context.background,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
+                      color: context.resolve(
+                        Colors.black.withValues(alpha: 0.06),
+                        Colors.transparent,
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, -2),
                     ),
@@ -737,12 +742,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     );
   }
 
-  Widget _buildAvatarSection() {
+  Widget _buildAvatarSection(BuildContext context) {
     final avatarPath = _avatarUrlController.text.trim();
-    Widget avatarWidget = const Icon(
+    Widget avatarWidget = Icon(
       LucideIcons.user,
       size: 50,
-      color: Color(0xFF7A7571),
+      color: context.textSecondary.withValues(alpha: 0.6),
     );
 
     if (avatarPath.isNotEmpty) {
@@ -753,10 +758,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             width: 110,
             height: 110,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => const Icon(
+            errorBuilder: (context, error, stackTrace) => Icon(
               LucideIcons.user,
               size: 50,
-              color: Color(0xFF7A7571),
+              color: context.textSecondary.withValues(alpha: 0.6),
             ),
           ),
         );
@@ -767,10 +772,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             width: 110,
             height: 110,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => const Icon(
+            errorBuilder: (context, error, stackTrace) => Icon(
               LucideIcons.user,
               size: 50,
-              color: Color(0xFF7A7571),
+              color: context.textSecondary.withValues(alpha: 0.6),
             ),
           ),
         );
@@ -789,17 +794,24 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                 width: 110,
                 height: 110,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEAE7E3),
+                  color: context.isDarkMode
+                      ? AppColors.surfaceDark
+                      : const Color(0xFFEAE7E3),
                   shape: BoxShape.circle,
-                  border:
-                      Border.all(color: const Color(0xFFE8D4C8), width: 1.5),
+                  border: Border.all(
+                    color: context.resolve(
+                      const Color(0xFFE8D4C8),
+                      context.textSecondary.withValues(alpha: 0.3),
+                    ),
+                    width: 1.5,
+                  ),
                 ),
                 child: Center(child: avatarWidget),
               ),
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: AppColors.wood,
+                decoration: BoxDecoration(
+                  color: context.appBarBg,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -816,7 +828,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             style: GoogleFonts.beVietnamPro(
               fontSize: 11,
               fontWeight: FontWeight.bold,
-              color: AppColors.crimson,
+              color: context.primary,
               letterSpacing: 0.5,
             ),
           ),
@@ -825,7 +837,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     );
   }
 
-  Widget _buildSectionCard({
+  Widget _buildSectionCard(
+    BuildContext context, {
     IconData? icon,
     String? title,
     required List<Widget> children,
@@ -834,12 +847,20 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF2ECE7), width: 1.2),
+        border: Border.all(
+          color: context.isDarkMode
+              ? Colors.white.withValues(alpha: 0.08)
+              : const Color(0xFFF2ECE7),
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: context.resolve(
+              Colors.black.withValues(alpha: 0.02),
+              Colors.transparent,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -851,14 +872,14 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
           if (icon != null && title != null) ...[
             Row(
               children: [
-                Icon(icon, size: 20, color: AppColors.crimson),
+                Icon(icon, size: 20, color: context.primary),
                 const SizedBox(width: 8),
                 Text(
                   title,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.crimson,
+                    color: context.primary,
                   ),
                 ),
               ],

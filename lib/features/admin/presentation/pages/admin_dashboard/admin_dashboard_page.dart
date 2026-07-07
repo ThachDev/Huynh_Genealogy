@@ -12,6 +12,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../core/utils/lunar_date_helper.dart';
@@ -250,7 +251,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
       ],
       child: Scaffold(
-        backgroundColor: AppColors.parchment,
+        backgroundColor: context.background,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -309,14 +310,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return Container(
       height: height,
       width: double.infinity,
-      color: AppColors.wood,
+      color: context.appBarBg,
       child: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(
               'assets/images/wood_dragon.png',
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(color: AppColors.wood),
+              errorBuilder: (_, __, ___) => Container(color: context.appBarBg),
             ),
           ),
           Positioned.fill(
@@ -340,7 +341,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.gold,
+                              color: context.accent,
                               letterSpacing: 1.0,
                             ),
                           ),
@@ -363,7 +364,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             color: AdminDashboardPage.roleColor(user.role),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
-                                color: AppColors.gold.withValues(alpha: 0.4)),
+                                color: context.accent.withValues(alpha: 0.4)),
                           ),
                           child: Text(
                             AdminDashboardPage.roleLabel(user.role),
@@ -410,8 +411,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(LucideIcons.calendar,
-                              color: AppColors.gold, size: 16),
+                          Icon(LucideIcons.calendar,
+                              color: context.accent, size: 16),
                           const SizedBox(width: 8),
                           Text(
                             solarDateString,
@@ -468,10 +469,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     switch (_selectedTab) {
       case AdminDashboardTab.members:
         if (userTreeState is UserTreeLoading) {
-          return const Center(
+          return Center(
             child: Padding(
-              padding: EdgeInsets.all(40.0),
-              child: CircularProgressIndicator(color: AppColors.wood),
+              padding: const EdgeInsets.all(40.0),
+              child: CircularProgressIndicator(color: context.primary),
             ),
           );
         }
@@ -533,10 +534,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       case AdminDashboardTab.branches:
         if (userTreeState is UserTreeLoading) {
-          return const Center(
+          return Center(
             child: Padding(
-              padding: EdgeInsets.all(40.0),
-              child: CircularProgressIndicator(color: AppColors.wood),
+              padding: const EdgeInsets.all(40.0),
+              child: CircularProgressIndicator(color: context.primary),
             ),
           );
         }
@@ -589,10 +590,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           return const SizedBox.shrink();
         }
         if (pendingState is AdminPendingRequestsLoading) {
-          return const Center(
+          return Center(
             child: Padding(
-              padding: EdgeInsets.all(40.0),
-              child: CircularProgressIndicator(color: AppColors.wood),
+              padding: const EdgeInsets.all(40.0),
+              child: CircularProgressIndicator(color: context.primary),
             ),
           );
         }
@@ -624,12 +625,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.25)),
+        border: Border.all(color: context.accent.withValues(alpha: 0.25)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: context.resolve(
+              Colors.black.withValues(alpha: 0.02),
+              Colors.transparent,
+            ),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -640,11 +644,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.wood.withValues(alpha: 0.08),
+              color: context.textPrimary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(8),
             ),
             child:
-                const Icon(LucideIcons.qrCode, color: AppColors.wood, size: 22),
+                Icon(LucideIcons.qrCode, color: context.textPrimary, size: 22),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -656,7 +660,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.inter(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -666,14 +670,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.wood,
+                    color: context.textPrimary,
                   ),
                 ),
               ],
             ),
           ),
           IconButton(
-            icon: const Icon(LucideIcons.copy, size: 18, color: AppColors.wood),
+            icon: Icon(LucideIcons.copy, size: 18, color: context.textPrimary),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: inviteCode));
               AppSnackBar.success(context, 'Đã sao chép mã mời: $inviteCode');
@@ -684,8 +688,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ElevatedButton.icon(
             onPressed: () => _showQrDialog(context, inviteCode),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.wood,
-              foregroundColor: Colors.white,
+              backgroundColor: context.primary,
+              foregroundColor: context.textOnPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -725,7 +729,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     showDialog(
       context: context,
       builder: (ctx) => Dialog(
-        backgroundColor: AppColors.parchment,
+        backgroundColor: ctx.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
           children: [
@@ -739,7 +743,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     'Mã QR Gia Tộc',
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.wood,
+                      color: ctx.textPrimary,
                       fontSize: 16,
                     ),
                   ),
@@ -781,8 +785,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             }
                           },
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.wood,
-                            side: const BorderSide(color: AppColors.wood),
+                            foregroundColor: ctx.textPrimary,
+                            side: BorderSide(color: ctx.textPrimary),
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
@@ -808,8 +812,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.wood,
-                            foregroundColor: Colors.white,
+                            backgroundColor: ctx.primary,
+                            foregroundColor: ctx.textOnPrimary,
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
@@ -831,10 +835,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               child: IconButton(
                 constraints: const BoxConstraints(),
                 padding: const EdgeInsets.all(8),
-                icon: const Icon(
+                icon: Icon(
                   LucideIcons.x,
                   size: 20,
-                  color: AppColors.textSecondary,
+                  color: ctx.textSecondary,
                 ),
                 onPressed: () => Navigator.pop(ctx),
               ),
@@ -857,7 +861,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             style: GoogleFonts.beVietnamPro(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: AppColors.wood,
+              color: context.textPrimary,
               letterSpacing: 0.5,
             ),
           ),
@@ -867,20 +871,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               icon: Icon(
                 addLabel == 'Xem tất cả' ? LucideIcons.eye : LucideIcons.plus,
                 size: 14,
-                color: AppColors.wood,
+                color: context.accent,
               ),
               label: Text(
                 addLabel ?? 'Thêm mới',
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.wood,
+                  color: context.accent,
                 ),
               ),
               style: TextButton.styleFrom(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                backgroundColor: AppColors.gold.withValues(alpha: 0.85),
+                backgroundColor: context.accent.withValues(alpha: 0.85),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -895,11 +899,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.parchment,
+        backgroundColor: ctx.surface,
         title: Text(
           'Xác nhận xoá',
           style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: AppColors.wood),
+              fontWeight: FontWeight.bold, color: ctx.textPrimary),
         ),
         content: Text(
           'Bạn có chắc chắn muốn xoá thành viên ${member.fullName} khỏi gia phả không?',
@@ -910,7 +914,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             onPressed: () => Navigator.pop(ctx),
             child: Text('Hủy',
                 style:
-                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+                    GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -946,11 +950,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.parchment,
+        backgroundColor: ctx.surface,
         title: Text(
           'Xác nhận xoá chi tộc',
           style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: AppColors.wood),
+              fontWeight: FontWeight.bold, color: ctx.textPrimary),
         ),
         content: Text(
           'Bạn có chắc chắn muốn xoá chi tộc ${branch.name}? Tất cả thành viên thuộc chi này sẽ mất liên kết chi tộc.',
@@ -961,7 +965,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             onPressed: () => Navigator.pop(ctx),
             child: Text('Hủy',
                 style:
-                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+                    GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -984,12 +988,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 4, 20, 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
+        border: Border.all(color: context.accent.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: context.resolve(
+              Colors.black.withValues(alpha: 0.02),
+              Colors.transparent,
+            ),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -997,16 +1004,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ),
       child: TextField(
         controller: _searchController,
-        style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+        style: GoogleFonts.inter(fontSize: 13, color: context.textPrimary),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle:
-              GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade400),
+              GoogleFonts.inter(fontSize: 13, color: context.textSecondary.withValues(alpha: 0.6)),
           prefixIcon:
-              const Icon(LucideIcons.search, size: 18, color: Colors.grey),
+              Icon(LucideIcons.search, size: 18, color: context.textSecondary),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
-                  icon: const Icon(LucideIcons.x, size: 16, color: Colors.grey),
+                  icon: Icon(LucideIcons.x, size: 16, color: context.textSecondary),
                   onPressed: () {
                     _searchController.clear();
                   },
@@ -1026,20 +1033,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.1)),
+        border: Border.all(color: context.accent.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
-          Icon(LucideIcons.folderOpen, size: 40, color: Colors.grey.shade300),
+          Icon(LucideIcons.folderOpen, size: 40, color: context.textSecondary.withValues(alpha: 0.4)),
           const SizedBox(height: 12),
           Text(
             message,
             textAlign: TextAlign.center,
             style: GoogleFonts.beVietnamPro(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
         ],

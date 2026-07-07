@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../../core/domain/entity/member_entity.dart';
@@ -63,11 +64,11 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.parchment,
+        backgroundColor: context.background,
         title: Text(
           'Xác Nhận Xóa',
           style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: AppColors.wood),
+              fontWeight: FontWeight.bold, color: context.textPrimary),
         ),
         content: Text(
           'Bạn có chắc chắn muốn xoá chi tộc ${widget.branch!.name} không?',
@@ -78,7 +79,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
             onPressed: () => Navigator.pop(ctx),
             child: Text('Hủy',
                 style:
-                    GoogleFonts.beVietnamPro(color: AppColors.textSecondary)),
+                    GoogleFonts.beVietnamPro(color: context.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -129,7 +130,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
         .add(SaveAdminBranchFormEvent(newBranch));
   }
 
-  Widget _buildLabel(String text) {
+  Widget _buildLabel(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
@@ -137,7 +138,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
         style: GoogleFonts.inter(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFF6B6661),
+          color: context.textSecondary,
           letterSpacing: 0.5,
         ),
       ),
@@ -166,7 +167,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     );
   }
 
-  Widget _buildSectionCard({
+  Widget _buildSectionCard(
+    BuildContext context, {
     IconData? icon,
     String? title,
     required List<Widget> children,
@@ -175,12 +177,20 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF2ECE7), width: 1.2),
+        border: Border.all(
+          color: context.isDarkMode
+              ? Colors.white.withValues(alpha: 0.08)
+              : const Color(0xFFF2ECE7),
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: context.resolve(
+              Colors.black.withValues(alpha: 0.02),
+              Colors.transparent,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -192,14 +202,14 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
           if (icon != null && title != null) ...[
             Row(
               children: [
-                Icon(icon, size: 20, color: AppColors.crimson),
+                Icon(icon, size: 20, color: context.primary),
                 const SizedBox(width: 8),
                 Text(
                   title,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.crimson,
+                    color: context.primary,
                   ),
                 ),
               ],
@@ -218,25 +228,25 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     final title = isEdit ? 'SỬA CHI TỘC' : 'THÊM CHI TỘC';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F5F2),
+      backgroundColor: context.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2B2825),
+        backgroundColor: context.appBarBg,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(LucideIcons.arrowLeft,
-              color: AppColors.gold, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        centerTitle: true,
-        title: Text(
-          title,
-          style: GoogleFonts.beVietnamPro(
-            color: AppColors.gold,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            letterSpacing: 0.5,
+          leading: IconButton(
+            icon: Icon(LucideIcons.arrowLeft,
+                color: context.accent, size: 20),
+            onPressed: () => Navigator.pop(context),
           ),
-        ),
+          centerTitle: true,
+          title: Text(
+            title,
+            style: GoogleFonts.beVietnamPro(
+              color: context.accent,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              letterSpacing: 0.5,
+            ),
+          ),
         actions: [
           if (isEdit)
             IconButton(
@@ -263,8 +273,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
         },
         builder: (context, state) {
           if (state is AdminBranchFormLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.gold),
+            return Center(
+              child: CircularProgressIndicator(color: context.accent),
             );
           }
 
@@ -296,6 +306,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         _buildSectionCard(
+                          context,
                           icon: LucideIcons.gitBranch,
                           title: 'THÔNG TIN CƠ BẢN',
                           children: [
@@ -314,7 +325,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            _buildLabel('Tên tổ chi'),
+                                            _buildLabel(context, 'Tên tổ chi'),
                                             AppDropdown<String?>(
                                               value: members.any((m) =>
                                                       m.fullName ==
@@ -322,12 +333,12 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                   ? _founderController.text
                                                   : null,
                                               items: [
-                                                const DropdownItem<String?>(
+                                                  DropdownItem<String?>(
                                                   value: '__ADD_NEW__',
                                                   child: Text(
                                                     '✦ Thêm thành viên mới...',
                                                     style: TextStyle(
-                                                      color: AppColors.crimson,
+                                                      color: context.primary,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -395,10 +406,10 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                   height: 48,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: const Color(0xFFEFEBE7),
+                                        color: context.textSecondary.withValues(alpha: 0.2),
                                         width: 1.2),
                                     borderRadius: BorderRadius.circular(12),
-                                    color: const Color(0xFFFCFAF8),
+                                    color: context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
                                   ),
                                   child: IconButton(
                                     onPressed: () {
@@ -410,7 +421,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                       _useDropdown
                                           ? LucideIcons.keyboard
                                           : LucideIcons.listStart,
-                                      color: AppColors.wood,
+                                      color: context.textPrimary,
                                       size: 20,
                                     ),
                                     tooltip: _useDropdown
@@ -461,10 +472,13 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
               Container(
                 padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF7F5F2),
+                  color: context.background,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
+                      color: context.resolve(
+                        Colors.black.withValues(alpha: 0.06),
+                        Colors.transparent,
+                      ),
                       blurRadius: 8,
                       offset: const Offset(0, -2),
                     ),

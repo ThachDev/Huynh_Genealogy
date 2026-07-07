@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/theme_extensions.dart';
 import '../../pages/admin_dashboard/admin_dashboard_page.dart';
 
 class QuickStatsRow extends StatelessWidget {
@@ -28,12 +28,15 @@ class QuickStatsRow extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade100),
+        border: Border.all(color: context.textSecondary.withValues(alpha: 0.15)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: context.resolve(
+              Colors.black.withValues(alpha: 0.04),
+              Colors.transparent,
+            ),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -50,7 +53,7 @@ class QuickStatsRow extends StatelessWidget {
               onTap: () => onTabChanged(AdminDashboardTab.members),
             ),
           ),
-          Container(width: 1, height: 32, color: Colors.grey.shade100),
+          Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.15)),
           Expanded(
             child: StatItem(
               icon: LucideIcons.menu,
@@ -61,7 +64,7 @@ class QuickStatsRow extends StatelessWidget {
             ),
           ),
           if (showPending) ...[
-            Container(width: 1, height: 32, color: Colors.grey.shade100),
+            Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.15)),
             Expanded(
               child: StatItem(
                 icon: LucideIcons.clock,
@@ -106,12 +109,12 @@ class StatItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.gold.withValues(alpha: 0.08)
+                ? context.accent.withValues(alpha: 0.08)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
-                  ? AppColors.gold.withValues(alpha: 0.4)
+                  ? context.accent.withValues(alpha: 0.4)
                   : Colors.transparent,
             ),
           ),
@@ -126,8 +129,8 @@ class StatItem extends StatelessWidget {
                   Icon(
                     icon,
                     color: isSelected
-                        ? AppColors.textPrimary
-                        : AppColors.textSecondary,
+                        ? context.textPrimary
+                        : context.textSecondary,
                     size: 13,
                   ),
                   const SizedBox(width: 4),
@@ -135,8 +138,8 @@ class StatItem extends StatelessWidget {
                     label,
                     style: GoogleFonts.beVietnamPro(
                       color: isSelected
-                          ? AppColors.textPrimary
-                          : AppColors.textSecondary,
+                          ? context.textPrimary
+                          : context.textSecondary,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.2,
@@ -150,7 +153,7 @@ class StatItem extends StatelessWidget {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.gold,
+                  color: context.accent,
                 ),
               ),
             ],

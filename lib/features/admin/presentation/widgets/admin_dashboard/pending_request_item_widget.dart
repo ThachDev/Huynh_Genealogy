@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
@@ -20,12 +20,15 @@ class PendingRequestItemWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.orange.shade200),
+        border: Border.all(color: context.accent.withValues(alpha: 0.4)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: context.resolve(
+              Colors.black.withValues(alpha: 0.03),
+              Colors.transparent,
+            ),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -39,12 +42,12 @@ class PendingRequestItemWidget extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: AppColors.wood.withValues(alpha: 0.12),
+                backgroundColor: context.textPrimary.withValues(alpha: 0.12),
                 backgroundImage: request.userAvatarUrl != null
                     ? NetworkImage(request.userAvatarUrl!)
                     : null,
                 child: request.userAvatarUrl == null
-                    ? const Icon(LucideIcons.user, color: AppColors.wood)
+                    ? Icon(LucideIcons.user, color: context.textPrimary)
                     : null,
               ),
               const SizedBox(width: 12),
@@ -57,7 +60,7 @@ class PendingRequestItemWidget extends StatelessWidget {
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: context.textPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -67,7 +70,7 @@ class PendingRequestItemWidget extends StatelessWidget {
                       request.userEmail ?? 'Không có email',
                       style: GoogleFonts.inter(
                         fontSize: 11,
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -86,8 +89,8 @@ class PendingRequestItemWidget extends StatelessWidget {
                           );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.crimson,
-                      foregroundColor: Colors.white,
+                      backgroundColor: context.primary,
+                      foregroundColor: context.textOnPrimary,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 6),
                       minimumSize: const Size(85, 28),
@@ -112,8 +115,8 @@ class PendingRequestItemWidget extends StatelessWidget {
                           );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.gold,
-                      foregroundColor: Colors.white,
+                      backgroundColor: context.accent,
+                      foregroundColor: context.textOnPrimary,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 6),
                       minimumSize: const Size(85, 28),

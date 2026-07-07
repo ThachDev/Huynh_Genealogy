@@ -5,12 +5,12 @@ import 'resources/app_localizations.dart';
 import 'core/configs/firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/widgets.dart';
+import 'core/errors/failures.dart';
 import 'injection_container.dart' as di;
 import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
-import 'features/user/user.dart';
 import 'features/admin/admin.dart';
-import 'features/family_fund/family_fund.dart';
+import 'features/family_tree/family_tree.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,10 +72,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         BlocProvider<AuthBloc>(
           create: (_) => di.sl<AuthBloc>()..add(AuthCheckRequested()),
         ),
-        BlocProvider<UserTreeBloc>(create: (_) => di.sl<UserTreeBloc>()),
-        BlocProvider<FamilyFundBloc>(
-          create: (_) => di.sl<FamilyFundBloc>()..add(FetchFundSummary()),
-        ),
+        BlocProvider<FamilyTreeBloc>(create: (_) => di.sl<FamilyTreeBloc>()),
         BlocProvider<OnboardingBloc>(create: (_) => di.sl<OnboardingBloc>()),
         BlocProvider<AdminMemberFormBloc>(
             create: (_) => di.sl<AdminMemberFormBloc>()),
@@ -93,7 +90,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
       child: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) {
           if (previous is Authenticated && current is Authenticated) {
-            return (previous.user.familyId != null) != (current.user.familyId != null);
+            return (previous.user.familyId != null) !=
+                (current.user.familyId != null);
           }
           return previous.runtimeType != current.runtimeType;
         },
@@ -110,6 +108,10 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
           locale: _locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) {
+            AppLanguage.init(context);
+            return child!;
+          },
           home: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) => _homeForAuth(state),
           ),

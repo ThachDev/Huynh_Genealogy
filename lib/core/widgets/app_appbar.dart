@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/theme_extensions.dart';
 
@@ -8,6 +9,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final bool automaticallyImplyLeading;
   final PreferredSizeWidget? bottom;
+  final bool transparent;
 
   const AppAppBar({
     super.key,
@@ -16,13 +18,47 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.automaticallyImplyLeading = true,
     this.bottom,
+    this.transparent = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: context.appBarBg,
-      elevation: 4,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness:
+            Brightness.light, // Light icons on dark appBarBg
+        statusBarBrightness: Brightness.dark, // For iOS status bar
+      ),
+      flexibleSpace: transparent
+          ? null
+          : Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/clouds.png',
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        Container(color: context.appBarBg),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Container(
+                    color: context.appBarBg.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
+            ),
+      shape: transparent
+          ? null
+          : Border(
+              bottom: BorderSide(
+                color: Colors.white.withValues(alpha: 0.08),
+                width: 1.0,
+              ),
+            ),
       iconTheme: const IconThemeData(color: Colors.white),
       title: Text(
         title,

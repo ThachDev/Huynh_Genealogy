@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:intl/intl.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import '../bloc/user_tree_bloc.dart';
+import '../../../family_tree/family_tree.dart';
 import '../widgets/user_branch_card.dart';
 import '../../../auth/auth.dart';
-import '../../../family_fund/family_fund.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyEvent {
@@ -53,8 +51,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    context.read<UserTreeBloc>().add(UserTreeLoadEvent(familyId: _familyId()));
-    context.read<FamilyFundBloc>().add(FetchFundSummary());
+    context
+        .read<FamilyTreeBloc>()
+        .add(FamilyTreeLoadEvent(familyId: _familyId()));
   }
 
   void _onScroll() {
@@ -74,7 +73,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: context.background,
-      body: BlocBuilder<UserTreeBloc, UserTreeState>(
+      body: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
         builder: (context, state) {
           final double topPadding = MediaQuery.of(context).padding.top;
           final double offset =
@@ -92,13 +91,13 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 slivers: [
                   // ── Wooden Header with Dragon Patterns ──
                   _buildHeader(context, state),
-                  if (state is UserTreeLoading)
+                  if (state is FamilyTreeLoading)
                     const SliverFillRemaining(
                       child: Center(
                         child: AppLoading(size: 80),
                       ),
                     ),
-                  if (state is UserTreeError)
+                  if (state is FamilyTreeError)
                     SliverFillRemaining(
                       child: Center(
                         child: Column(
@@ -114,22 +113,19 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             AppButton(
                               label: l10n.retryButton,
                               onPressed: () => context
-                                  .read<UserTreeBloc>()
-                                  .add(UserTreeLoadEvent(familyId: _familyId())),
+                                  .read<FamilyTreeBloc>()
+                                  .add(FamilyTreeLoadEvent(
+                                      familyId: _familyId())),
                               size: AppButtonSize.small,
                             ),
                           ],
                         ),
                       ),
                     ),
-                  if (state is UserTreeLoaded) ...[
+                  if (state is FamilyTreeLoaded) ...[
                     // ── Spacer for Floating Search Bar ──
                     const SliverToBoxAdapter(
                       child: SizedBox(height: 25),
-                    ),
-                    // ── Family Fund Card ──
-                    SliverToBoxAdapter(
-                      child: _buildFundCard(),
                     ),
                     // ── Events/Anniversaries Carousel ──
                     SliverToBoxAdapter(
@@ -155,8 +151,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                 isSelected: _selectedBranchId == branch.id,
                                 onTap: () {
                                   setState(() => _selectedBranchId = branch.id);
-                                  context.read<UserTreeBloc>().add(
-                                        UserTreeFilterByBranchEvent(branch.id),
+                                  context.read<FamilyTreeBloc>().add(
+                                        FamilyTreeFilterByBranchEvent(
+                                            branch.id),
                                       );
                                 },
                               ),
@@ -166,7 +163,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       ),
                     ),
                     // ── Members Grid ──
-                    SliverToBoxAdapter(child: _buildSectionTitle(l10n.memberTabLabel)),
+                    SliverToBoxAdapter(
+                        child: _buildSectionTitle(l10n.memberTabLabel)),
 
                     // Local filter block
                     () {
@@ -206,8 +204,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             child: Center(
                               child: Text(
                                 l10n.noMemberFound,
-                                style:
-                                    TextStyle(color: context.textSecondary),
+                                style: TextStyle(color: context.textSecondary),
                               ),
                             ),
                           ),
@@ -235,7 +232,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   ],
                 ],
               ),
-              if (state is UserTreeLoaded)
+              if (state is FamilyTreeLoaded)
                 Positioned(
                   top: searchBarTop,
                   left: 0,
@@ -283,13 +280,13 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     }
   }
 
-  Widget _buildHeader(BuildContext context, UserTreeState state) {
+  Widget _buildHeader(BuildContext context, FamilyTreeState state) {
     final l10n = AppLocalizations.of(context)!;
     final authState = context.read<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
 
     String familyName = l10n.familyTreeTitle;
-    if (state is UserTreeLoaded && state.members.isNotEmpty) {
+    if (state is FamilyTreeLoaded && state.members.isNotEmpty) {
       final rootMembers = state.members.where(
         (m) => m.generation == 1 || m.parentId == null,
       );
@@ -320,7 +317,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
             ),
             // Wood Overlay to darken
             Positioned.fill(
-              child: Container(color: context.resolve(Colors.black.withValues(alpha: 0.45), Colors.transparent)),
+              child: Container(
+                  color: context.resolve(Colors.black.withValues(alpha: 0.45),
+                      Colors.transparent)),
             ),
             // Content
             SafeArea(
@@ -431,7 +430,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             color: context.accent, size: 14),
                         const SizedBox(width: 6),
                         Text(
-                          l10n.memberCountBadge(state is UserTreeLoaded ? state.members.length : 0),
+                          l10n.memberCountBadge(state is FamilyTreeLoaded
+                              ? state.members.length
+                              : 0),
                           style: GoogleFonts.inter(
                             color: Colors.white,
                             fontSize: 12,
@@ -445,7 +446,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             color: context.accent, size: 14),
                         const SizedBox(width: 6),
                         Text(
-                          l10n.branchCountLabel(state is UserTreeLoaded ? state.branches.length : 0),
+                          l10n.branchCountLabel(state is FamilyTreeLoaded
+                              ? state.branches.length
+                              : 0),
                           style: GoogleFonts.inter(
                             color: Colors.white,
                             fontSize: 12,
@@ -461,83 +464,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildFundCard() {
-    final l10n = AppLocalizations.of(context)!;
-    return BlocBuilder<FamilyFundBloc, FamilyFundState>(
-      builder: (context, state) {
-        final balanceText = state is FamilyFundLoaded
-            ? NumberFormat.currency(locale: 'vi_VN', symbol: '₫')
-                .format(state.balance)
-            : '0 ₫';
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: context.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: context.accent.withValues(alpha: 0.25)),
-            boxShadow: [
-              BoxShadow(
-                color: context.resolve(Colors.black.withValues(alpha: 0.02), Colors.transparent),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(LucideIcons.wallet,
-                          color: context.accent, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        l10n.familyFundTitle,
-                        style: GoogleFonts.beVietnamPro(
-                          fontWeight: FontWeight.bold,
-                          color: context.appBarBg,
-                          fontSize: 12,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    balanceText,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: context.primary,
-                    ),
-                  ),
-                ],
-              ),
-              AppButton(
-                label: l10n.donateButton,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const FamilyFundPage(isAdmin: false),
-                    ),
-                  );
-                },
-                prefixIcon: const Icon(LucideIcons.heartHandshake, size: 14),
-                variant: AppButtonVariant.secondary,
-                size: AppButtonSize.small,
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 
@@ -593,7 +519,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       Border.all(color: context.accent.withValues(alpha: 0.2)),
                   boxShadow: [
                     BoxShadow(
-                      color: context.resolve(Colors.black.withValues(alpha: 0.02), Colors.transparent),
+                      color: context.resolve(
+                          Colors.black.withValues(alpha: 0.02),
+                          Colors.transparent),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -681,7 +609,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           border: Border.all(color: context.accent.withValues(alpha: 0.3)),
           boxShadow: [
             BoxShadow(
-              color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
+              color: context.resolve(
+                  Colors.black.withValues(alpha: 0.08), Colors.transparent),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -776,8 +705,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   Widget _buildMemberCard(MemberEntity m) {
     final l10n = AppLocalizations.of(context)!;
     final bool isMale = m.gender == Gender.male;
-    final String genText =
-        m.generation != null ? l10n.generationBadge('${m.generation}') : l10n.unknownGeneration;
+    final String genText = m.generation != null
+        ? l10n.generationBadge('${m.generation}')
+        : l10n.unknownGeneration;
     final String statusText = m.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
     final Color statusColor = m.isAlive ? Colors.green : Colors.grey;
 
@@ -793,7 +723,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
         ),
         boxShadow: [
           BoxShadow(
-            color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
+            color: context.resolve(
+                Colors.black.withValues(alpha: 0.03), Colors.transparent),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -827,9 +758,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   child: m.avatarUrl == null
                       ? Icon(
                           isMale ? LucideIcons.user : LucideIcons.userCheck,
-                          color: isMale
-                              ? context.nodeMale
-                              : context.nodeFemale,
+                          color: isMale ? context.nodeMale : context.nodeFemale,
                           size: 20,
                         )
                       : null,

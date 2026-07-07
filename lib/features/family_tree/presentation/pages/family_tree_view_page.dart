@@ -7,18 +7,18 @@ import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import '../bloc/user_tree_bloc.dart';
-import '../widgets/user_member_node_widget.dart';
-import 'user_member_detail_page.dart';
+import '../bloc/family_tree_bloc.dart';
+import '../widgets/family_member_node_widget.dart';
+import 'family_member_detail_page.dart';
 
-class UserTreeViewPage extends StatefulWidget {
-  const UserTreeViewPage({super.key});
+class FamilyTreeViewPage extends StatefulWidget {
+  const FamilyTreeViewPage({super.key});
 
   @override
-  State<UserTreeViewPage> createState() => _UserTreeViewPageState();
+  State<FamilyTreeViewPage> createState() => _FamilyTreeViewPageState();
 }
 
-class _UserTreeViewPageState extends State<UserTreeViewPage> {
+class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
   final BuchheimWalkerConfiguration _algorithm =
       BuchheimWalkerConfiguration();
 
@@ -80,14 +80,14 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
       ),
       body: Stack(
         children: [
-          BlocBuilder<UserTreeBloc, UserTreeState>(
+          BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
             builder: (context, state) {
-              if (state is UserTreeLoading) {
+              if (state is FamilyTreeLoading) {
                 return const Center(
                     child: AppLoading(size: 80));
               }
 
-              if (state is UserTreeError) {
+              if (state is FamilyTreeError) {
                 return Center(
                   child: Text(
                     state.message,
@@ -96,7 +96,7 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
                 );
               }
 
-              if (state is UserTreeLoaded) {
+              if (state is FamilyTreeLoaded) {
                 if (state.members.isEmpty) {
                   return Center(
                     child: Text(
@@ -135,18 +135,18 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
                         return const SizedBox(width: 80, height: 40);
                       }
 
-                      return UserMemberNodeWidget(
+                      return FamilyMemberNodeWidget(
                         member: member,
                         isSelected: state.selectedMemberId == member.id,
                         onTap: () {
                           context
-                              .read<UserTreeBloc>()
-                              .add(UserTreeSelectMemberEvent(member.id));
+                              .read<FamilyTreeBloc>()
+                              .add(FamilyTreeSelectMemberEvent(member.id));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
-                                  UserMemberDetailPage(member: member),
+                                  FamilyMemberDetailPage(member: member),
                             ),
                           );
                         },

@@ -35,16 +35,17 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
 
   void _updatePassword() async {
     if (_formKey.currentState!.validate()) {
+      final l10n = AppLocalizations.of(context)!;
       setState(() => _isSaving = true);
       try {
         final fbUser = fb.FirebaseAuth.instance.currentUser;
         if (fbUser == null) {
-          throw Exception(AppLocalizations.of(context)!.notLoggedIn);
+          throw Exception(l10n.notLoggedIn);
         }
 
         final idToken = await fbUser.getIdToken();
         if (idToken == null) {
-          throw Exception(AppLocalizations.of(context)!.sessionTokenError);
+          throw Exception(l10n.sessionTokenError);
         }
 
         final response = await DioClient.instance.post(

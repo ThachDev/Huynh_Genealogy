@@ -12,6 +12,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get loginTitle => 'Đăng Nhập';
 
   @override
+  String get clanAndPersonalInfoTitle => 'Thông tin dòng tộc và cá nhân';
+
+  @override
   String get loginSubtitle => 'Kết nối với cội nguồn dòng tộc của bạn';
 
   @override
@@ -753,7 +756,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng \"Chuyển nhượng quyền Trưởng tộc\".';
 
   @override
-  String get accountInfoTitle => 'Thông Tin Tài Khoản';
+  String get accountInfoTitle => 'Thông Tin Cá Nhân';
 
   @override
   String get emailAccountLabel => 'Email (Tài khoản)';

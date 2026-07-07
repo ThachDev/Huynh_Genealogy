@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Đăng Nhập'**
   String get loginTitle;
 
+  /// No description provided for @clanAndPersonalInfoTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin dòng tộc và cá nhân'**
+  String get clanAndPersonalInfoTitle;
+
   /// No description provided for @loginSubtitle.
   ///
   /// In vi, this message translates to:
@@ -1457,7 +1463,7 @@ abstract class AppLocalizations {
   /// No description provided for @accountInfoTitle.
   ///
   /// In vi, this message translates to:
-  /// **'Thông Tin Tài Khoản'**
+  /// **'Thông Tin Cá Nhân'**
   String get accountInfoTitle;
 
   /// No description provided for @emailAccountLabel.

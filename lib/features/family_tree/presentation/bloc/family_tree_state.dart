@@ -1,19 +1,19 @@
-part of 'user_tree_bloc.dart';
+part of 'family_tree_bloc.dart';
 
-abstract class UserTreeState {}
+abstract class FamilyTreeState {}
 
-class UserTreeInitial extends UserTreeState {}
+class FamilyTreeInitial extends FamilyTreeState {}
 
-class UserTreeLoading extends UserTreeState {}
+class FamilyTreeLoading extends FamilyTreeState {}
 
-class UserTreeLoaded extends UserTreeState {
+class FamilyTreeLoaded extends FamilyTreeState {
   final List<MemberEntity> members;
   final List<BranchEntity> branches;
   final int? selectedMemberId;
   final int? filterBranchId;
   final int? familyId;
 
-  UserTreeLoaded({
+  FamilyTreeLoaded({
     required this.members,
     required this.branches,
     this.selectedMemberId,
@@ -21,14 +21,14 @@ class UserTreeLoaded extends UserTreeState {
     this.familyId,
   });
 
-  UserTreeLoaded copyWith({
+  FamilyTreeLoaded copyWith({
     List<MemberEntity>? members,
     List<BranchEntity>? branches,
     int? selectedMemberId,
     int? filterBranchId,
     int? familyId,
   }) {
-    return UserTreeLoaded(
+    return FamilyTreeLoaded(
       members: members ?? this.members,
       branches: branches ?? this.branches,
       selectedMemberId: selectedMemberId ?? this.selectedMemberId,
@@ -38,7 +38,7 @@ class UserTreeLoaded extends UserTreeState {
   }
 }
 
-class UserTreeError extends UserTreeState {
+class FamilyTreeError extends FamilyTreeState {
   final String message;
-  UserTreeError(this.message);
+  FamilyTreeError(this.message);
 }

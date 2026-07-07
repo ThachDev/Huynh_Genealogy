@@ -10,8 +10,7 @@ import '../../../../../resources/app_localizations.dart';
 import '../../../../auth/auth.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
-import 'pages/admin_clan_info_settings_page.dart';
-import 'pages/admin_edit_profile_page.dart';
+import 'pages/admin_clan_and_personal_info_page.dart';
 import 'pages/admin_account_security_page.dart';
 import 'pages/admin_transfer_ownership_page.dart';
 import 'pages/admin_dissolve_clan_page.dart';
@@ -56,7 +55,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     final role = user?.role ?? 'VIEWER';
     final roleUpper = role.toUpperCase();
     final isOwner = roleUpper == 'OWNER' || roleUpper == 'CREATOR';
-    final isEditor = roleUpper == 'EDITOR';
 
     return Scaffold(
       backgroundColor: context.background,
@@ -66,19 +64,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         children: [
           _buildSettingsCard(children: [
             _buildSectionHeaderInsideCard(context, l10n.accountAndClanSection),
-            if (!isEditor) ...[
-              _buildSettingsTile(
-                context: context,
-                icon: LucideIcons.home,
-                title: l10n.clanInfoLabel,
-                destination: AdminClanInfoSettingsPage(family: family),
-              ),
-            ],
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.user,
-              title: l10n.editLabel,
-              destination: AdminEditProfilePage(user: user),
+              title: l10n.clanAndPersonalInfoTitle,
+              destination:
+                  AdminClanAndPersonalInfoPage(family: family, user: user),
             ),
             _buildSettingsTile(
               context: context,
@@ -249,16 +240,14 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   ),
                   content: Text(
                     l10n.logoutConfirmMessage,
-                    style:
-                        GoogleFonts.inter(color: context.textSecondary),
+                    style: GoogleFonts.inter(color: context.textSecondary),
                   ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(ctx).pop(),
                       child: Text(
                         l10n.cancelLabel,
-                        style: GoogleFonts.inter(
-                            color: context.textSecondary),
+                        style: GoogleFonts.inter(color: context.textSecondary),
                       ),
                     ),
                     AppButton(

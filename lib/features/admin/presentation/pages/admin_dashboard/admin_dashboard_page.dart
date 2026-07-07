@@ -21,7 +21,7 @@ import '../../../../../core/utils/lunar_date_helper.dart';
 import '../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../../../auth/auth.dart';
-import '../../../../user/user.dart';
+import '../../../../family_tree/family_tree.dart';
 import 'pages/admin_member_form_page.dart';
 import 'pages/admin_branch_form_page.dart';
 import '../../bloc/admin_member_form/admin_member_form_bloc.dart';
@@ -136,7 +136,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   void _loadTree() {
     final familyId = _familyId();
     if (familyId != null) {
-      context.read<UserTreeBloc>().add(UserTreeLoadEvent(familyId: familyId));
+      context
+          .read<FamilyTreeBloc>()
+          .add(FamilyTreeLoadEvent(familyId: familyId));
     }
   }
 
@@ -169,8 +171,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       familyName = pendingState.family!.name;
       inviteCode = pendingState.family!.inviteCode;
     } else if (user != null) {
-      final userTreeState = context.watch<UserTreeBloc>().state;
-      if (userTreeState is UserTreeLoaded && userTreeState.members.isNotEmpty) {
+      final userTreeState = context.watch<FamilyTreeBloc>().state;
+      if (userTreeState is FamilyTreeLoaded &&
+          userTreeState.members.isNotEmpty) {
         final rootMembers = userTreeState.members.where(
           (m) => m.generation == 1 || m.parentId == null,
         );
@@ -190,12 +193,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
 
     // Connect real data counts
-    final userTreeState = context.watch<UserTreeBloc>().state;
+    final userTreeState = context.watch<FamilyTreeBloc>().state;
     String memberCount = '--';
     String branchCount = '--';
     List<MemberEntity> allMembers = [];
     List<BranchEntity> allBranches = [];
-    if (userTreeState is UserTreeLoaded) {
+    if (userTreeState is FamilyTreeLoaded) {
       memberCount = userTreeState.members.length.toString();
       branchCount = userTreeState.branches.length.toString();
       allMembers = userTreeState.members;
@@ -400,7 +403,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   Center(
                     child: Builder(builder: (context) {
                       final now = DateTime.now();
-                      final locale = Localizations.localeOf(context).languageCode;
+                      final locale =
+                          Localizations.localeOf(context).languageCode;
                       final weekday = DateFormat('EEEE', locale).format(now);
                       final day = DateFormat('dd', locale).format(now);
                       final month = DateFormat('MM', locale).format(now);
@@ -434,7 +438,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
                                 '|',
                                 style: GoogleFonts.inter(
@@ -467,7 +472,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildContentSection({
-    required UserTreeState userTreeState,
+    required FamilyTreeState userTreeState,
     required AdminPendingRequestsState pendingState,
     required List<MemberEntity> members,
     required List<BranchEntity> branches,
@@ -481,7 +486,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
     switch (_selectedTab) {
       case AdminDashboardTab.members:
-        if (userTreeState is UserTreeLoading) {
+        if (userTreeState is FamilyTreeLoading) {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(40.0),
@@ -546,7 +551,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         );
 
       case AdminDashboardTab.branches:
-        if (userTreeState is UserTreeLoading) {
+        if (userTreeState is FamilyTreeLoading) {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(40.0),

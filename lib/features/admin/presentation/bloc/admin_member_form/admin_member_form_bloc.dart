@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import '../../../domain/usecase/delete_member.dart';
-import '../../../../user/domain/usecase/user_get_members.dart';
-import '../../../../user/domain/usecase/user_get_branches.dart';
+import '../../../../family_tree/family_tree.dart';
 import '../../../domain/usecase/save_member.dart';
 
 part 'admin_member_form_event.dart';
@@ -12,8 +11,8 @@ part 'admin_member_form_state.dart';
 
 class AdminMemberFormBloc
     extends Bloc<AdminMemberFormEvent, AdminMemberFormState> {
-  final UserGetMembers getMembers;
-  final UserGetBranches getBranches;
+  final GetMembers getMembers;
+  final GetBranches getBranches;
   final SaveMember saveMember;
   final DeleteMember deleteMember;
 
@@ -33,8 +32,8 @@ class AdminMemberFormBloc
       Emitter<AdminMemberFormState> emit) async {
     emit(AdminMemberFormLoading());
     // Fetch both members and branches
-    final membersResult = await getMembers(UserGetMembersParams(familyId: event.familyId));
-    final branchesResult = await getBranches(UserGetBranchesParams(familyId: event.familyId));
+    final membersResult = await getMembers(GetMembersParams(familyId: event.familyId));
+    final branchesResult = await getBranches(GetBranchesParams(familyId: event.familyId));
 
     List<MemberEntity> allMembers = [];
     List<BranchEntity> allBranches = [];

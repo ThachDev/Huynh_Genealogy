@@ -5,12 +5,12 @@ import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
-class UserMemberNodeWidget extends StatefulWidget {
+class FamilyMemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
   final bool isSelected;
   final VoidCallback? onTap;
 
-  const UserMemberNodeWidget({
+  const FamilyMemberNodeWidget({
     super.key,
     required this.member,
     this.isSelected = false,
@@ -18,10 +18,10 @@ class UserMemberNodeWidget extends StatefulWidget {
   });
 
   @override
-  State<UserMemberNodeWidget> createState() => _UserMemberNodeWidgetState();
+  State<FamilyMemberNodeWidget> createState() => _FamilyMemberNodeWidgetState();
 }
 
-class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
+class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;

@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTitle => 'Login';
 
   @override
+  String get clanAndPersonalInfoTitle => 'Clan & Personal Info';
+
+  @override
   String get loginSubtitle => 'Connect with your family genealogy roots';
 
   @override

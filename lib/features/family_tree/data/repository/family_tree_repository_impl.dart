@@ -3,15 +3,15 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import 'package:giatocviet/features/user/domain/repository/user_tree_repository.dart';
 import 'package:giatocviet/core/data/model/branch_model.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
-import '../source/user_tree_remote_data_source.dart';
+import '../../domain/repository/family_tree_repository.dart';
+import '../source/family_tree_remote_data_source.dart';
 
-class UserTreeRepositoryImpl implements UserTreeRepository {
-  final UserTreeRemoteDataSource remoteDataSource;
+class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
+  final FamilyTreeRemoteDataSource remoteDataSource;
 
-  UserTreeRepositoryImpl({required this.remoteDataSource});
+  FamilyTreeRepositoryImpl({required this.remoteDataSource});
 
   // ---------- Members ----------
 

@@ -7,9 +7,8 @@ import '../theme/theme_extensions.dart';
 import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
-import '../../features/user/presentation/pages/user_tree_view_page.dart';
 import '../../features/user/presentation/pages/user_settings_page.dart';
-import '../../features/family_fund/family_fund.dart';
+import '../../features/family_tree/presentation/pages/family_tree_view_page.dart';
 import '../../features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../features/admin/presentation/pages/setting_dashboard/admin_settings_page.dart';
 
@@ -74,15 +73,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.network,
             label: l10n.navFamilyTree,
-            page: const UserTreeViewPage(),
-          ));
-
-          final canManageFund =
-              role == 'OWNER' || role == 'CREATOR' || role == 'BRANCH_ADMIN';
-          tabs.add(_TabConfig(
-            icon: LucideIcons.wallet,
-            label: l10n.navFamilyFund,
-            page: FamilyFundPage(isAdmin: canManageFund),
+            page: const FamilyTreeViewPage(),
           ));
 
           tabs.add(_TabConfig(
@@ -101,13 +92,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.network,
             label: l10n.navFamilyTree,
-            page: const UserTreeViewPage(),
-          ));
-
-          tabs.add(_TabConfig(
-            icon: LucideIcons.wallet,
-            label: l10n.navFamilyFund,
-            page: const FamilyFundPage(isAdmin: false),
+            page: const FamilyTreeViewPage(),
           ));
 
           tabs.add(_TabConfig(

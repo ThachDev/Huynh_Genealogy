@@ -11,7 +11,7 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../auth/auth.dart';
-import '../../../../../user/presentation/bloc/user_tree_bloc.dart';
+import '../../../../../family_tree/family_tree.dart';
 import '../../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
 import 'admin_member_form_page.dart';
 
@@ -284,8 +284,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
             );
           }
 
-          final userTreeState = context.watch<UserTreeBloc>().state;
-          final members = userTreeState is UserTreeLoaded
+          final userTreeState = context.watch<FamilyTreeBloc>().state;
+          final members = userTreeState is FamilyTreeLoaded
               ? userTreeState.members
               : <MemberEntity>[];
 
@@ -384,9 +384,9 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                             : null;
                                                         context
                                                             .read<
-                                                                UserTreeBloc>()
+                                                                FamilyTreeBloc>()
                                                             .add(
-                                                                UserTreeLoadEvent(familyId: familyId));
+                                                                FamilyTreeLoadEvent(familyId: familyId));
                                                       }
                                                     }
                                                   });

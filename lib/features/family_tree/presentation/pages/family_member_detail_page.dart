@@ -7,16 +7,16 @@ import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../../core/widgets/widgets.dart';
 
-class UserMemberDetailPage extends StatefulWidget {
+class FamilyMemberDetailPage extends StatefulWidget {
   final MemberEntity member;
 
-  const UserMemberDetailPage({super.key, required this.member});
+  const FamilyMemberDetailPage({super.key, required this.member});
 
   @override
-  State<UserMemberDetailPage> createState() => _UserMemberDetailPageState();
+  State<FamilyMemberDetailPage> createState() => _FamilyMemberDetailPageState();
 }
 
-class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
+class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
   int _spiritualCount = 0;
 
   @override
@@ -47,14 +47,16 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              context.resolve(Colors.black.withValues(alpha: 0.5), Colors.transparent),
-                              Colors.transparent,
-                              context.resolve(Colors.black.withValues(alpha: 0.3), Colors.transparent),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                        gradient: LinearGradient(
+                          colors: [
+                            context.resolve(Colors.black.withValues(alpha: 0.5),
+                                Colors.transparent),
+                            Colors.transparent,
+                            context.resolve(Colors.black.withValues(alpha: 0.3),
+                                Colors.transparent),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                       ),
                     ),
@@ -79,7 +81,9 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                       border: Border.all(color: context.accent, width: 4),
                       boxShadow: [
                         BoxShadow(
-                          color: context.resolve(Colors.black.withValues(alpha: 0.2), Colors.transparent),
+                          color: context.resolve(
+                              Colors.black.withValues(alpha: 0.2),
+                              Colors.transparent),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -118,12 +122,15 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildBadge(
-                        l10n.generationBadge('${widget.member.generation ?? "?"}'),
+                        l10n.generationBadge(
+                            '${widget.member.generation ?? "?"}'),
                         context.accent,
                       ),
                       const SizedBox(width: 8),
                       _buildBadge(
-                        widget.member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel,
+                        widget.member.isAlive
+                            ? l10n.aliveLabel
+                            : l10n.deceasedLabel,
                         widget.member.isAlive
                             ? Colors.green
                             : context.textSecondary,
@@ -147,36 +154,47 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                   _buildInfoRow(
                     LucideIcons.cake,
                     l10n.dateOfBirthLabel,
-                    DateFormatter.formatForDisplay(widget.member.dateOfBirth) ??
-                        l10n.unknownLabel,
+                    DateFormatter.formatForDisplay(widget.member.dateOfBirth) ?? '-',
                   ),
                   if (!widget.member.isAlive)
                     _buildInfoRow(
-                      LucideIcons.calendar,
+                      LucideIcons.skull,
                       l10n.dateOfDeathLabel,
-                      DateFormatter.formatForDisplay(
-                            widget.member.dateOfDeath,
-                          ) ??
-                          l10n.unknownLabel,
+                      DateFormatter.formatForDisplay(widget.member.dateOfDeath) ?? '-',
                     ),
+                  _buildInfoRow(
+                    widget.member.gender == Gender.male ? LucideIcons.user : LucideIcons.user,
+                    l10n.genderLabel,
+                    widget.member.gender == Gender.male
+                        ? l10n.genderMale
+                        : l10n.genderFemale,
+                  ),
                   _buildInfoRow(
                     LucideIcons.mapPin,
                     l10n.placeOfBirthLabel,
-                    widget.member.placeOfBirth ?? l10n.unknownLabel,
+                    widget.member.placeOfBirth ?? '-',
+                  ),
+                ]),
+                const SizedBox(height: 20),
+                _buildInfoSection(l10n.familyRelationSectionTitle, [
+                  _buildInfoRow(
+                    LucideIcons.network,
+                    l10n.parentLabel,
+                    widget.member.parentId != null ? '#${widget.member.parentId}' : '-',
                   ),
                   _buildInfoRow(
-                    LucideIcons.gitBranch,
+                    LucideIcons.heart,
+                    l10n.spouseLabel,
+                    widget.member.spouseId != null ? '#${widget.member.spouseId}' : '-',
+                  ),
+                  _buildInfoRow(
+                    LucideIcons.gitCommit,
                     l10n.branchLabel,
-                    widget.member.branchName ?? '',
+                    widget.member.branchName ?? '-',
                   ),
                 ]),
-                const SizedBox(height: 24),
-                _buildInfoSection(l10n.familyRelationSectionTitle, [
-                  _buildRelationshipRow(l10n.parentLabel, widget.member.parentId),
-                  _buildRelationshipRow(l10n.spouseLabel, widget.member.spouseId),
-                ]),
-                const SizedBox(height: 24),
-                _buildBioSection(),
+                const SizedBox(height: 20),
+                _buildBiographySection(l10n),
               ]),
             ),
           ),
@@ -187,16 +205,16 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
 
   Widget _buildBadge(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.15),
+        border: Border.all(color: color.withValues(alpha: 0.4), width: 1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
       ),
       child: Text(
         label,
-        style: GoogleFonts.inter(
-          fontSize: 10,
+        style: GoogleFonts.beVietnamPro(
+          fontSize: 12,
           fontWeight: FontWeight.bold,
           color: color,
         ),
@@ -206,55 +224,78 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
 
   Widget _buildSpiritualButton() {
     final l10n = AppLocalizations.of(context)!;
-    final bool isDeceased = !widget.member.isAlive;
-    return AppButton(
-      label: isDeceased
-          ? l10n.incenseButton(_spiritualCount)
-          : l10n.congratulateButton(_spiritualCount),
-      onPressed: () {
-        setState(() => _spiritualCount++);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              isDeceased
-                  ? l10n.incenseActionMessage
-                  : l10n.congratulateActionMessage,
+    if (widget.member.isAlive) {
+      return AppButton(
+        label: l10n.congratulateButton(0),
+        onPressed: () {
+          AppSnackBar.success(context, l10n.congratulateActionMessage);
+        },
+        prefixIcon: const Icon(LucideIcons.partyPopper, size: 16),
+        variant: AppButtonVariant.primary,
+        size: AppButtonSize.small,
+      );
+    }
+
+    return Column(
+      children: [
+        AppButton(
+          label: l10n.incenseButton(0),
+          onPressed: () {
+            setState(() {
+              _spiritualCount++;
+            });
+            AppSnackBar.success(context, l10n.incenseActionMessage);
+          },
+          prefixIcon: const Icon(LucideIcons.flame, size: 16),
+          variant: AppButtonVariant.primary,
+          size: AppButtonSize.small,
+        ),
+        if (_spiritualCount > 0) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.incenseButton(_spiritualCount),
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 12,
+              color: context.textSecondary,
+              fontStyle: FontStyle.italic,
             ),
-            duration: const Duration(seconds: 1),
-            backgroundColor: context.primary,
           ),
-        );
-      },
-      prefixIcon: Icon(
-        isDeceased ? LucideIcons.flame : LucideIcons.gift,
-        size: 16,
-      ),
-      variant: AppButtonVariant.outline,
+        ],
+      ],
     );
   }
 
   Widget _buildInfoSection(String title, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(LucideIcons.info, color: context.accent, size: 18),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1,
-              ),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.accent.withValues(alpha: 0.1)),
+        boxShadow: [
+          BoxShadow(
+            color: context.resolve(
+                Colors.black.withValues(alpha: 0.01), Colors.transparent),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: context.primary,
             ),
-          ],
-        ),
-        Divider(color: context.accent, thickness: 0.5),
-        const SizedBox(height: 8),
-        ...children,
-      ],
+          ),
+          const Divider(height: 24),
+          ...children,
+        ],
+      ),
     );
   }
 
@@ -263,43 +304,7 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: context.textSecondary.withValues(alpha: 0.6),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            '$label:',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              color: context.textSecondary,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: context.textPrimary,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRelationshipRow(String label, int? memberId) {
-    final l10n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Icon(LucideIcons.users, size: 18, color: context.accent),
+          Icon(icon, size: 18, color: context.accent),
           const SizedBox(width: 12),
           Text(
             label,
@@ -309,67 +314,51 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
             ),
           ),
           const Spacer(),
-          if (memberId == null)
-            Text(
-              l10n.unknownLabel,
-              style: GoogleFonts.inter(fontStyle: FontStyle.italic),
-            )
-          else
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                l10n.memberIdFormat(memberId),
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.bold,
-                  color: context.primary,
-                ),
-              ),
+          Text(
+            value,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: context.textPrimary,
             ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildBioSection() {
-    final l10n = AppLocalizations.of(context)!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(LucideIcons.scroll, color: context.accent, size: 18),
-            const SizedBox(width: 8),
-            Text(
-              l10n.biographySectionTitle,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1,
-              ),
-            ),
-          ],
-        ),
-        Divider(color: context.accent, thickness: 0.5),
-        const SizedBox(height: 12),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: context.surface,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: context.accent.withValues(alpha: 0.3)),
-          ),
-          child: Text(
-            widget.member.notes ?? l10n.noBiographyMessage,
+  Widget _buildBiographySection(AppLocalizations l10n) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.accent.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.biographySectionTitle,
             style: GoogleFonts.beVietnamPro(
               fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: context.primary,
+            ),
+          ),
+          const Divider(height: 24),
+          Text(
+            widget.member.notes != null && widget.member.notes!.isNotEmpty
+                ? widget.member.notes!
+                : l10n.noBiographyMessage,
+            style: GoogleFonts.inter(
+              fontSize: 14,
               height: 1.6,
-              fontStyle: FontStyle.italic,
               color: context.textPrimary,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

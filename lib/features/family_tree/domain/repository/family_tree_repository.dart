@@ -3,7 +3,7 @@ import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
-abstract class UserTreeRepository {
+abstract class FamilyTreeRepository {
   // ---------- Members ----------
   Future<Either<Failure, List<MemberEntity>>> getMembers({int? branchId, int? familyId});
   Future<Either<Failure, MemberEntity>> getMemberById(int id);

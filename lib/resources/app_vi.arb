@@ -1,5 +1,6 @@
 {
   "loginTitle": "Đăng Nhập",
+  "clanAndPersonalInfoTitle": "Thông tin dòng tộc và cá nhân",
   "loginSubtitle": "Kết nối với cội nguồn dòng tộc của bạn",
   "emailLabel": "Địa chỉ email",
   "emailHint": "email@example.com",
@@ -305,7 +306,7 @@
   "updateRoleSuccess": "Cập nhật vai trò thành công!",
   "noMembers": "Chưa có thành viên nào trong gia tộc.",
   "cannotSelfChange": "Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng \"Chuyển nhượng quyền Trưởng tộc\".",
-  "accountInfoTitle": "Thông Tin Tài Khoản",
+  "accountInfoTitle": "Thông Tin Cá Nhân",
   "emailAccountLabel": "Email (Tài khoản)",
   "noProfileLink": "Chưa liên kết hồ sơ gia phả",
   "noProfileLinkDesc": "Tài khoản của bạn là Trưởng tộc nhưng chưa được liên kết với một thành viên nào trong cây gia phả. Hãy tạo hồ sơ ngay để bắt đầu quản lý phả hệ.",

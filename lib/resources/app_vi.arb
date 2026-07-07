@@ -349,6 +349,10 @@
   "regSection10Content": "Các điều khoản này được điều chỉnh theo pháp luật Việt Nam. Mọi tranh chấp được ưu tiên giải quyết qua thương lượng. Chúng tôi có thể sửa đổi điều khoản và sẽ thông báo trên ứng dụng. Nếu bạn tiếp tục dùng ứng dụng sau khi thay đổi, nghĩa là bạn đã chấp nhận điều khoản mới.",
   "copyrightText": "© 2026 ThachDev. Bảo lưu mọi quyền.",
   "helpCenterTitle": "TRUNG TÂM HỖ TRỢ",
+  "helpDragInstruction": "👉 Kéo sơ đồ để di chuyển",
+  "helpTapInstruction": "👤 Nhấn vào thành viên để xem chi tiết",
+  "helpTooltip": "Hướng dẫn",
+  "helpZoomInstruction": "🔍 Phóng to/Thu nhỏ bằng 2 ngón tay",
   "contactSection": "Liên hệ trực tiếp",
   "hotlineTitle": "Hotline hỗ trợ",
   "hotlineValue": "1900 8888",
@@ -436,6 +440,7 @@
   "deleteLabel": "Xoá",
   "memberCountBadge": "{count} thành viên",
   "founderBadge": "Đời tổ/Sáng lập: {name}",
+  "founderFormat": "Tổ: {name}",
   "anonymousUser": "Người dùng ẩn danh",
   "noEmail": "Không có email",
   "approveButton": "Phê duyệt",
@@ -514,5 +519,131 @@
   "sessionTokenError": "Không thể lấy mã xác thực phiên đăng nhập",
   "passwordChangeFailed": "Thay đổi mật khẩu thất bại",
   "serverConnectionError": "Lỗi kết nối máy chủ",
-  "emailSubjectHelp": "Hỗ Trợ Gia Tộc Việt"
+  "emailSubjectHelp": "Hỗ Trợ Gia Tộc Việt",
+  "accountSectionTitle": "TÀI KHOẢN",
+  "allLabel": "Tất cả",
+  "biographySectionTitle": "TIỂU SỬ & GHI CHÚ",
+  "branchCountLabel": "{count} Chi tộc",
+  "branchLabel": "Chi tộc",
+  "branchTabLabel": "Chi Tộc / Nhánh",
+  "congratulateActionMessage": "Bạn đã gửi một lời chúc mừng.",
+  "congratulateButton": "CHÚC MỪNG ({count})",
+  "currentDateDisplay": "Ngày {day}/{month}/{year} (Nhằm 12/05 Âm Lịch)",
+  "dateOfBirthLabel": "Ngày sinh",
+  "dateOfDeathLabel": "Ngày mất",
+  "donateButton": "Đóng góp",
+  "eventCountdown": "Còn {days} ngày",
+  "eventDateSample1": "12/05 Âm lịch",
+  "eventDateSample2": "28/06 Dương lịch",
+  "eventDateLabel": "Ngày {date}",
+  "eventDetailFormat": "Đời thứ {gen} • Ngày {date}",
+  "eventSample1": "Giỗ cụ Huỳnh Công Minh",
+  "eventSample2": "Hội thảo Dòng họ Xuân 2026",
+  "eventTypeAncestors": "Giỗ Chạp",
+  "eventTypeEvent": "Sự kiện",
+  "eventsSectionTitle": "Sự Kiện & Lễ Giỗ Dòng Họ",
+  "familyFundTitle": "QUỸ GIA TỘC",
+  "familyRelationSectionTitle": "QUAN HỆ GIA ĐÌNH",
+  "familyTreeMapTitle": "Bản Đồ Phả Hệ",
+  "familyTreeNameFormat": "GIA PHẢ HỌ {name}",
+  "familyTreeTitle": "GIA PHẢ DÒNG HỌ",
+  "guideButton": "Hướng dẫn",
+  "guideDrag": "👉 Kéo sơ đồ để di chuyển",
+  "guideTapMember": "👤 Nhấn vào thành viên để xem chi tiết",
+  "guideZoom": "🔍 Phóng to/Thu nhỏ bằng 2 ngón tay",
+  "incenseActionMessage": "Bạn đã thắp một nén nhang thành tâm.",
+  "incenseButton": "ĐỐT NHANG ({count})",
+  "knownLabel": "Đã rõ",
+  "logoutConfirmMessage": "Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?",
+  "logoutLabel": "Đăng xuất",
+  "memberIdFormat": "Thành viên #{id}",
+  "memberTabLabel": "Thành Viên",
+  "noBiographyMessage": "Chưa có thông tin tiểu sử cho thành viên này.",
+  "noTreeDataMessage": "Chưa có dữ liệu gia phả",
+  "notificationLabel": "Thông báo",
+  "personalInfoLabel": "Thông tin cá nhân",
+  "personalInfoSectionTitle": "THÔNG TIN CÁ NHÂN",
+  "placeOfBirthLabel": "Nơi sinh",
+  "searchMemberYearHint": "Tìm thành viên, năm sinh...",
+  "settingsTitle": "CÀI ĐẶT",
+  "spiritualMotto": "CỘI NGUỒN TÂM LINH • VẠN ĐẠI TRƯỜNG TỒN",
+  "switchToAdminLabel": "Chuyển sang trang Quản trị",
+  "todayLabel": "Hôm nay",
+  "unassignedBranch": "Chưa phân chi",
+  "understoodLabel": "Đã rõ",
+  "unknownGeneration": "Chưa rõ đời",
+  "unknownLabel": "Chưa rõ",
+  "usageGuideTitle": "Hướng dẫn sử dụng",
+  "@branchCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@congratulateButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@currentDateDisplay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "@eventCountdown": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@eventDateLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@eventDetailFormat": {
+    "placeholders": {
+      "gen": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@familyTreeNameFormat": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@incenseButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@memberIdFormat": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  }
 }

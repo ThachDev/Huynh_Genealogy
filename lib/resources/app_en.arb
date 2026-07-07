@@ -349,6 +349,10 @@
   "regSection10Content": "These terms are governed by Vietnamese law. Disputes shall first be resolved through negotiation. We may modify the terms and will notify you via the app. Your continued use after changes constitutes acceptance of the new terms.",
   "copyrightText": "© 2026 ThachDev. All rights reserved.",
   "helpCenterTitle": "HELP CENTER",
+  "helpDragInstruction": "👉 Drag the diagram to move around",
+  "helpTapInstruction": "👤 Tap a member to view details",
+  "helpTooltip": "Help",
+  "helpZoomInstruction": "🔍 Pinch to zoom in/out",
   "contactSection": "Direct Contact",
   "hotlineTitle": "Support Hotline",
   "hotlineValue": "1900 8888",
@@ -436,6 +440,7 @@
   "deleteLabel": "Delete",
   "memberCountBadge": "{count} members",
   "founderBadge": "Founder: {name}",
+  "founderFormat": "Founder: {name}",
   "anonymousUser": "Anonymous user",
   "noEmail": "No email",
   "approveButton": "Approve",
@@ -514,5 +519,131 @@
   "sessionTokenError": "Could not get session token",
   "passwordChangeFailed": "Password change failed",
   "serverConnectionError": "Server connection error",
-  "emailSubjectHelp": "Gia Toc Viet Support"
+  "emailSubjectHelp": "Gia Toc Viet Support",
+  "accountSectionTitle": "ACCOUNT",
+  "allLabel": "All",
+  "biographySectionTitle": "BIOGRAPHY & NOTES",
+  "branchCountLabel": "{count} Branches",
+  "branchLabel": "Branch",
+  "branchTabLabel": "Branches",
+  "congratulateActionMessage": "You sent congratulations.",
+  "congratulateButton": "CONGRATULATE ({count})",
+  "currentDateDisplay": "Date {day}/{month}/{year} (Lunar 12/05)",
+  "dateOfBirthLabel": "Date of Birth",
+  "dateOfDeathLabel": "Date of Death",
+  "donateButton": "Donate",
+  "eventCountdown": "{days} days left",
+  "eventDateSample1": "12/05 Lunar",
+  "eventDateSample2": "28/06 Solar",
+  "eventDateLabel": "Date {date}",
+  "eventDetailFormat": "Generation {gen} • Date {date}",
+  "eventSample1": "Ancestor Huynh Cong Minh Anniversary",
+  "eventSample2": "Spring Family Gathering 2026",
+  "eventTypeAncestors": "Ancestors",
+  "eventTypeEvent": "Event",
+  "eventsSectionTitle": "Events & Anniversaries",
+  "familyFundTitle": "FAMILY FUND",
+  "familyRelationSectionTitle": "FAMILY RELATIONS",
+  "familyTreeMapTitle": "Family Tree Map",
+  "familyTreeNameFormat": "{name} FAMILY TREE",
+  "familyTreeTitle": "FAMILY TREE",
+  "guideButton": "Guide",
+  "guideDrag": "👉 Drag the diagram to move around",
+  "guideTapMember": "👤 Tap a member to see details",
+  "guideZoom": "🔍 Pinch to zoom in/out",
+  "incenseActionMessage": "You lit a stick of incense.",
+  "incenseButton": "INCENSE ({count})",
+  "knownLabel": "Known",
+  "logoutConfirmMessage": "Are you sure you want to log out of the app?",
+  "logoutLabel": "Logout",
+  "memberIdFormat": "Member #{id}",
+  "memberTabLabel": "Members",
+  "noBiographyMessage": "No biography information for this member.",
+  "noTreeDataMessage": "No genealogy data available",
+  "notificationLabel": "Notifications",
+  "personalInfoLabel": "Personal Information",
+  "personalInfoSectionTitle": "PERSONAL INFORMATION",
+  "placeOfBirthLabel": "Place of Birth",
+  "searchMemberYearHint": "Search member, year of birth...",
+  "settingsTitle": "SETTINGS",
+  "spiritualMotto": "SPIRITUAL ROOTS • ETERNAL LEGACY",
+  "switchToAdminLabel": "Switch to Admin Page",
+  "todayLabel": "Today",
+  "unassignedBranch": "Unassigned branch",
+  "understoodLabel": "Got it",
+  "unknownGeneration": "Unknown generation",
+  "unknownLabel": "Unknown",
+  "usageGuideTitle": "Usage Guide",
+  "@branchCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@congratulateButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@currentDateDisplay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "@eventCountdown": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@eventDateLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@eventDetailFormat": {
+    "placeholders": {
+      "gen": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@familyTreeNameFormat": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@incenseButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@memberIdFormat": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  }
 }

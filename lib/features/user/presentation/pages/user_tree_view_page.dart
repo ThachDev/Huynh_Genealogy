@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/user_tree_bloc.dart';
 import '../widgets/user_member_node_widget.dart';
@@ -47,7 +48,7 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
           nodeMap[member.parentId]!,
           nodeMap[member.id]!,
           paint: Paint()
-            ..color = AppColors.connectionLine
+            ..color = context.connectionLine
             ..strokeWidth = 2.0,
         );
       } else if (member.parentId == null) {
@@ -63,17 +64,18 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
         title: Text(
-          'Bản Đồ Phả Hệ',
+          l10n.familyTreeTitle,
           style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
             icon: const Icon(LucideIcons.helpCircle),
-            tooltip: 'Hướng dẫn',
+            tooltip: l10n.helpTooltip,
             onPressed: () => _showHelp(context),
           ),
         ],
@@ -83,15 +85,15 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
           BlocBuilder<UserTreeBloc, UserTreeState>(
             builder: (context, state) {
               if (state is UserTreeLoading) {
-                return const Center(
-                    child: CircularProgressIndicator(color: AppColors.crimson));
+                return Center(
+                    child: CircularProgressIndicator(color: context.primary));
               }
 
               if (state is UserTreeError) {
                 return Center(
                   child: Text(
                     state.message,
-                    style: GoogleFonts.inter(color: AppColors.crimson),
+                    style: GoogleFonts.inter(color: context.primary),
                   ),
                 );
               }
@@ -100,9 +102,9 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
                 if (state.members.isEmpty) {
                   return Center(
                     child: Text(
-                      'Chưa có dữ liệu gia phả',
+                      l10n.noTreeDataMessage,
                       style: GoogleFonts.inter(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                         fontSize: 16,
                       ),
                     ),
@@ -124,7 +126,7 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
                       TreeEdgeRenderer(_algorithm),
                     ),
                     paint: Paint()
-                      ..color = AppColors.connectionLine
+                      ..color = context.connectionLine
                       ..strokeWidth = 2.0
                       ..style = PaintingStyle.stroke,
                     builder: (Node node) {
@@ -165,37 +167,38 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
   }
 
   void _showHelp(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.parchment,
+        backgroundColor: context.background,
         title: Text(
-          'Hướng dẫn sử dụng',
+          l10n.usageGuideTitle,
           style: GoogleFonts.beVietnamPro(
             fontWeight: FontWeight.bold,
-            color: AppColors.crimson,
+            color: context.primary,
           ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHelpItem('👉 Kéo sơ đồ để di chuyển'),
-            _buildHelpItem('🔍 Phóng to/Thu nhỏ bằng 2 ngón tay'),
-            _buildHelpItem('👤 Nhấn vào thành viên để xem chi tiết'),
-            const Divider(color: AppColors.gold, height: 20),
-            _buildLegendItem('Nam giới', AppColors.nodeMale),
-            _buildLegendItem('Nữ giới', AppColors.nodeFemale),
-            _buildLegendItem('Đã mất', AppColors.nodeDeceased),
+            _buildHelpItem(l10n.helpDragInstruction),
+            _buildHelpItem(l10n.helpZoomInstruction),
+            _buildHelpItem(l10n.helpTapInstruction),
+            Divider(color: context.accent, height: 20),
+            _buildLegendItem(l10n.genderMale, context.nodeMale),
+            _buildLegendItem(l10n.genderFemale, context.nodeFemale),
+            _buildLegendItem(l10n.deceasedLabel, context.nodeDeceased),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'Đã rõ',
+              l10n.understoodLabel,
               style: GoogleFonts.inter(
-                color: AppColors.crimson,
+                color: context.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -210,7 +213,7 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Text(
         text,
-        style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary),
+        style: GoogleFonts.inter(fontSize: 14, color: context.textPrimary),
       ),
     );
   }
@@ -225,14 +228,14 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
             height: 14,
             decoration: BoxDecoration(
               color: color,
-              border: Border.all(color: AppColors.gold, width: 1),
+              border: Border.all(color: context.accent, width: 1),
               borderRadius: BorderRadius.circular(3),
             ),
           ),
           const SizedBox(width: 8),
           Text(
             label,
-            style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary),
+            style: GoogleFonts.inter(fontSize: 13, color: context.textPrimary),
           ),
         ],
       ),

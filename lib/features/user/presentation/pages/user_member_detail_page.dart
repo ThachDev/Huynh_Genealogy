@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
@@ -19,15 +20,16 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       body: CustomScrollView(
         slivers: [
           // ── Header Modal with Ancient Clouds ──
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
-            backgroundColor: AppColors.crimson,
+            backgroundColor: context.primary,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 children: [
@@ -36,20 +38,20 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                       'assets/images/clouds.png',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) =>
-                          Container(color: AppColors.crimson),
+                          Container(color: context.primary),
                     ),
                   ),
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withValues(alpha: 0.5),
-                            Colors.transparent,
-                            Colors.black.withValues(alpha: 0.3),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
+                          gradient: LinearGradient(
+                            colors: [
+                              context.resolve(Colors.black.withValues(alpha: 0.5), Colors.transparent),
+                              Colors.transparent,
+                              context.resolve(Colors.black.withValues(alpha: 0.3), Colors.transparent),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
                         ),
                       ),
                     ),
@@ -71,10 +73,10 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                     height: 120,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.gold, width: 4),
+                      border: Border.all(color: context.accent, width: 4),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
+                          color: context.resolve(Colors.black.withValues(alpha: 0.2), Colors.transparent),
                           blurRadius: 15,
                           offset: const Offset(0, 5),
                         ),
@@ -82,15 +84,15 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                     ),
                     child: CircleAvatar(
                       radius: 56,
-                      backgroundColor: AppColors.parchment,
+                      backgroundColor: context.background,
                       backgroundImage: widget.member.avatarUrl != null
                           ? NetworkImage(widget.member.avatarUrl!)
                           : null,
                       child: widget.member.avatarUrl == null
-                          ? const Icon(
+                          ? Icon(
                               LucideIcons.user,
                               size: 60,
-                              color: AppColors.crimson,
+                              color: context.primary,
                             )
                           : null,
                     ),
@@ -103,7 +105,7 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.crimson,
+                      color: context.primary,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -113,15 +115,15 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildBadge(
-                        'Đời thứ ${widget.member.generation ?? "?"}',
-                        AppColors.gold,
+                        l10n.generationBadge('${widget.member.generation ?? "?"}'),
+                        context.accent,
                       ),
                       const SizedBox(width: 8),
                       _buildBadge(
-                        widget.member.isAlive ? "CÒN SỐNG" : "ĐÃ MẤT",
+                        widget.member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel,
                         widget.member.isAlive
                             ? Colors.green
-                            : AppColors.textSecondary,
+                            : context.textSecondary,
                       ),
                     ],
                   ),
@@ -138,37 +140,37 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _buildInfoSection('THÔNG TIN CÁ NHÂN', [
+                _buildInfoSection(l10n.personalInfoSectionTitle, [
                   _buildInfoRow(
                     LucideIcons.cake,
-                    'Ngày sinh',
+                    l10n.dateOfBirthLabel,
                     DateFormatter.formatForDisplay(widget.member.dateOfBirth) ??
-                        'Chưa rõ',
+                        l10n.unknownLabel,
                   ),
                   if (!widget.member.isAlive)
                     _buildInfoRow(
                       LucideIcons.calendar,
-                      'Ngày mất',
+                      l10n.dateOfDeathLabel,
                       DateFormatter.formatForDisplay(
                             widget.member.dateOfDeath,
                           ) ??
-                          'Chưa rõ',
+                          l10n.unknownLabel,
                     ),
                   _buildInfoRow(
                     LucideIcons.mapPin,
-                    'Nơi sinh',
-                    widget.member.placeOfBirth ?? 'Chưa rõ',
+                    l10n.placeOfBirthLabel,
+                    widget.member.placeOfBirth ?? l10n.unknownLabel,
                   ),
                   _buildInfoRow(
                     LucideIcons.gitBranch,
-                    'Chi tộc',
-                    widget.member.branchName ?? 'Họ Huỳnh',
+                    l10n.branchLabel,
+                    widget.member.branchName ?? '',
                   ),
                 ]),
                 const SizedBox(height: 24),
-                _buildInfoSection('QUAN HỆ GIA ĐÌNH', [
-                  _buildRelationshipRow('Cha/Mẹ', widget.member.parentId),
-                  _buildRelationshipRow('Vợ/Chồng', widget.member.spouseId),
+                _buildInfoSection(l10n.familyRelationSectionTitle, [
+                  _buildRelationshipRow(l10n.parentLabel, widget.member.parentId),
+                  _buildRelationshipRow(l10n.spouseLabel, widget.member.spouseId),
                 ]),
                 const SizedBox(height: 24),
                 _buildBioSection(),
@@ -200,6 +202,7 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
   }
 
   Widget _buildSpiritualButton() {
+    final l10n = AppLocalizations.of(context)!;
     final bool isDeceased = !widget.member.isAlive;
     return ElevatedButton.icon(
       onPressed: () {
@@ -208,11 +211,11 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
           SnackBar(
             content: Text(
               isDeceased
-                  ? 'Bạn đã thắp một nén nhang thành tâm.'
-                  : 'Bạn đã gửi một lời chúc mừng.',
+                  ? l10n.incenseActionMessage
+                  : l10n.congratulateActionMessage,
             ),
             duration: const Duration(seconds: 1),
-            backgroundColor: AppColors.crimson,
+            backgroundColor: context.primary,
           ),
         );
       },
@@ -221,16 +224,16 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
       ),
       label: Text(
         isDeceased
-            ? 'ĐỐT NHANG ($_spiritualCount)'
-            : 'CHÚC MỪNG ($_spiritualCount)',
-        style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+            ? l10n.incenseButton(_spiritualCount)
+                : l10n.congratulateButton(_spiritualCount),
+            style: GoogleFonts.inter(fontWeight: FontWeight.bold),
       ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: AppColors.crimson,
-        side: const BorderSide(color: AppColors.gold, width: 2),
+        backgroundColor: context.surface,
+        foregroundColor: context.primary,
+        side: BorderSide(color: context.accent, width: 2),
         elevation: 8,
-        shadowColor: AppColors.gold.withValues(alpha: 0.3),
+        shadowColor: context.accent.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
@@ -243,7 +246,7 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
       children: [
         Row(
           children: [
-            const Icon(LucideIcons.info, color: AppColors.gold, size: 18),
+            Icon(LucideIcons.info, color: context.accent, size: 18),
             const SizedBox(width: 8),
             Text(
               title,
@@ -255,7 +258,7 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
             ),
           ],
         ),
-        const Divider(color: AppColors.gold, thickness: 0.5),
+        Divider(color: context.accent, thickness: 0.5),
         const SizedBox(height: 8),
         ...children,
       ],
@@ -270,14 +273,14 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
           Icon(
             icon,
             size: 18,
-            color: AppColors.textSecondary.withValues(alpha: 0.6),
+            color: context.textSecondary.withValues(alpha: 0.6),
           ),
           const SizedBox(width: 12),
           Text(
             '$label:',
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const SizedBox(width: 8),
@@ -288,7 +291,7 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: context.textPrimary,
               ),
             ),
           ),
@@ -298,33 +301,34 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
   }
 
   Widget _buildRelationshipRow(String label, int? memberId) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          const Icon(LucideIcons.users, size: 18, color: AppColors.gold),
+          Icon(LucideIcons.users, size: 18, color: context.accent),
           const SizedBox(width: 12),
           Text(
             label,
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           const Spacer(),
           if (memberId == null)
             Text(
-              'Không rõ',
+              l10n.unknownLabel,
               style: GoogleFonts.inter(fontStyle: FontStyle.italic),
             )
           else
             TextButton(
               onPressed: () {},
               child: Text(
-                'Thành viên #$memberId',
+                l10n.memberIdFormat(memberId),
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.crimson,
+                  color: context.primary,
                 ),
               ),
             ),
@@ -334,15 +338,16 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
   }
 
   Widget _buildBioSection() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            const Icon(LucideIcons.scroll, color: AppColors.gold, size: 18),
+            Icon(LucideIcons.scroll, color: context.accent, size: 18),
             const SizedBox(width: 8),
             Text(
-              'TIỂU SỬ & GHI CHÚ',
+              l10n.biographySectionTitle,
               style: GoogleFonts.inter(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -351,24 +356,23 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
             ),
           ],
         ),
-        const Divider(color: AppColors.gold, thickness: 0.5),
+        Divider(color: context.accent, thickness: 0.5),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.surface,
             borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+            border: Border.all(color: context.accent.withValues(alpha: 0.3)),
           ),
           child: Text(
-            widget.member.notes ??
-                'Chưa có thông tin tiểu sử cho thành viên này.',
+            widget.member.notes ?? l10n.noBiographyMessage,
             style: GoogleFonts.beVietnamPro(
               fontSize: 16,
               height: 1.6,
               fontStyle: FontStyle.italic,
-              color: AppColors.textPrimary,
+              color: context.textPrimary,
             ),
           ),
         ),

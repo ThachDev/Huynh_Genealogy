@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 
 class UserMemberNodeWidget extends StatefulWidget {
@@ -45,19 +46,20 @@ class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
   }
 
   Color get _nodeColor {
-    if (!widget.member.isAlive) return AppColors.nodeDeceased;
+    if (!widget.member.isAlive) return context.nodeDeceased;
     switch (widget.member.gender) {
       case Gender.male:
-        return AppColors.nodeMale;
+        return context.nodeMale;
       case Gender.female:
-        return AppColors.nodeFemale;
+        return context.nodeFemale;
       case Gender.unknown:
-        return AppColors.parchment;
+        return context.background;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
       onTapUp: (_) {
@@ -74,13 +76,13 @@ class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
           decoration: BoxDecoration(
             color: _nodeColor,
             border: Border.all(
-              color: widget.isSelected ? AppColors.crimson : AppColors.gold,
+              color: widget.isSelected ? context.primary : context.accent,
               width: widget.isSelected ? 2.5 : 1.5,
             ),
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: context.resolve(Colors.black.withValues(alpha: 0.1), Colors.transparent),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -93,18 +95,18 @@ class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.gold, width: 2),
+                  border: Border.all(color: context.accent, width: 2),
                 ),
                 child: CircleAvatar(
                   radius: 30,
-                  backgroundColor: AppColors.parchment,
+                  backgroundColor: context.background,
                   backgroundImage: widget.member.avatarUrl != null
                       ? NetworkImage(widget.member.avatarUrl!)
                       : null,
                   child: widget.member.avatarUrl == null
-                      ? const Icon(
+                      ? Icon(
                           LucideIcons.user,
-                          color: AppColors.crimson,
+                          color: context.primary,
                           size: 36,
                         )
                       : null,
@@ -120,7 +122,7 @@ class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                 ),
               ),
               const SizedBox(height: 6),
@@ -132,11 +134,11 @@ class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.crimson,
+                    color: context.primary,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'Đời thứ ${widget.member.generation}',
+                    l10n.generationBadge('${widget.member.generation}'),
                     style: GoogleFonts.inter(
                       fontSize: 10,
                       fontWeight: FontWeight.w500,
@@ -148,10 +150,10 @@ class _UserMemberNodeWidgetState extends State<UserMemberNodeWidget>
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0),
                   child: Text(
-                    '✝ Đã mất',
+                    '✝ ${l10n.deceasedLabel}',
                     style: GoogleFonts.inter(
                       fontSize: 10,
-                      color: AppColors.textSecondary,
+                      color: context.textSecondary,
                       fontStyle: FontStyle.italic,
                     ),
                   ),

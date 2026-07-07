@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/user_tree_bloc.dart';
 import '../widgets/user_branch_card.dart';
@@ -69,8 +70,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       body: BlocBuilder<UserTreeBloc, UserTreeState>(
         builder: (context, state) {
           final double topPadding = MediaQuery.of(context).padding.top;
@@ -90,10 +92,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   // ── Wooden Header with Dragon Patterns ──
                   _buildHeader(context, state),
                   if (state is UserTreeLoading)
-                    const SliverFillRemaining(
+                    SliverFillRemaining(
                       child: Center(
                         child:
-                            CircularProgressIndicator(color: AppColors.crimson),
+                            CircularProgressIndicator(color: context.primary),
                       ),
                     ),
                   if (state is UserTreeError)
@@ -102,10 +104,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               LucideIcons.alertCircle,
                               size: 64,
-                              color: AppColors.crimson,
+                              color: context.primary,
                             ),
                             const SizedBox(height: 16),
                             Text(state.message, style: GoogleFonts.inter()),
@@ -113,7 +115,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                               onPressed: () => context
                                   .read<UserTreeBloc>()
                                   .add(UserTreeLoadEvent(familyId: _familyId())),
-                              child: const Text('Thử lại'),
+                              child: Text(l10n.retryButton),
                             ),
                           ],
                         ),
@@ -134,7 +136,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     ),
                     // ── Branches Section ──
                     SliverToBoxAdapter(
-                      child: _buildSectionTitle('Chi Tộc / Nhánh'),
+                      child: _buildSectionTitle(l10n.branchTabLabel),
                     ),
                     SliverToBoxAdapter(
                       child: SizedBox(
@@ -163,7 +165,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       ),
                     ),
                     // ── Members Grid ──
-                    SliverToBoxAdapter(child: _buildSectionTitle('Thành Viên')),
+                    SliverToBoxAdapter(child: _buildSectionTitle(l10n.memberTabLabel)),
 
                     // Local filter block
                     () {
@@ -197,14 +199,14 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       }).toList();
 
                       if (filteredMembers.isEmpty) {
-                        return const SliverToBoxAdapter(
+                        return SliverToBoxAdapter(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 32),
+                            padding: const EdgeInsets.symmetric(vertical: 32),
                             child: Center(
                               child: Text(
-                                'Không tìm thấy thành viên phù hợp',
+                                l10n.noMemberFound,
                                 style:
-                                    TextStyle(color: AppColors.textSecondary),
+                                    TextStyle(color: context.textSecondary),
                               ),
                             ),
                           ),
@@ -256,7 +258,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     switch (role.toUpperCase()) {
       case 'OWNER':
       case 'CREATOR':
-        return AppColors.crimson;
+        return context.primary;
       case 'BRANCH_ADMIN':
       case 'EDITOR':
         return Colors.orange;
@@ -266,24 +268,26 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   String _getRoleLabel(String role) {
+    final l10n = AppLocalizations.of(context)!;
     switch (role.toUpperCase()) {
       case 'OWNER':
       case 'CREATOR':
-        return 'TRƯỞNG TỘC';
+        return l10n.roleOwner;
       case 'BRANCH_ADMIN':
-        return 'QUẢN TRỊ CHI';
+        return l10n.roleBranchAdminTitle.toUpperCase();
       case 'EDITOR':
-        return 'BIÊN SOẠN';
+        return l10n.roleEditorTitle.toUpperCase();
       default:
-        return 'THÀNH VIÊN';
+        return l10n.roleViewerTitle.toUpperCase();
     }
   }
 
   Widget _buildHeader(BuildContext context, UserTreeState state) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.read<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
 
-    String familyName = 'GIA PHẢ DÒNG HỌ';
+    String familyName = l10n.familyTreeTitle;
     if (state is UserTreeLoaded && state.members.isNotEmpty) {
       final rootMembers = state.members.where(
         (m) => m.generation == 1 || m.parentId == null,
@@ -292,7 +296,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           rootMembers.isNotEmpty ? rootMembers.first : state.members.first;
       final parts = rootMember.fullName.trim().split(' ');
       if (parts.isNotEmpty) {
-        familyName = 'GIA PHẢ HỌ ${parts.first.toUpperCase()}';
+        familyName = l10n.familyTreeNameFormat(parts.first.toUpperCase());
       }
     }
 
@@ -300,7 +304,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     return SliverAppBar(
       expandedHeight: 200,
       pinned: true,
-      backgroundColor: AppColors.wood,
+      backgroundColor: context.appBarBg,
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           children: [
@@ -310,12 +314,12 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 'assets/images/wood_dragon.png',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    Container(color: AppColors.wood),
+                    Container(color: context.appBarBg),
               ),
             ),
             // Wood Overlay to darken
             Positioned.fill(
-              child: Container(color: Colors.black.withValues(alpha: 0.45)),
+              child: Container(color: context.resolve(Colors.black.withValues(alpha: 0.45), Colors.transparent)),
             ),
             // Content
             SafeArea(
@@ -334,9 +338,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           height: 44,
                           decoration: BoxDecoration(
                             border:
-                                Border.all(color: AppColors.gold, width: 1.5),
+                                Border.all(color: context.accent, width: 1.5),
                             borderRadius: BorderRadius.circular(8),
-                            color: AppColors.parchment.withValues(alpha: 0.1),
+                            color: context.background.withValues(alpha: 0.1),
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(6),
@@ -344,8 +348,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                               'assets/images/logo.png',
                               fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(LucideIcons.gitBranch,
-                                      color: AppColors.gold, size: 24),
+                                  Icon(LucideIcons.gitBranch,
+                                      color: context.accent, size: 24),
                             ),
                           ),
                         ),
@@ -360,7 +364,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                   style: GoogleFonts.beVietnamPro(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.gold,
+                                    color: context.accent,
                                     letterSpacing: 1.2,
                                   ),
                                 ),
@@ -375,7 +379,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                       color: _getRoleColor(user.role),
                                       borderRadius: BorderRadius.circular(4),
                                       border: Border.all(
-                                        color: AppColors.gold
+                                        color: context.accent
                                             .withValues(alpha: 0.5),
                                         width: 0.5,
                                       ),
@@ -399,18 +403,18 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     const SizedBox(height: 12),
                     // Motto
                     Text(
-                      'CỘI NGUỒN TÂM LINH • VẠN ĐẠI TRƯỜNG TỒN',
+                      l10n.spiritualMotto,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.gold.withValues(alpha: 0.9),
+                        color: context.accent.withValues(alpha: 0.9),
                         letterSpacing: 1.5,
                       ),
                     ),
                     const SizedBox(height: 4),
                     // Date
                     Text(
-                      'Ngày ${now.day}/${now.month}/${now.year} (Nhằm 12/05 Âm Lịch)',
+                      l10n.currentDateDisplay(now.day, now.month, now.year),
                       style: GoogleFonts.inter(
                         fontSize: 11,
                         color: Colors.white70,
@@ -422,11 +426,11 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(LucideIcons.users,
-                            color: AppColors.gold, size: 14),
+                        Icon(LucideIcons.users,
+                            color: context.accent, size: 14),
                         const SizedBox(width: 6),
                         Text(
-                          '${state is UserTreeLoaded ? state.members.length : 0} Thành viên',
+                          l10n.memberCountBadge(state is UserTreeLoaded ? state.members.length : 0),
                           style: GoogleFonts.inter(
                             color: Colors.white,
                             fontSize: 12,
@@ -436,11 +440,11 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                         const SizedBox(width: 24),
                         Container(width: 1, height: 12, color: Colors.white30),
                         const SizedBox(width: 24),
-                        const Icon(LucideIcons.gitBranch,
-                            color: AppColors.gold, size: 14),
+                        Icon(LucideIcons.gitBranch,
+                            color: context.accent, size: 14),
                         const SizedBox(width: 6),
                         Text(
-                          '${state is UserTreeLoaded ? state.branches.length : 0} Chi tộc',
+                          l10n.branchCountLabel(state is UserTreeLoaded ? state.branches.length : 0),
                           style: GoogleFonts.inter(
                             color: Colors.white,
                             fontSize: 12,
@@ -460,6 +464,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   Widget _buildFundCard() {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<FamilyFundBloc, FamilyFundState>(
       builder: (context, state) {
         final balanceText = state is FamilyFundLoaded
@@ -470,12 +475,12 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: context.surface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.gold.withValues(alpha: 0.25)),
+            border: Border.all(color: context.accent.withValues(alpha: 0.25)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
+                color: context.resolve(Colors.black.withValues(alpha: 0.02), Colors.transparent),
                 blurRadius: 6,
                 offset: const Offset(0, 3),
               ),
@@ -489,14 +494,14 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 children: [
                   Row(
                     children: [
-                      const Icon(LucideIcons.wallet,
-                          color: AppColors.gold, size: 16),
+                      Icon(LucideIcons.wallet,
+                          color: context.accent, size: 16),
                       const SizedBox(width: 6),
                       Text(
-                        'QUỸ GIA TỘC',
+                        l10n.familyFundTitle,
                         style: GoogleFonts.beVietnamPro(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.wood,
+                          color: context.appBarBg,
                           fontSize: 12,
                           letterSpacing: 0.5,
                         ),
@@ -509,7 +514,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.crimson,
+                      color: context.primary,
                     ),
                   ),
                 ],
@@ -524,8 +529,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.gold,
-                  foregroundColor: AppColors.wood,
+                  backgroundColor: context.accent,
+                  foregroundColor: context.appBarBg,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   minimumSize: Size.zero,
@@ -536,7 +541,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 ),
                 icon: const Icon(LucideIcons.heartHandshake, size: 14),
                 label: Text(
-                  'Đóng góp',
+                  l10n.donateButton,
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -551,28 +556,29 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   Widget _buildEventsCarousel() {
+    final l10n = AppLocalizations.of(context)!;
     final events = [
       FamilyEvent(
-        title: 'Giỗ cụ Huỳnh Công Minh',
-        type: 'Giỗ Chạp',
-        date: '12/05 Âm lịch',
-        countdown: 'Hôm nay',
+        title: l10n.eventSample1,
+        type: l10n.eventTypeAncestors,
+        date: l10n.eventDateSample1,
+        countdown: l10n.todayLabel,
         generation: 2,
-        badgeColor: AppColors.crimson,
+        badgeColor: context.primary,
       ),
       FamilyEvent(
-        title: 'Hội thảo Dòng họ Xuân 2026',
-        type: 'Sự kiện',
-        date: '28/06 Dương lịch',
-        countdown: 'Còn 2 ngày',
+        title: l10n.eventSample2,
+        type: l10n.eventTypeEvent,
+        date: l10n.eventDateSample2,
+        countdown: l10n.eventCountdown(2),
         generation: 0,
         badgeColor: Colors.teal,
       ),
       FamilyEvent(
         title: 'Giỗ cụ bà Nguyễn Thị Mai',
-        type: 'Giỗ Chạp',
+        type: l10n.eventTypeAncestors,
         date: '02/07 Âm lịch',
-        countdown: 'Còn 15 ngày',
+        countdown: l10n.eventCountdown(15),
         generation: 3,
         badgeColor: Colors.orange,
       ),
@@ -581,7 +587,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('Sự Kiện & Lễ Giỗ Dòng Họ'),
+        _buildSectionTitle(l10n.eventsSectionTitle),
         SizedBox(
           height: 110,
           child: ListView.builder(
@@ -595,13 +601,13 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.surface,
                   borderRadius: BorderRadius.circular(12),
                   border:
-                      Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
+                      Border.all(color: context.accent.withValues(alpha: 0.2)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.02),
+                      color: context.resolve(Colors.black.withValues(alpha: 0.02), Colors.transparent),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -634,7 +640,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColors.gold.withValues(alpha: 0.15),
+                            color: context.accent.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
@@ -642,7 +648,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             style: GoogleFonts.inter(
                               fontSize: 9,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.wood,
+                              color: context.appBarBg,
                             ),
                           ),
                         ),
@@ -656,16 +662,16 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: context.textPrimary,
                       ),
                     ),
                     Text(
                       event.generation > 0
-                          ? 'Đời thứ ${event.generation} • Ngày ${event.date}'
-                          : 'Ngày ${event.date}',
+                          ? l10n.eventDetailFormat(event.generation, event.date)
+                          : l10n.eventDateLabel(event.date),
                       style: GoogleFonts.inter(
                         fontSize: 10,
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
@@ -679,16 +685,17 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   Widget _buildSearchAndFilterSection() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.surface,
           borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+          border: Border.all(color: context.accent.withValues(alpha: 0.3)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
+              color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -697,16 +704,16 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
         child: Row(
           children: [
             const SizedBox(width: 14),
-            const Icon(LucideIcons.search, color: AppColors.gold, size: 16),
+            Icon(LucideIcons.search, color: context.accent, size: 16),
             const SizedBox(width: 8),
             Expanded(
               child: TextField(
                 controller: _searchController,
                 onChanged: (val) => setState(() {}),
                 decoration: InputDecoration(
-                  hintText: 'Tìm thành viên, năm sinh...',
+                  hintText: l10n.searchMemberYearHint,
                   hintStyle: GoogleFonts.inter(
-                    color: AppColors.textSecondary.withValues(alpha: 0.6),
+                    color: context.textSecondary.withValues(alpha: 0.6),
                     fontSize: 13,
                   ),
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -714,7 +721,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   isDense: true,
                 ),
                 style: GoogleFonts.inter(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                   fontSize: 13,
                 ),
               ),
@@ -722,21 +729,21 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
             Container(
               width: 1,
               height: 20,
-              color: AppColors.gold.withValues(alpha: 0.3),
+              color: context.accent.withValues(alpha: 0.3),
             ),
             const SizedBox(width: 4),
             DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _selectedGender,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                icon: const Icon(
+                icon: Icon(
                   LucideIcons.chevronsUpDown,
-                  color: AppColors.gold,
+                  color: context.accent,
                   size: 14,
                 ),
-                dropdownColor: Colors.white,
+                dropdownColor: context.surface,
                 style: GoogleFonts.inter(
-                  color: AppColors.textPrimary,
+                  color: context.textPrimary,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -764,14 +771,14 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: Row(
         children: [
-          Container(width: 4, height: 18, color: AppColors.crimson),
+          Container(width: 4, height: 18, color: context.primary),
           const SizedBox(width: 10),
           Text(
             title.toUpperCase(),
             style: GoogleFonts.beVietnamPro(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: context.textPrimary,
               letterSpacing: 1,
             ),
           ),
@@ -781,25 +788,26 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   Widget _buildMemberCard(MemberEntity m) {
+    final l10n = AppLocalizations.of(context)!;
     final bool isMale = m.gender == Gender.male;
     final String genText =
-        m.generation != null ? 'Đời ${m.generation}' : 'Chưa rõ đời';
-    final String statusText = m.isAlive ? 'Còn sống' : 'Đã mất';
+        m.generation != null ? l10n.generationBadge('${m.generation}') : l10n.unknownGeneration;
+    final String statusText = m.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
     final Color statusColor = m.isAlive ? Colors.green : Colors.grey;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isMale
-              ? AppColors.nodeMale.withValues(alpha: 0.3)
-              : AppColors.nodeFemale.withValues(alpha: 0.3),
+              ? context.nodeMale.withValues(alpha: 0.3)
+              : context.nodeFemale.withValues(alpha: 0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -812,21 +820,21 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
             children: [
               Container(
                 width: 6,
-                color: isMale ? AppColors.nodeMale : AppColors.nodeFemale,
+                color: isMale ? context.nodeMale : context.nodeFemale,
               ),
               const SizedBox(width: 12),
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.gold.withValues(alpha: 0.4),
+                    color: context.accent.withValues(alpha: 0.4),
                     width: 1.5,
                   ),
                 ),
                 child: CircleAvatar(
                   backgroundColor: isMale
-                      ? AppColors.nodeMale.withValues(alpha: 0.1)
-                      : AppColors.nodeFemale.withValues(alpha: 0.1),
+                      ? context.nodeMale.withValues(alpha: 0.1)
+                      : context.nodeFemale.withValues(alpha: 0.1),
                   radius: 24,
                   backgroundImage:
                       m.avatarUrl != null ? NetworkImage(m.avatarUrl!) : null,
@@ -834,8 +842,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       ? Icon(
                           isMale ? LucideIcons.user : LucideIcons.userCheck,
                           color: isMale
-                              ? AppColors.nodeMale
-                              : AppColors.nodeFemale,
+                              ? context.nodeMale
+                              : context.nodeFemale,
                           size: 20,
                         )
                       : null,
@@ -852,7 +860,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       style: GoogleFonts.beVietnamPro(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
-                        color: AppColors.textPrimary,
+                        color: context.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -862,7 +870,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColors.gold.withValues(alpha: 0.15),
+                            color: context.accent.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
@@ -870,16 +878,16 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             style: GoogleFonts.inter(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.wood,
+                              color: context.appBarBg,
                             ),
                           ),
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          m.branchName ?? 'Chưa phân chi',
+                          m.branchName ?? l10n.unassignedBranch,
                           style: GoogleFonts.inter(
                             fontSize: 11,
-                            color: AppColors.textSecondary,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],
@@ -910,8 +918,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   ),
                   const SizedBox(height: 4),
                   IconButton(
-                    icon: const Icon(LucideIcons.chevronRight,
-                        color: AppColors.gold, size: 20),
+                    icon: Icon(LucideIcons.chevronRight,
+                        color: context.accent, size: 20),
                     onPressed: () {
                       // Action details
                     },

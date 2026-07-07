@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 
 class UserBranchCard extends StatelessWidget {
@@ -18,6 +19,7 @@ class UserBranchCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -25,17 +27,17 @@ class UserBranchCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.crimson : Colors.white,
+          color: isSelected ? context.primary : context.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? AppColors.gold
-                : AppColors.gold.withValues(alpha: 0.3),
+                ? context.accent
+                : context.accent.withValues(alpha: 0.3),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: context.resolve(Colors.black.withValues(alpha: 0.05), Colors.transparent),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -50,12 +52,12 @@ class UserBranchCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? Colors.white.withValues(alpha: 0.2)
-                    : AppColors.parchment,
+                    : context.background,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 LucideIcons.gitBranch,
-                color: isSelected ? Colors.white : AppColors.crimson,
+                color: isSelected ? Colors.white : context.primary,
                 size: 28,
               ),
             ),
@@ -72,20 +74,20 @@ class UserBranchCard extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.white : AppColors.textPrimary,
+                      color: isSelected ? Colors.white : context.textPrimary,
                     ),
                   ),
                   if (branch.founderName != null) ...[
                     const SizedBox(height: 4),
                     Text(
-                      'Tổ: ${branch.founderName}',
+                      l10n.founderFormat(branch.founderName!),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.inter(
                         fontSize: 13,
                         color: isSelected
                             ? Colors.white70
-                            : AppColors.textSecondary,
+                            : context.textSecondary,
                       ),
                     ),
                   ],
@@ -98,7 +100,7 @@ class UserBranchCard extends StatelessWidget {
                           size: 14,
                           color: isSelected
                               ? Colors.white60
-                              : AppColors.textSecondary,
+                              : context.textSecondary,
                         ),
                         const SizedBox(width: 4),
                         Expanded(
@@ -110,7 +112,7 @@ class UserBranchCard extends StatelessWidget {
                               fontSize: 12,
                               color: isSelected
                                   ? Colors.white60
-                                  : AppColors.textSecondary,
+                                  : context.textSecondary,
                             ),
                           ),
                         ),
@@ -124,7 +126,7 @@ class UserBranchCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.white24 : AppColors.parchment,
+                  color: isSelected ? Colors.white24 : context.background,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -132,7 +134,7 @@ class UserBranchCard extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.white : AppColors.crimson,
+                    color: isSelected ? Colors.white : context.primary,
                   ),
                 ),
               ),

@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../auth/auth.dart';
 import 'package:giatocviet/core/widgets/app_bottom_navigation_bar.dart';
 
@@ -25,22 +26,23 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
 
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
         title: Text(
-          'CÀI ĐẶT',
+          l10n.settingsTitle,
           style: GoogleFonts.beVietnamPro(
-            color: AppColors.gold,
+            color: context.accent,
             fontWeight: FontWeight.bold,
             fontSize: 16,
             letterSpacing: 1.2,
           ),
         ),
-        backgroundColor: AppColors.wood,
+        backgroundColor: context.appBarBg,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -53,15 +55,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.wood, Color(0xFF6E4720)],
+                gradient: LinearGradient(
+                  colors: [context.appBarBg, context.appBarBg],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: context.resolve(Colors.black.withValues(alpha: 0.1), Colors.transparent),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -73,13 +75,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: AppColors.gold.withValues(alpha: 0.2),
+                      color: context.accent.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.gold, width: 2),
+                      border: Border.all(color: context.accent, width: 2),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       LucideIcons.user,
-                      color: AppColors.gold,
+                      color: context.accent,
                       size: 28,
                     ),
                   ),
@@ -90,12 +92,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       children: [
                         Text(
                           user.fullName.isNotEmpty
-                              ? user.fullName
-                              : 'Thành viên',
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.gold,
+                          ? user.fullName
+                          : l10n.roleViewer,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: context.accent,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -115,20 +117,20 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             const SizedBox(height: 24),
           ],
 
-          _buildSectionHeader('TÀI KHOẢN'),
+          _buildSectionHeader(l10n.accountSectionTitle),
           _buildSettingsCard(
             children: [
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.user,
-                title: 'Thông tin cá nhân',
+                title: l10n.personalInfoLabel,
                 onTap: () {},
               ),
               _buildDivider(),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.lock,
-                title: 'Bảo mật tài khoản',
+                title: l10n.accountSecurityLabel,
                 onTap: () {},
               ),
               if (user != null &&
@@ -140,7 +142,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 _buildSettingsTile(
                   context: context,
                   icon: LucideIcons.shieldAlert,
-                  title: 'Chuyển sang trang Quản trị',
+                  title: l10n.switchToAdminLabel,
                   onTap: () {
                     UserMainNavigationPage.adminModeNotifier.value = true;
                   },
@@ -150,40 +152,40 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           ),
           const SizedBox(height: 24),
 
-          _buildSectionHeader('THIẾT LẬP ỨNG DỤNG'),
+          _buildSectionHeader(l10n.appSettingsSection),
           _buildSettingsCard(
             children: [
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.globe,
-                title: 'Ngôn ngữ',
+                title: l10n.languageLabel,
                 onTap: () {},
               ),
               _buildDivider(),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.bellRing,
-                title: 'Thông báo',
+                title: l10n.notificationLabel,
                 onTap: () {},
               ),
             ],
           ),
           const SizedBox(height: 24),
 
-          _buildSectionHeader('THÔNG TIN & TRỢ GIÚP'),
+          _buildSectionHeader(l10n.infoAndHelpSection),
           _buildSettingsCard(
             children: [
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.helpCircle,
-                title: 'Trung tâm hỗ trợ',
+                title: l10n.helpCenterLabel,
                 onTap: () {},
               ),
               _buildDivider(),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.info,
-                title: 'Về chúng tôi',
+                title: l10n.aboutUsLabel,
                 onTap: () {},
               ),
             ],
@@ -202,24 +204,24 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     title: Text(
-                      'Đăng xuất',
+                      l10n.logoutLabel,
                       style: GoogleFonts.beVietnamPro(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: context.textPrimary,
                       ),
                     ),
                     content: Text(
-                      'Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?',
+                      l10n.logoutConfirmMessage,
                       style:
-                          GoogleFonts.inter(color: AppColors.textSecondary),
+                          GoogleFonts.inter(color: context.textSecondary),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(ctx).pop(),
                         child: Text(
-                          'Huỷ',
+                          l10n.cancelLabel,
                           style: GoogleFonts.inter(
-                              color: AppColors.textSecondary),
+                              color: context.textSecondary),
                         ),
                       ),
                       TextButton(
@@ -228,7 +230,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                           context.read<AuthBloc>().add(AuthLogoutRequested());
                         },
                         child: Text(
-                          'Đăng xuất',
+                          l10n.logoutButton,
                           style: GoogleFonts.inter(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
@@ -249,7 +251,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               ),
               icon: const Icon(LucideIcons.logOut, size: 18),
               label: Text(
-                'ĐĂNG XUẤT',
+                l10n.logoutButton,
                 style: GoogleFonts.beVietnamPro(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -272,7 +274,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         style: GoogleFonts.beVietnamPro(
           fontSize: 12,
           fontWeight: FontWeight.bold,
-          color: AppColors.textSecondary.withValues(alpha: 0.7),
+          color: context.textSecondary.withValues(alpha: 0.7),
           letterSpacing: 1.0,
         ),
       ),
@@ -285,11 +287,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: AppColors.gold.withValues(alpha: 0.15),
+          color: context.accent.withValues(alpha: 0.15),
           width: 1,
         ),
       ),
-      color: Colors.white,
+      color: context.surface,
       child: Column(children: children),
     );
   }
@@ -312,13 +314,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: (iconColor ?? AppColors.crimson).withValues(alpha: 0.08),
+                color: (iconColor ?? context.primary).withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 20,
-                color: iconColor ?? AppColors.crimson,
+                color: iconColor ?? context.primary,
               ),
             ),
             const SizedBox(width: 16),
@@ -328,14 +330,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: titleColor ?? AppColors.textPrimary,
+                  color: titleColor ?? context.textPrimary,
                 ),
               ),
             ),
             Icon(
               LucideIcons.chevronRight,
               size: 16,
-              color: AppColors.textSecondary.withValues(alpha: 0.5),
+              color: context.textSecondary.withValues(alpha: 0.5),
             ),
           ],
         ),
@@ -347,7 +349,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
     return Divider(
       height: 1,
       thickness: 1,
-      color: AppColors.gold.withValues(alpha: 0.05),
+      color: context.accent.withValues(alpha: 0.05),
       indent: 60,
       endIndent: 16,
     );

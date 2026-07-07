@@ -25,16 +25,6 @@ class PendingRequestItemWidget extends StatelessWidget {
         color: context.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.accent.withValues(alpha: 0.4)),
-        boxShadow: [
-          BoxShadow(
-            color: context.resolve(
-              Colors.black.withValues(alpha: 0.03),
-              Colors.transparent,
-            ),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

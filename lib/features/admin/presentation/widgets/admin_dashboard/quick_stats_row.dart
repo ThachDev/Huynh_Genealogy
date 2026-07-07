@@ -28,21 +28,11 @@ class QuickStatsRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.textSecondary.withValues(alpha: 0.15)),
-        boxShadow: [
-          BoxShadow(
-            color: context.resolve(
-              Colors.black.withValues(alpha: 0.04),
-              Colors.transparent,
-            ),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: context.background,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: context.textSecondary.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -55,7 +45,7 @@ class QuickStatsRow extends StatelessWidget {
               onTap: () => onTabChanged(AdminDashboardTab.members),
             ),
           ),
-          Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.15)),
+          Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.1)),
           Expanded(
             child: StatItem(
               icon: LucideIcons.menu,
@@ -66,7 +56,7 @@ class QuickStatsRow extends StatelessWidget {
             ),
           ),
           if (showPending) ...[
-            Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.15)),
+            Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.1)),
             Expanded(
               child: StatItem(
                 icon: LucideIcons.clock,
@@ -105,18 +95,27 @@ class StatItem extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
           decoration: BoxDecoration(
             color: isSelected
-                ? context.accent.withValues(alpha: 0.08)
+                ? context.surface
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    )
+                  ]
+                : null,
             border: Border.all(
               color: isSelected
-                  ? context.accent.withValues(alpha: 0.4)
+                  ? context.accent.withValues(alpha: 0.25)
                   : Colors.transparent,
             ),
           ),

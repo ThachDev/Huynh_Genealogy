@@ -211,99 +211,109 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
     return MultiBlocListener(
       listeners: [
-          BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
-            listener: (context, state) {
-              final l10n = AppLocalizations.of(context)!;
-              if (state is AdminRequestApprovedSuccess) {
-                AppSnackBar.success(context, l10n.approveSuccess);
-                _loadPendingRequests();
-                _loadTree();
-              } else if (state is AdminRequestRejectedSuccess) {
-                AppSnackBar.success(context, l10n.rejectSuccess);
-                _loadPendingRequests();
-              } else if (state is AdminPendingRequestsFailure) {
-                AppSnackBar.error(context, state.message);
+        BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
+          listener: (context, state) {
+            final l10n = AppLocalizations.of(context)!;
+            if (state is AdminRequestApprovedSuccess) {
+              AppSnackBar.success(context, l10n.approveSuccess);
+              _loadPendingRequests();
+              _loadTree();
+            } else if (state is AdminRequestRejectedSuccess) {
+              AppSnackBar.success(context, l10n.rejectSuccess);
+              _loadPendingRequests();
+            } else if (state is AdminPendingRequestsFailure) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
+        BlocListener<AdminMemberFormBloc, AdminMemberFormState>(
+          listener: (context, state) {
+            final l10n = AppLocalizations.of(context)!;
+            if (state is AdminMemberFormSuccess) {
+              if (state.isDeleted) {
+                AppSnackBar.success(context, l10n.deleteMemberSuccess);
+              } else {
+                AppSnackBar.success(context, l10n.saveMemberSuccess);
               }
-            },
-          ),
-          BlocListener<AdminMemberFormBloc, AdminMemberFormState>(
-            listener: (context, state) {
-              final l10n = AppLocalizations.of(context)!;
-              if (state is AdminMemberFormSuccess) {
-                if (state.isDeleted) {
-                  AppSnackBar.success(context, l10n.deleteMemberSuccess);
-                } else {
-                  AppSnackBar.success(context, l10n.saveMemberSuccess);
-                }
-                _loadTree();
-              } else if (state is AdminMemberFormError) {
-                AppSnackBar.error(context, state.message);
+              _loadTree();
+            } else if (state is AdminMemberFormError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
+        BlocListener<AdminBranchFormBloc, AdminBranchFormState>(
+          listener: (context, state) {
+            final l10n = AppLocalizations.of(context)!;
+            if (state is AdminBranchFormSuccess) {
+              if (state.isDeleted) {
+                AppSnackBar.success(context, l10n.deleteBranchSuccess);
+              } else {
+                AppSnackBar.success(context, l10n.saveBranchSuccess);
               }
-            },
-          ),
-          BlocListener<AdminBranchFormBloc, AdminBranchFormState>(
-            listener: (context, state) {
-              final l10n = AppLocalizations.of(context)!;
-              if (state is AdminBranchFormSuccess) {
-                if (state.isDeleted) {
-                  AppSnackBar.success(context, l10n.deleteBranchSuccess);
-                } else {
-                  AppSnackBar.success(context, l10n.saveBranchSuccess);
-                }
-                _loadTree();
-              } else if (state is AdminBranchFormError) {
-                AppSnackBar.error(context, state.message);
-              }
-            },
-          ),
+              _loadTree();
+            } else if (state is AdminBranchFormError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
       ],
       child: Scaffold(
-        backgroundColor: context.background,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        backgroundColor: context.surface,
+        body: Stack(
           children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _buildHeader(context, user, headerHeight, familyName),
-              ],
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: _buildHeader(context, user, headerHeight, familyName),
             ),
-            Transform.translate(
-              offset: const Offset(0, -45),
+            Positioned(
+              top: headerHeight + 20,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Column(
+                children: [
+                  const SizedBox(height: 35),
+                  QuickStatsRow(
+                    showPending: !isEditor,
+                    memberCount: memberCount,
+                    branchCount: branchCount,
+                    pendingCount: pendingCount,
+                    selectedTab: _selectedTab,
+                    onTabChanged: (tab) {
+                      setState(() {
+                        _selectedTab = tab;
+                        _searchController.clear();
+                        _memberLimit = 5;
+                        _branchLimit = 5;
+                        _pendingLimit = 5;
+                        if (_scrollController.hasClients) {
+                          _scrollController.jumpTo(0);
+                        }
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: _buildContentSection(
+                      userTreeState: userTreeState,
+                      pendingState: pendingState,
+                      members: allMembers,
+                      branches: allBranches,
+                      requests: pendingRequests,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: headerHeight - 45,
+              left: 0,
+              right: 0,
               child: _buildInviteCodeCard(
                 context,
                 inviteCode,
-              ),
-            ),
-            Transform.translate(
-              offset: const Offset(0, -25),
-              child: QuickStatsRow(
-                showPending: !isEditor,
-                memberCount: memberCount,
-                branchCount: branchCount,
-                pendingCount: pendingCount,
-                selectedTab: _selectedTab,
-                onTabChanged: (tab) {
-                  setState(() {
-                    _selectedTab = tab;
-                    _searchController.clear();
-                    _memberLimit = 5;
-                    _branchLimit = 5;
-                    _pendingLimit = 5;
-                    if (_scrollController.hasClients) {
-                      _scrollController.jumpTo(0);
-                    }
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: _buildContentSection(
-                userTreeState: userTreeState,
-                pendingState: pendingState,
-                members: allMembers,
-                branches: allBranches,
-                requests: pendingRequests,
               ),
             ),
           ],
@@ -733,122 +743,123 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       builder: (ctx) {
         final l10n = AppLocalizations.of(ctx)!;
         return Dialog(
-        backgroundColor: ctx.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Stack(
-          children: [
-            Container(
-              width: 280,
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    l10n.qrDialogTitle,
-                    style: GoogleFonts.beVietnamPro(
-                      fontWeight: FontWeight.bold,
-                      color: ctx.textPrimary,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  RepaintBoundary(
-                    key: qrKey,
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      padding: const EdgeInsets.all(16),
-                      color: Colors.white,
-                      child: QrImageView(
-                        data: code,
-                        version: QrVersions.auto,
-                        size: 200.0,
-                        gapless: false,
+          backgroundColor: ctx.surface,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Stack(
+            children: [
+              Container(
+                width: 280,
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      l10n.qrDialogTitle,
+                      style: GoogleFonts.beVietnamPro(
+                        fontWeight: FontWeight.bold,
+                        color: ctx.textPrimary,
+                        fontSize: 16,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () async {
-                            final bytes = await _captureQr(qrKey);
-                            if (bytes == null) return;
-                            try {
-                              await Gal.putImageBytes(bytes, name: 'qr_$code');
-                              if (ctx.mounted) {
-                                AppSnackBar.success(
-                                    ctx, l10n.qrSaved);
-                              }
-                            } catch (e) {
-                              if (ctx.mounted) {
-                                AppSnackBar.error(ctx, l10n.qrSaveError);
-                              }
-                            }
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: ctx.textPrimary,
-                            side: BorderSide(color: ctx.textPrimary),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                          icon: const Icon(LucideIcons.download, size: 16),
-                          label: Text(l10n.downloadLabel,
-                              style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 12),
+                    RepaintBoundary(
+                      key: qrKey,
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        padding: const EdgeInsets.all(16),
+                        color: Colors.white,
+                        child: QrImageView(
+                          data: code,
+                          version: QrVersions.auto,
+                          size: 200.0,
+                          gapless: false,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            final bytes = await _captureQr(qrKey);
-                            if (bytes == null) return;
-                            final dir = await getTemporaryDirectory();
-                            final file = File('${dir.path}/qr_$code.png');
-                            await file.writeAsBytes(bytes);
-                            await Share.shareXFiles(
-                              [XFile(file.path, mimeType: 'image/png')],
-                              text: '${l10n.inviteCodeSectionLabel}: $code',
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ctx.primary,
-                            foregroundColor: ctx.textOnPrimary,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () async {
+                              final bytes = await _captureQr(qrKey);
+                              if (bytes == null) return;
+                              try {
+                                await Gal.putImageBytes(bytes,
+                                    name: 'qr_$code');
+                                if (ctx.mounted) {
+                                  AppSnackBar.success(ctx, l10n.qrSaved);
+                                }
+                              } catch (e) {
+                                if (ctx.mounted) {
+                                  AppSnackBar.error(ctx, l10n.qrSaveError);
+                                }
+                              }
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: ctx.textPrimary,
+                              side: BorderSide(color: ctx.textPrimary),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            icon: const Icon(LucideIcons.download, size: 16),
+                            label: Text(l10n.downloadLabel,
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13, fontWeight: FontWeight.w600)),
                           ),
-                          icon: const Icon(LucideIcons.share2, size: 16),
-                          label: Text(l10n.shareLabel,
-                              style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13, fontWeight: FontWeight.w600)),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: IconButton(
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(8),
-                icon: Icon(
-                  LucideIcons.x,
-                  size: 20,
-                  color: ctx.textSecondary,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () async {
+                              final bytes = await _captureQr(qrKey);
+                              if (bytes == null) return;
+                              final dir = await getTemporaryDirectory();
+                              final file = File('${dir.path}/qr_$code.png');
+                              await file.writeAsBytes(bytes);
+                              await Share.shareXFiles(
+                                [XFile(file.path, mimeType: 'image/png')],
+                                text: '${l10n.inviteCodeSectionLabel}: $code',
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ctx.primary,
+                              foregroundColor: ctx.textOnPrimary,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            icon: const Icon(LucideIcons.share2, size: 16),
+                            label: Text(l10n.shareLabel,
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13, fontWeight: FontWeight.w600)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                onPressed: () => Navigator.pop(ctx),
               ),
-            ),
-          ],
-        ),
-      );
+              Positioned(
+                top: 8,
+                right: 8,
+                child: IconButton(
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(8),
+                  icon: Icon(
+                    LucideIcons.x,
+                    size: 20,
+                    color: ctx.textSecondary,
+                  ),
+                  onPressed: () => Navigator.pop(ctx),
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -874,22 +885,24 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             TextButton.icon(
               onPressed: onAdd,
               icon: Icon(
-                addLabel == l10n.viewAllLabel ? LucideIcons.eye : LucideIcons.plus,
+                addLabel == l10n.viewAllLabel
+                    ? LucideIcons.eye
+                    : LucideIcons.plus,
                 size: 14,
-                color: context.accent,
+                color: Colors.black,
               ),
               label: Text(
                 addLabel ?? l10n.addNewLabel,
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: context.accent,
+                  color: Colors.black,
                 ),
               ),
               style: TextButton.styleFrom(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                backgroundColor: context.accent.withValues(alpha: 0.85),
+                backgroundColor: context.accent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -920,8 +933,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: Text(l10n.cancelLabel,
-                  style:
-                      GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+                  style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -974,8 +986,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: Text(l10n.cancelLabel,
-                  style:
-                      GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+                  style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -985,12 +996,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     .add(DeleteAdminBranchFormEvent(branch.id));
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.error,
-                foregroundColor: Colors.white),
-            child: Text(l10n.deleteLabel),
-          ),
-        ],
-      );
+                  backgroundColor: AppColors.error,
+                  foregroundColor: Colors.white),
+              child: Text(l10n.deleteLabel),
+            ),
+          ],
+        );
       },
     );
   }
@@ -999,32 +1010,24 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 4, 20, 6),
       decoration: BoxDecoration(
-        color: context.surface,
+        color: context.background,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.accent.withValues(alpha: 0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: context.resolve(
-              Colors.black.withValues(alpha: 0.02),
-              Colors.transparent,
-            ),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: context.accent.withValues(alpha: 0.15)),
       ),
       child: TextField(
         controller: _searchController,
         style: GoogleFonts.inter(fontSize: 13, color: context.textPrimary),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle:
-              GoogleFonts.inter(fontSize: 13, color: context.textSecondary.withValues(alpha: 0.6)),
+          hintStyle: GoogleFonts.inter(
+              fontSize: 13,
+              color: context.textSecondary.withValues(alpha: 0.6)),
           prefixIcon:
               Icon(LucideIcons.search, size: 18, color: context.textSecondary),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
-                  icon: Icon(LucideIcons.x, size: 16, color: context.textSecondary),
+                  icon: Icon(LucideIcons.x,
+                      size: 16, color: context.textSecondary),
                   onPressed: () {
                     _searchController.clear();
                   },
@@ -1050,7 +1053,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ),
       child: Column(
         children: [
-          Icon(LucideIcons.folderOpen, size: 40, color: context.textSecondary.withValues(alpha: 0.4)),
+          Icon(LucideIcons.folderOpen,
+              size: 40, color: context.textSecondary.withValues(alpha: 0.4)),
           const SizedBox(height: 12),
           Text(
             message,

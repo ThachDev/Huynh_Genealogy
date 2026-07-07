@@ -397,64 +397,66 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Builder(builder: (context) {
-                    final now = DateTime.now();
-                    final locale = Localizations.localeOf(context).languageCode;
-                    final weekday = DateFormat('EEEE', locale).format(now);
-                    final day = DateFormat('dd', locale).format(now);
-                    final month = DateFormat('MM', locale).format(now);
-                    final year = now.year.toString();
-                    final solarDateString = '$weekday, $day/$month/$year';
-                    final lunarDateString =
-                        LunarDateHelper.getLunarDateString(now);
+                  Center(
+                    child: Builder(builder: (context) {
+                      final now = DateTime.now();
+                      final locale = Localizations.localeOf(context).languageCode;
+                      final weekday = DateFormat('EEEE', locale).format(now);
+                      final day = DateFormat('dd', locale).format(now);
+                      final month = DateFormat('MM', locale).format(now);
+                      final year = now.year.toString();
+                      final solarDateString = '$weekday, $day/$month/$year';
+                      final lunarDateString =
+                          LunarDateHelper.getLunarDateString(now);
 
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.15),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(LucideIcons.calendar,
-                              color: context.accent, size: 16),
-                          const SizedBox(width: 8),
-                          Text(
-                            solarDateString,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 12,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.15),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              '|',
-                              style: GoogleFonts.inter(
-                                color: Colors.white.withValues(alpha: 0.3),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(LucideIcons.calendar,
+                                color: context.accent, size: 16),
+                            const SizedBox(width: 8),
+                            Text(
+                              solarDateString,
+                              style: GoogleFonts.beVietnamPro(
                                 fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          Text(
-                            lunarDateString,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 11,
-                              color: Colors.white.withValues(alpha: 0.9),
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                '|',
+                                style: GoogleFonts.inter(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  fontSize: 12,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                            Text(
+                              lunarDateString,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 11,
+                                color: Colors.white.withValues(alpha: 0.9),
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
                 ],
               ),
             ),
@@ -480,10 +482,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     switch (_selectedTab) {
       case AdminDashboardTab.members:
         if (userTreeState is UserTreeLoading) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: CircularProgressIndicator(color: context.primary),
+              padding: EdgeInsets.all(40.0),
+              child: AppLoading(size: 80),
             ),
           );
         }
@@ -545,10 +547,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       case AdminDashboardTab.branches:
         if (userTreeState is UserTreeLoading) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: CircularProgressIndicator(color: context.primary),
+              padding: EdgeInsets.all(40.0),
+              child: AppLoading(size: 80),
             ),
           );
         }
@@ -601,10 +603,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           return const SizedBox.shrink();
         }
         if (pendingState is AdminPendingRequestsLoading) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: CircularProgressIndicator(color: context.primary),
+              padding: EdgeInsets.all(40.0),
+              child: AppLoading(size: 80),
             ),
           );
         }
@@ -774,7 +776,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               final bytes = await _captureQr(qrKey);
                               if (bytes == null) return;
                               try {
-                                await Gal.putImageBytes(bytes, name: 'qr_$code');
+                                await Gal.putImageBytes(bytes,
+                                    name: 'qr_$code');
                                 if (ctx.mounted) {
                                   AppSnackBar.success(ctx, l10n.qrSaved);
                                 }
@@ -784,7 +787,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 }
                               }
                             },
-                            prefixIcon: const Icon(LucideIcons.download, size: 16),
+                            prefixIcon:
+                                const Icon(LucideIcons.download, size: 16),
                             variant: AppButtonVariant.outline,
                             size: AppButtonSize.small,
                           ),
@@ -804,7 +808,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 text: '${l10n.inviteCodeSectionLabel}: $code',
                               );
                             },
-                            prefixIcon: const Icon(LucideIcons.share2, size: 16),
+                            prefixIcon:
+                                const Icon(LucideIcons.share2, size: 16),
                             variant: AppButtonVariant.primary,
                             size: AppButtonSize.small,
                           ),

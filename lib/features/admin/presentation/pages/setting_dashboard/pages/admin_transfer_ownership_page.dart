@@ -129,8 +129,8 @@ class _AdminTransferOwnershipPageState
         builder: (context, state) {
           if (state is AdminTransferOwnershipLoading ||
               state is AdminTransferOwnershipInitial) {
-            return Center(
-              child: CircularProgressIndicator(color: context.appBarBg),
+            return const Center(
+              child: AppLoading(size: 80),
             );
           }
 
@@ -177,7 +177,7 @@ class _AdminTransferOwnershipPageState
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: context.appBarBg),
+                  const AppLoading(size: 80),
                   const SizedBox(height: 16),
                   Text(l10n.transferProcessing),
                 ],

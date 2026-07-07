@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
 
             return SafeArea(
               child: AppLoadingOverlay(
-                isLoading: isLoading,
+                isLoading: false,
                 child: Stack(
                   children: [
                     SingleChildScrollView(
@@ -314,7 +314,7 @@ class _LoginPageState extends State<LoginPage> {
     return AppButton(
       label: l10n.loginButton,
       onPressed: _onEmailLoginPressed,
-      isLoading: false,
+      isLoading: isLoading,
       fullWidth: true,
       size: AppButtonSize.large,
     );

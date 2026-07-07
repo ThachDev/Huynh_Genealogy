@@ -197,10 +197,8 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
           },
           builder: (context, state) {
             if (state is AdminMemberRolesLoading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: context.appBarBg,
-                ),
+              return const Center(
+                child: AppLoading(size: 80),
               );
             }
 

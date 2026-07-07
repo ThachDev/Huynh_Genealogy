@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 import '../bloc/onboarding_bloc.dart';
@@ -30,8 +29,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final authState = context.watch<AuthBloc>().state;
     if (authState is! Authenticated) {
       return const Scaffold(
-        body:
-            Center(child: CircularProgressIndicator(color: AppColors.crimson)),
+        body: Center(
+          child: AppLoading(size: 80),
+        ),
       );
     }
 

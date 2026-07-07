@@ -49,7 +49,7 @@ class _FamilyFundPageState extends State<FamilyFundPage>
         builder: (context, state) {
           if (state is FamilyFundLoading || state is FamilyFundInitial) {
             return const Center(
-                child: CircularProgressIndicator(color: AppColors.crimson));
+                child: AppLoading(size: 80));
           } else if (state is FamilyFundError) {
             return Center(child: Text(state.message));
           } else if (state is FamilyFundLoaded) {

@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
             return SafeArea(
               child: AppLoadingOverlay(
-                isLoading: isLoading,
+                isLoading: false,
                 child: Stack(
                   children: [
                     SingleChildScrollView(
@@ -265,7 +265,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return AppButton(
       label: l10n.registerButton,
       onPressed: _onRegisterPressed,
-      isLoading: false,
+      isLoading: isLoading,
       fullWidth: true,
       size: AppButtonSize.large,
     );

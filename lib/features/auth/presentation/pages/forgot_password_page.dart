@@ -64,7 +64,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
             return SafeArea(
               child: AppLoadingOverlay(
-                isLoading: isLoading,
+                isLoading: false,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24.0,
@@ -135,7 +135,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             AppButton(
                               label: l10n.forgotPasswordButton,
                               onPressed: _onSubmitPressed,
-                              isLoading: false,
+                              isLoading: isLoading,
                               fullWidth: true,
                               size: AppButtonSize.large,
                             ),

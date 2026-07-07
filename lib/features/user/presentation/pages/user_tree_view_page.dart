@@ -83,8 +83,8 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
           BlocBuilder<UserTreeBloc, UserTreeState>(
             builder: (context, state) {
               if (state is UserTreeLoading) {
-                return Center(
-                    child: CircularProgressIndicator(color: context.primary));
+                return const Center(
+                    child: AppLoading(size: 80));
               }
 
               if (state is UserTreeError) {

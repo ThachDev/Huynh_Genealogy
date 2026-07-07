@@ -279,8 +279,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
         },
         builder: (context, state) {
           if (state is AdminBranchFormLoading) {
-            return Center(
-              child: CircularProgressIndicator(color: context.accent),
+            return const Center(
+              child: AppLoading(size: 80),
             );
           }
 

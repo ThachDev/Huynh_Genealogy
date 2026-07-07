@@ -93,10 +93,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   // ── Wooden Header with Dragon Patterns ──
                   _buildHeader(context, state),
                   if (state is UserTreeLoading)
-                    SliverFillRemaining(
+                    const SliverFillRemaining(
                       child: Center(
-                        child:
-                            CircularProgressIndicator(color: context.primary),
+                        child: AppLoading(size: 80),
                       ),
                     ),
                   if (state is UserTreeError)

@@ -141,7 +141,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
             return SafeArea(
               child: AppLoadingOverlay(
-                isLoading: isLoading,
+                isLoading: false,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24.0,
@@ -263,7 +263,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             AppButton(
                               label: l10n.resetPasswordButton,
                               onPressed: _onSubmitPressed,
-                              isLoading: false,
+                              isLoading: isLoading,
                               fullWidth: true,
                               size: AppButtonSize.large,
                             ),

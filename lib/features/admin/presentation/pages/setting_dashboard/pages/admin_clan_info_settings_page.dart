@@ -7,9 +7,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
-import '../../../../../../core/widgets/app_button.dart';
-import '../../../../../../core/widgets/app_text_field.dart';
-import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/domain/entity/family_entity.dart';
 import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../injection_container.dart';
@@ -142,15 +140,11 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(l10n.clanInfoSettingsTitle),
-        backgroundColor: context.appBarBg,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
+      appBar: AppAppBar(
+        title: l10n.clanInfoSettingsTitle,
         actions: [
           IconButton(
-            icon: Icon(_isEditable ? LucideIcons.check : LucideIcons.edit2),
+            icon: Icon(_isEditable ? LucideIcons.check : LucideIcons.edit2, color: Colors.white),
             onPressed: () {
               setState(() {
                 _isEditable = !_isEditable;

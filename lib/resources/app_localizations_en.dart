@@ -128,14 +128,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please contact the Clan Leader to reset your password.';
 
   @override
-  String get forgotPasswordTitle => 'Forgot password';
+  String get forgotPasswordTitle => 'Forgot Password';
 
   @override
   String get forgotPasswordSubtitle =>
       'Enter your registered email to receive a 6-digit verification code.';
 
   @override
-  String get forgotPasswordButton => 'SEND VERIFICATION CODE';
+  String get forgotPasswordButton => 'Send Verification Code';
 
   @override
   String get forgotPasswordSuccess =>
@@ -166,20 +166,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otpInvalidError => 'OTP code must be 6 digits';
 
   @override
-  String get otpVerifyButton => 'VERIFY';
+  String get otpVerifyButton => 'Verify';
 
   @override
   String get otpResendButton => 'Resend code';
 
   @override
-  String get resetPasswordTitle => 'Reset password';
+  String get resetPasswordTitle => 'Reset Password';
 
   @override
   String get resetPasswordSubtitle =>
       'Enter your new password for your account.';
 
   @override
-  String get resetPasswordButton => 'RESET PASSWORD';
+  String get resetPasswordButton => 'Reset Password';
 
   @override
   String get resetPasswordSuccessTitle => 'Success!';
@@ -246,7 +246,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyDescriptionHint => 'Home town, origins...';
 
   @override
-  String get initFamilyButton => 'INITIALIZE FAMILY';
+  String get initFamilyButton => 'Initialize Family';
 
   @override
   String get initFamilySectionDesc =>
@@ -286,7 +286,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whoAreYouDropdownHint => 'Who are you on the family tree?';
 
   @override
-  String get sendJoinRequestButton => 'SEND JOIN REQUEST';
+  String get sendJoinRequestButton => 'Send Join Request';
 
   @override
   String get chooseOnboardingSubtitle =>
@@ -311,7 +311,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'For members who have an invite code from the Clan Leader to view and update the family tree.';
 
   @override
-  String get familyPhotoSectionLabel => 'FAMILY REPRESENTATIVE PHOTO';
+  String get familyPhotoSectionLabel => 'Family Representative Photo';
 
   @override
   String get errEmailRequired => 'Please enter your email address';
@@ -448,19 +448,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'An error occurred while choosing the photo.';
 
   @override
-  String get tapToChangePhoto => 'TAP TO CHANGE PHOTO';
+  String get tapToChangePhoto => 'Tap to Change Photo';
 
   @override
-  String get tapToUploadPhoto => 'TAP TO UPLOAD PHOTO';
+  String get tapToUploadPhoto => 'Tap to Upload Photo';
 
   @override
-  String get byInitAgreeTerms => 'BY CLICKING INITIALIZE, YOU AGREE TO ';
+  String get byInitAgreeTerms => 'By Clicking Initialize, You Agree To ';
 
   @override
-  String get appTerms => 'THE TERMS OF GIA TOC VIET';
+  String get appTerms => 'The Terms of Gia Toc Viet';
 
   @override
-  String get enterInviteCodeLabel => 'ENTER INVITE CODE';
+  String get enterInviteCodeLabel => 'Enter Invite Code';
 
   @override
   String get inviteCodeHintNew => 'EG: HGT-2024';
@@ -476,10 +476,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copiedShareContent => 'Copied share content!';
 
   @override
-  String get creationSuccessTitle => 'CREATION SUCCESS';
+  String get creationSuccessTitle => 'Creation Success';
 
   @override
-  String get confirmJoinButton => 'CONFIRM JOIN';
+  String get confirmJoinButton => 'Confirm Join';
 
   @override
   String get navOverview => 'Overview';
@@ -509,13 +509,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errDateOfDeathRequired => 'Please select date of death';
 
   @override
-  String get formSave => 'SAVE';
+  String get formSave => 'Save';
 
   @override
-  String get formCancel => 'CANCEL';
+  String get formCancel => 'Cancel';
 
   @override
-  String get lunarSuffix => 'LUNAR';
+  String get lunarSuffix => 'Lunar';
 
   @override
   String get leapMonthSuffix => '(Leap)';
@@ -527,7 +527,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectMemberHint => 'Select member...';
 
   @override
-  String get shareFamilyButton => 'SHARE WITH FAMILY';
+  String get shareFamilyButton => 'Share With Family';
 
   @override
   String shareFamilyContent(String name, String code) {
@@ -535,7 +535,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get startExploringButton => 'START EXPLORING';
+  String get startExploringButton => 'Start Exploring';
 
   @override
   String get searchHint => 'Search...';
@@ -547,10 +547,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectMonthYear => 'Select month and year';
 
   @override
-  String get adminSettingsTitle => 'ADMIN SETTINGS';
+  String get adminSettingsTitle => 'Admin Settings';
 
   @override
-  String get accountAndClanSection => 'ACCOUNT & CLAN';
+  String get accountAndClanSection => 'Account & Clan';
 
   @override
   String get clanInfoLabel => 'Clan Information';
@@ -562,7 +562,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get switchToMemberPage => 'Switch to Member Page';
 
   @override
-  String get appSettingsSection => 'APP SETTINGS';
+  String get appSettingsSection => 'App Settings';
 
   @override
   String get languageLabel => 'Language';
@@ -571,7 +571,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeLabel => 'Theme';
 
   @override
-  String get infoAndHelpSection => 'INFO & HELP';
+  String get infoAndHelpSection => 'Info & Help';
 
   @override
   String get regulationsLabel => 'Regulations & Terms';
@@ -583,7 +583,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutUsLabel => 'About Us';
 
   @override
-  String get advancedAdminSection => 'ADVANCED ADMIN';
+  String get advancedAdminSection => 'Advanced Admin';
 
   @override
   String get memberRolesLabel => 'Member Roles';
@@ -595,10 +595,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dissolveClanLabel => 'Dissolve Clan';
 
   @override
-  String get logoutButton => 'LOGOUT';
+  String get logoutButton => 'Logout';
 
   @override
-  String get accountSecurityTitle => 'ACCOUNT SECURITY';
+  String get accountSecurityTitle => 'Account Security';
 
   @override
   String get changePasswordTitle => 'Change Password';
@@ -626,13 +626,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmNewPasswordHint => 'Re-enter new password';
 
   @override
-  String get updatePasswordButton => 'UPDATE PASSWORD';
+  String get updatePasswordButton => 'Update Password';
 
   @override
   String get changePasswordSuccess => 'Password changed successfully!';
 
   @override
-  String get dissolveClanTitle => 'DISSOLVE CLAN';
+  String get dissolveClanTitle => 'Dissolve Clan';
 
   @override
   String get irreversibleActionTitle => 'Irreversible Action';
@@ -658,10 +658,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reenterClanNameHint => 'Type exactly to confirm';
 
   @override
-  String get dissolvePermanentButton => 'PERMANENTLY DISSOLVE CLAN';
+  String get dissolvePermanentButton => 'Permanently Dissolve Clan';
 
   @override
-  String get deletePermanentDialogTitle => 'PERMANENTLY DELETE GENEALOGY';
+  String get deletePermanentDialogTitle => 'Permanently Delete Genealogy';
 
   @override
   String deletePermanentDialogMessage(String name) {
@@ -669,7 +669,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get confirmDeletePermanentLabel => 'CONFIRM DELETE';
+  String get confirmDeletePermanentLabel => 'Confirm Delete';
 
   @override
   String get dissolveSuccessMessage =>
@@ -692,7 +692,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noEligibleMembers => 'No eligible members for transfer.';
 
   @override
-  String get proceedTransferButton => 'PROCEED WITH TRANSFER';
+  String get proceedTransferButton => 'Proceed With Transfer';
 
   @override
   String get warningDialogTitle => 'Important Warning';
@@ -707,7 +707,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get confirmTransferButton => 'CONFIRM TRANSFER';
+  String get confirmTransferButton => 'Confirm Transfer';
 
   @override
   String get transferSuccess => 'Clan Leadership transferred successfully!';
@@ -753,7 +753,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'You cannot change your own role. Use the \"Transfer Clan Leadership\" feature.';
 
   @override
-  String get accountInfoTitle => 'ACCOUNT INFORMATION';
+  String get accountInfoTitle => 'Account Information';
 
   @override
   String get emailAccountLabel => 'Email (Account)';
@@ -766,10 +766,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your account is Clan Leader but hasn\'t been linked to any member in the family tree. Create a profile now to start managing the genealogy.';
 
   @override
-  String get createProfileButton => 'CREATE GENEALOGY PROFILE';
+  String get createProfileButton => 'Create Genealogy Profile';
 
   @override
-  String get clanInfoSettingsTitle => 'CLAN INFORMATION';
+  String get clanInfoSettingsTitle => 'Clan Information';
 
   @override
   String get basicInfoSectionTitle => 'Basic Information';
@@ -811,7 +811,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateFamilySuccess => 'Clan information updated successfully!';
 
   @override
-  String get regulationsTitle => 'REGULATIONS & TERMS';
+  String get regulationsTitle => 'Regulations & Terms';
 
   @override
   String get regulationTitle => 'Gia Tộc Việt Terms of Service';
@@ -893,7 +893,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyrightText => '© 2026 ThachDev. All rights reserved.';
 
   @override
-  String get helpCenterTitle => 'HELP CENTER';
+  String get helpCenterTitle => 'Help Center';
 
   @override
   String get helpDragInstruction => '👉 Drag the diagram to move around';
@@ -1062,7 +1062,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Yes. Go to Settings > Language, switch between Vietnamese and English. The interface will update immediately. Genealogy data and member information remain intact.';
 
   @override
-  String get aboutUsTitle => 'ABOUT US';
+  String get aboutUsTitle => 'About Us';
 
   @override
   String get aboutUsTagline =>
@@ -1078,28 +1078,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactEmailLabel => 'Email';
 
   @override
-  String get adminDashboardTitle => 'CONTROL PANEL';
+  String get adminDashboardTitle => 'Control Panel';
 
   @override
-  String get roleOwner => 'CLAN LEADER';
+  String get roleOwner => 'Clan Leader';
 
   @override
-  String get roleBranchAdmin => 'BRANCH LEADER';
+  String get roleBranchAdmin => 'Branch Leader';
 
   @override
-  String get roleEditor => 'EDITOR';
+  String get roleEditor => 'Editor';
 
   @override
-  String get roleViewer => 'MEMBER';
+  String get roleViewer => 'Member';
 
   @override
-  String get memberListTitle => 'MEMBER LIST';
+  String get memberListTitle => 'Member List';
 
   @override
-  String get branchListTitle => 'BRANCH LIST';
+  String get branchListTitle => 'Branch List';
 
   @override
-  String get pendingRequestTitle => 'PENDING REQUESTS';
+  String get pendingRequestTitle => 'Pending Requests';
 
   @override
   String get searchMembersHint => 'Search members or branches...';
@@ -1123,16 +1123,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addBranchLabel => 'Add branch';
 
   @override
-  String get statMembers => 'MEMBERS';
+  String get statMembers => 'Members';
 
   @override
-  String get statBranches => 'BRANCHES';
+  String get statBranches => 'Branches';
 
   @override
-  String get statPending => 'PENDING';
+  String get statPending => 'Pending';
 
   @override
-  String get inviteCodeSectionLabel => 'FAMILY INVITE CODE';
+  String get inviteCodeSectionLabel => 'Family Invite Code';
 
   @override
   String inviteCodeCopied(Object code) {
@@ -1251,19 +1251,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get saveBranchLabel => 'SAVE BRANCH';
+  String get saveBranchLabel => 'Save Branch';
 
   @override
-  String get editBranchTitle => 'EDIT BRANCH';
+  String get editBranchTitle => 'Edit Branch';
 
   @override
-  String get addBranchTitle => 'ADD BRANCH';
+  String get addBranchTitle => 'Add Branch';
 
   @override
   String get deleteBranchTooltip => 'Delete branch';
 
   @override
-  String get basicInfoTitle => 'BASIC INFORMATION';
+  String get basicInfoTitle => 'Basic Information';
 
   @override
   String get branchNameLabel => 'Branch name';
@@ -1325,10 +1325,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get editMemberTitle => 'EDIT MEMBER';
+  String get editMemberTitle => 'Edit Member';
 
   @override
-  String get addMemberTitle => 'ADD MEMBER';
+  String get addMemberTitle => 'Add Member';
 
   @override
   String get linkAccountSuccess => 'Profile created and linked successfully!';
@@ -1342,7 +1342,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameHint => 'Enter full name';
 
   @override
-  String get maritalStatusLabel => 'MARITAL STATUS';
+  String get maritalStatusLabel => 'Marital Status';
 
   @override
   String get maritalSingle => 'Single';
@@ -1360,7 +1360,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maritalUnknown => 'Unknown';
 
   @override
-  String get genderLabel => 'GENDER';
+  String get genderLabel => 'Gender';
 
   @override
   String get genderMale => 'Male';
@@ -1378,7 +1378,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dobHint => 'dd/mm/yyyy';
 
   @override
-  String get statusLabel => 'STATUS';
+  String get statusLabel => 'Status';
 
   @override
   String get dodLabel => 'Date of death';
@@ -1399,13 +1399,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addressHint => 'Enter hometown, address info...';
 
   @override
-  String get parentLabel => 'PARENT';
+  String get parentLabel => 'Parent';
 
   @override
-  String get spouseLabel => 'SPOUSE';
+  String get spouseLabel => 'Spouse';
 
   @override
-  String get branchSectionLabel => 'BRANCH';
+  String get branchSectionLabel => 'Branch';
 
   @override
   String get noBranchLabel => 'No branch';
@@ -1423,7 +1423,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter profession, education, or important milestones...';
 
   @override
-  String get uploadPhotoLabel => 'UPLOAD PHOTO';
+  String get uploadPhotoLabel => 'Upload Photo';
 
   @override
   String get generationFieldLabel => 'Generation';
@@ -1455,13 +1455,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailSubjectHelp => 'Gia Toc Viet Support';
 
   @override
-  String get accountSectionTitle => 'ACCOUNT';
+  String get accountSectionTitle => 'Account';
 
   @override
   String get allLabel => 'All';
 
   @override
-  String get biographySectionTitle => 'BIOGRAPHY & NOTES';
+  String get biographySectionTitle => 'Biography & Notes';
 
   @override
   String branchCountLabel(int count) {
@@ -1479,7 +1479,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String congratulateButton(int count) {
-    return 'CONGRATULATE ($count)';
+    return 'Congratulate ($count)';
   }
 
   @override
@@ -1533,21 +1533,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventsSectionTitle => 'Events & Anniversaries';
 
   @override
-  String get familyFundTitle => 'FAMILY FUND';
+  String get familyFundTitle => 'Family Fund';
 
   @override
-  String get familyRelationSectionTitle => 'FAMILY RELATIONS';
+  String get familyRelationSectionTitle => 'Family Relations';
 
   @override
   String get familyTreeMapTitle => 'Family Tree Map';
 
   @override
   String familyTreeNameFormat(String name) {
-    return '$name FAMILY TREE';
+    return '$name Family Tree';
   }
 
   @override
-  String get familyTreeTitle => 'FAMILY TREE';
+  String get familyTreeTitle => 'Family Tree';
 
   @override
   String get guideButton => 'Guide';
@@ -1566,7 +1566,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String incenseButton(int count) {
-    return 'INCENSE ($count)';
+    return 'Incense ($count)';
   }
 
   @override
@@ -1600,7 +1600,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personalInfoLabel => 'Personal Information';
 
   @override
-  String get personalInfoSectionTitle => 'PERSONAL INFORMATION';
+  String get personalInfoSectionTitle => 'Personal Information';
 
   @override
   String get placeOfBirthLabel => 'Place of Birth';
@@ -1609,10 +1609,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchMemberYearHint => 'Search member, year of birth...';
 
   @override
-  String get settingsTitle => 'SETTINGS';
+  String get settingsTitle => 'Settings';
 
   @override
-  String get spiritualMotto => 'SPIRITUAL ROOTS • ETERNAL LEGACY';
+  String get spiritualMotto => 'Spiritual Roots • Eternal Legacy';
 
   @override
   String get switchToAdminLabel => 'Switch to Admin Page';

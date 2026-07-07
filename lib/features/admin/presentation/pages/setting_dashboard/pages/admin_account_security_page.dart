@@ -6,9 +6,7 @@ import 'package:dio/dio.dart';
 import '../../../../../../core/network/dio_client.dart';
 import '../../../../../../core/constants/app_constants.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
-import '../../../../../../core/widgets/app_button.dart';
-import '../../../../../../core/widgets/app_text_field.dart';
-import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
 import '../../../../../../resources/app_localizations.dart';
 
@@ -90,13 +88,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(l10n.accountSecurityTitle),
-        backgroundColor: context.appBarBg,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: AppAppBar(title: l10n.accountSecurityTitle),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Form(

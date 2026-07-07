@@ -29,7 +29,9 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
-            backgroundColor: context.primary,
+            elevation: 4,
+            iconTheme: const IconThemeData(color: Colors.white),
+            backgroundColor: context.appBarBg,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 children: [

@@ -64,13 +64,7 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(l10n.accountInfoTitle),
-        backgroundColor: context.appBarBg,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: AppAppBar(title: l10n.accountInfoTitle),
       body: SingleChildScrollView(
         child: Column(
           children: [

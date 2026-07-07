@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
-import 'package:giatocviet/core/widgets/app_bottom_navigation_bar.dart';
 
 class UserSettingsPage extends StatefulWidget {
   const UserSettingsPage({super.key});
@@ -32,21 +32,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(
-          l10n.settingsTitle,
-          style: GoogleFonts.beVietnamPro(
-            color: context.accent,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            letterSpacing: 1.2,
-          ),
-        ),
-        backgroundColor: context.appBarBg,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: AppAppBar(title: l10n.settingsTitle),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [

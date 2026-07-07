@@ -126,20 +126,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        backgroundColor: context.appBarBg,
-        elevation: 0,
-        iconTheme: IconThemeData(color: context.textPrimary),
-        title: Text(
-          l10n.resetPasswordTitle,
-          style: GoogleFonts.beVietnamPro(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: context.textPrimary,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: AppAppBar(title: l10n.resetPasswordTitle),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {

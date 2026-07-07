@@ -60,13 +60,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(l10n.adminSettingsTitle),
-        backgroundColor: context.appBarBg,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: AppAppBar(title: l10n.adminSettingsTitle),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [

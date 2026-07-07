@@ -4,8 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:giatocviet/core/theme/app_theme.dart';
 import 'package:giatocviet/core/theme/theme_extensions.dart';
-import 'package:giatocviet/core/widgets/app_button.dart';
-import 'package:giatocviet/core/widgets/app_snackbar.dart';
+import 'package:giatocviet/core/widgets/widgets.dart';
 import 'package:giatocviet/resources/app_localizations.dart';
 import 'package:giatocviet/features/auth/auth.dart';
 import 'package:giatocviet/features/admin/admin.dart';
@@ -124,13 +123,7 @@ class _AdminTransferOwnershipPageState
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(l10n.transferOwnershipLabel),
-        backgroundColor: context.appBarBg,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: AppAppBar(title: l10n.transferOwnershipLabel),
       body:
           BlocConsumer<AdminTransferOwnershipBloc, AdminTransferOwnershipState>(
         listener: (context, state) {

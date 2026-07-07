@@ -4,10 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
-import '../../../../../../core/widgets/app_button.dart';
-import '../../../../../../core/widgets/app_text_field.dart';
-import '../../../../../../core/widgets/app_dialog.dart';
-import '../../../../../../core/widgets/app_snackbar.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../resources/app_localizations.dart';
 import '../../../../../auth/auth.dart';
 import '../../../bloc/admin_dissolve_clan_bloc/admin_dissolve_clan_bloc.dart';
@@ -94,13 +91,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
       },
       child: Scaffold(
         backgroundColor: context.background,
-        appBar: AppBar(
-          title: Text(l10n.dissolveClanTitle),
-          backgroundColor: context.appBarBg,
-          foregroundColor: Colors.white,
-          centerTitle: true,
-          elevation: 0,
-        ),
+      appBar: AppAppBar(title: l10n.dissolveClanTitle),
         body: BlocBuilder<AdminDissolveClanBloc, AdminDissolveClanState>(
           builder: (context, state) {
             final isLoading = state is AdminDissolveClanLoading;

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
+import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../resources/app_localizations.dart';
 
 class AdminHelpCenterPage extends StatelessWidget {
@@ -13,13 +14,7 @@ class AdminHelpCenterPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(l10n.helpCenterTitle),
-        backgroundColor: context.appBarBg,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: AppAppBar(title: l10n.helpCenterTitle),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 import '../bloc/onboarding_bloc.dart';
@@ -42,21 +40,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(
-          l10n.onboardingTitle,
-          style: GoogleFonts.beVietnamPro(
-            fontWeight: FontWeight.bold,
-            color: AppColors.crimson,
-          ),
-        ),
-        backgroundColor: context.appBarBg,
-        elevation: 0,
-        centerTitle: true,
+      appBar: AppAppBar(
+        title: l10n.onboardingTitle,
         leading: (_selectedPath != null && !_isRequestSent)
             ? IconButton(
-                icon:
-                    const Icon(LucideIcons.arrowLeft, color: AppColors.crimson),
+                icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
                 onPressed: () {
                   setState(() {
                     _selectedPath = null;
@@ -67,8 +55,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         actions: [
           if (_selectedPath == null)
             IconButton(
-              icon: const Icon(LucideIcons.logOut,
-                  color: AppColors.textSecondary),
+              icon: const Icon(LucideIcons.logOut, color: Colors.white),
               tooltip: l10n.logoutTooltip,
               onPressed: () {
                 context.read<AuthBloc>().add(AuthLogoutRequested());

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
+import '../../../../core/widgets/widgets.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/user_tree_bloc.dart';
 import '../widgets/user_member_node_widget.dart';
@@ -67,14 +68,11 @@ class _UserTreeViewPageState extends State<UserTreeViewPage> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        title: Text(
-          l10n.familyTreeTitle,
-          style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
-        ),
+      appBar: AppAppBar(
+        title: l10n.familyTreeTitle,
         actions: [
           IconButton(
-            icon: const Icon(LucideIcons.helpCircle),
+            icon: const Icon(LucideIcons.helpCircle, color: Colors.white),
             tooltip: l10n.helpTooltip,
             onPressed: () => _showHelp(context),
           ),

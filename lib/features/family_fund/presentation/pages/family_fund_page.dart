@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../resources/app_localizations.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import '../bloc/family_fund_bloc.dart';
 import '../bloc/family_fund_event.dart';
@@ -40,20 +41,10 @@ class _FamilyFundPageState extends State<FamilyFundPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.parchment,
-      appBar: AppBar(
-        backgroundColor: AppColors.wood,
-        elevation: 0,
-        title: Text(
-          'Quỹ Gia Tộc',
-          style: GoogleFonts.beVietnamPro(
-            color: AppColors.gold,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-      ),
+      appBar: AppAppBar(title: l10n.familyFundTitle),
       body: BlocBuilder<FamilyFundBloc, FamilyFundState>(
         builder: (context, state) {
           if (state is FamilyFundLoading || state is FamilyFundInitial) {

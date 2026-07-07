@@ -237,7 +237,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       backgroundColor: context.background,
       appBar: AppBar(
         backgroundColor: context.appBarBg,
-        elevation: 0,
+        elevation: 4,
           leading: IconButton(
             icon: Icon(LucideIcons.arrowLeft,
                 color: context.accent, size: 20),

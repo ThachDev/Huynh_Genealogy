@@ -5,6 +5,7 @@ import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import '../../../../core/widgets/widgets.dart';
 
 class UserMemberDetailPage extends StatefulWidget {
   final MemberEntity member;
@@ -206,7 +207,10 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
   Widget _buildSpiritualButton() {
     final l10n = AppLocalizations.of(context)!;
     final bool isDeceased = !widget.member.isAlive;
-    return ElevatedButton.icon(
+    return AppButton(
+      label: isDeceased
+          ? l10n.incenseButton(_spiritualCount)
+          : l10n.congratulateButton(_spiritualCount),
       onPressed: () {
         setState(() => _spiritualCount++);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -221,24 +225,11 @@ class _UserMemberDetailPageState extends State<UserMemberDetailPage> {
           ),
         );
       },
-      icon: Icon(
+      prefixIcon: Icon(
         isDeceased ? LucideIcons.flame : LucideIcons.gift,
+        size: 16,
       ),
-      label: Text(
-        isDeceased
-            ? l10n.incenseButton(_spiritualCount)
-                : l10n.congratulateButton(_spiritualCount),
-            style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: context.surface,
-        foregroundColor: context.primary,
-        side: BorderSide(color: context.accent, width: 2),
-        elevation: 8,
-        shadowColor: context.accent.withValues(alpha: 0.3),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      ),
+      variant: AppButtonVariant.outline,
     );
   }
 

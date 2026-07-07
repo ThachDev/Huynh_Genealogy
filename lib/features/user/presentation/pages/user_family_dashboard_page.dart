@@ -10,6 +10,7 @@ import '../bloc/user_tree_bloc.dart';
 import '../widgets/user_branch_card.dart';
 import '../../../auth/auth.dart';
 import '../../../family_fund/family_fund.dart';
+import '../../../../core/widgets/widgets.dart';
 
 class FamilyEvent {
   final String title;
@@ -111,11 +112,12 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             ),
                             const SizedBox(height: 16),
                             Text(state.message, style: GoogleFonts.inter()),
-                            ElevatedButton(
+                            AppButton(
+                              label: l10n.retryButton,
                               onPressed: () => context
                                   .read<UserTreeBloc>()
                                   .add(UserTreeLoadEvent(familyId: _familyId())),
-                              child: Text(l10n.retryButton),
+                              size: AppButtonSize.small,
                             ),
                           ],
                         ),
@@ -519,7 +521,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   ),
                 ],
               ),
-              ElevatedButton.icon(
+              AppButton(
+                label: l10n.donateButton,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -528,25 +531,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     ),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.accent,
-                  foregroundColor: context.appBarBg,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  minimumSize: Size.zero,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                icon: const Icon(LucideIcons.heartHandshake, size: 14),
-                label: Text(
-                  l10n.donateButton,
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                prefixIcon: const Icon(LucideIcons.heartHandshake, size: 14),
+                variant: AppButtonVariant.secondary,
+                size: AppButtonSize.small,
               ),
             ],
           ),

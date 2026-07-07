@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
 
 class PendingRequestItemWidget extends StatelessWidget {
@@ -74,56 +75,26 @@ class PendingRequestItemWidget extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  ElevatedButton(
+                  AppButton(
+                    label: l10n.approveButton,
                     onPressed: () {
                       context.read<AdminPendingRequestsBloc>().add(
                             ApproveAdminRequestEvent(requestId: request.id),
                           );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primary,
-                      foregroundColor: context.textOnPrimary,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 6),
-                      minimumSize: const Size(85, 28),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.approveButton,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    size: AppButtonSize.small,
+                    variant: AppButtonVariant.primary,
                   ),
                   const SizedBox(height: 6),
-                  ElevatedButton(
+                  AppButton(
+                    label: l10n.rejectButton,
                     onPressed: () {
                       context.read<AdminPendingRequestsBloc>().add(
                             RejectAdminRequestEvent(requestId: request.id),
                           );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.accent,
-                      foregroundColor: context.textOnPrimary,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 6),
-                      minimumSize: const Size(85, 28),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.rejectButton,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    size: AppButtonSize.small,
+                    variant: AppButtonVariant.secondary,
                   ),
                 ],
               ),

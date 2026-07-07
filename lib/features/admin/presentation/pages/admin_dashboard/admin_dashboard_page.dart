@@ -697,26 +697,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             tooltip: l10n.copyCodeTooltip,
           ),
           const SizedBox(width: 4),
-          ElevatedButton.icon(
+          AppButton(
+            label: l10n.qrCodeTooltip,
             onPressed: () => _showQrDialog(context, inviteCode),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.primary,
-              foregroundColor: context.textOnPrimary,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
-            icon: const Icon(LucideIcons.maximize2, size: 10),
-            label: Text(
-              l10n.qrCodeTooltip,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            prefixIcon: const Icon(LucideIcons.maximize2, size: 10),
+            variant: AppButtonVariant.primary,
+            size: AppButtonSize.small,
           ),
         ],
       ),
@@ -782,13 +768,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: OutlinedButton.icon(
+                          child: AppButton(
+                            label: l10n.downloadLabel,
                             onPressed: () async {
                               final bytes = await _captureQr(qrKey);
                               if (bytes == null) return;
                               try {
-                                await Gal.putImageBytes(bytes,
-                                    name: 'qr_$code');
+                                await Gal.putImageBytes(bytes, name: 'qr_$code');
                                 if (ctx.mounted) {
                                   AppSnackBar.success(ctx, l10n.qrSaved);
                                 }
@@ -798,22 +784,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 }
                               }
                             },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: ctx.textPrimary,
-                              side: BorderSide(color: ctx.textPrimary),
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                            ),
-                            icon: const Icon(LucideIcons.download, size: 16),
-                            label: Text(l10n.downloadLabel,
-                                style: GoogleFonts.beVietnamPro(
-                                    fontSize: 13, fontWeight: FontWeight.w600)),
+                            prefixIcon: const Icon(LucideIcons.download, size: 16),
+                            variant: AppButtonVariant.outline,
+                            size: AppButtonSize.small,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: ElevatedButton.icon(
+                          child: AppButton(
+                            label: l10n.shareLabel,
                             onPressed: () async {
                               final bytes = await _captureQr(qrKey);
                               if (bytes == null) return;
@@ -825,17 +804,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 text: '${l10n.inviteCodeSectionLabel}: $code',
                               );
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ctx.primary,
-                              foregroundColor: ctx.textOnPrimary,
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                            ),
-                            icon: const Icon(LucideIcons.share2, size: 16),
-                            label: Text(l10n.shareLabel,
-                                style: GoogleFonts.beVietnamPro(
-                                    fontSize: 13, fontWeight: FontWeight.w600)),
+                            prefixIcon: const Icon(LucideIcons.share2, size: 16),
+                            variant: AppButtonVariant.primary,
+                            size: AppButtonSize.small,
                           ),
                         ),
                       ],
@@ -935,17 +906,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               child: Text(l10n.cancelLabel,
                   style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
             ),
-            ElevatedButton(
+            AppButton(
+              label: l10n.deleteLabel,
               onPressed: () {
                 Navigator.pop(ctx);
                 context
                     .read<AdminMemberFormBloc>()
                     .add(DeleteAdminMemberFormEvent(member.id));
               },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: Colors.white),
-              child: Text(l10n.deleteLabel),
+              variant: AppButtonVariant.danger,
+              size: AppButtonSize.small,
             ),
           ],
         );
@@ -988,17 +958,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               child: Text(l10n.cancelLabel,
                   style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
             ),
-            ElevatedButton(
+            AppButton(
+              label: l10n.deleteLabel,
               onPressed: () {
                 Navigator.pop(ctx);
                 context
                     .read<AdminBranchFormBloc>()
                     .add(DeleteAdminBranchFormEvent(branch.id));
               },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: Colors.white),
-              child: Text(l10n.deleteLabel),
+              variant: AppButtonVariant.danger,
+              size: AppButtonSize.small,
             ),
           ],
         );

@@ -202,29 +202,12 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                                 ),
                               ),
                               const SizedBox(height: 14),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton.icon(
-                                  onPressed: _navigateToMemberFormSetup,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: context.appBarBg,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                  ),
-                                  icon: const Icon(LucideIcons.userPlus,
-                                      size: 16),
-                                  label: Text(
-                                    l10n.createProfileButton,
-                                    style: GoogleFonts.beVietnamPro(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
+                              AppButton(
+                                label: l10n.createProfileButton,
+                                onPressed: _navigateToMemberFormSetup,
+                                prefixIcon: const Icon(LucideIcons.userPlus, size: 16),
+                                variant: AppButtonVariant.primary,
+                                fullWidth: true,
                               ),
                             ],
                           ),

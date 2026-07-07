@@ -89,20 +89,11 @@ class _AdminTransferOwnershipPageState
                     color: Colors.white60,
                     fontWeight: FontWeight.w600)),
           ),
-          ElevatedButton(
+          AppButton(
+            label: l10n.confirmTransferButton,
             onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 20, vertical: 14),
-            ),
-            child: Text(l10n.confirmTransferButton,
-                style: GoogleFonts.inter(
-                    fontWeight: FontWeight.bold)),
+            variant: AppButtonVariant.danger,
+            size: AppButtonSize.small,
           ),
         ],
       ),

@@ -230,27 +230,53 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             ],
           ]),
           const SizedBox(height: 24),
-          OutlinedButton.icon(
+          AppButton(
+            label: l10n.logoutButton,
             onPressed: () {
-              context.read<AuthBloc>().add(AuthLogoutRequested());
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: ctx.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  title: Text(
+                    l10n.logoutLabel,
+                    style: GoogleFonts.beVietnamPro(
+                      fontWeight: FontWeight.bold,
+                      color: context.textPrimary,
+                    ),
+                  ),
+                  content: Text(
+                    l10n.logoutConfirmMessage,
+                    style:
+                        GoogleFonts.inter(color: context.textSecondary),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      child: Text(
+                        l10n.cancelLabel,
+                        style: GoogleFonts.inter(
+                            color: context.textSecondary),
+                      ),
+                    ),
+                    AppButton(
+                      label: l10n.logoutButton,
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        context.read<AuthBloc>().add(AuthLogoutRequested());
+                      },
+                      variant: AppButtonVariant.danger,
+                      size: AppButtonSize.small,
+                    ),
+                  ],
+                ),
+              );
             },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.red,
-              side: const BorderSide(color: Colors.red),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            icon: const Icon(LucideIcons.logOut, size: 18),
-            label: Text(
-              l10n.logoutButton,
-              style: GoogleFonts.beVietnamPro(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                letterSpacing: 1.0,
-              ),
-            ),
+            prefixIcon: const Icon(LucideIcons.logOut, size: 18),
+            variant: AppButtonVariant.danger,
+            fullWidth: true,
           ),
           const SizedBox(height: 32),
         ],

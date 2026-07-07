@@ -84,17 +84,16 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                 style:
                     GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
           ),
-          ElevatedButton(
+          AppButton(
+            label: l10n.deleteLabel,
             onPressed: () {
               Navigator.pop(ctx);
               context
                   .read<AdminBranchFormBloc>()
                   .add(DeleteAdminBranchFormEvent(widget.branch!.id));
             },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.error,
-                foregroundColor: Colors.white),
-            child: Text(l10n.deleteLabel),
+            variant: AppButtonVariant.danger,
+            size: AppButtonSize.small,
           ),
         ],
       );

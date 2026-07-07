@@ -19,8 +19,7 @@ class FamilyTreeViewPage extends StatefulWidget {
 }
 
 class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
-  final BuchheimWalkerConfiguration _algorithm =
-      BuchheimWalkerConfiguration();
+  final BuchheimWalkerConfiguration _algorithm = BuchheimWalkerConfiguration();
 
   @override
   void initState() {
@@ -32,31 +31,43 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
   }
 
+  // ID ảo dùng để kết nối nhiều root cùng cấp
+  static const int _virtualRootId = -1;
+
   Graph _buildGraph(List<MemberEntity> members) {
     final graph = Graph()..isTree = true;
     final nodeMap = <int, Node>{};
 
-    // Create node for each member
     for (final member in members) {
-      final node = Node.Id(member.id);
-      nodeMap[member.id] = node;
+      nodeMap[member.id] = Node.Id(member.id);
     }
 
-    // Add edges (parent → child)
+    final edgePaint = Paint()
+      ..color = context.connectionLine
+      ..strokeWidth = 2.0;
+
+    final roots = members
+        .where(
+          (m) => m.parentId == null || !nodeMap.containsKey(m.parentId),
+        )
+        .toList();
+
     for (final member in members) {
       if (member.parentId != null && nodeMap.containsKey(member.parentId)) {
         graph.addEdge(
           nodeMap[member.parentId]!,
           nodeMap[member.id]!,
-          paint: Paint()
-            ..color = context.connectionLine
-            ..strokeWidth = 2.0,
+          paint: edgePaint,
         );
-      } else if (member.parentId == null) {
-        // Root node
-        if (nodeMap[member.id] != null) {
-          graph.addNode(nodeMap[member.id]!);
-        }
+      }
+    }
+
+    if (roots.length == 1) {
+      graph.addNode(nodeMap[roots.first.id]!);
+    } else if (roots.length > 1) {
+      final virtualNode = Node.Id(_virtualRootId);
+      for (final root in roots) {
+        graph.addEdge(virtualNode, nodeMap[root.id]!, paint: edgePaint);
       }
     }
 
@@ -78,46 +89,49 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
-            builder: (context, state) {
-              if (state is FamilyTreeLoading) {
-                return const Center(
-                    child: AppLoading(size: 80));
-              }
+      body: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
+        builder: (context, state) {
+          if (state is FamilyTreeLoading) {
+            return const Center(child: AppLoading(size: 80));
+          }
 
-              if (state is FamilyTreeError) {
-                return Center(
-                  child: Text(
-                    state.message,
-                    style: GoogleFonts.inter(color: context.primary),
+          if (state is FamilyTreeError) {
+            return Center(
+              child: Text(
+                state.message,
+                style: GoogleFonts.inter(color: context.primary),
+              ),
+            );
+          }
+
+          if (state is FamilyTreeLoaded) {
+            if (state.members.isEmpty) {
+              return Center(
+                child: Text(
+                  l10n.noTreeDataMessage,
+                  style: GoogleFonts.inter(
+                    color: context.textSecondary,
+                    fontSize: 16,
                   ),
-                );
-              }
+                ),
+              );
+            }
 
-              if (state is FamilyTreeLoaded) {
-                if (state.members.isEmpty) {
-                  return Center(
-                    child: Text(
-                      l10n.noTreeDataMessage,
-                      style: GoogleFonts.inter(
-                        color: context.textSecondary,
-                        fontSize: 16,
-                      ),
-                    ),
-                  );
+            final graph = _buildGraph(state.members);
+            final memberMap = {for (final m in state.members) m.id: m};
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
+                  return const SizedBox.shrink();
                 }
-
-                final graph = _buildGraph(state.members);
-                final memberMap = {for (final m in state.members) m.id: m};
-
                 return InteractiveViewer(
                   constrained: false,
                   boundaryMargin: const EdgeInsets.all(500),
                   minScale: 0.1,
                   maxScale: 2.5,
                   child: GraphView(
+                    key: ValueKey(state.members.length),
                     graph: graph,
                     algorithm: BuchheimWalkerAlgorithm(
                       _algorithm,
@@ -129,8 +143,13 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                       ..style = PaintingStyle.stroke,
                     builder: (Node node) {
                       final memberId = node.key?.value as int?;
-                      final member = memberId != null ? memberMap[memberId] : null;
 
+                      if (memberId == _virtualRootId) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final member =
+                          memberId != null ? memberMap[memberId] : null;
                       if (member == null) {
                         return const SizedBox(width: 80, height: 40);
                       }
@@ -154,12 +173,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                     },
                   ),
                 );
-              }
+              },
+            );
+          }
 
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
+          return const SizedBox.shrink();
+        },
       ),
     );
   }

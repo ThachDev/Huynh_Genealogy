@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../theme/theme_extensions.dart';
 import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
+import '../../features/family_tree/family_tree.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
 import '../../features/user/presentation/pages/user_settings_page.dart';
-import '../../features/family_tree/presentation/pages/family_tree_view_page.dart';
 import '../../features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../features/admin/presentation/pages/setting_dashboard/admin_settings_page.dart';
 
@@ -28,6 +28,15 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final authState = context.read<AuthBloc>().state;
+      final familyId =
+          authState is Authenticated ? authState.user.familyId : null;
+      context
+          .read<FamilyTreeBloc>()
+          .add(FamilyTreeLoadEvent(familyId: familyId));
+    });
   }
 
   static bool _isAdminRole(String role) {

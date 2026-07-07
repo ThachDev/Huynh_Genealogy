@@ -51,9 +51,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    context
-        .read<FamilyTreeBloc>()
-        .add(FamilyTreeLoadEvent(familyId: _familyId()));
   }
 
   void _onScroll() {

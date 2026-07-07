@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:giatocviet/core/theme/app_theme.dart';
+import 'package:giatocviet/core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/widgets/app_button.dart';
 import 'package:giatocviet/core/widgets/app_snackbar.dart';
+import 'package:giatocviet/resources/app_localizations.dart';
 import 'package:giatocviet/features/auth/auth.dart';
 import 'package:giatocviet/features/admin/admin.dart';
 
@@ -41,6 +43,7 @@ class _AdminTransferOwnershipPageState
   }
 
   void _confirmTransfer(int familyId, int newOwnerUserId, String newOwnerName) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -55,7 +58,7 @@ class _AdminTransferOwnershipPageState
             const Icon(LucideIcons.alertTriangle,
                 color: AppColors.error, size: 22),
             const SizedBox(width: 10),
-            Text('Cảnh báo quan trọng',
+            Text(l10n.warningDialogTitle,
                 style: GoogleFonts.beVietnamPro(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -67,13 +70,13 @@ class _AdminTransferOwnershipPageState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Quyền Trưởng tộc là quyền hạn cao nhất trong hệ thống gia phả. Khi chuyển nhượng thành công, bạn sẽ mất quyền chỉnh sửa cấu trúc dòng họ cao cấp và các thiết lập bảo mật.',
+              l10n.warningDialogMessage,
               style: GoogleFonts.inter(
                   fontSize: 13, color: Colors.white70, height: 1.5),
             ),
             const SizedBox(height: 16),
             Text(
-              'Bạn có chắc chắn muốn chuyển giao quyền Trưởng tộc cho $newOwnerName?',
+              l10n.warningDialogConfirmMessage(newOwnerName),
               style: GoogleFonts.inter(
                   fontSize: 13, color: Colors.white60, height: 1.5),
             ),
@@ -82,7 +85,7 @@ class _AdminTransferOwnershipPageState
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text('HỦY BỎ',
+            child: Text(l10n.formCancel,
                 style: GoogleFonts.inter(
                     color: Colors.white60,
                     fontWeight: FontWeight.w600)),
@@ -98,7 +101,7 @@ class _AdminTransferOwnershipPageState
               padding: const EdgeInsets.symmetric(
                   horizontal: 20, vertical: 14),
             ),
-            child: Text('ĐỒNG Ý CHUYỂN',
+            child: Text(l10n.confirmTransferButton,
                 style: GoogleFonts.inter(
                     fontWeight: FontWeight.bold)),
           ),
@@ -118,11 +121,12 @@ class _AdminTransferOwnershipPageState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
-        title: const Text('CHUYỂN NHƯỢNG TRƯỞNG TỘC'),
-        backgroundColor: AppColors.wood,
+        title: Text(l10n.transferOwnershipLabel),
+        backgroundColor: context.appBarBg,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -132,7 +136,7 @@ class _AdminTransferOwnershipPageState
         listener: (context, state) {
           if (state is AdminTransferOwnershipSuccess) {
             AppSnackBar.success(
-                context, 'Chuyển nhượng quyền Trưởng tộc thành công!');
+                context, l10n.transferSuccess);
             Navigator.pop(context);
           } else if (state is AdminTransferOwnershipFailure) {
             AppSnackBar.error(context, state.message);
@@ -141,8 +145,8 @@ class _AdminTransferOwnershipPageState
         builder: (context, state) {
           if (state is AdminTransferOwnershipLoading ||
               state is AdminTransferOwnershipInitial) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.wood),
+            return Center(
+              child: CircularProgressIndicator(color: context.appBarBg),
             );
           }
 
@@ -166,7 +170,7 @@ class _AdminTransferOwnershipPageState
                     ),
                     const SizedBox(height: 16),
                     AppButton(
-                      label: 'THỬ LẠI',
+                      label: l10n.retryButton,
                       onPressed: () {
                         final authState = context.read<AuthBloc>().state;
                         if (authState is Authenticated &&
@@ -185,13 +189,13 @@ class _AdminTransferOwnershipPageState
           }
 
           if (state is AdminTransferOwnershipSubmitting) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: AppColors.wood),
-                  SizedBox(height: 16),
-                  Text('Đang xử lý chuyển nhượng...'),
+                  CircularProgressIndicator(color: context.appBarBg),
+                  const SizedBox(height: 16),
+                  Text(l10n.transferProcessing),
                 ],
               ),
             );
@@ -208,14 +212,14 @@ class _AdminTransferOwnershipPageState
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(LucideIcons.users,
-                        color: AppColors.textSecondary, size: 48),
+                    Icon(LucideIcons.users,
+                        color: context.textSecondary, size: 48),
                     const SizedBox(height: 16),
                     Text(
-                      'Không có thành viên nào đủ điều kiện nhận chuyển nhượng.',
+                      l10n.noEligibleMembers,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.beVietnamPro(
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                         fontSize: 14,
                       ),
                     ),
@@ -240,30 +244,30 @@ class _AdminTransferOwnershipPageState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Chọn người nhận quyền',
+                  l10n.chooseRecipientLabel,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Chỉ những thành viên đã kích hoạt tài khoản và có vai trò khác Trưởng tộc mới xuất hiện trong danh sách dưới đây:',
+                  l10n.transferDesc,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Expanded(
                   child: Card(
                     elevation: 0,
-                    color: Colors.white,
+                    color: context.surface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
-                          color: AppColors.gold.withValues(alpha: 0.15)),
+                          color: context.accent.withValues(alpha: 0.15)),
                     ),
                     child: Column(
                       children: [
@@ -272,23 +276,23 @@ class _AdminTransferOwnershipPageState
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
-                              hintText: 'Tìm thành viên...',
+                              hintText: l10n.searchMemberHint,
                               hintStyle: GoogleFonts.inter(fontSize: 13),
-                              prefixIcon: const Icon(LucideIcons.search,
-                                  size: 18, color: AppColors.textSecondary),
+                              prefixIcon: Icon(LucideIcons.search,
+                                  size: 18, color: context.textSecondary),
                               isDense: true,
                               contentPadding:
                                   const EdgeInsets.symmetric(vertical: 10),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(
-                                    color: AppColors.gold
+                                    color: context.accent
                                         .withValues(alpha: 0.2)),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(
-                                    color: AppColors.gold
+                                    color: context.accent
                                         .withValues(alpha: 0.2)),
                               ),
                             ),
@@ -301,10 +305,10 @@ class _AdminTransferOwnershipPageState
                                   child: Padding(
                                     padding: const EdgeInsets.all(20),
                                     child: Text(
-                                      'Không tìm thấy thành viên phù hợp.',
+                                      l10n.noMemberFound,
                                       style: GoogleFonts.inter(
                                           fontSize: 13,
-                                          color: AppColors.textSecondary),
+                                          color: context.textSecondary),
                                     ),
                                   ),
                                 )
@@ -318,7 +322,7 @@ class _AdminTransferOwnershipPageState
                                         Divider(
                                       height: 1,
                                       thickness: 1,
-                                      color: AppColors.gold
+                                      color: context.accent
                                           .withValues(alpha: 0.05),
                                     ),
                                     itemBuilder: (context, index) {
@@ -329,7 +333,7 @@ class _AdminTransferOwnershipPageState
                                             const EdgeInsets.symmetric(
                                                 horizontal: 16, vertical: 8),
                                         leading: CircleAvatar(
-                                          backgroundColor: AppColors.wood
+                                          backgroundColor: context.appBarBg
                                               .withValues(alpha: 0.08),
                                           backgroundImage:
                                               candidate.userAvatarUrl != null
@@ -344,25 +348,25 @@ class _AdminTransferOwnershipPageState
                                                   style:
                                                       GoogleFonts.beVietnamPro(
                                                     fontWeight: FontWeight.bold,
-                                                    color: AppColors.wood,
+                                                    color: context.appBarBg,
                                                   ),
                                                 )
                                               : null,
                                         ),
                                         title: Text(
                                           candidate.userFullName ??
-                                              'Thành viên',
+                                              l10n.roleViewer,
                                           style: GoogleFonts.beVietnamPro(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
-                                            color: AppColors.textPrimary,
+                                            color: context.textPrimary,
                                           ),
                                         ),
                                         subtitle: Text(
-                                          '${AdminDashboardPage.roleLabel(candidate.role)} • ${candidate.userEmail ?? 'Chưa có email'}',
+                                          '${AdminDashboardPage.roleLabel(candidate.role, context)} • ${candidate.userEmail ?? l10n.noEmail}',
                                           style: GoogleFonts.inter(
                                             fontSize: 11,
-                                            color: AppColors.textSecondary,
+                                            color: context.textSecondary,
                                           ),
                                         ),
                                         trailing: Radio<int>(value: index),
@@ -377,7 +381,7 @@ class _AdminTransferOwnershipPageState
                 ),
                 const SizedBox(height: 24),
                 AppButton(
-                  label: 'TIẾN HÀNH CHUYỂN NHƯỢNG',
+                  label: l10n.proceedTransferButton,
                   onPressed: _selectedIndex != null
                       ? () {
                           final authState = context.read<AuthBloc>().state;
@@ -387,7 +391,7 @@ class _AdminTransferOwnershipPageState
                             _confirmTransfer(
                               authState.user.familyId!,
                               candidate.userId,
-                              candidate.userFullName ?? 'Thành viên',
+                              candidate.userFullName ?? l10n.roleViewer,
                             );
                           }
                         }

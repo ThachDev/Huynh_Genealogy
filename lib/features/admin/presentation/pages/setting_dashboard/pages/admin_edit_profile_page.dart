@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../injection_container.dart';
 import '../../../../admin.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,9 +26,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(
-        text: widget.user?.fullName ?? 'Huỳnh Gia Trưởng');
+        text: widget.user?.fullName ?? '');
     _emailController = TextEditingController(
-        text: widget.user?.email ?? 'truongtoc@gmail.com');
+        text: widget.user?.email ?? '');
   }
 
   @override
@@ -60,11 +61,12 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
-        title: const Text('THÔNG TIN TÀI KHOẢN'),
-        backgroundColor: AppColors.wood,
+        title: Text(l10n.accountInfoTitle),
+        backgroundColor: context.appBarBg,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -79,9 +81,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                 Container(
                   height: 160,
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: AppColors.crimson,
-                    image: DecorationImage(
+                  decoration: BoxDecoration(
+                    color: context.primary,
+                    image: const DecorationImage(
                       image: AssetImage('assets/images/clouds.png'),
                       fit: BoxFit.cover,
                     ),
@@ -101,12 +103,13 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                           width: 90,
                           height: 90,
                           decoration: BoxDecoration(
-                            color: AppColors.parchment,
+                            color: context.background,
                             shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.gold, width: 2),
+                            border: Border.all(color: context.accent, width: 2),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
+                                color: context.resolve(Colors.black, Colors.black)
+                                    .withValues(alpha: 0.1),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               )
@@ -122,9 +125,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                           ),
                           child: (widget.user?.avatarUrl == null ||
                                   widget.user!.avatarUrl!.isEmpty)
-                              ? const Center(
+                              ? Center(
                                   child: Icon(LucideIcons.user,
-                                      size: 45, color: AppColors.crimson),
+                                      size: 45, color: context.primary),
                                 )
                               : null,
                         ),
@@ -145,21 +148,21 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                   children: [
                     AppOutlineTextField(
                       controller: _nameController,
-                      label: 'Họ và tên',
-                      hintText: 'Nhập họ và tên',
+                      label: l10n.fullNameLabel,
+                      hintText: l10n.nameHint,
                       enabled: false,
                       prefixIcon:
-                          const Icon(LucideIcons.user, color: AppColors.wood),
+                          Icon(LucideIcons.user, color: context.appBarBg),
                     ),
                     const SizedBox(height: 16),
                     AppOutlineTextField(
                       controller: _emailController,
-                      label: 'Email (Tài khoản)',
-                      hintText: 'example@email.com',
+                      label: l10n.emailAccountLabel,
+                      hintText: l10n.emailHint,
                       enabled: false, // Locked account field
                       keyboardType: TextInputType.emailAddress,
                       prefixIcon:
-                          const Icon(LucideIcons.mail, color: AppColors.wood),
+                          Icon(LucideIcons.mail, color: context.appBarBg),
                     ),
                     const SizedBox(height: 32),
                     if (widget.user?.role == 'OWNER' &&
@@ -170,9 +173,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                         child: Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: AppColors.gold.withValues(alpha: 0.1),
+                            color: context.accent.withValues(alpha: 0.1),
                             border: Border.all(
-                                color: AppColors.gold.withValues(alpha: 0.5),
+                                color: context.accent.withValues(alpha: 0.5),
                                 width: 1.5),
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -181,14 +184,14 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                             children: [
                               Row(
                                 children: [
-                                  const Icon(LucideIcons.alertCircle,
-                                      color: AppColors.wood, size: 24),
+                                  Icon(LucideIcons.alertCircle,
+                                      color: context.appBarBg, size: 24),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
-                                      'Chưa liên kết hồ sơ gia phả',
+                                      l10n.noProfileLink,
                                       style: GoogleFonts.beVietnamPro(
-                                        color: AppColors.wood,
+                                        color: context.textPrimary,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                       ),
@@ -198,9 +201,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Tài khoản của bạn là Trưởng tộc nhưng chưa được liên kết với một thành viên nào trong cây gia phả. Hãy tạo hồ sơ ngay để bắt đầu quản lý phả hệ.',
+                                l10n.noProfileLinkDesc,
                                 style: GoogleFonts.inter(
-                                  color: AppColors.textSecondary,
+                                  color: context.textSecondary,
                                   fontSize: 12,
                                 ),
                               ),
@@ -210,7 +213,7 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                                 child: ElevatedButton.icon(
                                   onPressed: _navigateToMemberFormSetup,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.wood,
+                                    backgroundColor: context.appBarBg,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
@@ -221,7 +224,7 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                                   icon: const Icon(LucideIcons.userPlus,
                                       size: 16),
                                   label: Text(
-                                    'TẠO HỒ SƠ GIA PHẢ',
+                                    l10n.createProfileButton,
                                     style: GoogleFonts.beVietnamPro(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/theme/theme_extensions.dart';
+import '../../../../../../resources/app_localizations.dart';
 
 class AdminAboutUsPage extends StatelessWidget {
   const AdminAboutUsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
-        title: const Text('VỀ CHÚNG TÔI'),
-        backgroundColor: AppColors.wood,
+        title: Text(l10n.aboutUsTitle),
+        backgroundColor: context.appBarBg,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -25,7 +27,7 @@ class AdminAboutUsPage extends StatelessWidget {
               height: 96,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.gold, width: 2),
+                border: Border.all(color: context.accent, width: 2),
               ),
               child: ClipOval(
                 child: Image.asset(
@@ -38,37 +40,36 @@ class AdminAboutUsPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Gia Tộc Việt',
+              l10n.appTitle,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: AppColors.wood,
+                color: context.textPrimary,
               ),
             ),
             const SizedBox(height: 24),
             Text(
-              'Gia Tộc Việt giúp bạn gìn giữ cây gia phả dòng họ trên nền tảng số, '
-              'kết nối các thế hệ dù ở bất kỳ nơi đâu. Từ ông bà tổ tiên đến con cháu hôm nay — tất cả đều trong tầm tay.',
+              l10n.aboutUsTagline,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 13,
                 height: 1.6,
-                color: AppColors.textPrimary,
+                color: context.textPrimary,
               ),
             ),
             const SizedBox(height: 32),
-            _buildInfoRow('Phiên bản', '1.0.0'),
-            _buildDivider(),
-            _buildInfoRow('Nhà phát triển', 'ThachDev'),
-            _buildDivider(),
-            _buildInfoRow('Email', 'thachhuynh.dev@gmail.com'),
-            _buildDivider(),
+            _buildInfoRow(context, l10n.versionLabel, '1.0.0'),
+            _buildDivider(context),
+            _buildInfoRow(context, l10n.developerLabel, 'ThachDev'),
+            _buildDivider(context),
+            _buildInfoRow(context, l10n.contactEmailLabel, 'thachhuynh.dev@gmail.com'),
+            _buildDivider(context),
             const SizedBox(height: 32),
             Text(
-              '© 2026 ThachDev. Bảo lưu mọi quyền.',
+              l10n.copyrightText,
               style: GoogleFonts.inter(
                 fontSize: 10,
-                color: AppColors.textSecondary.withValues(alpha: 0.6),
+                color: context.textSecondary.withValues(alpha: 0.6),
               ),
             ),
             const SizedBox(height: 16),
@@ -78,7 +79,7 @@ class AdminAboutUsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -88,7 +89,7 @@ class AdminAboutUsPage extends StatelessWidget {
             label,
             style: GoogleFonts.beVietnamPro(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
             ),
           ),
           Text(
@@ -96,7 +97,7 @@ class AdminAboutUsPage extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: context.textPrimary,
             ),
           ),
         ],
@@ -104,11 +105,11 @@ class AdminAboutUsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDivider() {
+  Widget _buildDivider(BuildContext context) {
     return Divider(
       height: 1,
       thickness: 1,
-      color: AppColors.gold.withValues(alpha: 0.08),
+      color: context.accent.withValues(alpha: 0.08),
     );
   }
 }

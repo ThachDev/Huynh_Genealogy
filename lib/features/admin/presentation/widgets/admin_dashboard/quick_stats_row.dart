@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../pages/admin_dashboard/admin_dashboard_page.dart';
+import '../../../../../resources/app_localizations.dart';
 
 class QuickStatsRow extends StatelessWidget {
   final String memberCount;
@@ -24,6 +25,7 @@ class QuickStatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
@@ -47,7 +49,7 @@ class QuickStatsRow extends StatelessWidget {
           Expanded(
             child: StatItem(
               icon: LucideIcons.users,
-              label: 'THÀNH VIÊN',
+              label: l10n.statMembers,
               value: memberCount,
               isSelected: selectedTab == AdminDashboardTab.members,
               onTap: () => onTabChanged(AdminDashboardTab.members),
@@ -57,7 +59,7 @@ class QuickStatsRow extends StatelessWidget {
           Expanded(
             child: StatItem(
               icon: LucideIcons.menu,
-              label: 'CHI TỘC',
+              label: l10n.statBranches,
               value: branchCount,
               isSelected: selectedTab == AdminDashboardTab.branches,
               onTap: () => onTabChanged(AdminDashboardTab.branches),
@@ -68,7 +70,7 @@ class QuickStatsRow extends StatelessWidget {
             Expanded(
               child: StatItem(
                 icon: LucideIcons.clock,
-                label: 'CHỜ DUYỆT',
+                label: l10n.statPending,
                 value: pendingCount,
                 isSelected: selectedTab == AdminDashboardTab.pending,
                 onTap: () => onTabChanged(AdminDashboardTab.pending),

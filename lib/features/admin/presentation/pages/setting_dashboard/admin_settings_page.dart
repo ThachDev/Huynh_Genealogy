@@ -3,8 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/domain/entity/family_entity.dart';
+import '../../../../../resources/app_localizations.dart';
 import '../../../../auth/auth.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
@@ -44,6 +46,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
     final FamilyEntity? family =
         pendingState is AdminPendingRequestsLoaded ? pendingState.family : null;
@@ -56,10 +59,10 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     final isEditor = roleUpper == 'EDITOR';
 
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
-        title: const Text('CÀI ĐẶT QUẢN TRỊ'),
-        backgroundColor: AppColors.wood,
+        title: Text(l10n.adminSettingsTitle),
+        backgroundColor: context.appBarBg,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -68,36 +71,36 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
           _buildSettingsCard(children: [
-            _buildSectionHeaderInsideCard(context, 'TÀI KHOẢN VÀ DÒNG TỘC'),
+            _buildSectionHeaderInsideCard(context, l10n.accountAndClanSection),
             if (!isEditor) ...[
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.home,
-                title: 'Thông tin dòng tộc',
+                title: l10n.clanInfoLabel,
                 destination: AdminClanInfoSettingsPage(family: family),
               ),
             ],
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.user,
-              title: 'Chỉnh sửa người dùng',
+              title: l10n.editLabel,
               destination: AdminEditProfilePage(user: user),
             ),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.lock,
-              title: 'Bảo mật tài khoản',
+              title: l10n.accountSecurityLabel,
               destination: const AdminAccountSecurityPage(),
             ),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.userCheck,
-              title: 'Chuyển sang trang Thành viên',
+              title: l10n.switchToMemberPage,
               onTap: () {
                 UserMainNavigationPage.adminModeNotifier.value = false;
               },
             ),
-            _buildSectionHeaderInsideCard(context, 'THIẾT LẬP ỨNG DỤNG'),
+            _buildSectionHeaderInsideCard(context, l10n.appSettingsSection),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
@@ -105,26 +108,26 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         LucideIcons.globe,
                         size: 22,
-                        color: AppColors.crimson,
+                        color: context.primary,
                       ),
                       const SizedBox(width: 16),
                       Text(
-                        'Ngôn ngữ',
+                        l10n.languageLabel,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: context.textPrimary,
                         ),
                       ),
                     ],
                   ),
                   AppCustomSwitch(
                     value: _isEn,
-                    activeColor: AppColors.crimson,
-                    inactiveColor: AppColors.crimson,
+                    activeColor: context.primary,
+                    inactiveColor: context.primary,
                     onChanged: (val) {
                       setState(() {
                         _isEn = val;
@@ -149,26 +152,26 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         LucideIcons.palette,
                         size: 22,
-                        color: AppColors.crimson,
+                        color: context.primary,
                       ),
                       const SizedBox(width: 16),
                       Text(
-                        'Giao diện',
+                        l10n.themeLabel,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: context.textPrimary,
                         ),
                       ),
                     ],
                   ),
                   AppCustomSwitch(
                     value: _isDark,
-                    activeColor: AppColors.crimson,
-                    inactiveColor: AppColors.crimson,
+                    activeColor: context.primary,
+                    inactiveColor: context.primary,
                     onChanged: (val) {
                       setState(() {
                         _isDark = val;
@@ -178,54 +181,54 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     },
                     activeText: 'Dark',
                     inactiveText: 'Light',
-                    activeIcon: const Icon(LucideIcons.moon,
-                        size: 14, color: AppColors.crimson),
+                    activeIcon: Icon(LucideIcons.moon,
+                        size: 14, color: context.primary),
                     inactiveIcon: const Icon(LucideIcons.sun,
                         size: 14, color: Color(0xFF6B7280)),
                   ),
                 ],
               ),
             ),
-            _buildSectionHeaderInsideCard(context, 'THÔNG TIN & TRỢ GIÚP'),
+            _buildSectionHeaderInsideCard(context, l10n.infoAndHelpSection),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.fileText,
-              title: 'Quy định & Điều khoản',
+              title: l10n.regulationsLabel,
               destination: const AdminRegulationsPage(),
             ),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.helpCircle,
-              title: 'Trung tâm hỗ trợ',
+              title: l10n.helpCenterLabel,
               destination: const AdminHelpCenterPage(),
             ),
             _buildSettingsTile(
               context: context,
               icon: LucideIcons.info,
-              title: 'Về chúng tôi',
+              title: l10n.aboutUsLabel,
               destination: const AdminAboutUsPage(),
             ),
             if (isOwner) ...[
-              _buildSectionHeaderInsideCard(context, 'QUẢN TRỊ NÂNG CAO'),
+              _buildSectionHeaderInsideCard(context, l10n.advancedAdminSection),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.users,
-                title: 'Phân quyền thành viên',
+                title: l10n.memberRolesLabel,
                 destination: const AdminMemberRolesPage(),
               ),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.shieldAlert,
-                title: 'Chuyển nhượng quyền Trưởng tộc',
+                title: l10n.transferOwnershipLabel,
                 destination: const AdminTransferOwnershipPage(),
               ),
               _buildSettingsTile(
                 context: context,
                 icon: LucideIcons.trash2,
-                title: 'Giải tán dòng họ',
+                title: l10n.dissolveClanLabel,
                 destination: AdminDissolveClanPage(
                   familyId: family?.id ?? 0,
-                  familyName: family?.name ?? 'Huỳnh Gia Tộc',
+                  familyName: family?.name ?? l10n.appTitle,
                 ),
                 titleColor: AppColors.error,
                 iconColor: AppColors.error,
@@ -247,7 +250,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             ),
             icon: const Icon(LucideIcons.logOut, size: 18),
             label: Text(
-              'ĐĂNG XUẤT',
+              l10n.logoutButton,
               style: GoogleFonts.beVietnamPro(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
@@ -267,11 +270,11 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: AppColors.gold.withValues(alpha: 0.15),
+          color: context.accent.withValues(alpha: 0.15),
           width: 1,
         ),
       ),
-      color: Colors.white,
+      color: context.surface,
       child: Column(
         children: children,
       ),
@@ -303,7 +306,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             Icon(
               icon,
               size: 22,
-              color: iconColor ?? AppColors.crimson,
+              color: iconColor ?? context.primary,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -312,14 +315,14 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: titleColor ?? AppColors.textPrimary,
+                  color: titleColor ?? context.textPrimary,
                 ),
               ),
             ),
             Icon(
               LucideIcons.chevronRight,
               size: 16,
-              color: AppColors.textSecondary.withValues(alpha: 0.5),
+              color: context.textSecondary.withValues(alpha: 0.5),
             ),
           ],
         ),
@@ -336,7 +339,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         style: GoogleFonts.beVietnamPro(
           fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: AppColors.crimson,
+          color: context.primary,
           letterSpacing: 1.0,
         ),
       ),

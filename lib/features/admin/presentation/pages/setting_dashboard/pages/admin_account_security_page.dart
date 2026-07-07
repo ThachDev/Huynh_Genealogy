@@ -5,11 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:dio/dio.dart';
 import '../../../../../../core/network/dio_client.dart';
 import '../../../../../../core/constants/app_constants.dart';
-import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/app_button.dart';
 import '../../../../../../core/widgets/app_text_field.dart';
 import '../../../../../../core/widgets/app_snackbar.dart';
 import '../../../../../../core/utils/validators.dart';
+import '../../../../../../resources/app_localizations.dart';
 
 class AdminAccountSecurityPage extends StatefulWidget {
   const AdminAccountSecurityPage({super.key});
@@ -40,12 +41,12 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
       try {
         final fbUser = fb.FirebaseAuth.instance.currentUser;
         if (fbUser == null) {
-          throw Exception('Người dùng chưa đăng nhập');
+          throw Exception(AppLocalizations.of(context)!.notLoggedIn);
         }
 
         final idToken = await fbUser.getIdToken();
         if (idToken == null) {
-          throw Exception('Không thể lấy mã xác thực phiên đăng nhập');
+          throw Exception(AppLocalizations.of(context)!.sessionTokenError);
         }
 
         final response = await DioClient.instance.post(
@@ -60,18 +61,18 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
         if (mounted) {
           setState(() => _isSaving = false);
           if (response.statusCode == 200 && response.data['success'] == true) {
-            AppSnackBar.success(context, 'Thay đổi mật khẩu thành công!');
+            AppSnackBar.success(context, AppLocalizations.of(context)!.changePasswordSuccess);
             Navigator.pop(context);
           } else {
             final msg =
-                response.data['message'] ?? 'Thay đổi mật khẩu thất bại';
+                response.data['message'] ?? AppLocalizations.of(context)!.passwordChangeFailed;
             AppSnackBar.error(context, msg);
           }
         }
       } on DioException catch (e) {
         if (mounted) {
           setState(() => _isSaving = false);
-          final errorMsg = e.response?.data['message'] ?? 'Lỗi kết nối máy chủ';
+          final errorMsg = e.response?.data['message'] ?? AppLocalizations.of(context)!.serverConnectionError;
           AppSnackBar.error(context, errorMsg);
         }
       } catch (e) {
@@ -86,11 +87,12 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
-        title: const Text('BẢO MẬT TÀI KHOẢN'),
-        backgroundColor: AppColors.wood,
+        title: Text(l10n.accountSecurityTitle),
+        backgroundColor: context.appBarBg,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -103,32 +105,32 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Đổi mật khẩu',
+                l10n.changePasswordTitle,
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.crimson,
+                  color: context.primary,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Mật khẩu mới của bạn cần chứa ít nhất 8 ký tự, bao gồm cả chữ số, chữ hoa và ký tự đặc biệt để đảm bảo an toàn.',
+                l10n.passwordRequirementsDesc,
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  color: AppColors.textSecondary,
+                  color: context.textSecondary,
                 ),
               ),
               const SizedBox(height: 24),
               AppOutlineTextField(
                 controller: _currentPasswordController,
-                label: 'Mật khẩu hiện tại',
-                hintText: 'Nhập mật khẩu đang sử dụng',
+                label: l10n.currentPasswordLabel,
+                hintText: l10n.currentPasswordHint,
                 obscureText: true,
                 prefixIcon:
-                    const Icon(LucideIcons.lock, color: AppColors.crimson),
+                    Icon(LucideIcons.lock, color: context.primary),
                 validator: (val) {
                   if (val == null || val.isEmpty) {
-                    return 'Vui lòng nhập mật khẩu hiện tại';
+                    return l10n.currentPasswordRequired;
                   }
                   return null;
                 },
@@ -136,22 +138,22 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
               const SizedBox(height: 16),
               AppOutlineTextField(
                 controller: _newPasswordController,
-                label: 'Mật khẩu mới',
-                hintText: 'Nhập mật khẩu mới',
+                label: l10n.newPasswordLabel,
+                hintText: l10n.newPasswordHint,
                 obscureText: true,
                 prefixIcon:
-                    const Icon(LucideIcons.key, color: AppColors.crimson),
+                    Icon(LucideIcons.key, color: context.primary),
                 validator: (val) =>
                     AppValidators.validateStrongPassword(context, val),
               ),
               const SizedBox(height: 16),
               AppOutlineTextField(
                 controller: _confirmPasswordController,
-                label: 'Xác nhận mật khẩu mới',
-                hintText: 'Nhập lại mật khẩu mới',
+                label: l10n.confirmNewPasswordLabel,
+                hintText: l10n.confirmNewPasswordHint,
                 obscureText: true,
-                prefixIcon: const Icon(LucideIcons.checkSquare,
-                    color: AppColors.crimson),
+                prefixIcon: Icon(LucideIcons.checkSquare,
+                    color: context.primary),
                 validator: (val) => AppValidators.validateConfirmPassword(
                   context,
                   val,
@@ -160,7 +162,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
               ),
               const SizedBox(height: 32),
               AppButton(
-                label: 'CẬP NHẬT MẬT KHẨU',
+                label: l10n.updatePasswordButton,
                 onPressed: _updatePassword,
                 isLoading: _isSaving,
                 fullWidth: true,

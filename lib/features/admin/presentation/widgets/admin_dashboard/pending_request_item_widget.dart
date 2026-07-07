@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
+import '../../../../../resources/app_localizations.dart';
 
 class PendingRequestItemWidget extends StatelessWidget {
   final FamilyUserEntity request;
@@ -16,6 +17,7 @@ class PendingRequestItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       padding: const EdgeInsets.all(12),
@@ -56,7 +58,7 @@ class PendingRequestItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      request.userFullName ?? 'Người dùng ẩn danh',
+                      request.userFullName ?? l10n.anonymousUser,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -67,7 +69,7 @@ class PendingRequestItemWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      request.userEmail ?? 'Không có email',
+                      request.userEmail ?? l10n.noEmail,
                       style: GoogleFonts.inter(
                         fontSize: 11,
                         color: context.textSecondary,
@@ -100,7 +102,7 @@ class PendingRequestItemWidget extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Phê duyệt',
+                      l10n.approveButton,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
@@ -126,7 +128,7 @@ class PendingRequestItemWidget extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Từ chối',
+                      l10n.rejectButton,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,

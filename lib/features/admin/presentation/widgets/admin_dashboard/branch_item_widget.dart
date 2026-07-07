@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/branch_entity.dart';
+import '../../../../../resources/app_localizations.dart';
 
 class BranchItemWidget extends StatelessWidget {
   final BranchEntity branch;
@@ -20,6 +21,7 @@ class BranchItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
@@ -108,7 +110,7 @@ class BranchItemWidget extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                '$memberCount thành viên',
+                                l10n.memberCountBadge(memberCount),
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -135,7 +137,7 @@ class BranchItemWidget extends StatelessWidget {
                           const SizedBox(width: 4),
                           Flexible(
                             child: Text(
-                              'Đời tổ/Sáng lập: ${branch.founderName}',
+                              l10n.founderBadge(branch.founderName!),
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 11,
                                 color: context.textSecondary,
@@ -176,7 +178,7 @@ class BranchItemWidget extends StatelessWidget {
                             color: Colors.green, size: 18),
                         const SizedBox(width: 8),
                         Text(
-                          'Chỉnh sửa',
+                          l10n.editLabel,
                           style: GoogleFonts.beVietnamPro(fontSize: 13),
                         ),
                       ],
@@ -192,7 +194,7 @@ class BranchItemWidget extends StatelessWidget {
                               color: Colors.red, size: 18),
                           const SizedBox(width: 8),
                           Text(
-                            'Xóa',
+                            l10n.deleteLabel,
                             style: GoogleFonts.beVietnamPro(
                                 fontSize: 13, color: Colors.red),
                           ),

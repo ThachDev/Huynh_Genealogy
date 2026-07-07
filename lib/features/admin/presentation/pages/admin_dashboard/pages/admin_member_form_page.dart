@@ -18,6 +18,7 @@ import '../../../../../../injection_container.dart';
 import '../../../../../auth/auth.dart';
 import '../../../../../onboarding/onboarding.dart';
 import '../../../bloc/admin_member_form/admin_member_form_bloc.dart';
+import '../../../../../../resources/app_localizations.dart';
 
 class AdminMemberFormPage extends StatefulWidget {
   final int? memberId; // null = Thêm mới, có giá trị = Chỉnh sửa
@@ -175,7 +176,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.memberId != null;
-    final title = isEdit ? 'SỬA THÀNH VIÊN' : 'THÊM THÀNH VIÊN';
+    final l10n = AppLocalizations.of(context)!;
+    final title = isEdit ? l10n.editMemberTitle : l10n.addMemberTitle;
 
     return Scaffold(
       backgroundColor: context.background,
@@ -211,12 +213,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               if (mounted) {
                 result.fold(
                   (failure) => AppSnackBar.error(context,
-                      'Tạo hồ sơ thành công nhưng không thể liên kết tài khoản: ${failure.message}'),
+                      l10n.linkAccountError(failure.message)),
                   (_) {
                     // Refresh auth profile to sync new member_id
                     context.read<AuthBloc>().add(AuthProfileRefreshSilent());
                     AppSnackBar.success(context,
-                        'Đã tạo và liên kết hồ sơ gia phả thành công!');
+                        l10n.linkAccountSuccess);
                     Navigator.pop(context, true);
                   },
                 );
@@ -225,8 +227,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               AppSnackBar.success(
                 context,
                 state.isDeleted
-                    ? 'Đã xóa thành viên thành công'
-                    : 'Đã lưu thông tin thành viên thành công',
+                    ? l10n.deleteMemberSuccess
+                    : l10n.saveMemberSuccess,
               );
               Navigator.pop(context, true);
             }
@@ -351,8 +353,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                         flex: 3,
                                         child: _buildTextField(
                                           controller: _fullNameController,
-                                          label: 'Họ và tên',
-                                          hintText: 'Nhập họ và tên',
+                                          label: l10n.fullNameLabel,
+                                          hintText: l10n.nameHint,
                                           validator: (val) =>
                                               AppValidators.validateFullName(
                                                   context, val),
@@ -373,24 +375,24 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       Expanded(
                                         flex: 3,
                                         child: _buildDropdown<MaritalStatus>(
-                                          label: 'HÔN NHÂN',
+                                          label: l10n.maritalStatusLabel,
                                           value: _maritalStatus,
-                                          items: const [
+                                          items: [
                                             DropdownItem(
                                                 value: MaritalStatus.single,
-                                                child: Text('Độc thân')),
+                                                child: Text(l10n.maritalSingle)),
                                             DropdownItem(
                                                 value: MaritalStatus.married,
-                                                child: Text('Đã kết hôn')),
+                                                child: Text(l10n.maritalMarried)),
                                             DropdownItem(
                                                 value: MaritalStatus.divorced,
-                                                child: Text('Ly hôn')),
+                                                child: Text(l10n.maritalDivorced)),
                                             DropdownItem(
                                                 value: MaritalStatus.widowed,
-                                                child: Text('Góa phụ')),
+                                                child: Text(l10n.maritalWidowed)),
                                             DropdownItem(
                                                 value: MaritalStatus.unknown,
-                                                child: Text('Chưa rõ')),
+                                                child: Text(l10n.maritalUnknown)),
                                           ],
                                           onChanged: (val) {
                                             if (val != null) {
@@ -409,18 +411,18 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       Expanded(
                                         flex: 2,
                                         child: _buildDropdown<Gender>(
-                                          label: 'GIỚI TÍNH',
+                                          label: l10n.genderLabel,
                                           value: _gender,
-                                          items: const [
+                                          items: [
                                             DropdownItem(
                                                 value: Gender.male,
-                                                child: Text('Nam')),
+                                                child: Text(l10n.genderMale)),
                                             DropdownItem(
                                                 value: Gender.female,
-                                                child: Text('Nữ')),
+                                                child: Text(l10n.genderFemale)),
                                             DropdownItem(
                                                 value: Gender.unknown,
-                                                child: Text('Chưa rõ')),
+                                                child: Text(l10n.genderUnknown)),
                                           ],
                                           onChanged: (val) {
                                             if (val != null) {
@@ -443,8 +445,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                         flex: 3,
                                         child: AppDatePickerField(
                                           dateString: _dateOfBirth,
-                                          label: 'Ngày sinh',
-                                          hintText: 'dd/mm/yyyy',
+                                          label: l10n.dobLabel,
+                                          hintText: l10n.dobHint,
                                           onDateSelected: (date) {
                                             final formattedDate =
                                                 "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
@@ -470,7 +472,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                 AppColors.surfaceDark,
                                               ),
                                               filled: true,
-                                              labelText: 'TÌNH TRẠNG',
+                                              labelText: l10n.statusLabel,
                                               labelStyle: GoogleFonts.inter(
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
@@ -532,8 +534,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                   const SizedBox(width: 6),
                                                   Text(
                                                     _isAlive
-                                                        ? 'Còn sống'
-                                                        : 'Đã mất',
+                                                        ? l10n.aliveLabel
+                                                        : l10n.deceasedLabel,
                                                     style: GoogleFonts
                                                         .beVietnamPro(
                                                       color: _isAlive
@@ -558,8 +560,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     const SizedBox(height: 12),
                                     AppDatePickerField(
                                       dateString: _dateOfDeath,
-                                      label: 'Ngày mất',
-                                      hintText: 'dd/mm/yyyy',
+                                      label: l10n.dodLabel,
+                                      hintText: l10n.dodHint,
                                       onDateSelected: (date) {
                                         final formattedDate =
                                             "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
@@ -577,33 +579,32 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   // Số điện thoại
                                   _buildTextField(
                                     controller: _phoneController,
-                                    label: 'Số điện thoại',
-                                    hintText: '0xxxxxxxxx',
+                                    label: l10n.phoneLabel,
+                                    hintText: l10n.phoneHint,
                                     keyboardType: TextInputType.phone,
                                   ),
                                   const SizedBox(height: 16),
 
                                   _buildTextField(
                                     controller: _placeOfBirthController,
-                                    label: 'Quê quán / Địa chỉ',
-                                    hintText:
-                                        'Nhập thông tin quê quán, nơi ở...',
+                                    label: l10n.addressLabel,
+                                    hintText: l10n.addressHint,
                                   ),
                                   const SizedBox(height: 16),
                                   _buildDropdown<int?>(
-                                    label: 'CHA/MẸ',
+                                    label: l10n.parentLabel,
                                     value: parentIds.contains(_parentId)
                                         ? _parentId
                                         : null,
                                     items: [
-                                      const DropdownItem<int?>(
+                                      DropdownItem<int?>(
                                           value: null,
-                                          child: Text('Không chọn')),
+                                          child: Text(l10n.noSelectionLabel)),
                                       ...parentOptions
                                           .map((m) => DropdownItem<int?>(
                                                 value: m.id,
                                                 child: Text(
-                                                    '${m.fullName} (Đời ${m.generation})'),
+                                                    '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
                                               )),
                                     ],
                                     onChanged: (val) {
@@ -625,19 +626,19 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       MaritalStatus.married) ...[
                                     const SizedBox(height: 16),
                                     _buildDropdown<int?>(
-                                      label: 'VỢ/CHỒNG',
+                                      label: l10n.spouseLabel,
                                       value: spouseIds.contains(_spouseId)
                                           ? _spouseId
                                           : null,
                                       items: [
-                                        const DropdownItem<int?>(
+                                        DropdownItem<int?>(
                                             value: null,
-                                            child: Text('Không chọn')),
+                                            child: Text(l10n.noSelectionLabel)),
                                         ...spouseOptions
                                             .map((m) => DropdownItem<int?>(
                                                   value: m.id,
                                                   child: Text(
-                                                      '${m.fullName} (Đời ${m.generation})'),
+                                                      '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
                                                 )),
                                       ],
                                       onChanged: (val) =>
@@ -666,21 +667,21 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       });
 
                                     return _buildDropdown<int?>(
-                                      label: 'CHI/NHÁNH',
+                                      label: l10n.branchSectionLabel,
                                       value: allBranches
                                               .any((b) => b.id == _branchId)
                                           ? _branchId
                                           : null,
                                       items: [
-                                        const DropdownItem<int?>(
+                                        DropdownItem<int?>(
                                             value: null,
-                                            child: Text('Không thuộc chi nào')),
+                                            child: Text(l10n.noBranchLabel)),
                                         ...sortedBranches
                                             .map((b) => DropdownItem<int?>(
                                                   value: b.id,
                                                   child: Text(
                                                     b.id == parentBranchId
-                                                        ? '${b.name} ✦ (Chi của cha/mẹ)'
+                                                        ? l10n.parentBranchMarker(b.name)
                                                         : b.name,
                                                   ),
                                                 )),
@@ -696,9 +697,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   // Tiểu sử
                                   _buildTextField(
                                     controller: _notesController,
-                                    label: 'Tiểu sử',
-                                    hintText:
-                                        'Nhập thông tin nghề nghiệp, học vấn hoặc cột mốc quan trọng...',
+                                    label: l10n.bioLabel,
+                                    hintText: l10n.bioHint,
                                     maxLines: 5,
                                   ),
                                 ],
@@ -731,7 +731,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                   ],
                 ),
                 child: AppFormActionButtons(
-                  saveLabel: 'LƯU LẠI',
+                  saveLabel: l10n.formSave,
                   onSave: () => _submitForm(existingMember),
                 ),
               ),
@@ -743,6 +743,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   }
 
   Widget _buildAvatarSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final avatarPath = _avatarUrlController.text.trim();
     Widget avatarWidget = Icon(
       LucideIcons.user,
@@ -824,7 +825,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
           ),
           const SizedBox(height: 10),
           Text(
-            'TẢI ẢNH ĐẠI DIỆN',
+            l10n.uploadPhotoLabel,
             style: GoogleFonts.beVietnamPro(
               fontSize: 11,
               fontWeight: FontWeight.bold,
@@ -927,10 +928,11 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   }
 
   Widget _buildGenerationField() {
+    final l10n = AppLocalizations.of(context)!;
     return AppOutlineTextField(
       controller: _generationController,
-      label: 'Thế hệ',
-      hintText: 'VD: 3',
+      label: l10n.generationFieldLabel,
+      hintText: l10n.generationFieldHint,
       keyboardType: TextInputType.number,
       validator: (val) => AppValidators.validateGeneration(context, val),
     );

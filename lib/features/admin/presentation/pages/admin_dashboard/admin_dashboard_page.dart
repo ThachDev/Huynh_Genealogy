@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -13,6 +14,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
+import '../../../../../resources/app_localizations.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../core/utils/lunar_date_helper.dart';
@@ -36,18 +38,19 @@ class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
 
   /// Role label & color helper
-  static String roleLabel(String role) {
+  static String roleLabel(String role, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     switch (role.toUpperCase()) {
       case 'OWNER':
-        return 'TRƯỞNG TỘC';
+        return l10n.roleOwner;
       case 'BRANCH_ADMIN':
-        return 'TRƯỞNG CHI';
+        return l10n.roleBranchAdmin;
       case 'EDITOR':
-        return 'BIÊN TẬP VIÊN';
+        return l10n.roleEditor;
       case 'VIEWER':
-        return 'THÀNH VIÊN';
+        return l10n.roleViewer;
       default:
-        return 'THÀNH VIÊN';
+        return l10n.roleViewer;
     }
   }
 
@@ -150,6 +153,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget build(BuildContext context) {
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
+    final l10n = AppLocalizations.of(context)!;
     final role = user?.role ?? 'VIEWER';
     final isEditor = role.toUpperCase() == 'EDITOR';
     final double topPadding = MediaQuery.of(context).padding.top;
@@ -158,7 +162,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
 
     // Resolve family name & invite code dynamically
-    String familyName = 'Gia Tộc';
+    String familyName = l10n.appTitle;
     String inviteCode = '';
     if (pendingState is AdminPendingRequestsLoaded &&
         pendingState.family != null) {
@@ -175,12 +179,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             : userTreeState.members.first;
         final parts = rootMember.fullName.trim().split(' ');
         if (parts.isNotEmpty) {
-          familyName = '${parts.first} Gia Tộc';
+          familyName = l10n.familyNameFormat(parts.first);
         }
       } else {
         final parts = user.fullName.trim().split(' ');
         if (parts.isNotEmpty) {
-          familyName = '${parts.first} Gia Tộc';
+          familyName = l10n.familyNameFormat(parts.first);
         }
       }
     }
@@ -207,48 +211,51 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
-          listener: (context, state) {
-            if (state is AdminRequestApprovedSuccess) {
-              AppSnackBar.success(context, 'Đã phê duyệt yêu cầu thành công!');
-              _loadPendingRequests();
-              _loadTree();
-            } else if (state is AdminRequestRejectedSuccess) {
-              AppSnackBar.success(context, 'Đã từ chối yêu cầu thành công!');
-              _loadPendingRequests();
-            } else if (state is AdminPendingRequestsFailure) {
-              AppSnackBar.error(context, state.message);
-            }
-          },
-        ),
-        BlocListener<AdminMemberFormBloc, AdminMemberFormState>(
-          listener: (context, state) {
-            if (state is AdminMemberFormSuccess) {
-              if (state.isDeleted) {
-                AppSnackBar.success(context, 'Đã xoá thành viên thành công!');
-              } else {
-                AppSnackBar.success(context, 'Đã lưu thông tin thành viên!');
+          BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
+            listener: (context, state) {
+              final l10n = AppLocalizations.of(context)!;
+              if (state is AdminRequestApprovedSuccess) {
+                AppSnackBar.success(context, l10n.approveSuccess);
+                _loadPendingRequests();
+                _loadTree();
+              } else if (state is AdminRequestRejectedSuccess) {
+                AppSnackBar.success(context, l10n.rejectSuccess);
+                _loadPendingRequests();
+              } else if (state is AdminPendingRequestsFailure) {
+                AppSnackBar.error(context, state.message);
               }
-              _loadTree();
-            } else if (state is AdminMemberFormError) {
-              AppSnackBar.error(context, state.message);
-            }
-          },
-        ),
-        BlocListener<AdminBranchFormBloc, AdminBranchFormState>(
-          listener: (context, state) {
-            if (state is AdminBranchFormSuccess) {
-              if (state.isDeleted) {
-                AppSnackBar.success(context, 'Đã xoá chi tộc thành công!');
-              } else {
-                AppSnackBar.success(context, 'Đã lưu thông tin chi tộc!');
+            },
+          ),
+          BlocListener<AdminMemberFormBloc, AdminMemberFormState>(
+            listener: (context, state) {
+              final l10n = AppLocalizations.of(context)!;
+              if (state is AdminMemberFormSuccess) {
+                if (state.isDeleted) {
+                  AppSnackBar.success(context, l10n.deleteMemberSuccess);
+                } else {
+                  AppSnackBar.success(context, l10n.saveMemberSuccess);
+                }
+                _loadTree();
+              } else if (state is AdminMemberFormError) {
+                AppSnackBar.error(context, state.message);
               }
-              _loadTree();
-            } else if (state is AdminBranchFormError) {
-              AppSnackBar.error(context, state.message);
-            }
-          },
-        ),
+            },
+          ),
+          BlocListener<AdminBranchFormBloc, AdminBranchFormState>(
+            listener: (context, state) {
+              final l10n = AppLocalizations.of(context)!;
+              if (state is AdminBranchFormSuccess) {
+                if (state.isDeleted) {
+                  AppSnackBar.success(context, l10n.deleteBranchSuccess);
+                } else {
+                  AppSnackBar.success(context, l10n.saveBranchSuccess);
+                }
+                _loadTree();
+              } else if (state is AdminBranchFormError) {
+                AppSnackBar.error(context, state.message);
+              }
+            },
+          ),
       ],
       child: Scaffold(
         backgroundColor: context.background,
@@ -307,6 +314,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Widget _buildHeader(BuildContext context, UserEntity? user, double height,
       String familyName) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       height: height,
       width: double.infinity,
@@ -346,7 +354,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             ),
                           ),
                           Text(
-                            'BẢNG QUẢN TRỊ',
+                            l10n.adminDashboardTitle,
                             style: GoogleFonts.inter(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -367,7 +375,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 color: context.accent.withValues(alpha: 0.4)),
                           ),
                           child: Text(
-                            AdminDashboardPage.roleLabel(user.role),
+                            AdminDashboardPage.roleLabel(user.role, context),
                             style: GoogleFonts.inter(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -381,18 +389,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   const SizedBox(height: 12),
                   Builder(builder: (context) {
                     final now = DateTime.now();
-                    final weekdays = [
-                      'Chủ Nhật',
-                      'Thứ Hai',
-                      'Thứ Ba',
-                      'Thứ Tư',
-                      'Thứ Năm',
-                      'Thứ Sáu',
-                      'Thứ Bảy'
-                    ];
-                    final weekday = weekdays[now.weekday % 7];
-                    final day = now.day.toString().padLeft(2, '0');
-                    final month = now.month.toString().padLeft(2, '0');
+                    final locale = Localizations.localeOf(context).languageCode;
+                    final weekday = DateFormat('EEEE', locale).format(now);
+                    final day = DateFormat('dd', locale).format(now);
+                    final month = DateFormat('MM', locale).format(now);
                     final year = now.year.toString();
                     final solarDateString = '$weekday, $day/$month/$year';
                     final lunarDateString =
@@ -461,6 +461,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     required List<BranchEntity> branches,
     required List<FamilyUserEntity> requests,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.read<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
     final role = user?.role ?? 'VIEWER';
@@ -487,8 +488,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              'DANH SÁCH THÀNH VIÊN',
-              addLabel: 'Thêm thành viên',
+              l10n.memberListTitle,
+              addLabel: l10n.addMemberLabel,
               onAdd: () {
                 Navigator.push(
                   context,
@@ -498,9 +499,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 );
               },
             ),
-            _buildSearchBar('Tìm kiếm thành viên hoặc chi tộc...'),
+            _buildSearchBar(l10n.searchMembersHint),
             if (filteredMembers.isEmpty)
-              _buildEmptyWidget('Không tìm thấy thành viên phù hợp')
+              _buildEmptyWidget(l10n.emptyMembers)
             else
               Expanded(
                 child: ListView.builder(
@@ -552,13 +553,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              'DANH SÁCH CHI TỘC',
-              addLabel: 'Thêm chi tộc',
+              l10n.branchListTitle,
+              addLabel: l10n.addBranchLabel,
               onAdd: () => _openBranchForm(context),
             ),
-            _buildSearchBar('Tìm kiếm chi tộc...'),
+            _buildSearchBar(l10n.searchBranchesHint),
             if (filteredBranches.isEmpty)
-              _buildEmptyWidget('Không tìm thấy chi tộc phù hợp')
+              _buildEmptyWidget(l10n.emptyBranches)
             else
               Expanded(
                 child: ListView.builder(
@@ -600,9 +601,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader('YÊU CẦU CHỜ DUYỆT'),
+            _buildSectionHeader(l10n.pendingRequestTitle),
             if (requests.isEmpty)
-              _buildEmptyWidget('Không có yêu cầu tham gia nào đang chờ duyệt')
+              _buildEmptyWidget(l10n.emptyPendingRequests)
             else
               Expanded(
                 child: ListView.builder(
@@ -621,6 +622,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildInviteCodeCard(BuildContext context, String inviteCode) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -656,7 +658,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'MÃ THAM GIA GIA TỘC',
+                  l10n.inviteCodeSectionLabel,
                   style: GoogleFonts.inter(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -680,9 +682,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             icon: Icon(LucideIcons.copy, size: 18, color: context.textPrimary),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: inviteCode));
-              AppSnackBar.success(context, 'Đã sao chép mã mời: $inviteCode');
+              AppSnackBar.success(context, l10n.inviteCodeCopied(inviteCode));
             },
-            tooltip: 'Sao chép mã',
+            tooltip: l10n.copyCodeTooltip,
           ),
           const SizedBox(width: 4),
           ElevatedButton.icon(
@@ -699,7 +701,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
             icon: const Icon(LucideIcons.maximize2, size: 10),
             label: Text(
-              'Mã QR',
+              l10n.qrCodeTooltip,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -728,7 +730,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final qrKey = GlobalKey();
     showDialog(
       context: context,
-      builder: (ctx) => Dialog(
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return Dialog(
         backgroundColor: ctx.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Stack(
@@ -740,7 +744,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Mã QR Gia Tộc',
+                    l10n.qrDialogTitle,
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       color: ctx.textPrimary,
@@ -775,12 +779,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               await Gal.putImageBytes(bytes, name: 'qr_$code');
                               if (ctx.mounted) {
                                 AppSnackBar.success(
-                                    ctx, 'Đã lưu QR vào thư viện ảnh!');
+                                    ctx, l10n.qrSaved);
                               }
                             } catch (e) {
                               if (ctx.mounted) {
-                                AppSnackBar.error(ctx,
-                                    'Không thể lưu ảnh. Vui lòng cấp quyền thư viện ảnh.');
+                                AppSnackBar.error(ctx, l10n.qrSaveError);
                               }
                             }
                           },
@@ -792,7 +795,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 borderRadius: BorderRadius.circular(8)),
                           ),
                           icon: const Icon(LucideIcons.download, size: 16),
-                          label: Text('Tải xuống',
+                          label: Text(l10n.downloadLabel,
                               style: GoogleFonts.beVietnamPro(
                                   fontSize: 13, fontWeight: FontWeight.w600)),
                         ),
@@ -808,7 +811,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             await file.writeAsBytes(bytes);
                             await Share.shareXFiles(
                               [XFile(file.path, mimeType: 'image/png')],
-                              text: 'Mã tham gia gia tộc: $code',
+                              text: '${l10n.inviteCodeSectionLabel}: $code',
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -819,7 +822,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 borderRadius: BorderRadius.circular(8)),
                           ),
                           icon: const Icon(LucideIcons.share2, size: 16),
-                          label: Text('Chia sẻ',
+                          label: Text(l10n.shareLabel,
                               style: GoogleFonts.beVietnamPro(
                                   fontSize: 13, fontWeight: FontWeight.w600)),
                         ),
@@ -845,12 +848,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
           ],
         ),
-      ),
+      );
+      },
     );
   }
 
   Widget _buildSectionHeader(String title,
       {VoidCallback? onAdd, String? addLabel}) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
@@ -869,12 +874,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             TextButton.icon(
               onPressed: onAdd,
               icon: Icon(
-                addLabel == 'Xem tất cả' ? LucideIcons.eye : LucideIcons.plus,
+                addLabel == l10n.viewAllLabel ? LucideIcons.eye : LucideIcons.plus,
                 size: 14,
                 color: context.accent,
               ),
               label: Text(
-                addLabel ?? 'Thêm mới',
+                addLabel ?? l10n.addNewLabel,
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -898,38 +903,41 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   void _showDeleteConfirmation(BuildContext context, MemberEntity member) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: ctx.surface,
-        title: Text(
-          'Xác nhận xoá',
-          style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: ctx.textPrimary),
-        ),
-        content: Text(
-          'Bạn có chắc chắn muốn xoá thành viên ${member.fullName} khỏi gia phả không?',
-          style: GoogleFonts.beVietnamPro(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('Hủy',
-                style:
-                    GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+          backgroundColor: ctx.surface,
+          title: Text(
+            l10n.deleteMemberTitle,
+            style: GoogleFonts.beVietnamPro(
+                fontWeight: FontWeight.bold, color: ctx.textPrimary),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              context
-                  .read<AdminMemberFormBloc>()
-                  .add(DeleteAdminMemberFormEvent(member.id));
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.error,
-                foregroundColor: Colors.white),
-            child: const Text('Xoá'),
+          content: Text(
+            l10n.deleteMemberMessage(member.fullName),
+            style: GoogleFonts.beVietnamPro(),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.cancelLabel,
+                  style:
+                      GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                context
+                    .read<AdminMemberFormBloc>()
+                    .add(DeleteAdminMemberFormEvent(member.id));
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.error,
+                  foregroundColor: Colors.white),
+              child: Text(l10n.deleteLabel),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -949,38 +957,41 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       BuildContext context, BranchEntity branch) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: ctx.surface,
-        title: Text(
-          'Xác nhận xoá chi tộc',
-          style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: ctx.textPrimary),
-        ),
-        content: Text(
-          'Bạn có chắc chắn muốn xoá chi tộc ${branch.name}? Tất cả thành viên thuộc chi này sẽ mất liên kết chi tộc.',
-          style: GoogleFonts.beVietnamPro(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('Hủy',
-                style:
-                    GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+          backgroundColor: ctx.surface,
+          title: Text(
+            l10n.deleteBranchTitle,
+            style: GoogleFonts.beVietnamPro(
+                fontWeight: FontWeight.bold, color: ctx.textPrimary),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              context
-                  .read<AdminBranchFormBloc>()
-                  .add(DeleteAdminBranchFormEvent(branch.id));
-            },
-            style: ElevatedButton.styleFrom(
+          content: Text(
+            l10n.deleteBranchMessage(branch.name),
+            style: GoogleFonts.beVietnamPro(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.cancelLabel,
+                  style:
+                      GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                context
+                    .read<AdminBranchFormBloc>()
+                    .add(DeleteAdminBranchFormEvent(branch.id));
+              },
+              style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.error,
                 foregroundColor: Colors.white),
-            child: const Text('Xoá'),
+            child: Text(l10n.deleteLabel),
           ),
         ],
-      ),
+      );
+      },
     );
   }
 

@@ -4,8 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import 'package:giatocviet/core/theme/app_theme.dart';
+import 'package:giatocviet/core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/widgets/widgets.dart';
 import 'package:giatocviet/core/domain/entity/family_user_entity.dart';
+import 'package:giatocviet/resources/app_localizations.dart';
 import 'package:giatocviet/features/auth/auth.dart';
 import 'package:giatocviet/features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import 'package:giatocviet/features/admin/presentation/bloc/admin_member_roles/admin_member_roles_bloc.dart';
@@ -41,9 +43,10 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
   }
 
   void _showRoleSelector(FamilyUserEntity user, int familyId) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -59,21 +62,21 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    'Vai trò của ${user.userFullName ?? 'thành viên'}',
+                    l10n.roleOfUser(user.userFullName ?? l10n.roleViewer.toLowerCase()),
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: AppColors.textPrimary,
+                      color: context.textPrimary,
                     ),
                   ),
                 ),
                 const Divider(),
-                _buildRoleOption(user, familyId, 'BRANCH_ADMIN', 'Trưởng chi',
-                    'Quản lý nhân sự và nội dung của chi tộc.'),
-                _buildRoleOption(user, familyId, 'EDITOR', 'Biên tập viên',
-                    'Đóng góp và chỉnh sửa thông tin gia phả.'),
-                _buildRoleOption(user, familyId, 'VIEWER', 'Thành viên',
-                    'Chỉ được xem thông tin gia tộc.'),
+                _buildRoleOption(user, familyId, 'BRANCH_ADMIN', l10n.roleBranchAdminTitle,
+                    l10n.roleBranchAdminDesc),
+                _buildRoleOption(user, familyId, 'EDITOR', l10n.roleEditorTitle,
+                    l10n.roleEditorDesc),
+                _buildRoleOption(user, familyId, 'VIEWER', l10n.roleViewerTitle,
+                    l10n.roleViewerDesc),
               ],
             ),
           ),
@@ -105,7 +108,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                 : roleValue == 'EDITOR'
                     ? LucideIcons.edit3
                     : LucideIcons.user,
-        color: AppColors.textSecondary,
+        color: context.textSecondary,
         size: 22,
       ),
       title: Text(
@@ -113,18 +116,18 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
         style: GoogleFonts.beVietnamPro(
           fontWeight: FontWeight.bold,
           fontSize: 14,
-          color: AppColors.textPrimary,
+          color: context.textPrimary,
         ),
       ),
       subtitle: Text(
         roleDesc,
         style: GoogleFonts.inter(
           fontSize: 12,
-          color: AppColors.textSecondary,
+          color: context.textSecondary,
         ),
       ),
       trailing: isSelected
-          ? const Icon(LucideIcons.check, color: AppColors.crimson, size: 20)
+          ? Icon(LucideIcons.check, color: context.primary, size: 20)
           : null,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
     );
@@ -132,14 +135,15 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.watch<AuthBloc>().state;
     final familyId =
         authState is Authenticated ? authState.user.familyId : null;
 
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
-        backgroundColor: AppColors.wood,
+        backgroundColor: context.appBarBg,
         elevation: 4,
         iconTheme: const IconThemeData(color: Colors.white),
         title: _isSearching
@@ -148,7 +152,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                 autofocus: true,
                 style: GoogleFonts.beVietnamPro(color: Colors.white),
                 decoration: InputDecoration(
-                  hintText: 'Tìm thành viên...',
+                  hintText: l10n.searchMemberHint,
                   hintStyle:
                       GoogleFonts.beVietnamPro(color: Colors.white70),
                   border: InputBorder.none,
@@ -156,9 +160,9 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                 onChanged: (value) => setState(() {}),
               )
             : Text(
-                'Phân quyền thành viên',
+                l10n.memberRolesTitle,
                 style: GoogleFonts.beVietnamPro(
-                  color: AppColors.gold,
+                  color: context.accent,
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -181,7 +185,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
         child: BlocConsumer<AdminMemberRolesBloc, AdminMemberRolesState>(
           listener: (context, state) {
             if (state is AdminMemberRoleUpdatedSuccess) {
-              AppSnackBar.success(context, 'Cập nhật vai trò thành công!');
+              AppSnackBar.success(context, l10n.updateRoleSuccess);
               if (familyId != null) {
                 context.read<AdminMemberRolesBloc>().add(
                       LoadAdminMemberRolesEvent(familyId: familyId),
@@ -193,9 +197,9 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
           },
           builder: (context, state) {
             if (state is AdminMemberRolesLoading) {
-              return const Center(
+              return Center(
                 child: CircularProgressIndicator(
-                  color: AppColors.wood,
+                  color: context.appBarBg,
                 ),
               );
             }
@@ -235,9 +239,9 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
             if (allMembers.isEmpty) {
               return Center(
                 child: Text(
-                  'Chưa có thành viên nào trong gia tộc.',
+                  l10n.noMembers,
                   style: GoogleFonts.beVietnamPro(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     fontSize: 14,
                   ),
                 ),
@@ -247,9 +251,9 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
             if (members.isEmpty) {
               return Center(
                 child: Text(
-                  'Không tìm thấy thành viên phù hợp.',
+                  l10n.noMemberFound,
                   style: GoogleFonts.beVietnamPro(
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     fontSize: 14,
                   ),
                 ),
@@ -266,14 +270,15 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
 
                 return Container(
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: context.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: AppColors.gold.withValues(alpha: 0.25),
+                      color: context.accent.withValues(alpha: 0.25),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.03),
+                        color: context.resolve(Colors.black, Colors.black)
+                            .withValues(alpha: 0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),
@@ -289,14 +294,14 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                             if (user.userId == currentUserId) {
                               AppSnackBar.warning(
                                 context,
-                                'Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng "Chuyển nhượng quyền Trưởng tộc".',
+                                l10n.cannotSelfChange,
                               );
                             } else {
                               _showRoleSelector(user, familyId);
                             }
                           },
                     leading: CircleAvatar(
-                      backgroundColor: AppColors.wood.withValues(alpha: 0.1),
+                      backgroundColor: context.appBarBg.withValues(alpha: 0.1),
                       backgroundImage: user.userAvatarUrl != null
                           ? NetworkImage(user.userAvatarUrl!)
                           : null,
@@ -305,24 +310,24 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                               (user.userFullName ?? 'U')[0].toUpperCase(),
                               style: GoogleFonts.beVietnamPro(
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.wood,
+                                color: context.appBarBg,
                               ),
                             )
                           : null,
                     ),
                     title: Text(
-                      user.userFullName ?? 'Thành viên',
+                      user.userFullName ?? l10n.roleViewer,
                       style: GoogleFonts.beVietnamPro(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
-                        color: AppColors.textPrimary,
+                        color: context.textPrimary,
                       ),
                     ),
                     subtitle: Text(
-                      user.userEmail ?? 'Chưa có email',
+                      user.userEmail ?? l10n.noEmail,
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: AppColors.textSecondary,
+                        color: context.textSecondary,
                       ),
                     ),
                     trailing: Row(
@@ -337,7 +342,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            AdminDashboardPage.roleLabel(role),
+                            AdminDashboardPage.roleLabel(role, context),
                             style: GoogleFonts.inter(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -347,9 +352,9 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        const Icon(
+                        Icon(
                           LucideIcons.chevronRight,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                           size: 16,
                         ),
                       ],

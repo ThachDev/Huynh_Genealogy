@@ -6,11 +6,12 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../../../../core/theme/app_theme.dart';
+import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/app_button.dart';
 import '../../../../../../core/widgets/app_text_field.dart';
 import '../../../../../../core/widgets/app_snackbar.dart';
 import '../../../../../../core/domain/entity/family_entity.dart';
+import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../injection_container.dart';
 import '../../../../admin.dart';
 
@@ -38,10 +39,9 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
   void initState() {
     super.initState();
     _nameController =
-        TextEditingController(text: widget.family?.name ?? 'Huỳnh Gia Tộc');
+        TextEditingController(text: widget.family?.name ?? '');
     _descController = TextEditingController(
-      text: widget.family?.description ??
-          'Dòng họ Huỳnh phát tích từ vùng đất Quảng Nam, trải qua nhiều đời gìn giữ gia phong và nề nếp gia đình.',
+      text: widget.family?.description ?? '',
     );
     _originController =
         TextEditingController(text: widget.family?.origin ?? 'None');
@@ -90,9 +90,9 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
   }
 
   void _saveChanges() async {
+    final l10n = AppLocalizations.of(context)!;
     if (widget.family == null) {
-      AppSnackBar.error(
-          context, 'Không tìm thấy thông tin dòng họ để cập nhật');
+      AppSnackBar.error(context, l10n.noFamilyInfo);
       return;
     }
     if (_formKey.currentState!.validate()) {
@@ -112,8 +112,7 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
         result.fold(
           (failure) => AppSnackBar.error(context, failure.message),
           (updatedFamily) {
-            AppSnackBar.success(
-                context, 'Cập nhật thông tin dòng tộc thành công!');
+            AppSnackBar.success(context, l10n.updateFamilySuccess);
             context.read<AdminPendingRequestsBloc>().add(
                   LoadAdminPendingRequestsEvent(familyId: updatedFamily.id),
                 );
@@ -137,14 +136,15 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final hasLogo = _localAvatarPath != null ||
         (widget.family?.logoUrl != null && widget.family!.logoUrl!.isNotEmpty);
 
     return Scaffold(
-      backgroundColor: AppColors.parchment,
+      backgroundColor: context.background,
       appBar: AppBar(
-        title: const Text('THÔNG TIN DÒNG TỘC'),
-        backgroundColor: AppColors.wood,
+        title: Text(l10n.clanInfoSettingsTitle),
+        backgroundColor: context.appBarBg,
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -156,14 +156,13 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                 _isEditable = !_isEditable;
                 if (!_isEditable) {
                   _localAvatarPath = null;
-                  _nameController.text = widget.family?.name ?? 'Huỳnh Gia Tộc';
-                  _descController.text = widget.family?.description ??
-                      'Dòng họ Huỳnh phát tích từ vùng đất Quảng Nam, trải qua nhiều đời gìn giữ gia phong và nề nếp gia đình.';
+                  _nameController.text = widget.family?.name ?? '';
+                  _descController.text = widget.family?.description ?? '';
                   _originController.text = widget.family?.origin ?? 'None';
                 }
               });
             },
-            tooltip: _isEditable ? 'Hoàn tất' : 'Chỉnh sửa',
+            tooltip: _isEditable ? l10n.doneTooltip : l10n.editTooltip,
           ),
         ],
       ),
@@ -177,9 +176,9 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                 Container(
                   height: 160,
                   width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: AppColors.crimson,
-                    image: DecorationImage(
+                  decoration: BoxDecoration(
+                    color: context.primary,
+                    image: const DecorationImage(
                       image: AssetImage('assets/images/clouds.png'),
                       fit: BoxFit.cover,
                     ),
@@ -201,13 +200,14 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                             width: 90,
                             height: 90,
                             decoration: BoxDecoration(
-                              color: AppColors.parchment,
+                              color: context.background,
                               shape: BoxShape.circle,
                               border:
-                                  Border.all(color: AppColors.gold, width: 2),
+                                  Border.all(color: context.accent, width: 2),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
+                                  color: context.resolve(Colors.black, Colors.black)
+                                      .withValues(alpha: 0.1),
                                   blurRadius: 8,
                                   offset: const Offset(0, 4),
                                 )
@@ -227,9 +227,9 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                                   : null,
                             ),
                             child: !hasLogo
-                                ? const Center(
+                                ? Center(
                                     child: Icon(LucideIcons.shield,
-                                        size: 45, color: AppColors.crimson),
+                                        size: 45, color: context.primary),
                                   )
                                 : null,
                           ),
@@ -239,7 +239,7 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                             bottom: 0,
                             right: 0,
                             child: CircleAvatar(
-                              backgroundColor: AppColors.gold,
+                              backgroundColor: context.accent,
                               radius: 14,
                               child: IconButton(
                                 padding: EdgeInsets.zero,
@@ -266,24 +266,24 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Thông tin cơ bản',
+                      l10n.basicInfoSectionTitle,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.crimson,
+                        color: context.primary,
                       ),
                     ),
                     const SizedBox(height: 16),
                     AppTextFieldLight(
                       controller: _nameController,
-                      label: 'Tên dòng tộc',
-                      hintText: 'Nhập tên dòng tộc của bạn',
+                      label: l10n.clanNameLabel,
+                      hintText: l10n.clanNameHint,
                       enabled: _isEditable,
-                      prefixIcon: const Icon(LucideIcons.award,
-                          color: AppColors.crimson),
+                      prefixIcon: Icon(LucideIcons.award,
+                          color: context.primary),
                       validator: (val) {
                         if (val == null || val.trim().isEmpty) {
-                          return 'Vui lòng nhập tên dòng tộc';
+                          return l10n.clanNameRequired;
                         }
                         return null;
                       },
@@ -291,14 +291,14 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                     const SizedBox(height: 16),
                     AppTextFieldLight(
                       controller: _originController,
-                      label: 'Quê quán / Nguồn gốc',
-                      hintText: 'Nhập quê quán tổ tiên dòng tộc',
+                      label: l10n.originLabel,
+                      hintText: l10n.originHint,
                       enabled: _isEditable,
-                      prefixIcon: const Icon(LucideIcons.mapPin,
-                          color: AppColors.crimson),
+                      prefixIcon: Icon(LucideIcons.mapPin,
+                          color: context.primary),
                       validator: (val) {
                         if (val == null || val.trim().isEmpty) {
-                          return 'Vui lòng nhập địa chỉ nguồn gốc dòng tộc';
+                          return l10n.originRequired;
                         }
                         return null;
                       },
@@ -306,13 +306,13 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
                     const SizedBox(height: 16),
                     AppTextFieldLight(
                       controller: _descController,
-                      label: 'Mô tả chi tiết',
-                      hintText: 'Tóm tắt lịch sử, gia phong dòng họ',
+                      label: l10n.clanDescLabel,
+                      hintText: l10n.clanDescHint,
                       maxLines: 4,
                       enabled: _isEditable,
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.only(bottom: 50),
-                        child: Icon(LucideIcons.text, color: AppColors.crimson),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(bottom: 50),
+                        child: Icon(LucideIcons.text, color: context.primary),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -329,7 +329,7 @@ class _AdminClanInfoSettingsPageState extends State<AdminClanInfoSettingsPage> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 child: AppButton(
-                  label: 'LƯU THAY ĐỔI',
+                  label: l10n.formSave,
                   onPressed: _saveChanges,
                   isLoading: _isSaving,
                   fullWidth: true,

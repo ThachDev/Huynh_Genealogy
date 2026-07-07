@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
+import '../../../../../resources/app_localizations.dart';
 
 class MemberItemWidget extends StatelessWidget {
   final MemberEntity member;
@@ -18,7 +19,8 @@ class MemberItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String aliveText = member.isAlive ? 'Còn sống' : 'Đã mất';
+    final l10n = AppLocalizations.of(context)!;
+    final String aliveText = member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -146,7 +148,7 @@ class MemberItemWidget extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Đời thứ ${member.generation ?? "?"}',
+                                l10n.generationBadge('${member.generation ?? "?"}'),
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -216,7 +218,7 @@ class MemberItemWidget extends StatelessWidget {
                           const SizedBox(width: 4),
                           Flexible(
                             child: Text(
-                              'Chi tộc: ${member.branchName}',
+                              l10n.branchBadge(member.branchName!),
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 11,
                                 color: context.textSecondary,
@@ -257,7 +259,7 @@ class MemberItemWidget extends StatelessWidget {
                             color: Colors.green, size: 18),
                         const SizedBox(width: 8),
                         Text(
-                          'Chỉnh sửa',
+                          l10n.editLabel,
                           style: GoogleFonts.beVietnamPro(fontSize: 13),
                         ),
                       ],
@@ -273,7 +275,7 @@ class MemberItemWidget extends StatelessWidget {
                               color: Colors.red, size: 18),
                           const SizedBox(width: 8),
                           Text(
-                            'Xóa',
+                            l10n.deleteLabel,
                             style: GoogleFonts.beVietnamPro(
                                 fontSize: 13, color: Colors.red),
                           ),

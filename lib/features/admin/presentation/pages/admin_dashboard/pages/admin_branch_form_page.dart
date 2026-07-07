@@ -6,6 +6,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
+import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../../core/domain/entity/member_entity.dart';
@@ -63,23 +64,25 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     if (widget.branch == null) return;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: context.background,
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+        backgroundColor: ctx.background,
         title: Text(
-          'Xác Nhận Xóa',
+          l10n.deleteBranchConfirmTitle,
           style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: context.textPrimary),
+              fontWeight: FontWeight.bold, color: ctx.textPrimary),
         ),
         content: Text(
-          'Bạn có chắc chắn muốn xoá chi tộc ${widget.branch!.name} không?',
+          l10n.deleteBranchConfirmMessage(widget.branch!.name),
           style: GoogleFonts.beVietnamPro(),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Hủy',
+            child: Text(l10n.cancelLabel,
                 style:
-                    GoogleFonts.beVietnamPro(color: context.textSecondary)),
+                    GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -91,17 +94,18 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.error,
                 foregroundColor: Colors.white),
-            child: const Text('Xoá'),
+            child: Text(l10n.deleteLabel),
           ),
         ],
-      ),
+      );
+      },
     );
   }
 
   void _submitForm() {
     if (!_formKey.currentState!.validate()) return;
     if (_nameController.text.trim().isEmpty) {
-      AppSnackBar.error(context, 'Vui lòng nhập tên chi tộc');
+      AppSnackBar.error(context, AppLocalizations.of(context)!.errRequiredField(AppLocalizations.of(context)!.branchNameLabel));
       return;
     }
 
@@ -159,8 +163,9 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       keyboardType: keyboardType,
       maxLines: maxLines,
       validator: (val) {
-        if (label == 'Tên chi tộc' && (val == null || val.trim().isEmpty)) {
-          return 'Không được để trống';
+        final l10n = AppLocalizations.of(context)!;
+        if (label == l10n.branchNameLabel && (val == null || val.trim().isEmpty)) {
+          return l10n.branchNameEmptyError;
         }
         return null;
       },
@@ -224,8 +229,9 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEdit = widget.branch != null;
-    final title = isEdit ? 'SỬA CHI TỘC' : 'THÊM CHI TỘC';
+    final title = isEdit ? l10n.editBranchTitle : l10n.addBranchTitle;
 
     return Scaffold(
       backgroundColor: context.background,
@@ -253,18 +259,19 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
               icon: const Icon(LucideIcons.trash2,
                   color: Colors.redAccent, size: 20),
               onPressed: _showDeleteConfirmDialog,
-              tooltip: 'Xóa chi tộc',
+              tooltip: l10n.deleteBranchTooltip,
             ),
         ],
       ),
       body: BlocConsumer<AdminBranchFormBloc, AdminBranchFormState>(
         listener: (context, state) {
+          final l10n = AppLocalizations.of(context)!;
           if (state is AdminBranchFormSuccess) {
             AppSnackBar.success(
               context,
               state.isDeleted
-                  ? 'Đã xóa chi tộc thành công'
-                  : 'Đã lưu thông tin chi tộc thành công',
+                  ? l10n.deleteBranchSuccess
+                  : l10n.saveBranchSuccess,
             );
             Navigator.pop(context, true);
           } else if (state is AdminBranchFormError) {
@@ -308,12 +315,12 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                         _buildSectionCard(
                           context,
                           icon: LucideIcons.gitBranch,
-                          title: 'THÔNG TIN CƠ BẢN',
+                          title: l10n.basicInfoTitle,
                           children: [
                             _buildTextField(
                               controller: _nameController,
-                              label: 'Tên chi tộc',
-                              hintText: 'VD: Chi Trưởng, Chi Hai...',
+                              label: l10n.branchNameLabel,
+                              hintText: l10n.branchNameHint,
                             ),
                             const SizedBox(height: 16),
                             Row(
@@ -325,7 +332,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            _buildLabel(context, 'Tên tổ chi'),
+                                            _buildLabel(context, l10n.founderNameLabel),
                                             AppDropdown<String?>(
                                               value: members.any((m) =>
                                                       m.fullName ==
@@ -336,7 +343,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                   DropdownItem<String?>(
                                                   value: '__ADD_NEW__',
                                                   child: Text(
-                                                    '✦ Thêm thành viên mới...',
+                                                    l10n.addMemberPlaceholder,
                                                     style: TextStyle(
                                                       color: context.primary,
                                                       fontWeight:
@@ -344,15 +351,15 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                     ),
                                                   ),
                                                 ),
-                                                const DropdownItem<String?>(
+                                                DropdownItem<String?>(
                                                   value: null,
-                                                  child: Text('Không chọn'),
+                                                  child: Text(l10n.noSelectionLabel),
                                                 ),
                                                 ...members.map((m) =>
                                                     DropdownItem<String?>(
                                                       value: m.fullName,
                                                       child: Text(
-                                                          '${m.fullName} (Đời ${m.generation})'),
+                                                          '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
                                                     )),
                                               ],
                                               onChanged: (val) {
@@ -397,8 +404,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                         )
                                       : _buildTextField(
                                           controller: _founderController,
-                                          label: 'Tên tổ chi (Tự nhập)',
-                                          hintText: 'Người lập chi (tùy chọn)',
+                                          label: l10n.manualInputLabel,
+                                          hintText: l10n.founderNameHint,
                                         ),
                                 ),
                                 const SizedBox(width: 8),
@@ -425,8 +432,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                       size: 20,
                                     ),
                                     tooltip: _useDropdown
-                                        ? 'Tự nhập tên'
-                                        : 'Chọn từ danh sách',
+                                        ? l10n.inputModeLabel
+                                        : l10n.selectModeLabel,
                                   ),
                                 ),
                               ],
@@ -438,8 +445,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                   flex: 2,
                                   child: _buildTextField(
                                     controller: _foundingYearController,
-                                    label: 'Năm lập chi',
-                                    hintText: 'VD: 1980',
+                                    label: l10n.foundationYearLabel,
+                                    hintText: l10n.foundationYearHint,
                                     keyboardType: TextInputType.number,
                                   ),
                                 ),
@@ -448,8 +455,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                   flex: 3,
                                   child: _buildTextField(
                                     controller: _regionController,
-                                    label: 'Địa phương',
-                                    hintText: 'VD: Làng X, Huyện Y',
+                                    label: l10n.locationLabel,
+                                    hintText: l10n.locationHint,
                                   ),
                                 ),
                               ],
@@ -457,8 +464,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                             const SizedBox(height: 16),
                             _buildTextField(
                               controller: _descriptionController,
-                              label: 'Mô tả chi tộc',
-                              hintText: 'Nhập thêm thông tin mô tả chi tiết...',
+                              label: l10n.branchDescLabel,
+                              hintText: l10n.branchDescHint,
                               maxLines: 4,
                             ),
                           ],
@@ -485,7 +492,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                   ],
                 ),
                 child: AppFormActionButtons(
-                  saveLabel: 'LƯU CHI TỘC',
+                  saveLabel: l10n.saveBranchLabel,
                   onSave: _submitForm,
                 ),
               ),

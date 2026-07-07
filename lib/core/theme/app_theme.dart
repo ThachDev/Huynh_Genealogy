@@ -5,31 +5,40 @@ class AppColors {
   AppColors._();
 
   // Primary palette – "Neo-Industrial"
-  static const Color crimson = Color(0xFF5C0612); // Crimson/Secondary - #5C0612
-  static const Color gold = Color(0xFFD4AF37); // Gold/Tertiary - #D4AF37
-  static const Color parchment = Color(
-      0xFFF5F5F5); // Background/Parchment - #F5F5F5 (Neo-Industrial light grey)
-  static const Color wood = Color(
-    0xFF1A1A1A,
-  ); // Wood/AppBar - #1A1A1A (Neo-Industrial charcoal black)
+  static const Color crimson = Color(0xFF5C0612);
+  static const Color gold = Color(0xFFD4AF37);
+  static const Color parchment = Color(0xFFF5F5F5);
+  static const Color wood = Color(0xFF000000);
 
-  // Compatibility names (if used elsewhere)
+  // Theme variants — lighter/darker for dark mode adaptation
+  static const Color crimsonLight = Color(0xFFC62844);
+  static const Color goldLight = Color(0xFFE0C04A);
+  static const Color parchmentDark = Color(0xFF121212);
+  static const Color surfaceDark = Color(0xFF1E1E1E);
+  static const Color woodLight = Color(0xFFE0E0E0);
+
+  // Compatibility names (kept as base defaults for backward compatibility)
   static const Color primary = crimson;
   static const Color accent = gold;
   static const Color background = parchment;
   static const Color surface = Colors.white;
 
   // Text colors
-  static const Color textPrimary = Color(0xFF000000); // Neutral - #000000
-  static const Color textSecondary = Color(0xFF555555); // Dark grey
+  static const Color textPrimary = Color(0xFF000000);
+  static const Color textSecondary = Color(0xFF555555);
   static const Color textOnPrimary = Colors.white;
 
   // Tree node colors
-  static const Color nodeMale = Color(0xFFE8F1F8); // Sang trọng hơn xanh nhạt
-  static const Color nodeFemale = Color(0xFFF9E8EE); // Sang trọng hơn hồng nhạt
+  static const Color nodeMale = Color(0xFFE8F1F8);
+  static const Color nodeFemale = Color(0xFFF9E8EE);
   static const Color nodeDeceased = Color(0xFFCFD8DC);
   static const Color nodeBorder = gold;
   static const Color connectionLine = wood;
+
+  // Node color variants for dark mode
+  static const Color nodeMaleDark = Color(0xFF2C3E50);
+  static const Color nodeFemaleDark = Color(0xFF4A2C3A);
+  static const Color nodeDeceasedDark = Color(0xFF37474F);
 
   // Status Colors
   static const Color success = Color(0xFF4CAF50);
@@ -131,13 +140,13 @@ class AppTheme {
       colorScheme: ColorScheme.fromSeed(
         brightness: Brightness.dark,
         seedColor: AppColors.crimson,
-        primary: AppColors.crimson,
-        secondary: AppColors.gold,
-        surface: const Color(0xFF1E1E1E),
+        primary: AppColors.crimsonLight,
+        secondary: AppColors.goldLight,
+        surface: AppColors.surfaceDark,
         error: AppColors.error,
         onPrimary: AppColors.textOnPrimary,
       ),
-      scaffoldBackgroundColor: const Color(0xFF121212),
+      scaffoldBackgroundColor: AppColors.parchmentDark,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.wood,
         foregroundColor: Colors.white,
@@ -150,7 +159,7 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: const Color(0xFF1E1E1E),
+        color: AppColors.surfaceDark,
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -159,7 +168,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.crimson,
+          backgroundColor: AppColors.crimsonLight,
           foregroundColor: Colors.white,
           elevation: 4,
           shadowColor: AppColors.gold.withValues(alpha: 0.5),

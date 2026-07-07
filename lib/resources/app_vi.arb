@@ -194,5 +194,8 @@
   "formSave": "LƯU LẠI",
   "formCancel": "HỦY BỎ",
   "lunarSuffix": "ÂM LỊCH",
-  "leapMonthSuffix": "(Nhuận)"
+  "leapMonthSuffix": "(Nhuận)",
+  "searchHint": "Tìm kiếm...",
+  "selectDate": "Chọn ngày",
+  "selectMonthYear": "Chọn tháng và năm"
 }

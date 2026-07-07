@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 import 'app_common_widgets.dart';
 import '../../resources/app_localizations.dart';
 
@@ -86,34 +87,33 @@ class AppButton extends StatelessWidget {
   }
 
   ButtonStyle _buttonStyle(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     switch (variant) {
       case AppButtonVariant.primary:
         return ElevatedButton.styleFrom(
-          backgroundColor: AppColors.crimson,
-          foregroundColor: Colors.white,
-          disabledBackgroundColor: AppColors.crimson.withValues(alpha: 0.5),
+          backgroundColor: context.primary,
+          foregroundColor: context.textOnPrimary,
+          disabledBackgroundColor: context.primary.withValues(alpha: 0.5),
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
       case AppButtonVariant.secondary:
         return ElevatedButton.styleFrom(
-          backgroundColor: AppColors.gold,
+          backgroundColor: context.accent,
           foregroundColor: Colors.black87,
-          disabledBackgroundColor: AppColors.gold.withValues(alpha: 0.5),
+          disabledBackgroundColor: context.accent.withValues(alpha: 0.5),
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
       case AppButtonVariant.outline:
         return OutlinedButton.styleFrom(
-          foregroundColor: AppColors.gold,
-          side: const BorderSide(color: AppColors.gold, width: 1.5),
+          foregroundColor: context.accent,
+          side: BorderSide(color: context.accent, width: 1.5),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
       case AppButtonVariant.ghost:
         return OutlinedButton.styleFrom(
-          foregroundColor: isDark ? Colors.white70 : Colors.black87,
-          side: BorderSide(color: isDark ? Colors.white24 : Colors.black12),
+          foregroundColor: context.textSecondary,
+          side: BorderSide(color: context.textSecondary.withValues(alpha: 0.3)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
       case AppButtonVariant.danger:
@@ -180,8 +180,7 @@ class AppFormActionButtons extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final save = saveLabel ?? l10n.formSave;
     final cancel = cancelLabel ?? l10n.formCancel;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cancelColor = isDark ? Colors.white70 : AppColors.wood;
+    final cancelColor = context.textSecondary;
     return Row(
       children: [
         Expanded(
@@ -209,8 +208,8 @@ class AppFormActionButtons extends StatelessWidget {
           child: ElevatedButton(
             onPressed: isLoading ? null : onSave,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.crimson,
-              foregroundColor: Colors.white,
+              backgroundColor: context.primary,
+              foregroundColor: context.textOnPrimary,
               elevation: 0,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
@@ -259,7 +258,6 @@ class AppIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final btn = InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(size / 2),
@@ -268,9 +266,11 @@ class AppIconButton extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           color: backgroundColor ??
-              (isDark ? AppColors.wood : Colors.black.withValues(alpha: 0.05)),
+              (context.isDarkMode
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.black.withValues(alpha: 0.05)),
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+          border: Border.all(color: context.accent.withValues(alpha: 0.3)),
         ),
         child: Center(child: icon),
       ),

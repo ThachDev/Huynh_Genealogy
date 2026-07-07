@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 
 /// Text field dùng chung cho theme tối (dark background)
 class AppTextField extends StatelessWidget {
@@ -40,6 +41,7 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -48,7 +50,9 @@ class AppTextField extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: AppColors.nodeFemale.withValues(alpha: 0.8),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.7)
+                : context.textSecondary,
             letterSpacing: 0.8,
           ),
         ),
@@ -63,14 +67,22 @@ class AppTextField extends StatelessWidget {
           focusNode: focusNode,
           onFieldSubmitted: onFieldSubmitted,
           onChanged: onChanged,
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+          style: GoogleFonts.inter(
+            color: isDark ? Colors.white : context.textPrimary,
+            fontSize: 14,
+          ),
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: GoogleFonts.inter(color: Colors.white30, fontSize: 14),
+            hintStyle: GoogleFonts.inter(
+              color: isDark ? Colors.white30 : context.textSecondary.withValues(alpha: 0.5),
+              fontSize: 14,
+            ),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: Colors.white.withValues(alpha: 0.05),
+            fillColor: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
@@ -78,12 +90,14 @@ class AppTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.15)
+                    : context.textSecondary.withValues(alpha: 0.2),
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.gold, width: 1.5),
+              borderSide: BorderSide(color: context.accent, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -96,7 +110,9 @@ class AppTextField extends StatelessWidget {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: Colors.white.withValues(alpha: 0.07),
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.07)
+                    : context.textSecondary.withValues(alpha: 0.15),
               ),
             ),
             errorStyle: GoogleFonts.inter(color: AppColors.error, fontSize: 12),
@@ -147,6 +163,7 @@ class AppTextFieldLight extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -155,7 +172,7 @@ class AppTextFieldLight extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: AppColors.textSecondary,
+            color: context.textSecondary,
           ),
         ),
         const SizedBox(height: 6),
@@ -171,19 +188,19 @@ class AppTextFieldLight extends StatelessWidget {
           inputFormatters: inputFormatters,
           style: style ??
               GoogleFonts.inter(
-                color: AppColors.textPrimary,
+                color: context.textPrimary,
                 fontSize: 14,
               ),
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: GoogleFonts.inter(
-              color: AppColors.textSecondary.withValues(alpha: 0.5),
+              color: context.textSecondary.withValues(alpha: 0.5),
               fontSize: 14,
             ),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: Colors.white,
+            fillColor: isDark ? AppColors.surfaceDark : Colors.white,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 14,
@@ -191,19 +208,19 @@ class AppTextFieldLight extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: AppColors.textSecondary.withValues(alpha: 0.2),
+                color: context.textSecondary.withValues(alpha: 0.2),
               ),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: AppColors.textSecondary.withValues(alpha: 0.15),
+                color: context.textSecondary.withValues(alpha: 0.15),
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide:
-                  const BorderSide(color: AppColors.crimson, width: 1.5),
+                  BorderSide(color: context.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -251,6 +268,7 @@ class AppOutlineTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -259,35 +277,41 @@ class AppOutlineTextField extends StatelessWidget {
       validator: validator,
       enabled: enabled,
       style:
-          GoogleFonts.beVietnamPro(fontSize: 14, color: AppColors.textPrimary),
+          GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: GoogleFonts.beVietnamPro(
-            fontSize: 13, color: const Color(0xFF7A7571)),
+            fontSize: 13, color: context.textSecondary),
         floatingLabelStyle: GoogleFonts.beVietnamPro(
             fontSize: 12,
-            color: AppColors.crimson,
+            color: context.primary,
             fontWeight: FontWeight.bold),
         hintText: hintText,
         hintStyle: GoogleFonts.beVietnamPro(
-            fontSize: 13, color: const Color(0xFFA5A09A)),
+            fontSize: 13, color: context.textSecondary.withValues(alpha: 0.6)),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        fillColor: const Color(0xFFFCFAF8),
+        fillColor: isDark ? AppColors.surfaceDark : const Color(0xFFFCFAF8),
         filled: true,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),
+          borderSide: BorderSide(
+            color: context.textSecondary.withValues(alpha: 0.2),
+            width: 1.2,
+          ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFF3EFEA), width: 1.2),
+          borderSide: BorderSide(
+            color: context.textSecondary.withValues(alpha: 0.15),
+            width: 1.2,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.crimson, width: 1.2),
+          borderSide: BorderSide(color: context.primary, width: 1.2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

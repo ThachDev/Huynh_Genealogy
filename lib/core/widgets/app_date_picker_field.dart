@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:vnlunar/vnlunar.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 import 'app_lunar_calendar_picker.dart';
 
 class AppDatePickerField extends StatelessWidget {
@@ -45,7 +46,7 @@ class AppDatePickerField extends StatelessWidget {
     }
   }
 
-  Widget _buildDisplayText() {
+  Widget _buildDisplayText(BuildContext context) {
     final parsed = _parseDateParts();
     if (parsed == null) {
       return Text(
@@ -53,8 +54,8 @@ class AppDatePickerField extends StatelessWidget {
         style: GoogleFonts.beVietnamPro(
           fontSize: 14,
           color: dateString != null
-              ? AppColors.textPrimary
-              : AppColors.textSecondary,
+              ? context.textPrimary
+              : context.textSecondary,
         ),
       );
     }
@@ -66,14 +67,14 @@ class AppDatePickerField extends StatelessWidget {
             style: GoogleFonts.beVietnamPro(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: context.textPrimary,
             ),
           ),
           TextSpan(
             text: '  •  ${parsed['lunar']}',
             style: GoogleFonts.beVietnamPro(
               fontSize: 12,
-              color: const Color(0xFF9E9892),
+              color: context.textSecondary.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -114,19 +115,19 @@ class AppDatePickerField extends StatelessWidget {
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          fillColor: const Color(0xFFFCFAF8),
+          fillColor: context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
           filled: true,
           labelText: label.toUpperCase(),
           labelStyle: GoogleFonts.inter(
             fontSize: 10,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF6B6661),
+            color: context.textSecondary,
             letterSpacing: 0.5,
           ),
           floatingLabelStyle: GoogleFonts.inter(
             fontSize: 10,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF6B6661),
+            color: context.textSecondary,
             letterSpacing: 0.5,
           ),
           floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -134,19 +135,22 @@ class AppDatePickerField extends StatelessWidget {
               const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),
+            borderSide: BorderSide(
+              color: context.textSecondary.withValues(alpha: 0.2),
+              width: 1.2,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.crimson, width: 1.2),
+            borderSide: BorderSide(color: context.primary, width: 1.2),
           ),
-          suffixIcon: const Icon(
+          suffixIcon: Icon(
             LucideIcons.calendar,
             size: 18,
-            color: Color(0xFF7A7571),
+            color: context.textSecondary,
           ),
         ),
-        child: _buildDisplayText(),
+        child: _buildDisplayText(context),
       ),
     );
   }

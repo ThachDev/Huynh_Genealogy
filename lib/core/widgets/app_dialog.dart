@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../resources/app_localizations.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 import 'app_common_widgets.dart';
 
 enum AppDialogType { info, warning, danger, success }
@@ -141,7 +142,7 @@ class _AppDialogWidget extends StatelessWidget {
     final icon = _icon();
 
     return Dialog(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: context.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: accentColor.withValues(alpha: 0.3), width: 1),
@@ -171,7 +172,7 @@ class _AppDialogWidget extends StatelessWidget {
               style: GoogleFonts.beVietnamPro(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: context.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -182,7 +183,7 @@ class _AppDialogWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 13,
-                color: Colors.white60,
+                color: context.textSecondary,
                 height: 1.5,
               ),
             ),
@@ -196,16 +197,16 @@ class _AppDialogWidget extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: () => Navigator.of(context).pop(false),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white24),
+                        side: BorderSide(color: context.textSecondary.withValues(alpha: 0.3)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(
-                        cancelLabel ?? 'Huỷ',
+                        cancelLabel ?? AppLocalizations.of(context)!.cancelLabel,
                         style: GoogleFonts.inter(
-                          color: Colors.white60,
+                          color: context.textSecondary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -219,7 +220,7 @@ class _AppDialogWidget extends StatelessWidget {
                         backgroundColor: accentColor,
                         foregroundColor: type == AppDialogType.warning
                             ? Colors.black87
-                            : Colors.white,
+                            : context.textOnPrimary,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -243,7 +244,7 @@ class _AppDialogWidget extends StatelessWidget {
                     backgroundColor: accentColor,
                     foregroundColor: type == AppDialogType.warning
                         ? Colors.black87
-                        : Colors.white,
+                        : context.textOnPrimary,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

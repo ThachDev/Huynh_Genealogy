@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/theme_extensions.dart';
 
 class AppCustomSwitch extends StatelessWidget {
   final bool value;
@@ -8,8 +9,8 @@ class AppCustomSwitch extends StatelessWidget {
   final String inactiveText;
   final Widget activeIcon;
   final Widget inactiveIcon;
-  final Color activeColor;
-  final Color inactiveColor;
+  final Color? activeColor;
+  final Color? inactiveColor;
 
   const AppCustomSwitch({
     super.key,
@@ -19,12 +20,14 @@ class AppCustomSwitch extends StatelessWidget {
     required this.inactiveText,
     required this.activeIcon,
     required this.inactiveIcon,
-    this.activeColor = const Color(0xFFC02E2E), // crimson
-    this.inactiveColor = const Color(0xFF6B7280), // gray
+    this.activeColor,
+    this.inactiveColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final actColor = activeColor ?? context.primary;
+    final inactColor = inactiveColor ?? context.textSecondary.withValues(alpha: 0.5);
     return GestureDetector(
       onTap: () => onChanged(!value),
       child: AnimatedContainer(
@@ -33,7 +36,7 @@ class AppCustomSwitch extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: value ? activeColor : inactiveColor,
+          color: value ? actColor : inactColor,
         ),
         child: Stack(
           alignment: Alignment.center,

@@ -979,6 +979,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'(Nhuận)'**
   String get leapMonthSuffix;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm...'**
+  String get searchHint;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày'**
+  String get selectDate;
+
+  /// No description provided for @selectMonthYear.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn tháng và năm'**
+  String get selectMonthYear;
 }
 
 class _AppLocalizationsDelegate

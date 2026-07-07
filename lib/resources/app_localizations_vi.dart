@@ -496,4 +496,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get leapMonthSuffix => '(Nhuận)';
+
+  @override
+  String get searchHint => 'Tìm kiếm...';
+
+  @override
+  String get selectDate => 'Chọn ngày';
+
+  @override
+  String get selectMonthYear => 'Chọn tháng và năm';
 }

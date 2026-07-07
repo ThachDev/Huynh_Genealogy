@@ -4,6 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 import 'app_snackbar.dart';
 import '../../resources/app_localizations.dart';
 
@@ -155,7 +156,7 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
                       width: scanAreaSize,
                       height: scanAreaSize,
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.gold, width: 2),
+                        border: Border.all(color: context.accent, width: 2),
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),

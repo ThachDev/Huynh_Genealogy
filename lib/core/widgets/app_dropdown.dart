@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import '../../resources/app_localizations.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 
 class AppDropdown<T> extends StatefulWidget {
   final T value;
   final List<DropdownItem<T>> items;
   final ValueChanged<T?> onChanged;
   final bool showSearchBox;
-  final String searchHint;
+  final String? searchHint;
   final String? label;
 
   const AppDropdown({
@@ -18,7 +20,7 @@ class AppDropdown<T> extends StatefulWidget {
     required this.items,
     required this.onChanged,
     this.showSearchBox = false,
-    this.searchHint = 'Tìm kiếm...',
+    this.searchHint,
     this.label,
   });
 
@@ -47,17 +49,17 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         height: 48,
         width: double.infinity,
       ),
-      iconStyleData: const IconStyleData(
-        icon: Icon(LucideIcons.chevronDown, size: 18, color: Color(0xFF7A7571)),
+      iconStyleData: IconStyleData(
+        icon: Icon(LucideIcons.chevronDown, size: 18, color: context.textSecondary),
         openMenuIcon:
-            Icon(LucideIcons.chevronUp, size: 18, color: Color(0xFF7A7571)),
+            Icon(LucideIcons.chevronUp, size: 18, color: context.textSecondary),
       ),
       dropdownStyleData: DropdownStyleData(
-        maxHeight: 250, // Khoảng 5 phần tử (48 * 5 = 240) + padding
+        maxHeight: 250,
         padding: EdgeInsets.zero,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: context.surface,
         ),
         elevation: 8,
       ),
@@ -66,7 +68,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         selectedMenuItemBuilder: (context, child) {
           return Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFF2ECE7),
+              color: context.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(8),
             ),
             alignment: Alignment.centerLeft,
@@ -96,15 +98,17 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                       horizontal: 10,
                       vertical: 8,
                     ),
-                    hintText: widget.searchHint,
+                    hintText: widget.searchHint ?? AppLocalizations.of(context)!.searchHint,
                     hintStyle: GoogleFonts.beVietnamPro(fontSize: 13),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Color(0xFFEFEBE7)),
+                      borderSide: BorderSide(
+                        color: context.textSecondary.withValues(alpha: 0.2),
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppColors.crimson),
+                      borderSide: BorderSide(color: context.primary),
                     ),
                   ),
                 ),
@@ -127,32 +131,35 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         }
       },
       style:
-          GoogleFonts.beVietnamPro(fontSize: 14, color: AppColors.textPrimary),
+          GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
       decoration: InputDecoration(
-        fillColor: const Color(0xFFFCFAF8),
+        fillColor: context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
         filled: true,
         contentPadding: EdgeInsets.zero,
         labelText: widget.label,
         labelStyle: GoogleFonts.inter(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFF6B6661),
+          color: context.textSecondary,
           letterSpacing: 0.5,
         ),
         floatingLabelStyle: GoogleFonts.inter(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFF6B6661),
+          color: context.textSecondary,
           letterSpacing: 0.5,
         ),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFEFEBE7), width: 1.2),
+          borderSide: BorderSide(
+            color: context.textSecondary.withValues(alpha: 0.2),
+            width: 1.2,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.crimson, width: 1.2),
+          borderSide: BorderSide(color: context.primary, width: 1.2),
         ),
       ),
     );

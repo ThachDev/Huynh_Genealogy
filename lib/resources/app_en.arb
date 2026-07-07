@@ -194,5 +194,8 @@
   "formSave": "SAVE",
   "formCancel": "CANCEL",
   "lunarSuffix": "LUNAR",
-  "leapMonthSuffix": "(Leap)"
+  "leapMonthSuffix": "(Leap)",
+  "searchHint": "Search...",
+  "selectDate": "Select date",
+  "selectMonthYear": "Select month and year"
 }

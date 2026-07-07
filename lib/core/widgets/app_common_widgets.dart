@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '../../resources/app_localizations.dart';
 import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 
 /// Loading indicator component using Lottie
 class AppLoading extends StatelessWidget {
@@ -98,7 +99,7 @@ class AppEmptyState extends StatelessWidget {
             Icon(
               icon,
               size: 64,
-              color: AppColors.gold.withValues(alpha: 0.5),
+              color: context.accent.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
@@ -190,8 +191,8 @@ class AppErrorState extends StatelessWidget {
                   style: GoogleFonts.inter(fontWeight: FontWeight.w600),
                 ),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.crimson,
-                  side: const BorderSide(color: AppColors.crimson),
+                  foregroundColor: context.primary,
+                  side: BorderSide(color: context.primary),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -214,14 +215,11 @@ class AppLabeledDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool effectiveIsLight =
-        isLight ?? (Theme.of(context).brightness == Brightness.light);
-    final dividerColor = effectiveIsLight
+    final useLight = isLight ?? !context.isDarkMode;
+    final dividerColor = useLight
         ? Colors.black.withValues(alpha: 0.1)
         : Colors.white.withValues(alpha: 0.1);
-    final textColor = effectiveIsLight
-        ? AppColors.textSecondary.withValues(alpha: 0.6)
-        : AppColors.nodeFemale.withValues(alpha: 0.4);
+    final textColor = context.textSecondary.withValues(alpha: 0.6);
 
     return Row(
       children: [
@@ -269,7 +267,7 @@ class AppBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = color ?? AppColors.crimson;
+    final bg = color ?? context.primary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -321,7 +319,7 @@ class AppSectionHeader extends StatelessWidget {
               margin: EdgeInsets.only(
                   top: (titleSize - indicatorHeight) / 2 + 1, right: 12),
               decoration: BoxDecoration(
-                color: AppColors.crimson,
+                color: context.primary,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -331,7 +329,7 @@ class AppSectionHeader extends StatelessWidget {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: titleSize,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.crimson,
+                  color: context.primary,
                   height: 1.15,
                   letterSpacing: 0.5,
                 ),
@@ -345,7 +343,7 @@ class AppSectionHeader extends StatelessWidget {
             description!,
             style: GoogleFonts.inter(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              color: context.textSecondary,
               height: 1.45,
             ),
           ),

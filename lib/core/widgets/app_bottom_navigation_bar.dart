@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../theme/app_theme.dart';
+import '../theme/theme_extensions.dart';
 import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
@@ -130,7 +130,9 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
+                  color: context.resolve(
+                      Colors.black.withValues(alpha: 0.08),
+                      Colors.white.withValues(alpha: 0.08)),
                   blurRadius: 16,
                   offset: const Offset(0, -4),
                 ),
@@ -143,8 +145,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                   _currentIndex = index;
                 });
               },
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              selectedItemColor: AppColors.crimson,
+              backgroundColor: context.surface,
+              selectedItemColor: context.primary,
               unselectedItemColor: Theme.of(context)
                   .colorScheme
                   .onSurface

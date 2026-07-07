@@ -496,4 +496,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get leapMonthSuffix => '(Leap)';
+
+  @override
+  String get searchHint => 'Search...';
+
+  @override
+  String get selectDate => 'Select date';
+
+  @override
+  String get selectMonthYear => 'Select month and year';
 }

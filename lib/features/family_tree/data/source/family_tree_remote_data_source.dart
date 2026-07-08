@@ -104,12 +104,16 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       final isNew = member.id == 0;
       final jsonMap = member.toJson();
 
-      // Clean up null values to prevent sending them as string "null" in FormData
-      // Also omit 'id' if it is 0 (new member) to avoid backend interpreting it as an update
+      // Keep null values so we can clear fields on the backend (e.g., unselect parent/spouse).
+      // Also omit 'id' if it is 0 (new member) to avoid backend interpreting it as an update.
       final Map<String, dynamic> cleanMap = {};
       jsonMap.forEach((key, value) {
-        if (value != null && (key != 'id' || value != 0)) {
+        if (value != null) {
+          if (key == 'id' && value == 0) return;
           cleanMap[key] = value;
+        } else {
+          // Send null to clear the field (JSON payload)
+          cleanMap[key] = null;
         }
       });
 
@@ -122,12 +126,17 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
           !avatarUrl.startsWith('https')) {
         final file = File(avatarUrl);
         if (file.existsSync()) {
-          final Map<String, dynamic> formDataMap = Map.from(cleanMap);
+          final Map<String, dynamic> formDataMap = {};
+          cleanMap.forEach((k, v) {
+            if (k != 'avatarUrl') {
+              // FormData values are converted to string. Use empty string for null.
+              formDataMap[k] = v ?? '';
+            }
+          });
           formDataMap['avatar'] = await MultipartFile.fromFile(
             avatarUrl,
             filename: avatarUrl.split('/').last,
           );
-          formDataMap.remove('avatarUrl');
           dataPayload = FormData.fromMap(formDataMap);
         } else {
           final Map<String, dynamic> finalMap = Map.from(cleanMap);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
@@ -6,6 +7,8 @@ import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../features/auth/auth.dart';
+import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
   final MemberEntity member;
@@ -140,6 +143,77 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                   const SizedBox(height: 20),
                   // Spiritual Interaction
                   _buildSpiritualButton(),
+                  
+                  // Contextual Add Actions for Admins
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      if (state is Authenticated) {
+                        final role = state.user.role;
+                        if (role == 'OWNER' || role == 'BRANCH_ADMIN' || role == 'EDITOR') {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AdminMemberFormPage(
+                                            initialParentId: widget.member.id,
+                                            initialGeneration: (widget.member.generation ?? 0) + 1,
+                                            isLockedContext: true,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(LucideIcons.userPlus, size: 16),
+                                    label: const Text('Thêm Con'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: context.primary,
+                                      foregroundColor: context.textOnPrimary,
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AdminMemberFormPage(
+                                            initialSpouseId: widget.member.id,
+                                            initialGeneration: widget.member.generation,
+                                            isLockedContext: true,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    icon: const Icon(LucideIcons.heart, size: 16),
+                                    label: const Text('Thêm Vợ/Chồng'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: context.accent,
+                                      foregroundColor: context.textOnPrimary,
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ],
               ),
             ),

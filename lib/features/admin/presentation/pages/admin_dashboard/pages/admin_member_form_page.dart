@@ -27,6 +27,10 @@ class AdminMemberFormPage extends StatefulWidget {
   final int? ownerUserId;
   final String? initialFullName;
   final String? initialAvatarUrl;
+  final int? initialParentId;
+  final int? initialSpouseId;
+  final int? initialGeneration;
+  final bool isLockedContext;
 
   const AdminMemberFormPage({
     super.key,
@@ -35,6 +39,10 @@ class AdminMemberFormPage extends StatefulWidget {
     this.ownerUserId,
     this.initialFullName,
     this.initialAvatarUrl,
+    this.initialParentId,
+    this.initialSpouseId,
+    this.initialGeneration,
+    this.isLockedContext = false,
   });
 
   @override
@@ -101,25 +109,30 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     if (widget.initialAvatarUrl != null) {
       _avatarUrlController.text = widget.initialAvatarUrl!;
     }
-
-    // Nếu là chế độ cập nhật, lấy data
-    if (widget.memberId != null) {
-      final authState = context.read<AuthBloc>().state;
-      final familyId =
-          authState is Authenticated ? authState.user.familyId : null;
-      context.read<AdminMemberFormBloc>().add(LoadAdminMemberFormEvent(
-          memberId: widget.memberId, familyId: familyId));
+    
+    if (widget.memberId == null) {
+      if (widget.initialParentId != null) {
+        _parentId = widget.initialParentId;
+      }
+      if (widget.initialSpouseId != null) {
+        _spouseId = widget.initialSpouseId;
+        _maritalStatus = MaritalStatus.married;
+      }
+      if (widget.initialGeneration != null) {
+        _generationController.text = widget.initialGeneration.toString();
+      }
     }
+
+    final authState = context.read<AuthBloc>().state;
+    final familyId =
+        authState is Authenticated ? authState.user.familyId : null;
+    context.read<AdminMemberFormBloc>().add(LoadAdminMemberFormEvent(
+        memberId: widget.memberId, familyId: familyId));
     _generationController.addListener(_onGenerationChanged);
   }
 
   void _onGenerationChanged() {
-    // Re-render để cập nhật danh sách lọc theo thế hệ
-    // Đồng thời reset parentId/spouseId nếu không còn hợp lệ
-    setState(() {
-      // Không reset trực tiếp ở đây vì chưa có allMembers
-      // – logic reset sẽ xảy ra khi build() tính lại filteredLists
-    });
+    setState(() {});
   }
 
   @override
@@ -185,8 +198,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
         backgroundColor: context.appBarBg,
         elevation: 4,
         leading: IconButton(
-          icon: Icon(LucideIcons.arrowLeft,
-              color: context.accent, size: 20),
+          icon: Icon(LucideIcons.arrowLeft, color: context.accent, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -212,13 +224,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               ));
               if (mounted) {
                 result.fold(
-                  (failure) => AppSnackBar.error(context,
-                      l10n.linkAccountError(failure.message)),
+                  (failure) => AppSnackBar.error(
+                      context, l10n.linkAccountError(failure.message)),
                   (_) {
                     // Refresh auth profile to sync new member_id
                     context.read<AuthBloc>().add(AuthProfileRefreshSilent());
-                    AppSnackBar.success(context,
-                        l10n.linkAccountSuccess);
+                    AppSnackBar.success(context, l10n.linkAccountSuccess);
                     Navigator.pop(context, true);
                   },
                 );
@@ -257,7 +268,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
           }
         },
         builder: (context, state) {
-          if (state is AdminMemberFormLoading ||
+          if (state is AdminMemberFormInitial ||
+              state is AdminMemberFormLoading ||
               state is AdminMemberFormSubmitting) {
             return const Center(
               child: AppLoading(size: 80),
@@ -275,19 +287,95 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
           final int? currentGeneration =
               int.tryParse(_generationController.text.trim());
 
-          // Cha/Mẹ: ưu tiên thế hệ trước (gen - 1), nếu chưa rõ thế hệ → tất cả
+          // Đệ quy tìm tất cả con cháu trực hệ của một member để tránh chọn con làm cha mẹ
+          Set<int> getDescendantIds(int memberId) {
+            final descendants = <int>{};
+            void dfs(int id) {
+              for (final child in allMembers) {
+                if (child.parentId == id && !descendants.contains(child.id)) {
+                  descendants.add(child.id);
+                  dfs(child.id);
+                }
+              }
+            }
+
+            dfs(memberId);
+            return descendants;
+          }
+
+          final descendants = existingMember != null
+              ? getDescendantIds(existingMember.id)
+              : <int>{};
+
+          final ancestors = <int>{};
+          void dfsAncestors(int? parentId) {
+            if (parentId == null) return;
+            if (!ancestors.contains(parentId)) {
+              ancestors.add(parentId);
+              final parent = allMembers.where((m) => m.id == parentId).firstOrNull;
+              if (parent != null) {
+                dfsAncestors(parent.parentId);
+              }
+            }
+          }
+          if (existingMember != null) {
+            dfsAncestors(existingMember.parentId);
+          }
+
+          DateTime? parseDate(String? dateStr) {
+            if (dateStr == null) return null;
+            return DateTime.tryParse(dateStr);
+          }
+          final myDob = parseDate(_formatBackendDate(_dateOfBirth));
+
+          // Cha/Mẹ: thế hệ trước (gen - 1)
           final parentOptions = allMembers.where((m) {
             if (m.id == existingMember?.id) return false;
+            // LUÔN CHO PHÉP parent hiện tại để không bị reset ngầm khi chỉnh sửa
+            if (existingMember != null && m.id == existingMember.parentId) {
+              return true;
+            }
+            if (widget.initialParentId != null && m.id == widget.initialParentId) {
+              return true;
+            }
+
+            // Không được chọn vợ/chồng làm cha/mẹ
+            if (_spouseId != null && m.id == _spouseId) return false;
+            // Không được chọn con cháu làm cha/mẹ
+            if (descendants.contains(m.id)) return false;
+            
+            // Ràng buộc tuổi tác: Cha mẹ phải lớn hơn con ít nhất 13 tuổi
+            if (myDob != null) {
+              final parentDob = parseDate(m.dateOfBirth);
+              if (parentDob != null) {
+                final ageGap = myDob.difference(parentDob).inDays / 365.25;
+                if (ageGap < 13) return false;
+              }
+            }
+
             if (currentGeneration != null && m.generation != null) {
               return m.generation == currentGeneration - 1;
             }
             return true;
           }).toList();
 
-          // Vợ/Chồng: cùng thế hệ + ngược giới tính + chưa có vợ/chồng
-          // (hoặc spouse của họ chính là member hiện tại)
+          // Vợ/Chồng: cùng thế hệ + ngược giới tính + chưa có vợ/chồng khác
           final spouseOptions = allMembers.where((m) {
             if (m.id == existingMember?.id) return false;
+            // LUÔN CHO PHÉP spouse hiện tại để không bị reset ngầm khi chỉnh sửa
+            if (existingMember != null && m.id == existingMember.spouseId) {
+              return true;
+            }
+            if (widget.initialSpouseId != null && m.id == widget.initialSpouseId) {
+              return true;
+            }
+
+            // Không được chọn cha/mẹ làm vợ/chồng
+            if (_parentId != null && m.id == _parentId) return false;
+            // Không được cưới tổ tiên hoặc con cháu
+            if (descendants.contains(m.id) || ancestors.contains(m.id)) {
+              return false;
+            }
             // Lọc cùng thế hệ
             if (currentGeneration != null && m.generation != null) {
               if (m.generation != currentGeneration) return false;
@@ -301,7 +389,33 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             if (m.spouseId != null &&
                 m.spouseId != existingMember?.id &&
                 m.spouseId != _spouseId) {
+              // Cho phép Đa thê: Nếu Nữ đang chọn chồng, thì cho phép chọn Nam dù Nam đã có vợ
+              if (_gender == Gender.female && m.gender == Gender.male) {
+                // allow
+              } else {
+                return false;
+              }
+            }
+            // Không được cưới anh/chị/em ruột (chung parentId)
+            if (_parentId != null &&
+                m.parentId != null &&
+                m.parentId == _parentId) {
               return false;
+            }
+            // Không được cưới anh/em họ trực hệ gần (con của cô dì chú bác ruột - chung ông bà)
+            if (_parentId != null) {
+              final myParent =
+                  allMembers.where((x) => x.id == _parentId).firstOrNull;
+              if (myParent != null &&
+                  myParent.parentId != null &&
+                  m.parentId != null) {
+                final spouseParent =
+                    allMembers.where((x) => x.id == m.parentId).firstOrNull;
+                if (spouseParent != null &&
+                    spouseParent.parentId == myParent.parentId) {
+                  return false; // Chung ông/bà nội ngoại
+                }
+              }
             }
             return true;
           }).toList();
@@ -380,19 +494,24 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                           items: [
                                             DropdownItem(
                                                 value: MaritalStatus.single,
-                                                child: Text(l10n.maritalSingle)),
+                                                child:
+                                                    Text(l10n.maritalSingle)),
                                             DropdownItem(
                                                 value: MaritalStatus.married,
-                                                child: Text(l10n.maritalMarried)),
+                                                child:
+                                                    Text(l10n.maritalMarried)),
                                             DropdownItem(
                                                 value: MaritalStatus.divorced,
-                                                child: Text(l10n.maritalDivorced)),
+                                                child:
+                                                    Text(l10n.maritalDivorced)),
                                             DropdownItem(
                                                 value: MaritalStatus.widowed,
-                                                child: Text(l10n.maritalWidowed)),
+                                                child:
+                                                    Text(l10n.maritalWidowed)),
                                             DropdownItem(
                                                 value: MaritalStatus.unknown,
-                                                child: Text(l10n.maritalUnknown)),
+                                                child:
+                                                    Text(l10n.maritalUnknown)),
                                           ],
                                           onChanged: (val) {
                                             if (val != null) {
@@ -422,7 +541,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                 child: Text(l10n.genderFemale)),
                                             DropdownItem(
                                                 value: Gender.unknown,
-                                                child: Text(l10n.genderUnknown)),
+                                                child:
+                                                    Text(l10n.genderUnknown)),
                                           ],
                                           onChanged: (val) {
                                             if (val != null) {
@@ -498,7 +618,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                 borderSide: BorderSide(
                                                   color: _isAlive
                                                       ? context.primary
-                                                      : context.textSecondary.withValues(alpha: 0.5),
+                                                      : context.textSecondary
+                                                          .withValues(
+                                                              alpha: 0.5),
                                                   width: 1.2,
                                                 ),
                                               ),
@@ -508,7 +630,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                 borderSide: BorderSide(
                                                   color: _isAlive
                                                       ? context.primary
-                                                      : context.textSecondary.withValues(alpha: 0.5),
+                                                      : context.textSecondary
+                                                          .withValues(
+                                                              alpha: 0.5),
                                                   width: 1.2,
                                                 ),
                                               ),
@@ -529,7 +653,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                     size: 14,
                                                     color: _isAlive
                                                         ? context.primary
-                                                        : context.textSecondary.withValues(alpha: 0.5),
+                                                        : context.textSecondary
+                                                            .withValues(
+                                                                alpha: 0.5),
                                                   ),
                                                   const SizedBox(width: 6),
                                                   Text(
@@ -540,7 +666,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                         .beVietnamPro(
                                                       color: _isAlive
                                                           ? context.primary
-                                                          : context.textSecondary.withValues(alpha: 0.5),
+                                                          : context
+                                                              .textSecondary
+                                                              .withValues(
+                                                                  alpha: 0.5),
                                                       fontSize: 13,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -596,6 +725,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     value: parentIds.contains(_parentId)
                                         ? _parentId
                                         : null,
+                                    locked: widget.isLockedContext,
                                     items: [
                                       DropdownItem<int?>(
                                           value: null,
@@ -630,6 +760,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       value: spouseIds.contains(_spouseId)
                                           ? _spouseId
                                           : null,
+                                      locked: widget.isLockedContext && widget.initialSpouseId != null,
                                       items: [
                                         DropdownItem<int?>(
                                             value: null,
@@ -641,36 +772,57 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                       '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
                                                 )),
                                       ],
-                                      onChanged: (val) =>
-                                          setState(() => _spouseId = val),
+                                      onChanged: (val) {
+                                        final selectedSpouse = val == null
+                                            ? null
+                                            : allMembers
+                                                .where((m) => m.id == val)
+                                                .firstOrNull;
+                                        setState(() {
+                                          _spouseId = val;
+                                          if (_gender == Gender.female &&
+                                              selectedSpouse?.gender == Gender.male &&
+                                              selectedSpouse?.branchId != null) {
+                                            _branchId = selectedSpouse!.branchId;
+                                          }
+                                        });
+                                      },
                                       showSearchBox: true,
                                     ),
                                   ],
                                   const SizedBox(height: 16),
 
                                   Builder(builder: (context) {
-                                    // Lấy chi tộc của cha/mẹ (nếu có) để hiển thị gợi ý
-                                    final parentMember = _parentId == null
+                                    // Lấy chi tộc của cha/mẹ hoặc vợ/chồng (nếu có) để hiển thị gợi ý và auto-select
+                                    final contextMemberId = _parentId ?? _spouseId;
+                                    final contextMember = contextMemberId == null
                                         ? null
                                         : allMembers
-                                            .where((m) => m.id == _parentId)
+                                            .where((m) => m.id == contextMemberId)
                                             .firstOrNull;
-                                    final parentBranchId =
-                                        parentMember?.branchId;
+                                    final contextBranchId = contextMember?.branchId;
+                                    
+                                    // Auto-select branch cho contextual add
+                                    if (widget.isLockedContext && _branchId == null && contextBranchId != null) {
+                                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                                        if (mounted) setState(() => _branchId = contextBranchId);
+                                      });
+                                    }
 
-                                    // Sắp xếp: chi tộc của cha/mẹ lên đầu
+                                    // Sắp xếp: chi tộc của ngữ cảnh lên đầu
                                     final sortedBranches = [...allBranches]
                                       ..sort((a, b) {
-                                        if (a.id == parentBranchId) return -1;
-                                        if (b.id == parentBranchId) return 1;
+                                        if (a.id == contextBranchId) return -1;
+                                        if (b.id == contextBranchId) return 1;
                                         return 0;
                                       });
 
                                     return _buildDropdown<int?>(
                                       label: l10n.branchSectionLabel,
+                                      locked: widget.isLockedContext,
                                       value: allBranches
-                                              .any((b) => b.id == _branchId)
-                                          ? _branchId
+                                              .any((b) => b.id == (_branchId ?? contextBranchId))
+                                          ? (_branchId ?? contextBranchId)
                                           : null,
                                       items: [
                                         DropdownItem<int?>(
@@ -680,8 +832,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                             .map((b) => DropdownItem<int?>(
                                                   value: b.id,
                                                   child: Text(
-                                                    b.id == parentBranchId
-                                                        ? l10n.parentBranchMarker(b.name)
+                                                    b.id == contextBranchId
+                                                        ? l10n
+                                                            .parentBranchMarker(
+                                                                b.name)
                                                         : b.name,
                                                   ),
                                                 )),
@@ -917,25 +1071,41 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     required ValueChanged<T?> onChanged,
     bool showSearchBox = false,
     String? label,
+    bool locked = false,
   }) {
-    return AppDropdown<T>(
+    Widget dropdown = AppDropdown<T>(
       value: value,
       items: items,
       onChanged: onChanged,
       showSearchBox: showSearchBox,
       label: label,
     );
+    if (locked) {
+      return IgnorePointer(
+        ignoring: true,
+        child: Opacity(opacity: 0.6, child: dropdown),
+      );
+    }
+    return dropdown;
   }
 
   Widget _buildGenerationField() {
     final l10n = AppLocalizations.of(context)!;
-    return AppOutlineTextField(
+    Widget field = AppOutlineTextField(
       controller: _generationController,
       label: l10n.generationFieldLabel,
       hintText: l10n.generationFieldHint,
       keyboardType: TextInputType.number,
       validator: (val) => AppValidators.validateGeneration(context, val),
     );
+    
+    if (widget.isLockedContext && widget.initialGeneration != null) {
+      return IgnorePointer(
+        ignoring: true,
+        child: Opacity(opacity: 0.6, child: field),
+      );
+    }
+    return field;
   }
 
   String? _formatUIDate(String? backendDate) {

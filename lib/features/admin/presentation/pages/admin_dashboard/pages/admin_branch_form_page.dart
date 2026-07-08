@@ -67,36 +67,35 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       builder: (ctx) {
         final l10n = AppLocalizations.of(ctx)!;
         return AlertDialog(
-        backgroundColor: ctx.background,
-        title: Text(
-          l10n.deleteBranchConfirmTitle,
-          style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold, color: ctx.textPrimary),
-        ),
-        content: Text(
-          l10n.deleteBranchConfirmMessage(widget.branch!.name),
-          style: GoogleFonts.beVietnamPro(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.cancelLabel,
-                style:
-                    GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+          backgroundColor: ctx.background,
+          title: Text(
+            l10n.deleteBranchConfirmTitle,
+            style: GoogleFonts.beVietnamPro(
+                fontWeight: FontWeight.bold, color: ctx.textPrimary),
           ),
-          AppButton(
-            label: l10n.deleteLabel,
-            onPressed: () {
-              Navigator.pop(ctx);
-              context
-                  .read<AdminBranchFormBloc>()
-                  .add(DeleteAdminBranchFormEvent(widget.branch!.id));
-            },
-            variant: AppButtonVariant.danger,
-            size: AppButtonSize.small,
+          content: Text(
+            l10n.deleteBranchConfirmMessage(widget.branch!.name),
+            style: GoogleFonts.beVietnamPro(),
           ),
-        ],
-      );
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.cancelLabel,
+                  style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+            ),
+            AppButton(
+              label: l10n.deleteLabel,
+              onPressed: () {
+                Navigator.pop(ctx);
+                context
+                    .read<AdminBranchFormBloc>()
+                    .add(DeleteAdminBranchFormEvent(widget.branch!.id));
+              },
+              variant: AppButtonVariant.danger,
+              size: AppButtonSize.small,
+            ),
+          ],
+        );
       },
     );
   }
@@ -104,7 +103,10 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
   void _submitForm() {
     if (!_formKey.currentState!.validate()) return;
     if (_nameController.text.trim().isEmpty) {
-      AppSnackBar.error(context, AppLocalizations.of(context)!.errRequiredField(AppLocalizations.of(context)!.branchNameLabel));
+      AppSnackBar.error(
+          context,
+          AppLocalizations.of(context)!
+              .errRequiredField(AppLocalizations.of(context)!.branchNameLabel));
       return;
     }
 
@@ -163,7 +165,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       maxLines: maxLines,
       validator: (val) {
         final l10n = AppLocalizations.of(context)!;
-        if (label == l10n.branchNameLabel && (val == null || val.trim().isEmpty)) {
+        if (label == l10n.branchNameLabel &&
+            (val == null || val.trim().isEmpty)) {
           return l10n.branchNameEmptyError;
         }
         return null;
@@ -237,21 +240,20 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       appBar: AppBar(
         backgroundColor: context.appBarBg,
         elevation: 4,
-          leading: IconButton(
-            icon: Icon(LucideIcons.arrowLeft,
-                color: context.accent, size: 20),
-            onPressed: () => Navigator.pop(context),
+        leading: IconButton(
+          icon: Icon(LucideIcons.arrowLeft, color: context.accent, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: true,
+        title: Text(
+          title,
+          style: GoogleFonts.beVietnamPro(
+            color: context.accent,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            letterSpacing: 0.5,
           ),
-          centerTitle: true,
-          title: Text(
-            title,
-            style: GoogleFonts.beVietnamPro(
-              color: context.accent,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              letterSpacing: 0.5,
-            ),
-          ),
+        ),
         actions: [
           if (isEdit)
             IconButton(
@@ -331,7 +333,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            _buildLabel(context, l10n.founderNameLabel),
+                                            _buildLabel(
+                                                context, l10n.founderNameLabel),
                                             AppDropdown<String?>(
                                               value: members.any((m) =>
                                                       m.fullName ==
@@ -339,7 +342,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                   ? _founderController.text
                                                   : null,
                                               items: [
-                                                  DropdownItem<String?>(
+                                                DropdownItem<String?>(
                                                   value: '__ADD_NEW__',
                                                   child: Text(
                                                     l10n.addMemberPlaceholder,
@@ -352,7 +355,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                 ),
                                                 DropdownItem<String?>(
                                                   value: null,
-                                                  child: Text(l10n.noSelectionLabel),
+                                                  child: Text(
+                                                      l10n.noSelectionLabel),
                                                 ),
                                                 ...members.map((m) =>
                                                     DropdownItem<String?>(
@@ -379,14 +383,25 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                     );
                                                     if (result == true) {
                                                       if (context.mounted) {
-                                                        final familyId = context.read<AuthBloc>().state is Authenticated
-                                                            ? (context.read<AuthBloc>().state as Authenticated).user.familyId
+                                                        final familyId = context
+                                                                    .read<
+                                                                        AuthBloc>()
+                                                                    .state
+                                                                is Authenticated
+                                                            ? (context
+                                                                        .read<
+                                                                            AuthBloc>()
+                                                                        .state
+                                                                    as Authenticated)
+                                                                .user
+                                                                .familyId
                                                             : null;
                                                         context
                                                             .read<
                                                                 FamilyTreeBloc>()
-                                                            .add(
-                                                                FamilyTreeLoadEvent(familyId: familyId));
+                                                            .add(FamilyTreeLoadEvent(
+                                                                familyId:
+                                                                    familyId));
                                                       }
                                                     }
                                                   });
@@ -412,10 +427,13 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                   height: 48,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: context.textSecondary.withValues(alpha: 0.2),
+                                        color: context.textSecondary
+                                            .withValues(alpha: 0.2),
                                         width: 1.2),
                                     borderRadius: BorderRadius.circular(12),
-                                    color: context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
+                                    color: context.resolve(
+                                        const Color(0xFFFCFAF8),
+                                        AppColors.surfaceDark),
                                   ),
                                   child: IconButton(
                                     onPressed: () {

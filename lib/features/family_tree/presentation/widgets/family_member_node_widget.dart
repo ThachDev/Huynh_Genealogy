@@ -72,6 +72,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           width: 140,
+          height: 160, // Fixed height — đảm bảo edge painter kết nối đúng vị trí
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: _nodeColor,
@@ -89,16 +90,17 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
             ],
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max, // Dùng toàn bộ height cố định 160px
+            mainAxisAlignment: MainAxisAlignment.center, // Căn giữa nội dung dọc
             children: [
-              // Avatar
+              // Avatar — giảm nhẹ từ radius 30 → 26 để vừa layout cố định
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: context.accent, width: 2),
                 ),
                 child: CircleAvatar(
-                  radius: 30,
+                  radius: 26,
                   backgroundColor: context.background,
                   backgroundImage: widget.member.avatarUrl != null
                       ? NetworkImage(widget.member.avatarUrl!)
@@ -107,12 +109,12 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                       ? Icon(
                           LucideIcons.user,
                           color: context.primary,
-                          size: 36,
+                          size: 30,
                         )
                       : null,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               // Name
               Text(
                 widget.member.fullName,
@@ -120,17 +122,17 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                   color: context.textPrimary,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               // Generation label
               if (widget.member.generation != null)
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
+                    horizontal: 8,
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
@@ -148,7 +150,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                 ),
               if (!widget.member.isAlive)
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
+                  padding: const EdgeInsets.only(top: 3.0),
                   child: Text(
                     '✝ ${l10n.deceasedLabel}',
                     style: GoogleFonts.inter(

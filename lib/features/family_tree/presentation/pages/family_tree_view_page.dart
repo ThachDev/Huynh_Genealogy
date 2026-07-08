@@ -12,9 +12,11 @@ import '../widgets/family_member_node_widget.dart';
 import 'family_member_detail_page.dart';
 
 const double _nodeWidth = 140.0;
-const double _nodeHeight = 140.0;
+const double _nodeHeight =
+    160.0; // Đồng bộ với height cố định trong FamilyMemberNodeWidget
 const double _hSpacing = 40.0;
-const double _vSpacing = 120.0;
+const double _vSpacing =
+    220.0; // Phải > _nodeHeight (160) để nodes không chồng lên nhau
 const double _rootSpacing = 60.0;
 const double _padding = 40.0;
 const double _spouseGap = 16.0;
@@ -31,6 +33,18 @@ class _SpouseEdge {
   _SpouseEdge({required this.leftMemberId, required this.rightMemberId});
 }
 
+/// Nhóm tất cả con của một cặp đôi để vẽ T-bar junction thay vì bezier rời rạc
+class _CoupleEdge {
+  final int primaryId;
+  final int? spouseId;
+  final List<int> childIds;
+  _CoupleEdge({
+    required this.primaryId,
+    this.spouseId,
+    required this.childIds,
+  });
+}
+
 class FamilyTreeViewPage extends StatefulWidget {
   const FamilyTreeViewPage({super.key});
 
@@ -39,6 +53,15 @@ class FamilyTreeViewPage extends StatefulWidget {
 }
 
 class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
+  final TransformationController _transformationController =
+      TransformationController();
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,9 +76,34 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     });
   }
 
+  void _zoomIn() {
+    final current = _transformationController.value;
+    final currentScale = current.getMaxScaleOnAxis();
+    final newScale = (currentScale * 1.3).clamp(0.3, 3.0);
+    final scaleFactor = newScale / currentScale;
+    _transformationController.value = current.clone()
+      ..scale(scaleFactor, scaleFactor, 1.0);
+  }
+
+  void _zoomOut() {
+    final current = _transformationController.value;
+    final currentScale = current.getMaxScaleOnAxis();
+    final newScale = (currentScale / 1.3).clamp(0.3, 3.0);
+    final scaleFactor = newScale / currentScale;
+    _transformationController.value = current.clone()
+      ..scale(scaleFactor, scaleFactor, 1.0);
+  }
+
+  void _resetZoom() {
+    _transformationController.value = Matrix4.identity();
+  }
+
   Map<int, Offset> _calculateLayout(
     List<MemberEntity> members,
-    List<_EdgeData> edges,
+    List<_CoupleEdge>
+        coupleEdges, // Junction edges: 1 entry = 1 cặp + tất cả con
+    List<_EdgeData>
+        orphanEdges, // Fallback bezier cho nodes không qua layout chính
     List<_SpouseEdge> spouseEdges,
   ) {
     final memberMap = {for (final m in members) m.id: m};
@@ -72,113 +120,137 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     }
     if (minGen == 999) minGen = 1;
 
-    (Map<int, Offset>, double) layoutSubtree(int nodeId, int gen) {
-      final y = (gen - minGen) * _vSpacing;
-      final member = memberMap[nodeId]!;
+    final visited = <int>{};
 
-      int? spouseId;
-      if (member.spouseId != null &&
-          memberMap.containsKey(member.spouseId)) {
-        spouseId = member.spouseId;
+    (Map<int, Offset>, double) layoutSubtree(int nodeId, int gen) {
+      if (visited.contains(nodeId)) return (<int, Offset>{}, 0.0);
+      visited.add(nodeId);
+
+      final member = memberMap[nodeId]!;
+      final currentGen = member.generation ?? gen;
+      final y = (currentGen - minGen) * _vSpacing;
+
+      final spouseIds = <int>[];
+      if (member.spouseId != null && memberMap.containsKey(member.spouseId)) {
+        spouseIds.add(member.spouseId!);
       }
+      // Tìm xem có ai trỏ spouseId vào member này không
+      for (final m in members) {
+        if (m.spouseId == member.id && !spouseIds.contains(m.id)) {
+          spouseIds.add(m.id);
+        }
+      }
+
+      // Lọc các spouse đã được vẽ (do data lỗi cyclic)
+      spouseIds.removeWhere((id) => visited.contains(id));
+      visited.addAll(spouseIds);
 
       // Children linked to primary parent
       final primaryChildren = childrenOf[nodeId] ?? <MemberEntity>[];
-      // Children linked to spouse
-      final spouseChildren = spouseId != null
-          ? (childrenOf[spouseId] ?? <MemberEntity>[])
-          : <MemberEntity>[];
+      // Children linked to spouses
+      final spouseChildren = <MemberEntity>[];
+      for (final sId in spouseIds) {
+        final children = childrenOf[sId];
+        if (children != null) {
+          spouseChildren.addAll(children);
+        }
+      }
+
+      // Gộp và loại bỏ các con bị lặp lại hoặc đã được xử lý
+      final allChildrenMap = <int, MemberEntity>{};
+      for (final c in primaryChildren) {
+        if (!visited.contains(c.id)) allChildrenMap[c.id] = c;
+      }
+      for (final c in spouseChildren) {
+        if (!visited.contains(c.id)) allChildrenMap[c.id] = c;
+      }
+      final allChildren = allChildrenMap.values.toList();
 
       // Layout each side's subtrees
-      final primaryResults =
-          primaryChildren.map((c) => layoutSubtree(c.id, gen + 1)).toList();
-      final spouseResults =
-          spouseChildren.map((c) => layoutSubtree(c.id, gen + 1)).toList();
+      final allResults =
+          allChildren.map((c) => layoutSubtree(c.id, currentGen + 1)).toList();
 
-      double primaryWidth = 0;
-      for (final r in primaryResults) {
-        primaryWidth += r.$2;
-      }
-      if (primaryResults.length > 1) {
-        primaryWidth += _hSpacing * (primaryResults.length - 1);
-      }
-
-      double spouseWidth = 0;
-      for (final r in spouseResults) {
-        spouseWidth += r.$2;
-      }
-      if (spouseResults.length > 1) {
-        spouseWidth += _hSpacing * (spouseResults.length - 1);
+      // Chỉ giữ lại những con thực sự được vẽ (width > 0)
+      final validChildren = <MemberEntity>[];
+      final validResults = <(Map<int, Offset>, double)>[];
+      for (int i = 0; i < allChildren.length; i++) {
+        if (allResults[i].$2 > 0) {
+          validChildren.add(allChildren[i]);
+          validResults.add(allResults[i]);
+        }
       }
 
-      // Spouse center x relative to primary parent center (0)
-      final spouseCenterX =
-          spouseId != null ? _nodeWidth + _spouseGap : 0.0;
+      // Spouse center X coordinates relative to primary (0 = primary center)
+      final spouseCenterXList = <double>[];
+      for (int i = 0; i < spouseIds.length; i++) {
+        spouseCenterXList.add((i + 1) * (_nodeWidth + _spouseGap));
+      }
+      final maxSpouseCenterX =
+          spouseIds.isNotEmpty ? spouseCenterXList.last : 0.0;
 
-      // Find min/max extent of all elements
+      // Midpoint giữa toàn bộ nhóm cha/mẹ (local coords) — dùng để căn giữa tất cả con
+      final coupleCenter = maxSpouseCenterX / 2;
+
+      // Tổng chiều rộng của tất cả con
+      double totalChildWidth = 0;
+      for (final r in validResults) {
+        totalChildWidth += r.$2;
+      }
+      if (validResults.length > 1) {
+        totalChildWidth += _hSpacing * (validResults.length - 1);
+      }
+
+      // Tính bounding box của toàn bộ subtree
       double minX = -_nodeWidth / 2;
       double maxX = _nodeWidth / 2;
-      if (spouseId != null) {
-        maxX = spouseCenterX + _nodeWidth / 2;
+      if (spouseIds.isNotEmpty) {
+        maxX = maxSpouseCenterX + _nodeWidth / 2;
       }
-
-      if (primaryWidth > 0) {
-        minX = minX < -primaryWidth / 2 ? minX : -primaryWidth / 2;
-        maxX = maxX > primaryWidth / 2 ? maxX : primaryWidth / 2;
-      }
-      if (spouseWidth > 0) {
-        minX =
-            minX < spouseCenterX - spouseWidth / 2
-                ? minX
-                : spouseCenterX - spouseWidth / 2;
-        maxX =
-            maxX > spouseCenterX + spouseWidth / 2
-                ? maxX
-                : spouseCenterX + spouseWidth / 2;
+      if (totalChildWidth > 0) {
+        final childLeft = coupleCenter - totalChildWidth / 2;
+        final childRight = coupleCenter + totalChildWidth / 2;
+        if (childLeft < minX) minX = childLeft;
+        if (childRight > maxX) maxX = childRight;
       }
 
       final totalWidth = maxX - minX;
-      // Shift so that minX maps to 0
-      final shift = -minX;
+      final shift = -minX; // Shift to map minX → 0
 
       final allPos = <int, Offset>{};
       allPos[nodeId] = Offset(shift, y);
-      if (spouseId != null) {
-        allPos[spouseId] = Offset(shift + spouseCenterX, y);
-        spouseEdges
-            .add(_SpouseEdge(leftMemberId: nodeId, rightMemberId: spouseId));
+
+      int prevId = nodeId;
+      for (int i = 0; i < spouseIds.length; i++) {
+        final sId = spouseIds[i];
+        allPos[sId] = Offset(shift + spouseCenterXList[i], y);
+        spouseEdges.add(_SpouseEdge(leftMemberId: prevId, rightMemberId: sId));
+        prevId = sId;
       }
 
-      // Position primary children centered under primary parent (shift, y)
-      double cx = -primaryWidth / 2;
-      for (int i = 0; i < primaryChildren.length; i++) {
-        final child = primaryChildren[i];
-        final cPos = primaryResults[i].$1;
-        final cWidth = primaryResults[i].$2;
+      // Đặt tất cả con căn giữa tại coupleCenter (midpoint cha+mẹ)
+      // cx = vị trí bắt đầu của bộ con, trong local coords (không có shift)
+      double cx = coupleCenter - totalChildWidth / 2;
+      for (int i = 0; i < validResults.length; i++) {
+        final cPos = validResults[i].$1;
+        final cWidth = validResults[i].$2;
         for (final entry in cPos.entries) {
+          // entry.value.dx đo từ left-edge của subtree bounding box
+          // shift + cx đặt left-edge đó đúng vị trí
           allPos[entry.key] = Offset(
-            entry.value.dx + shift + cx + cWidth / 2,
+            entry.value.dx + shift + cx,
             entry.value.dy,
           );
         }
-        edges.add(_EdgeData(parentId: nodeId, childId: child.id));
         cx += cWidth + _hSpacing;
       }
 
-      // Position spouse children centered under spouse
-      cx = -spouseWidth / 2;
-      for (int i = 0; i < spouseChildren.length; i++) {
-        final child = spouseChildren[i];
-        final cPos = spouseResults[i].$1;
-        final cWidth = spouseResults[i].$2;
-        for (final entry in cPos.entries) {
-          allPos[entry.key] = Offset(
-            entry.value.dx + shift + spouseCenterX + cx + cWidth / 2,
-            entry.value.dy,
-          );
-        }
-        edges.add(_EdgeData(parentId: spouseId!, childId: child.id));
-        cx += cWidth + _hSpacing;
+      // Thêm CoupleEdge để vẽ T-bar junction
+      if (validChildren.isNotEmpty) {
+        coupleEdges.add(_CoupleEdge(
+          primaryId: nodeId,
+          spouseId: spouseIds.isNotEmpty ? spouseIds.last : null,
+          childIds: validChildren.map((c) => c.id).toList(),
+        ));
       }
 
       return (allPos, totalWidth);
@@ -200,6 +272,9 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       }
     } else {
       for (final root in roots) {
+        // Nếu đã được đặt vị trí (ví dụ là spouse của root trước) → bỏ qua
+        // tránh layout lại gây overwrite positions và duplicate coupleEdges
+        if (allPositions.containsKey(root.id)) continue;
         final gen = root.generation ?? minGen;
         final (positions, width) = layoutSubtree(root.id, gen);
         for (final entry in positions.entries) {
@@ -216,7 +291,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
         allPositions[m.id] = Offset(rootX, gen * _vSpacing);
         rootX += _nodeWidth + _hSpacing;
         if (m.parentId != null && allPositions.containsKey(m.parentId)) {
-          edges.add(_EdgeData(parentId: m.parentId!, childId: m.id));
+          orphanEdges.add(_EdgeData(parentId: m.parentId!, childId: m.id));
         }
         if (m.spouseId != null && allPositions.containsKey(m.spouseId)) {
           spouseEdges.add(_SpouseEdge(
@@ -260,6 +335,31 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
           ),
         ],
       ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _ZoomFab(
+            icon: LucideIcons.plus,
+            tooltip: 'Phóng to',
+            onPressed: _zoomIn,
+            color: context.primary,
+          ),
+          const SizedBox(height: 8),
+          _ZoomFab(
+            icon: LucideIcons.maximize2,
+            tooltip: 'Đặt lại',
+            onPressed: _resetZoom,
+            color: context.accent,
+          ),
+          const SizedBox(height: 8),
+          _ZoomFab(
+            icon: LucideIcons.minus,
+            tooltip: 'Thu nhỏ',
+            onPressed: _zoomOut,
+            color: context.primary,
+          ),
+        ],
+      ),
       body: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
         builder: (context, state) {
           if (state is FamilyTreeLoading) {
@@ -288,10 +388,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
               );
             }
 
-            final edges = <_EdgeData>[];
+            final coupleEdges = <_CoupleEdge>[];
+            final orphanEdges = <_EdgeData>[];
             final spouseEdges = <_SpouseEdge>[];
-            final positions =
-                _calculateLayout(state.members, edges, spouseEdges);
+            final positions = _calculateLayout(
+              state.members,
+              coupleEdges,
+              orphanEdges,
+              spouseEdges,
+            );
 
             double maxX = _padding * 2, maxY = _padding * 2;
             for (final entry in positions.entries) {
@@ -304,11 +409,11 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 
             return LayoutBuilder(
               builder: (context, constraints) {
-                if (constraints.maxWidth == 0 ||
-                    constraints.maxHeight == 0) {
+                if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
                   return const SizedBox.shrink();
                 }
                 return InteractiveViewer(
+                  transformationController: _transformationController,
                   constrained: false,
                   boundaryMargin: const EdgeInsets.all(double.infinity),
                   minScale: 0.3,
@@ -322,7 +427,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                         CustomPaint(
                           size: treeSize,
                           painter: _TreeEdgePainter(
-                            edges: edges,
+                            coupleEdges: coupleEdges,
+                            orphanEdges: orphanEdges,
                             spouseEdges: spouseEdges,
                             positions: positions,
                             linePaint: Paint()
@@ -345,18 +451,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                             top: pos.dy - _nodeHeight / 2,
                             child: FamilyMemberNodeWidget(
                               member: member,
-                              isSelected:
-                                  state.selectedMemberId == member.id,
+                              isSelected: state.selectedMemberId == member.id,
                               onTap: () {
-                                context
-                                    .read<FamilyTreeBloc>()
-                                    .add(FamilyTreeSelectMemberEvent(
-                                        member.id));
+                                context.read<FamilyTreeBloc>().add(
+                                    FamilyTreeSelectMemberEvent(member.id));
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => FamilyMemberDetailPage(
-                                        member: member),
+                                    builder: (_) =>
+                                        FamilyMemberDetailPage(member: member),
                                   ),
                                 );
                               },
@@ -455,14 +558,16 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 }
 
 class _TreeEdgePainter extends CustomPainter {
-  final List<_EdgeData> edges;
+  final List<_CoupleEdge> coupleEdges;
+  final List<_EdgeData> orphanEdges;
   final List<_SpouseEdge> spouseEdges;
   final Map<int, Offset> positions;
   final Paint linePaint;
   final Paint spousePaint;
 
   _TreeEdgePainter({
-    required this.edges,
+    required this.coupleEdges,
+    required this.orphanEdges,
     required this.spouseEdges,
     required this.positions,
     required this.linePaint,
@@ -471,7 +576,67 @@ class _TreeEdgePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (final edge in edges) {
+    // ── Couple edges — T-bar junction style ──────────────────────────────
+    for (final ce in coupleEdges) {
+      final primary = positions[ce.primaryId];
+      if (primary == null) continue;
+
+      // Điểm xuất phát X = trung điểm ngang giữa cha và mẹ (hoặc chính cha nếu không có mẹ)
+      double sourceX = primary.dx;
+      if (ce.spouseId != null) {
+        final spouse = positions[ce.spouseId!];
+        if (spouse != null) {
+          sourceX = (primary.dx + spouse.dx) / 2;
+        }
+      }
+      final sourceY = primary.dy + _nodeHeight / 2;
+
+      final childPositions =
+          ce.childIds.map((id) => positions[id]).whereType<Offset>().toList();
+      if (childPositions.isEmpty) continue;
+
+      final childTopY = childPositions.first.dy - _nodeHeight / 2;
+      final junctionY = (sourceY + childTopY) / 2;
+
+      // 1. Thân đứng: từ trung điểm cặp đôi xuống điểm junction
+      canvas.drawLine(
+        Offset(sourceX, sourceY),
+        Offset(sourceX, junctionY),
+        linePaint,
+      );
+
+      // 2. Thanh ngang tại junctionY nối qua tất cả anh chị em
+      if (childPositions.length > 1) {
+        final xs = childPositions.map((p) => p.dx).toList()..sort();
+        canvas.drawLine(
+          Offset(xs.first, junctionY),
+          Offset(xs.last, junctionY),
+          linePaint,
+        );
+      } else {
+        // 1 con nhưng X lệch khỏi sourceX → vẽ ngang ngắn để kết nối
+        final childX = childPositions.first.dx;
+        if ((sourceX - childX).abs() > 1.0) {
+          canvas.drawLine(
+            Offset(sourceX, junctionY),
+            Offset(childX, junctionY),
+            linePaint,
+          );
+        }
+      }
+
+      // 3. Các đường ngắn từ junction xuống top của từng con
+      for (final childPos in childPositions) {
+        canvas.drawLine(
+          Offset(childPos.dx, junctionY),
+          Offset(childPos.dx, childTopY),
+          linePaint,
+        );
+      }
+    }
+
+    // ── Orphan edges — bezier (fallback cho nodes ngoài layout chính) ────
+    for (final edge in orphanEdges) {
       final parent = positions[edge.parentId];
       final child = positions[edge.childId];
       if (parent == null || child == null) continue;
@@ -479,17 +644,13 @@ class _TreeEdgePainter extends CustomPainter {
       final start = Offset(parent.dx, parent.dy + _nodeHeight / 2);
       final end = Offset(child.dx, child.dy - _nodeHeight / 2);
       final midY = (start.dy + end.dy) / 2;
-
       final path = Path()
         ..moveTo(start.dx, start.dy)
-        ..cubicTo(
-          start.dx, midY,
-          end.dx, midY,
-          end.dx, end.dy,
-        );
+        ..cubicTo(start.dx, midY, end.dx, midY, end.dx, end.dy);
       canvas.drawPath(path, linePaint);
     }
 
+    // ── Spouse edges — đường ngang + chấm tròn giữa ─────────────────────
     for (final se in spouseEdges) {
       final left = positions[se.leftMemberId];
       final right = positions[se.rightMemberId];
@@ -500,18 +661,70 @@ class _TreeEdgePainter extends CustomPainter {
       canvas.drawLine(start, end, spousePaint);
 
       final midX = (start.dx + end.dx) / 2;
-      final smallPaint = Paint()
+      final dotPaint = Paint()
         ..color = spousePaint.color
         ..strokeWidth = 3.0
         ..style = PaintingStyle.fill;
-      canvas.drawCircle(Offset(midX, start.dy), 3.0, smallPaint);
+      canvas.drawCircle(Offset(midX, start.dy), 3.0, dotPaint);
     }
   }
 
   @override
   bool shouldRepaint(covariant _TreeEdgePainter oldDelegate) {
-    return oldDelegate.edges != edges ||
+    return oldDelegate.coupleEdges != coupleEdges ||
+        oldDelegate.orphanEdges != orphanEdges ||
         oldDelegate.spouseEdges != spouseEdges ||
         oldDelegate.positions != positions;
+  }
+}
+
+/// Nút zoom nhỏ gọn — hiển thị ở góc phải dưới màn hình
+class _ZoomFab extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onPressed;
+  final Color color;
+
+  const _ZoomFab({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(28),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: context.resolve(
+                Colors.white.withValues(alpha: 0.92),
+                const Color(0xFF2A2A2A).withValues(alpha: 0.92),
+              ),
+              shape: BoxShape.circle,
+              border:
+                  Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Icon(icon, size: 18, color: color),
+          ),
+        ),
+      ),
+    );
   }
 }

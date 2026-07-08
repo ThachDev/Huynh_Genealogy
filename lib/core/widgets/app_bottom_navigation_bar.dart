@@ -25,20 +25,6 @@ class UserMainNavigationPage extends StatefulWidget {
 class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   int _currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final authState = context.read<AuthBloc>().state;
-      final familyId =
-          authState is Authenticated ? authState.user.familyId : null;
-      context
-          .read<FamilyTreeBloc>()
-          .add(FamilyTreeLoadEvent(familyId: familyId));
-    });
-  }
-
   static bool _isAdminRole(String role) {
     final r = role.toUpperCase();
     return r == 'OWNER' ||
@@ -49,9 +35,10 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthBloc>().state;
-    final user = authState is Authenticated ? authState.user : null;
-    final role = user?.role ?? 'VIEWER';
+    final role = context.select<AuthBloc, String>((bloc) {
+      final state = bloc.state;
+      return state is Authenticated ? state.user.role : 'VIEWER';
+    });
     final hasAdminPrivileges = _isAdminRole(role);
 
     if (!hasAdminPrivileges) {
@@ -115,7 +102,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final safeIndex = _currentIndex >= tabs.length ? 0 : _currentIndex;
 
         return Scaffold(
-          key: ValueKey<bool>(showAdminInterface),
           body: IndexedStack(
             index: safeIndex,
             children: tabs.map((t) => t.page).toList(),

@@ -1,15 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graphview/GraphView.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../features/auth/auth.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/family_tree_bloc.dart';
 import '../widgets/family_member_node_widget.dart';
 import 'family_member_detail_page.dart';
+
+const double _nodeWidth = 140.0;
+const double _nodeHeight = 140.0;
+const double _hSpacing = 40.0;
+const double _vSpacing = 120.0;
+const double _rootSpacing = 60.0;
+const double _padding = 40.0;
+const double _spouseGap = 16.0;
+
+class _EdgeData {
+  final int parentId;
+  final int childId;
+  _EdgeData({required this.parentId, required this.childId});
+}
+
+class _SpouseEdge {
+  final int leftMemberId;
+  final int rightMemberId;
+  _SpouseEdge({required this.leftMemberId, required this.rightMemberId});
+}
 
 class FamilyTreeViewPage extends StatefulWidget {
   const FamilyTreeViewPage({super.key});
@@ -19,65 +39,210 @@ class FamilyTreeViewPage extends StatefulWidget {
 }
 
 class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
-  final BuchheimWalkerConfiguration _algorithm = BuchheimWalkerConfiguration();
-
   @override
   void initState() {
     super.initState();
-    _algorithm
-      ..siblingSeparation = 60
-      ..levelSeparation = 100
-      ..subtreeSeparation = 60
-      ..orientation = BuchheimWalkerConfiguration.ORIENTATION_TOP_BOTTOM;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final authState = context.read<AuthBloc>().state;
+      final familyId =
+          authState is Authenticated ? authState.user.familyId : null;
+      context
+          .read<FamilyTreeBloc>()
+          .add(FamilyTreeLoadEvent(familyId: familyId));
+    });
   }
 
-  // ID ảo dùng để kết nối nhiều root cùng cấp
-  static const int _virtualRootId = -1;
-
-  Graph _buildGraph(List<MemberEntity> members) {
-    final graph = Graph()..isTree = true;
-    final nodeMap = <int, Node>{};
-
-    for (final member in members) {
-      nodeMap[member.id] = Node.Id(member.id);
+  Map<int, Offset> _calculateLayout(
+    List<MemberEntity> members,
+    List<_EdgeData> edges,
+    List<_SpouseEdge> spouseEdges,
+  ) {
+    final memberMap = {for (final m in members) m.id: m};
+    final childrenOf = <int?, List<MemberEntity>>{};
+    for (final m in members) {
+      childrenOf.putIfAbsent(m.parentId, () => []).add(m);
     }
 
-    final edgePaint = Paint()
-      ..color = context.connectionLine
-      ..strokeWidth = 2.0;
+    int minGen = 999;
+    for (final m in members) {
+      if (m.generation != null && m.generation! < minGen) {
+        minGen = m.generation!;
+      }
+    }
+    if (minGen == 999) minGen = 1;
+
+    (Map<int, Offset>, double) layoutSubtree(int nodeId, int gen) {
+      final y = (gen - minGen) * _vSpacing;
+      final member = memberMap[nodeId]!;
+
+      int? spouseId;
+      if (member.spouseId != null &&
+          memberMap.containsKey(member.spouseId)) {
+        spouseId = member.spouseId;
+      }
+
+      // Children linked to primary parent
+      final primaryChildren = childrenOf[nodeId] ?? <MemberEntity>[];
+      // Children linked to spouse
+      final spouseChildren = spouseId != null
+          ? (childrenOf[spouseId] ?? <MemberEntity>[])
+          : <MemberEntity>[];
+
+      // Layout each side's subtrees
+      final primaryResults =
+          primaryChildren.map((c) => layoutSubtree(c.id, gen + 1)).toList();
+      final spouseResults =
+          spouseChildren.map((c) => layoutSubtree(c.id, gen + 1)).toList();
+
+      double primaryWidth = 0;
+      for (final r in primaryResults) {
+        primaryWidth += r.$2;
+      }
+      if (primaryResults.length > 1) {
+        primaryWidth += _hSpacing * (primaryResults.length - 1);
+      }
+
+      double spouseWidth = 0;
+      for (final r in spouseResults) {
+        spouseWidth += r.$2;
+      }
+      if (spouseResults.length > 1) {
+        spouseWidth += _hSpacing * (spouseResults.length - 1);
+      }
+
+      // Spouse center x relative to primary parent center (0)
+      final spouseCenterX =
+          spouseId != null ? _nodeWidth + _spouseGap : 0.0;
+
+      // Find min/max extent of all elements
+      double minX = -_nodeWidth / 2;
+      double maxX = _nodeWidth / 2;
+      if (spouseId != null) {
+        maxX = spouseCenterX + _nodeWidth / 2;
+      }
+
+      if (primaryWidth > 0) {
+        minX = minX < -primaryWidth / 2 ? minX : -primaryWidth / 2;
+        maxX = maxX > primaryWidth / 2 ? maxX : primaryWidth / 2;
+      }
+      if (spouseWidth > 0) {
+        minX =
+            minX < spouseCenterX - spouseWidth / 2
+                ? minX
+                : spouseCenterX - spouseWidth / 2;
+        maxX =
+            maxX > spouseCenterX + spouseWidth / 2
+                ? maxX
+                : spouseCenterX + spouseWidth / 2;
+      }
+
+      final totalWidth = maxX - minX;
+      // Shift so that minX maps to 0
+      final shift = -minX;
+
+      final allPos = <int, Offset>{};
+      allPos[nodeId] = Offset(shift, y);
+      if (spouseId != null) {
+        allPos[spouseId] = Offset(shift + spouseCenterX, y);
+        spouseEdges
+            .add(_SpouseEdge(leftMemberId: nodeId, rightMemberId: spouseId));
+      }
+
+      // Position primary children centered under primary parent (shift, y)
+      double cx = -primaryWidth / 2;
+      for (int i = 0; i < primaryChildren.length; i++) {
+        final child = primaryChildren[i];
+        final cPos = primaryResults[i].$1;
+        final cWidth = primaryResults[i].$2;
+        for (final entry in cPos.entries) {
+          allPos[entry.key] = Offset(
+            entry.value.dx + shift + cx + cWidth / 2,
+            entry.value.dy,
+          );
+        }
+        edges.add(_EdgeData(parentId: nodeId, childId: child.id));
+        cx += cWidth + _hSpacing;
+      }
+
+      // Position spouse children centered under spouse
+      cx = -spouseWidth / 2;
+      for (int i = 0; i < spouseChildren.length; i++) {
+        final child = spouseChildren[i];
+        final cPos = spouseResults[i].$1;
+        final cWidth = spouseResults[i].$2;
+        for (final entry in cPos.entries) {
+          allPos[entry.key] = Offset(
+            entry.value.dx + shift + spouseCenterX + cx + cWidth / 2,
+            entry.value.dy,
+          );
+        }
+        edges.add(_EdgeData(parentId: spouseId!, childId: child.id));
+        cx += cWidth + _hSpacing;
+      }
+
+      return (allPos, totalWidth);
+    }
 
     final roots = members
         .where(
-          (m) => m.parentId == null || !nodeMap.containsKey(m.parentId),
+          (m) => m.parentId == null || !memberMap.containsKey(m.parentId),
         )
         .toList();
 
-    for (final member in members) {
-      if (member.parentId != null && nodeMap.containsKey(member.parentId)) {
-        graph.addEdge(
-          nodeMap[member.parentId]!,
-          nodeMap[member.id]!,
-          paint: edgePaint,
-        );
-      }
-    }
+    final allPositions = <int, Offset>{};
+    double rootX = 0;
 
-    if (roots.isEmpty) {
-      // Không tìm thấy root — dựng tất cả member làm root ảo
-      final virtualNode = Node.Id(_virtualRootId);
-      for (final member in members) {
-        graph.addEdge(virtualNode, nodeMap[member.id]!, paint: edgePaint);
+    if (roots.isEmpty && members.isNotEmpty) {
+      final (positions, _) = layoutSubtree(members.first.id, minGen);
+      for (final entry in positions.entries) {
+        allPositions[entry.key] = entry.value;
       }
-    } else if (roots.length == 1) {
-      graph.addNode(nodeMap[roots.first.id]!);
     } else {
-      final virtualNode = Node.Id(_virtualRootId);
       for (final root in roots) {
-        graph.addEdge(virtualNode, nodeMap[root.id]!, paint: edgePaint);
+        final gen = root.generation ?? minGen;
+        final (positions, width) = layoutSubtree(root.id, gen);
+        for (final entry in positions.entries) {
+          allPositions[entry.key] =
+              Offset(entry.value.dx + rootX + width / 2, entry.value.dy);
+        }
+        rootX += width + _rootSpacing;
       }
     }
 
-    return graph;
+    for (final m in members) {
+      if (!allPositions.containsKey(m.id)) {
+        final gen = (m.generation ?? minGen) - minGen;
+        allPositions[m.id] = Offset(rootX, gen * _vSpacing);
+        rootX += _nodeWidth + _hSpacing;
+        if (m.parentId != null && allPositions.containsKey(m.parentId)) {
+          edges.add(_EdgeData(parentId: m.parentId!, childId: m.id));
+        }
+        if (m.spouseId != null && allPositions.containsKey(m.spouseId)) {
+          spouseEdges.add(_SpouseEdge(
+            leftMemberId: m.id < m.spouseId! ? m.id : m.spouseId!,
+            rightMemberId: m.id < m.spouseId! ? m.spouseId! : m.id,
+          ));
+        }
+      }
+    }
+
+    if (allPositions.isEmpty) return allPositions;
+
+    double minX = double.infinity, minY = double.infinity;
+    for (final entry in allPositions.entries) {
+      final left = entry.value.dx - _nodeWidth / 2;
+      final top = entry.value.dy - _nodeHeight / 2;
+      if (left < minX) minX = left;
+      if (top < minY) minY = top;
+    }
+
+    final shift = Offset(-minX + _padding, -minY + _padding);
+    for (final entry in allPositions.entries) {
+      allPositions[entry.key] = entry.value + shift;
+    }
+
+    return allPositions;
   }
 
   @override
@@ -123,56 +288,84 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
               );
             }
 
-            final graph = _buildGraph(state.members);
-            final memberMap = {for (final m in state.members) m.id: m};
+            final edges = <_EdgeData>[];
+            final spouseEdges = <_SpouseEdge>[];
+            final positions =
+                _calculateLayout(state.members, edges, spouseEdges);
+
+            double maxX = _padding * 2, maxY = _padding * 2;
+            for (final entry in positions.entries) {
+              final right = entry.value.dx + _nodeWidth / 2;
+              final bottom = entry.value.dy + _nodeHeight / 2;
+              maxX = maxX > right ? maxX : right;
+              maxY = maxY > bottom ? maxY : bottom;
+            }
+            final treeSize = Size(maxX, maxY);
 
             return LayoutBuilder(
               builder: (context, constraints) {
-                if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
+                if (constraints.maxWidth == 0 ||
+                    constraints.maxHeight == 0) {
                   return const SizedBox.shrink();
                 }
-                return GraphView.builder(
-                  key: ValueKey(state.members.length),
-                  graph: graph,
-                  algorithm: BuchheimWalkerAlgorithm(
-                    _algorithm,
-                    TreeEdgeRenderer(_algorithm),
-                  ),
-                  paint: Paint()
-                    ..color = context.connectionLine
-                    ..strokeWidth = 2.0
-                    ..style = PaintingStyle.stroke,
-                  centerGraph: true,
-                  builder: (Node node) {
-                    final memberId = node.key?.value as int?;
-
-                    if (memberId == _virtualRootId) {
-                      return const SizedBox.shrink();
-                    }
-
-                    final member =
-                        memberId != null ? memberMap[memberId] : null;
-                    if (member == null) {
-                      return const SizedBox(width: 80, height: 40);
-                    }
-
-                    return FamilyMemberNodeWidget(
-                      member: member,
-                      isSelected: state.selectedMemberId == member.id,
-                      onTap: () {
-                        context
-                            .read<FamilyTreeBloc>()
-                            .add(FamilyTreeSelectMemberEvent(member.id));
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                FamilyMemberDetailPage(member: member),
+                return InteractiveViewer(
+                  constrained: false,
+                  boundaryMargin: const EdgeInsets.all(double.infinity),
+                  minScale: 0.3,
+                  maxScale: 3.0,
+                  child: SizedBox(
+                    width: treeSize.width,
+                    height: treeSize.height,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        CustomPaint(
+                          size: treeSize,
+                          painter: _TreeEdgePainter(
+                            edges: edges,
+                            spouseEdges: spouseEdges,
+                            positions: positions,
+                            linePaint: Paint()
+                              ..color = context.connectionLine
+                              ..strokeWidth = 2.0
+                              ..strokeCap = StrokeCap.round,
+                            spousePaint: Paint()
+                              ..color = context.connectionLine
+                              ..strokeWidth = 1.5
+                              ..strokeCap = StrokeCap.round,
                           ),
-                        );
-                      },
-                    );
-                  },
+                        ),
+                        ...state.members.map((member) {
+                          final pos = positions[member.id];
+                          if (pos == null) {
+                            return const SizedBox.shrink();
+                          }
+                          return Positioned(
+                            left: pos.dx - _nodeWidth / 2,
+                            top: pos.dy - _nodeHeight / 2,
+                            child: FamilyMemberNodeWidget(
+                              member: member,
+                              isSelected:
+                                  state.selectedMemberId == member.id,
+                              onTap: () {
+                                context
+                                    .read<FamilyTreeBloc>()
+                                    .add(FamilyTreeSelectMemberEvent(
+                                        member.id));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => FamilyMemberDetailPage(
+                                        member: member),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
                 );
               },
             );
@@ -258,5 +451,67 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
         ],
       ),
     );
+  }
+}
+
+class _TreeEdgePainter extends CustomPainter {
+  final List<_EdgeData> edges;
+  final List<_SpouseEdge> spouseEdges;
+  final Map<int, Offset> positions;
+  final Paint linePaint;
+  final Paint spousePaint;
+
+  _TreeEdgePainter({
+    required this.edges,
+    required this.spouseEdges,
+    required this.positions,
+    required this.linePaint,
+    required this.spousePaint,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final edge in edges) {
+      final parent = positions[edge.parentId];
+      final child = positions[edge.childId];
+      if (parent == null || child == null) continue;
+
+      final start = Offset(parent.dx, parent.dy + _nodeHeight / 2);
+      final end = Offset(child.dx, child.dy - _nodeHeight / 2);
+      final midY = (start.dy + end.dy) / 2;
+
+      final path = Path()
+        ..moveTo(start.dx, start.dy)
+        ..cubicTo(
+          start.dx, midY,
+          end.dx, midY,
+          end.dx, end.dy,
+        );
+      canvas.drawPath(path, linePaint);
+    }
+
+    for (final se in spouseEdges) {
+      final left = positions[se.leftMemberId];
+      final right = positions[se.rightMemberId];
+      if (left == null || right == null) continue;
+
+      final start = Offset(left.dx + _nodeWidth / 2, left.dy);
+      final end = Offset(right.dx - _nodeWidth / 2, right.dy);
+      canvas.drawLine(start, end, spousePaint);
+
+      final midX = (start.dx + end.dx) / 2;
+      final smallPaint = Paint()
+        ..color = spousePaint.color
+        ..strokeWidth = 3.0
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(midX, start.dy), 3.0, smallPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TreeEdgePainter oldDelegate) {
+    return oldDelegate.edges != edges ||
+        oldDelegate.spouseEdges != spouseEdges ||
+        oldDelegate.positions != positions;
   }
 }

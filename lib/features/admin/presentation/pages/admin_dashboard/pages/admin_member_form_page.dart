@@ -275,6 +275,16 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               child: AppLoading(size: 80),
             );
           }
+          
+          if (state is AdminMemberFormReady) {
+            final isCorrectMember = (widget.memberId == null && state.member == null) ||
+                                    (widget.memberId != null && state.member?.id == widget.memberId);
+            if (!isCorrectMember) {
+              return const Center(
+                child: AppLoading(size: 80),
+              );
+            }
+          }
 
           final existingMember =
               state is AdminMemberFormReady ? state.member : null;

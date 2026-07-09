@@ -82,7 +82,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     final newScale = (currentScale * 1.3).clamp(0.3, 3.0);
     final scaleFactor = newScale / currentScale;
     _transformationController.value = current.clone()
-      ..scale(scaleFactor, scaleFactor, 1.0);
+      ..multiply(Matrix4.diagonal3Values(scaleFactor, scaleFactor, 1.0));
   }
 
   void _zoomOut() {
@@ -91,7 +91,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     final newScale = (currentScale / 1.3).clamp(0.3, 3.0);
     final scaleFactor = newScale / currentScale;
     _transformationController.value = current.clone()
-      ..scale(scaleFactor, scaleFactor, 1.0);
+      ..multiply(Matrix4.diagonal3Values(scaleFactor, scaleFactor, 1.0));
   }
 
   void _resetZoom() {
@@ -434,11 +434,13 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                             linePaint: Paint()
                               ..color = context.connectionLine
                               ..strokeWidth = 2.0
-                              ..strokeCap = StrokeCap.round,
+                              ..strokeCap = StrokeCap.round
+                              ..style = PaintingStyle.stroke,
                             spousePaint: Paint()
                               ..color = context.connectionLine
                               ..strokeWidth = 1.5
-                              ..strokeCap = StrokeCap.round,
+                              ..strokeCap = StrokeCap.round
+                              ..style = PaintingStyle.stroke,
                           ),
                         ),
                         ...state.members.map((member) {
@@ -581,14 +583,7 @@ class _TreeEdgePainter extends CustomPainter {
       final primary = positions[ce.primaryId];
       if (primary == null) continue;
 
-      // Điểm xuất phát X = trung điểm ngang giữa cha và mẹ (hoặc chính cha nếu không có mẹ)
       double sourceX = primary.dx;
-      if (ce.spouseId != null) {
-        final spouse = positions[ce.spouseId!];
-        if (spouse != null) {
-          sourceX = (primary.dx + spouse.dx) / 2;
-        }
-      }
       final sourceY = primary.dy + _nodeHeight / 2;
 
       final childPositions =
@@ -598,41 +593,36 @@ class _TreeEdgePainter extends CustomPainter {
       final childTopY = childPositions.first.dy - _nodeHeight / 2;
       final junctionY = (sourceY + childTopY) / 2;
 
-      // 1. Thân đứng: từ trung điểm cặp đôi xuống điểm junction
-      canvas.drawLine(
-        Offset(sourceX, sourceY),
-        Offset(sourceX, junctionY),
-        linePaint,
-      );
+      final path = Path();
+      const radius = 16.0;
 
-      // 2. Thanh ngang tại junctionY nối qua tất cả anh chị em
-      if (childPositions.length > 1) {
-        final xs = childPositions.map((p) => p.dx).toList()..sort();
-        canvas.drawLine(
-          Offset(xs.first, junctionY),
-          Offset(xs.last, junctionY),
-          linePaint,
-        );
-      } else {
-        // 1 con nhưng X lệch khỏi sourceX → vẽ ngang ngắn để kết nối
-        final childX = childPositions.first.dx;
-        if ((sourceX - childX).abs() > 1.0) {
-          canvas.drawLine(
-            Offset(sourceX, junctionY),
-            Offset(childX, junctionY),
-            linePaint,
-          );
+      for (final childPos in childPositions) {
+        final start = Offset(sourceX, sourceY);
+        final end = Offset(childPos.dx, childTopY);
+
+        if ((start.dx - end.dx).abs() < 1.0) {
+          path.moveTo(start.dx, start.dy);
+          path.lineTo(end.dx, end.dy);
+        } else {
+          final direction = (end.dx > start.dx) ? 1.0 : -1.0;
+          final maxRX = (start.dx - end.dx).abs() / 2;
+          final maxRY = (junctionY - start.dy < end.dy - junctionY)
+              ? (junctionY - start.dy)
+              : (end.dy - junctionY);
+          final r = radius < maxRX
+              ? (radius < maxRY ? radius : maxRY)
+              : (maxRX < maxRY ? maxRX : maxRY);
+
+          path.moveTo(start.dx, start.dy);
+          path.lineTo(start.dx, junctionY - r);
+          path.quadraticBezierTo(
+              start.dx, junctionY, start.dx + direction * r, junctionY);
+          path.lineTo(end.dx - direction * r, junctionY);
+          path.quadraticBezierTo(end.dx, junctionY, end.dx, junctionY + r);
+          path.lineTo(end.dx, end.dy);
         }
       }
-
-      // 3. Các đường ngắn từ junction xuống top của từng con
-      for (final childPos in childPositions) {
-        canvas.drawLine(
-          Offset(childPos.dx, junctionY),
-          Offset(childPos.dx, childTopY),
-          linePaint,
-        );
-      }
+      canvas.drawPath(path, linePaint);
     }
 
     // ── Orphan edges — bezier (fallback cho nodes ngoài layout chính) ────
@@ -658,14 +648,27 @@ class _TreeEdgePainter extends CustomPainter {
 
       final start = Offset(left.dx + _nodeWidth / 2, left.dy);
       final end = Offset(right.dx - _nodeWidth / 2, right.dy);
-      canvas.drawLine(start, end, spousePaint);
 
       final midX = (start.dx + end.dx) / 2;
-      final dotPaint = Paint()
-        ..color = spousePaint.color
-        ..strokeWidth = 3.0
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(Offset(midX, start.dy), 3.0, dotPaint);
+
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: String.fromCharCode(LucideIcons.heartHandshake.codePoint),
+          style: TextStyle(
+            color: Colors.redAccent,
+            fontSize: 16,
+            fontFamily: LucideIcons.heartHandshake.fontFamily,
+            package: LucideIcons.heartHandshake.fontPackage,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+
+      textPainter.paint(
+        canvas,
+        Offset(midX - textPainter.width / 2, start.dy - textPainter.height / 2),
+      );
     }
   }
 

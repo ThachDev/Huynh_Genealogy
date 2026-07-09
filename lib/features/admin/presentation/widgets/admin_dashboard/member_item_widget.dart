@@ -20,7 +20,8 @@ class MemberItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final String aliveText = member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
+    final String aliveText =
+        member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
@@ -37,9 +38,7 @@ class MemberItemWidget extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               left: BorderSide(
-                color: member.gender == Gender.male
-                    ? context.nodeMale
-                    : context.nodeFemale,
+                color: context.accent,
                 width: 4,
               ),
             ),
@@ -61,8 +60,10 @@ class MemberItemWidget extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 26,
                       backgroundColor: member.gender == Gender.male
-                          ? context.nodeMale.withValues(alpha: 0.5)
-                          : context.nodeFemale.withValues(alpha: 0.5),
+                          ? context.genderMale.withValues(alpha: 0.15)
+                          : member.gender == Gender.female
+                              ? context.genderFemale.withValues(alpha: 0.15)
+                              : Colors.grey.withValues(alpha: 0.15),
                       backgroundImage: member.avatarUrl != null
                           ? NetworkImage(member.avatarUrl!)
                           : null,
@@ -83,19 +84,26 @@ class MemberItemWidget extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
-                        color: member.gender == Gender.male
-                            ? context.nodeMale
-                            : context.nodeFemale,
+                        color: context.surface,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1.5),
+                        border: Border.all(
+                          color: member.gender == Gender.male
+                              ? context.genderMale
+                              : member.gender == Gender.female
+                                  ? context.genderFemale
+                                  : Colors.grey,
+                          width: 1.5,
+                        ),
                       ),
                       child: Icon(
                         member.gender == Gender.male
                             ? Icons.male
                             : Icons.female,
                         color: member.gender == Gender.male
-                            ? context.primary
-                            : context.accent,
+                            ? context.genderMale
+                            : member.gender == Gender.female
+                                ? context.genderFemale
+                                : Colors.grey,
                         size: 10,
                       ),
                     ),
@@ -144,7 +152,8 @@ class MemberItemWidget extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                l10n.generationBadge('${member.generation ?? "?"}'),
+                                l10n.generationBadge(
+                                    '${member.generation ?? "?"}'),
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -160,14 +169,12 @@ class MemberItemWidget extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: member.isAlive
                                 ? context.primary.withValues(alpha: 0.06)
-                                : context.nodeDeceased
-                                    .withValues(alpha: 0.15),
+                                : context.nodeDeceased.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                               color: member.isAlive
                                   ? context.primary.withValues(alpha: 0.15)
-                                  : context.nodeDeceased
-                                      .withValues(alpha: 0.3),
+                                  : context.nodeDeceased.withValues(alpha: 0.3),
                               width: 1,
                             ),
                           ),
@@ -208,8 +215,7 @@ class MemberItemWidget extends StatelessWidget {
                           Icon(
                             LucideIcons.gitBranch,
                             size: 12,
-                            color:
-                                context.textSecondary.withValues(alpha: 0.7),
+                            color: context.textSecondary.withValues(alpha: 0.7),
                           ),
                           const SizedBox(width: 4),
                           Flexible(

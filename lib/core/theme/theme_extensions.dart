@@ -23,4 +23,7 @@ extension AppThemeColors on BuildContext {
       resolve(AppColors.nodeDeceased, AppColors.nodeDeceasedDark);
   Color get nodeBorder => AppColors.nodeBorder;
   Color get connectionLine => resolve(AppColors.wood, AppColors.gold);
+  
+  Color get genderMale => resolve(AppColors.genderMale, AppColors.genderMaleDark);
+  Color get genderFemale => resolve(AppColors.genderFemale, AppColors.genderFemaleDark);
 }

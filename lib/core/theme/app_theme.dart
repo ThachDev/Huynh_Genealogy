@@ -35,6 +35,12 @@ class AppColors {
   static const Color nodeBorder = gold;
   static const Color connectionLine = wood;
 
+  // Vibrant gender indicator colors
+  static const Color genderMale = Color(0xFF64B5F6);
+  static const Color genderFemale = Color(0xFFF06292);
+  static const Color genderMaleDark = Color(0xFF1E88E5);
+  static const Color genderFemaleDark = Color(0xFFD81B60);
+
   // Node color variants for dark mode
   static const Color nodeMaleDark = Color(0xFF2C3E50);
   static const Color nodeFemaleDark = Color(0xFF4A2C3A);

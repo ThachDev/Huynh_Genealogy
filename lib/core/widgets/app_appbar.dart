@@ -5,6 +5,7 @@ import '../theme/theme_extensions.dart';
 
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final Widget? titleWidget;
   final List<Widget>? actions;
   final Widget? leading;
   final bool automaticallyImplyLeading;
@@ -13,7 +14,8 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const AppAppBar({
     super.key,
-    required this.title,
+    this.title = '',
+    this.titleWidget,
     this.actions,
     this.leading,
     this.automaticallyImplyLeading = true,
@@ -60,7 +62,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
       iconTheme: const IconThemeData(color: Colors.white),
-      title: Text(
+      title: titleWidget ?? Text(
         title,
         style: GoogleFonts.beVietnamPro(
           color: context.accent,

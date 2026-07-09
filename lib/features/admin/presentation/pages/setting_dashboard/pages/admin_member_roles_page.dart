@@ -62,7 +62,8 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
-                    l10n.roleOfUser(user.userFullName ?? l10n.roleViewer.toLowerCase()),
+                    l10n.roleOfUser(
+                        user.userFullName ?? l10n.roleViewer.toLowerCase()),
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -71,8 +72,8 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   ),
                 ),
                 const Divider(),
-                _buildRoleOption(user, familyId, 'BRANCH_ADMIN', l10n.roleBranchAdminTitle,
-                    l10n.roleBranchAdminDesc),
+                _buildRoleOption(user, familyId, 'BRANCH_ADMIN',
+                    l10n.roleBranchAdminTitle, l10n.roleBranchAdminDesc),
                 _buildRoleOption(user, familyId, 'EDITOR', l10n.roleEditorTitle,
                     l10n.roleEditorDesc),
                 _buildRoleOption(user, familyId, 'VIEWER', l10n.roleViewerTitle,
@@ -142,35 +143,24 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        backgroundColor: context.appBarBg,
-        elevation: 4,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: _isSearching
+      appBar: AppAppBar(
+        titleWidget: _isSearching
             ? TextField(
                 controller: _searchController,
                 autofocus: true,
                 style: GoogleFonts.beVietnamPro(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: l10n.searchMemberHint,
-                  hintStyle:
-                      GoogleFonts.beVietnamPro(color: Colors.white70),
+                  hintStyle: GoogleFonts.beVietnamPro(color: Colors.white70),
                   border: InputBorder.none,
                 ),
                 onChanged: (value) => setState(() {}),
               )
-            : Text(
-                l10n.memberRolesTitle,
-                style: GoogleFonts.beVietnamPro(
-                  color: context.accent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
+            : null,
+        title: _isSearching ? '' : l10n.memberRolesTitle,
         actions: [
           IconButton(
-            icon: Icon(
-                _isSearching ? LucideIcons.x : LucideIcons.search,
+            icon: Icon(_isSearching ? LucideIcons.x : LucideIcons.search,
                 color: Colors.white),
             onPressed: () {
               setState(() {
@@ -275,7 +265,8 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: context.resolve(Colors.black, Colors.black)
+                        color: context
+                            .resolve(Colors.black, Colors.black)
                             .withValues(alpha: 0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 3),

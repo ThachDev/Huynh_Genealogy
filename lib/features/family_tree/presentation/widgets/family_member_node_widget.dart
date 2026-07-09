@@ -10,12 +10,16 @@ class FamilyMemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
   final bool isSelected;
   final VoidCallback? onTap;
+  final VoidCallback? onAddChildTap;
+  final VoidCallback? onAddSpouseTap;
 
   const FamilyMemberNodeWidget({
     super.key,
     required this.member,
     this.isSelected = false,
     this.onTap,
+    this.onAddChildTap,
+    this.onAddSpouseTap,
   });
 
   @override
@@ -233,17 +237,37 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Icon(
-                          LucideIcons.baby,
-                          size: 16,
-                          color: context.primary,
-                        ),
-                        Icon(
-                          LucideIcons.heart,
-                          size: 14,
-                          color: context.resolve(
-                              Colors.redAccent, Colors.red.shade300),
-                        ),
+                        if (widget.onAddChildTap != null)
+                          GestureDetector(
+                            onTap: widget.onAddChildTap,
+                            child: Tooltip(
+                              message: 'Thêm Con',
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                                child: Icon(
+                                  LucideIcons.baby,
+                                  size: 18,
+                                  color: context.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (widget.onAddSpouseTap != null)
+                          GestureDetector(
+                            onTap: widget.onAddSpouseTap,
+                            child: Tooltip(
+                              message: 'Thêm Vợ/Chồng',
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                                child: Icon(
+                                  LucideIcons.heart,
+                                  size: 16,
+                                  color: context.resolve(
+                                      Colors.redAccent, Colors.red.shade300),
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     const Spacer(),

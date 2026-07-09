@@ -197,23 +197,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppBar(
-        backgroundColor: context.appBarBg,
-        elevation: 4,
-        leading: IconButton(
-          icon: Icon(LucideIcons.arrowLeft, color: context.accent, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        centerTitle: true,
-        title: Text(
-          title,
-          style: GoogleFonts.beVietnamPro(
-            color: context.accent,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            letterSpacing: 0.5,
-          ),
-        ),
+      appBar: AppAppBar(
+        title: title,
       ),
       body: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
         listener: (context, state) async {

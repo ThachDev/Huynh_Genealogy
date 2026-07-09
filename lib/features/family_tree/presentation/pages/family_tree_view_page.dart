@@ -10,6 +10,7 @@ import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/family_tree_bloc.dart';
 import '../widgets/family_member_node_widget.dart';
 import 'family_member_detail_page.dart';
+import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 
 const double _nodeWidth = 140.0;
 const double _nodeHeight =
@@ -228,12 +229,13 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       for (int i = 0; i < spouseIds.length; i++) {
         final sId = spouseIds[i];
         allPos[sId] = Offset(shift + spouseCenterXList[i], y);
-        
-        final isDivorced = memberMap[sId]?.maritalStatus == MaritalStatus.divorced || 
-                           memberMap[prevId]?.maritalStatus == MaritalStatus.divorced;
+
+        final isDivorced =
+            memberMap[sId]?.maritalStatus == MaritalStatus.divorced ||
+                memberMap[prevId]?.maritalStatus == MaritalStatus.divorced;
 
         spouseEdges.add(_SpouseEdge(
-          leftMemberId: prevId, 
+          leftMemberId: prevId,
           rightMemberId: sId,
           isDivorced: isDivorced,
         ));
@@ -353,6 +355,11 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthBloc>().state;
+    final canEdit = authState is Authenticated &&
+        (authState.user.role == 'OWNER' ||
+            authState.user.role == 'BRANCH_ADMIN' ||
+            authState.user.role == 'EDITOR');
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(
@@ -495,6 +502,58 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                                   ),
                                 );
                               },
+                              onAddChildTap: canEdit
+                                  ? () async {
+                                      final result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AdminMemberFormPage(
+                                            initialParentId: member.id,
+                                            initialGeneration:
+                                                (member.generation ?? 0) + 1,
+                                            isLockedContext: true,
+                                          ),
+                                        ),
+                                      );
+                                      if (result == true && context.mounted) {
+                                        final authState =
+                                            context.read<AuthBloc>().state;
+                                        final familyId =
+                                            authState is Authenticated
+                                                ? authState.user.familyId
+                                                : null;
+                                        context.read<FamilyTreeBloc>().add(
+                                            FamilyTreeLoadEvent(
+                                                familyId: familyId));
+                                      }
+                                    }
+                                  : null,
+                              onAddSpouseTap: canEdit
+                                  ? () async {
+                                      final result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AdminMemberFormPage(
+                                            initialSpouseId: member.id,
+                                            initialGeneration:
+                                                member.generation,
+                                            isLockedContext: true,
+                                          ),
+                                        ),
+                                      );
+                                      if (result == true && context.mounted) {
+                                        final authState =
+                                            context.read<AuthBloc>().state;
+                                        final familyId =
+                                            authState is Authenticated
+                                                ? authState.user.familyId
+                                                : null;
+                                        context.read<FamilyTreeBloc>().add(
+                                            FamilyTreeLoadEvent(
+                                                familyId: familyId));
+                                      }
+                                    }
+                                  : null,
                             ),
                           );
                         }),
@@ -691,7 +750,8 @@ class _TreeEdgePainter extends CustomPainter {
       final midX = (start.dx + end.dx) / 2;
 
       // Chọn icon dựa vào trạng thái hôn nhân
-      final icon = se.isDivorced ? LucideIcons.heartCrack : LucideIcons.heartHandshake;
+      final icon =
+          se.isDivorced ? LucideIcons.heartCrack : LucideIcons.heartHandshake;
       final iconColor = se.isDivorced ? Colors.grey : Colors.redAccent;
 
       final textPainter = TextPainter(
@@ -702,7 +762,8 @@ class _TreeEdgePainter extends CustomPainter {
             fontSize: 16,
             fontFamily: icon.fontFamily,
             package: icon.fontPackage,
-            backgroundColor: const Color(0xFFF9F6F0), // Nền để che đường kẻ (giống màu nền app)
+            backgroundColor: const Color(
+                0xFFF9F6F0), // Nền để che đường kẻ (giống màu nền app)
           ),
         ),
         textDirection: TextDirection.ltr,

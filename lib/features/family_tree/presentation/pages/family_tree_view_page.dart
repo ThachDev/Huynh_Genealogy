@@ -30,7 +30,12 @@ class _EdgeData {
 class _SpouseEdge {
   final int leftMemberId;
   final int rightMemberId;
-  _SpouseEdge({required this.leftMemberId, required this.rightMemberId});
+  final bool isDivorced;
+  _SpouseEdge({
+    required this.leftMemberId,
+    required this.rightMemberId,
+    this.isDivorced = false,
+  });
 }
 
 /// Nhóm tất cả con của một cặp đôi để vẽ T-bar junction thay vì bezier rời rạc
@@ -223,7 +228,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       for (int i = 0; i < spouseIds.length; i++) {
         final sId = spouseIds[i];
         allPos[sId] = Offset(shift + spouseCenterXList[i], y);
-        spouseEdges.add(_SpouseEdge(leftMemberId: prevId, rightMemberId: sId));
+        
+        final isDivorced = memberMap[sId]?.maritalStatus == MaritalStatus.divorced || 
+                           memberMap[prevId]?.maritalStatus == MaritalStatus.divorced;
+
+        spouseEdges.add(_SpouseEdge(
+          leftMemberId: prevId, 
+          rightMemberId: sId,
+          isDivorced: isDivorced,
+        ));
         prevId = sId;
       }
 
@@ -672,16 +685,24 @@ class _TreeEdgePainter extends CustomPainter {
       final start = Offset(left.dx + _nodeWidth / 2, left.dy);
       final end = Offset(right.dx - _nodeWidth / 2, right.dy);
 
+      // Vẽ đường gạch nối ngang
+      canvas.drawLine(start, end, spousePaint);
+
       final midX = (start.dx + end.dx) / 2;
+
+      // Chọn icon dựa vào trạng thái hôn nhân
+      final icon = se.isDivorced ? LucideIcons.heartCrack : LucideIcons.heartHandshake;
+      final iconColor = se.isDivorced ? Colors.grey : Colors.redAccent;
 
       final textPainter = TextPainter(
         text: TextSpan(
-          text: String.fromCharCode(LucideIcons.heartHandshake.codePoint),
+          text: String.fromCharCode(icon.codePoint),
           style: TextStyle(
-            color: Colors.redAccent,
+            color: iconColor,
             fontSize: 16,
-            fontFamily: LucideIcons.heartHandshake.fontFamily,
-            package: LucideIcons.heartHandshake.fontPackage,
+            fontFamily: icon.fontFamily,
+            package: icon.fontPackage,
+            backgroundColor: const Color(0xFFF9F6F0), // Nền để che đường kẻ (giống màu nền app)
           ),
         ),
         textDirection: TextDirection.ltr,

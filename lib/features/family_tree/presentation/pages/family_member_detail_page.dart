@@ -6,94 +6,105 @@ import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import '../../../../core/widgets/widgets.dart';
 import '../../../../features/auth/auth.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
+import '../../../../core/widgets/app_appbar.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
   final MemberEntity member;
+  final List<MemberEntity> allMembers;
 
-  const FamilyMemberDetailPage({super.key, required this.member});
+  const FamilyMemberDetailPage({
+    super.key,
+    required this.member,
+    this.allMembers = const [],
+  });
 
   @override
   State<FamilyMemberDetailPage> createState() => _FamilyMemberDetailPageState();
 }
 
 class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
-  int _spiritualCount = 0;
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthBloc>().state;
+    final canEdit = authState is Authenticated &&
+        (authState.user.role == 'OWNER' ||
+            authState.user.role == 'BRANCH_ADMIN' ||
+            authState.user.role == 'EDITOR');
+
     return Scaffold(
       backgroundColor: context.background,
-      body: CustomScrollView(
-        slivers: [
-          // ── Header Modal with Ancient Clouds ──
-          SliverAppBar(
-            expandedHeight: 200,
-            pinned: true,
-            elevation: 4,
-            iconTheme: const IconThemeData(color: Colors.white),
-            backgroundColor: context.appBarBg,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.asset(
-                      'assets/images/clouds.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Container(color: context.primary),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            context.resolve(Colors.black.withValues(alpha: 0.5),
-                                Colors.transparent),
-                            Colors.transparent,
-                            context.resolve(Colors.black.withValues(alpha: 0.3),
-                                Colors.transparent),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
+      extendBodyBehindAppBar: true,
+      appBar: AppAppBar(
+        title: 'Chi tiết thành viên',
+        transparent: true,
+        actions: canEdit
+            ? [
+                IconButton(
+                  icon: const Icon(LucideIcons.edit3, color: Colors.white),
+                  onPressed: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AdminMemberFormPage(
+                          memberId: widget.member.id,
                         ),
                       ),
+                    );
+                    if (result == true && context.mounted) {
+                      Navigator.pop(context, true);
+                    }
+                  },
+                ),
+              ]
+            : null,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // ── Header Stack ──
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                // Clouds background banner
+                Container(
+                  height: 150 + MediaQuery.of(context).padding.top,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/clouds.png'),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-
-          // ── Avatar Overlay and Basic Info ──
-          SliverToBoxAdapter(
-            child: Transform.translate(
-              offset: const Offset(0, -50),
-              child: Column(
-                children: [
-                  // Large Avatar
-                  Container(
-                    width: 120,
-                    height: 120,
+                  child: Container(
+                    color: context.appBarBg.withValues(alpha: 0.8),
+                  ),
+                ),
+                // Avatar overlapping
+                Positioned(
+                  bottom: -40,
+                  child: Container(
+                    width: 90,
+                    height: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: context.accent, width: 4),
+                      border: Border.all(color: context.accent, width: 3),
                       boxShadow: [
                         BoxShadow(
                           color: context.resolve(
-                              Colors.black.withValues(alpha: 0.2),
+                              Colors.black.withValues(alpha: 0.15),
                               Colors.transparent),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: CircleAvatar(
-                      radius: 56,
+                      radius: 42,
                       backgroundColor: context.background,
                       backgroundImage: widget.member.avatarUrl != null
                           ? NetworkImage(widget.member.avatarUrl!)
@@ -101,178 +112,156 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                       child: widget.member.avatarUrl == null
                           ? Icon(
                               LucideIcons.user,
-                              size: 60,
+                              size: 45,
                               color: context.primary,
                             )
                           : null,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // Name
-                  Text(
-                    widget.member.fullName.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: context.primary,
-                      letterSpacing: 1.2,
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
+
+            // ── Name & Badges ──
+            Column(
+              children: [
+                Text(
+                  widget.member.fullName.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: context.primary,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildBadge(
+                      l10n.generationBadge(
+                          '${widget.member.generation ?? "?"}'),
+                      context.accent,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Badges
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildBadge(
-                        l10n.generationBadge(
-                            '${widget.member.generation ?? "?"}'),
-                        context.accent,
+                    const SizedBox(width: 8),
+                    _buildBadge(
+                      widget.member.isAlive
+                          ? l10n.aliveLabel
+                          : l10n.deceasedLabel,
+                      widget.member.isAlive
+                          ? Colors.green
+                          : context.textSecondary,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // ── Detailed Information ──
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+              child: Column(
+                children: [
+                  _buildInfoSection(l10n.personalInfoSectionTitle, [
+                    _buildInfoRow(
+                      LucideIcons.cake,
+                      l10n.dateOfBirthLabel,
+                      DateFormatter.formatForDisplay(
+                              widget.member.dateOfBirth) ??
+                          '-',
+                    ),
+                    if (!widget.member.isAlive)
+                      _buildInfoRow(
+                        LucideIcons.skull,
+                        l10n.dateOfDeathLabel,
+                        DateFormatter.formatForDisplay(
+                                widget.member.dateOfDeath) ??
+                            '-',
                       ),
-                      const SizedBox(width: 8),
-                      _buildBadge(
-                        widget.member.isAlive
-                            ? l10n.aliveLabel
-                            : l10n.deceasedLabel,
-                        widget.member.isAlive
-                            ? Colors.green
-                            : context.textSecondary,
-                      ),
-                    ],
-                  ),
+                    _buildInfoRow(
+                      widget.member.gender == Gender.male
+                          ? LucideIcons.user
+                          : LucideIcons.user,
+                      l10n.genderLabel,
+                      widget.member.gender == Gender.male
+                          ? l10n.genderMale
+                          : l10n.genderFemale,
+                    ),
+                    _buildInfoRow(
+                      LucideIcons.mapPin,
+                      l10n.placeOfBirthLabel,
+                      widget.member.placeOfBirth ?? '-',
+                    ),
+                  ]),
                   const SizedBox(height: 20),
-                  // Spiritual Interaction
-                  _buildSpiritualButton(),
-                  
-                  // Contextual Add Actions for Admins
-                  BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, state) {
-                      if (state is Authenticated) {
-                        final role = state.user.role;
-                        if (role == 'OWNER' || role == 'BRANCH_ADMIN' || role == 'EDITOR') {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => AdminMemberFormPage(
-                                            initialParentId: widget.member.id,
-                                            initialGeneration: (widget.member.generation ?? 0) + 1,
-                                            isLockedContext: true,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(LucideIcons.userPlus, size: 16),
-                                    label: const Text('Thêm Con'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: context.primary,
-                                      foregroundColor: context.textOnPrimary,
-                                      elevation: 0,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => AdminMemberFormPage(
-                                            initialSpouseId: widget.member.id,
-                                            initialGeneration: widget.member.generation,
-                                            isLockedContext: true,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(LucideIcons.heart, size: 16),
-                                    label: const Text('Thêm Vợ/Chồng'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: context.accent,
-                                      foregroundColor: context.textOnPrimary,
-                                      elevation: 0,
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
+                  Builder(builder: (context) {
+                    final parentNode = widget.allMembers
+                        .where((m) => m.id == widget.member.parentId)
+                        .firstOrNull;
+                    final spouseNode =
+                        (parentNode != null && parentNode.spouseId != null)
+                            ? widget.allMembers
+                                .where((m) => m.id == parentNode.spouseId)
+                                .firstOrNull
+                            : null;
+
+                    MemberEntity? father;
+                    MemberEntity? mother;
+
+                    if (parentNode != null) {
+                      if (parentNode.gender == Gender.female) {
+                        mother = parentNode;
+                        father = spouseNode;
+                      } else {
+                        father = parentNode;
+                        mother = spouseNode;
                       }
-                      return const SizedBox.shrink();
-                    },
-                  ),
+                    }
+
+                    // If mother is still null, check if we have a direct motherId
+                    if (mother == null && widget.member.motherId != null) {
+                      mother = widget.allMembers
+                          .where((m) => m.id == widget.member.motherId)
+                          .firstOrNull;
+                    }
+
+                    final spouse = widget.allMembers
+                        .where((m) => m.id == widget.member.spouseId)
+                        .firstOrNull;
+
+                    return _buildInfoSection(l10n.familyRelationSectionTitle, [
+                      _buildInfoRow(
+                        LucideIcons.user,
+                        'Cha',
+                        father?.fullName ?? '-',
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.user,
+                        'Mẹ',
+                        mother?.fullName ?? '-',
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.heart,
+                        'Vợ/Chồng',
+                        spouse?.fullName ?? '-',
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.gitCommit,
+                        l10n.branchLabel,
+                        widget.member.branchName ?? '-',
+                      ),
+                    ]);
+                  }),
+                  const SizedBox(height: 20),
+                  _buildBiographySection(l10n),
                 ],
               ),
             ),
-          ),
-
-          // ── Detailed Information ──
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _buildInfoSection(l10n.personalInfoSectionTitle, [
-                  _buildInfoRow(
-                    LucideIcons.cake,
-                    l10n.dateOfBirthLabel,
-                    DateFormatter.formatForDisplay(widget.member.dateOfBirth) ?? '-',
-                  ),
-                  if (!widget.member.isAlive)
-                    _buildInfoRow(
-                      LucideIcons.skull,
-                      l10n.dateOfDeathLabel,
-                      DateFormatter.formatForDisplay(widget.member.dateOfDeath) ?? '-',
-                    ),
-                  _buildInfoRow(
-                    widget.member.gender == Gender.male ? LucideIcons.user : LucideIcons.user,
-                    l10n.genderLabel,
-                    widget.member.gender == Gender.male
-                        ? l10n.genderMale
-                        : l10n.genderFemale,
-                  ),
-                  _buildInfoRow(
-                    LucideIcons.mapPin,
-                    l10n.placeOfBirthLabel,
-                    widget.member.placeOfBirth ?? '-',
-                  ),
-                ]),
-                const SizedBox(height: 20),
-                _buildInfoSection(l10n.familyRelationSectionTitle, [
-                  _buildInfoRow(
-                    LucideIcons.network,
-                    l10n.parentLabel,
-                    widget.member.parentId != null ? '#${widget.member.parentId}' : '-',
-                  ),
-                  _buildInfoRow(
-                    LucideIcons.heart,
-                    l10n.spouseLabel,
-                    widget.member.spouseId != null ? '#${widget.member.spouseId}' : '-',
-                  ),
-                  _buildInfoRow(
-                    LucideIcons.gitCommit,
-                    l10n.branchLabel,
-                    widget.member.branchName ?? '-',
-                  ),
-                ]),
-                const SizedBox(height: 20),
-                _buildBiographySection(l10n),
-              ]),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -293,49 +282,6 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
           color: color,
         ),
       ),
-    );
-  }
-
-  Widget _buildSpiritualButton() {
-    final l10n = AppLocalizations.of(context)!;
-    if (widget.member.isAlive) {
-      return AppButton(
-        label: l10n.congratulateButton(0),
-        onPressed: () {
-          AppSnackBar.success(context, l10n.congratulateActionMessage);
-        },
-        prefixIcon: const Icon(LucideIcons.partyPopper, size: 16),
-        variant: AppButtonVariant.primary,
-        size: AppButtonSize.small,
-      );
-    }
-
-    return Column(
-      children: [
-        AppButton(
-          label: l10n.incenseButton(0),
-          onPressed: () {
-            setState(() {
-              _spiritualCount++;
-            });
-            AppSnackBar.success(context, l10n.incenseActionMessage);
-          },
-          prefixIcon: const Icon(LucideIcons.flame, size: 16),
-          variant: AppButtonVariant.primary,
-          size: AppButtonSize.small,
-        ),
-        if (_spiritualCount > 0) ...[
-          const SizedBox(height: 8),
-          Text(
-            l10n.incenseButton(_spiritualCount),
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 12,
-              color: context.textSecondary,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ],
-      ],
     );
   }
 

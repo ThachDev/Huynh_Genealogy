@@ -273,8 +273,6 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
           int? edgeSpouseId;
           if (mId != null && spouseIds.contains(mId)) {
             edgeSpouseId = mId;
-          } else if (spouseIds.isNotEmpty) {
-            edgeSpouseId = spouseIds.last;
           }
 
           coupleEdges.add(_CoupleEdge(
@@ -361,8 +359,10 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');
     return Scaffold(
-      backgroundColor: context.background,
+      backgroundColor: context.appBarBg,
+      extendBodyBehindAppBar: true,
       appBar: AppAppBar(
+        transparent: true,
         title: l10n.familyTreeTitle,
         actions: [
           IconButton(
@@ -379,194 +379,207 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
             icon: LucideIcons.plus,
             tooltip: 'Phóng to',
             onPressed: _zoomIn,
-            color: context.primary,
+            color: const Color(0xFFD4AF37),
           ),
           const SizedBox(height: 8),
           _ZoomFab(
             icon: LucideIcons.maximize2,
             tooltip: 'Đặt lại',
             onPressed: _resetZoom,
-            color: context.accent,
+            color: const Color(0xFFD4AF37),
           ),
           const SizedBox(height: 8),
           _ZoomFab(
             icon: LucideIcons.minus,
             tooltip: 'Thu nhỏ',
             onPressed: _zoomOut,
-            color: context.primary,
+            color: const Color(0xFFD4AF37),
           ),
         ],
       ),
-      body: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
-        builder: (context, state) {
-          if (state is FamilyTreeLoading) {
-            return const Center(child: AppLoading(size: 80));
-          }
+      body: Container(
+        decoration: BoxDecoration(
+          color: context.appBarBg,
+          image: const DecorationImage(
+            image: AssetImage('assets/images/clouds.png'),
+            fit: BoxFit.cover,
+            opacity: 0.15,
+          ),
+        ),
+        child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
+          builder: (context, state) {
+            if (state is FamilyTreeLoading) {
+              return const Center(child: AppLoading(size: 80));
+            }
 
-          if (state is FamilyTreeError) {
-            return Center(
-              child: Text(
-                state.message,
-                style: GoogleFonts.inter(color: context.primary),
-              ),
-            );
-          }
-
-          if (state is FamilyTreeLoaded) {
-            if (state.members.isEmpty) {
+            if (state is FamilyTreeError) {
               return Center(
                 child: Text(
-                  l10n.noTreeDataMessage,
-                  style: GoogleFonts.inter(
-                    color: context.textSecondary,
-                    fontSize: 16,
-                  ),
+                  state.message,
+                  style: GoogleFonts.inter(color: context.primary),
                 ),
               );
             }
 
-            final coupleEdges = <_CoupleEdge>[];
-            final orphanEdges = <_EdgeData>[];
-            final spouseEdges = <_SpouseEdge>[];
-            final positions = _calculateLayout(
-              state.members,
-              coupleEdges,
-              orphanEdges,
-              spouseEdges,
-            );
-
-            double maxX = _padding * 2, maxY = _padding * 2;
-            for (final entry in positions.entries) {
-              final right = entry.value.dx + _nodeWidth / 2;
-              final bottom = entry.value.dy + _nodeHeight / 2;
-              maxX = maxX > right ? maxX : right;
-              maxY = maxY > bottom ? maxY : bottom;
-            }
-            final treeSize = Size(maxX, maxY);
-
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
-                  return const SizedBox.shrink();
-                }
-                return InteractiveViewer(
-                  transformationController: _transformationController,
-                  constrained: false,
-                  boundaryMargin: const EdgeInsets.all(double.infinity),
-                  minScale: 0.3,
-                  maxScale: 3.0,
-                  child: SizedBox(
-                    width: treeSize.width,
-                    height: treeSize.height,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        CustomPaint(
-                          size: treeSize,
-                          painter: _TreeEdgePainter(
-                            coupleEdges: coupleEdges,
-                            orphanEdges: orphanEdges,
-                            spouseEdges: spouseEdges,
-                            positions: positions,
-                            linePaint: Paint()
-                              ..color = context.connectionLine
-                              ..strokeWidth = 2.0
-                              ..strokeCap = StrokeCap.round
-                              ..style = PaintingStyle.stroke,
-                            spousePaint: Paint()
-                              ..color = context.connectionLine
-                              ..strokeWidth = 1.5
-                              ..strokeCap = StrokeCap.round
-                              ..style = PaintingStyle.stroke,
-                          ),
-                        ),
-                        ...state.members.map((member) {
-                          final pos = positions[member.id];
-                          if (pos == null) {
-                            return const SizedBox.shrink();
-                          }
-                          return Positioned(
-                            left: pos.dx - _nodeWidth / 2,
-                            top: pos.dy - _nodeHeight / 2,
-                            child: FamilyMemberNodeWidget(
-                              member: member,
-                              isSelected: state.selectedMemberId == member.id,
-                              onTap: () {
-                                context.read<FamilyTreeBloc>().add(
-                                    FamilyTreeSelectMemberEvent(member.id));
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        FamilyMemberDetailPage(member: member),
-                                  ),
-                                );
-                              },
-                              onAddChildTap: canEdit
-                                  ? () async {
-                                      final result = await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => AdminMemberFormPage(
-                                            initialParentId: member.id,
-                                            initialGeneration:
-                                                (member.generation ?? 0) + 1,
-                                            isLockedContext: true,
-                                          ),
-                                        ),
-                                      );
-                                      if (result == true && context.mounted) {
-                                        final authState =
-                                            context.read<AuthBloc>().state;
-                                        final familyId =
-                                            authState is Authenticated
-                                                ? authState.user.familyId
-                                                : null;
-                                        context.read<FamilyTreeBloc>().add(
-                                            FamilyTreeLoadEvent(
-                                                familyId: familyId));
-                                      }
-                                    }
-                                  : null,
-                              onAddSpouseTap: canEdit
-                                  ? () async {
-                                      final result = await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => AdminMemberFormPage(
-                                            initialSpouseId: member.id,
-                                            initialGeneration:
-                                                member.generation,
-                                            isLockedContext: true,
-                                          ),
-                                        ),
-                                      );
-                                      if (result == true && context.mounted) {
-                                        final authState =
-                                            context.read<AuthBloc>().state;
-                                        final familyId =
-                                            authState is Authenticated
-                                                ? authState.user.familyId
-                                                : null;
-                                        context.read<FamilyTreeBloc>().add(
-                                            FamilyTreeLoadEvent(
-                                                familyId: familyId));
-                                      }
-                                    }
-                                  : null,
-                            ),
-                          );
-                        }),
-                      ],
+            if (state is FamilyTreeLoaded) {
+              if (state.members.isEmpty) {
+                return Center(
+                  child: Text(
+                    l10n.noTreeDataMessage,
+                    style: GoogleFonts.inter(
+                      color: context.textSecondary,
+                      fontSize: 16,
                     ),
                   ),
                 );
-              },
-            );
-          }
+              }
 
-          return const SizedBox.shrink();
-        },
+              final coupleEdges = <_CoupleEdge>[];
+              final orphanEdges = <_EdgeData>[];
+              final spouseEdges = <_SpouseEdge>[];
+              final positions = _calculateLayout(
+                state.members,
+                coupleEdges,
+                orphanEdges,
+                spouseEdges,
+              );
+
+              double maxX = _padding * 2, maxY = _padding * 2;
+              for (final entry in positions.entries) {
+                final right = entry.value.dx + _nodeWidth / 2;
+                final bottom = entry.value.dy + _nodeHeight / 2;
+                maxX = maxX > right ? maxX : right;
+                maxY = maxY > bottom ? maxY : bottom;
+              }
+              final treeSize = Size(maxX, maxY);
+
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
+                    return const SizedBox.shrink();
+                  }
+                  return InteractiveViewer(
+                    transformationController: _transformationController,
+                    constrained: false,
+                    boundaryMargin: const EdgeInsets.all(double.infinity),
+                    minScale: 0.3,
+                    maxScale: 3.0,
+                    child: SizedBox(
+                      width: treeSize.width,
+                      height: treeSize.height,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          CustomPaint(
+                            size: treeSize,
+                            painter: _TreeEdgePainter(
+                              coupleEdges: coupleEdges,
+                              orphanEdges: orphanEdges,
+                              spouseEdges: spouseEdges,
+                              positions: positions,
+                              linePaint: Paint()
+                                ..color = const Color(0xFFD4AF37)
+                                ..strokeWidth = 3.0
+                                ..strokeCap = StrokeCap.round
+                                ..style = PaintingStyle.stroke,
+                              spousePaint: Paint()
+                                ..color = const Color(0xFFD4AF37)
+                                    .withValues(alpha: 0.8)
+                                ..strokeWidth = 2.0
+                                ..strokeCap = StrokeCap.round
+                                ..style = PaintingStyle.stroke,
+                            ),
+                          ),
+                          ...state.members.map((member) {
+                            final pos = positions[member.id];
+                            if (pos == null) {
+                              return const SizedBox.shrink();
+                            }
+                            return Positioned(
+                              left: pos.dx - _nodeWidth / 2,
+                              top: pos.dy - _nodeHeight / 2,
+                              child: FamilyMemberNodeWidget(
+                                member: member,
+                                isSelected: state.selectedMemberId == member.id,
+                                onTap: () {
+                                  context.read<FamilyTreeBloc>().add(
+                                      FamilyTreeSelectMemberEvent(member.id));
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FamilyMemberDetailPage(
+                                        member: member,
+                                        allMembers: state.members,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                onAddChildTap: canEdit
+                                    ? () async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => AdminMemberFormPage(
+                                              initialParentId: member.id,
+                                              initialGeneration:
+                                                  (member.generation ?? 0) + 1,
+                                              isLockedContext: true,
+                                            ),
+                                          ),
+                                        );
+                                        if (result == true && context.mounted) {
+                                          final authState =
+                                              context.read<AuthBloc>().state;
+                                          final familyId =
+                                              authState is Authenticated
+                                                  ? authState.user.familyId
+                                                  : null;
+                                          context.read<FamilyTreeBloc>().add(
+                                              FamilyTreeLoadEvent(
+                                                  familyId: familyId));
+                                        }
+                                      }
+                                    : null,
+                                onAddSpouseTap: canEdit
+                                    ? () async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => AdminMemberFormPage(
+                                              initialSpouseId: member.id,
+                                              initialGeneration:
+                                                  member.generation,
+                                              isLockedContext: true,
+                                            ),
+                                          ),
+                                        );
+                                        if (result == true && context.mounted) {
+                                          final authState =
+                                              context.read<AuthBloc>().state;
+                                          final familyId =
+                                              authState is Authenticated
+                                                  ? authState.user.familyId
+                                                  : null;
+                                          context.read<FamilyTreeBloc>().add(
+                                              FamilyTreeLoadEvent(
+                                                  familyId: familyId));
+                                        }
+                                      }
+                                    : null,
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
@@ -744,8 +757,8 @@ class _TreeEdgePainter extends CustomPainter {
       final start = Offset(left.dx + _nodeWidth / 2, left.dy);
       final end = Offset(right.dx - _nodeWidth / 2, right.dy);
 
-      // Vẽ đường gạch nối ngang
-      canvas.drawLine(start, end, spousePaint);
+      // Bỏ đường gạch nối ngang, chỉ giữ icon
+      // canvas.drawLine(start, end, spousePaint);
 
       final midX = (start.dx + end.dx) / 2;
 
@@ -762,8 +775,6 @@ class _TreeEdgePainter extends CustomPainter {
             fontSize: 16,
             fontFamily: icon.fontFamily,
             package: icon.fontPackage,
-            backgroundColor: const Color(
-                0xFFF9F6F0), // Nền để che đường kẻ (giống màu nền app)
           ),
         ),
         textDirection: TextDirection.ltr,

@@ -21,13 +21,13 @@ import '../../../bloc/admin_member_form/admin_member_form_bloc.dart';
 import '../../../../../../resources/app_localizations.dart';
 
 class AdminMemberFormPage extends StatefulWidget {
-  final int? memberId; // null = Thêm mới, có giá trị = Chỉnh sửa
-  /// Nếu true: sau khi tạo thành viên mới sẽ tự động liên kết với tài khoản OWNER
+  final int? memberId;
   final bool isOwnerSelfSetup;
   final int? ownerUserId;
   final String? initialFullName;
   final String? initialAvatarUrl;
   final int? initialParentId;
+  final int? initialMotherId;
   final int? initialSpouseId;
   final int? initialGeneration;
   final bool isLockedContext;
@@ -40,6 +40,7 @@ class AdminMemberFormPage extends StatefulWidget {
     this.initialFullName,
     this.initialAvatarUrl,
     this.initialParentId,
+    this.initialMotherId,
     this.initialSpouseId,
     this.initialGeneration,
     this.isLockedContext = false,
@@ -71,6 +72,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   String? _lunarDeathDate;
 
   int? _parentId;
+  int? _motherId;
   int? _spouseId;
   int? _branchId;
 
@@ -113,6 +115,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     if (widget.memberId == null) {
       if (widget.initialParentId != null) {
         _parentId = widget.initialParentId;
+      }
+      if (widget.initialMotherId != null) {
+        _motherId = widget.initialMotherId;
       }
       if (widget.initialSpouseId != null) {
         _spouseId = widget.initialSpouseId;
@@ -168,6 +173,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       generation: int.tryParse(_generationController.text),
       branchId: _branchId,
       parentId: _parentId,
+      motherId: _motherId,
       spouseId: (_maritalStatus == MaritalStatus.single ||
               _maritalStatus == MaritalStatus.unknown)
           ? null
@@ -250,8 +256,17 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               _lunarBirthDate = m.lunarBirthDate;
               _lunarDeathDate = m.lunarDeathDate;
               _parentId = m.parentId;
+              _motherId = m.motherId;
               _spouseId = m.spouseId;
               _branchId = m.branchId;
+            } else {
+              if (_parentId != null && _motherId == null) {
+                final father =
+                    state.members.where((x) => x.id == _parentId).firstOrNull;
+                if (father != null && father.spouseId != null) {
+                  _motherId = father.spouseId;
+                }
+              }
             }
           }
         },

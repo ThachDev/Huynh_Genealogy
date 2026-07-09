@@ -244,13 +244,30 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
         cx += cWidth + _hSpacing;
       }
 
-      // Thêm CoupleEdge để vẽ T-bar junction
       if (validChildren.isNotEmpty) {
-        coupleEdges.add(_CoupleEdge(
-          primaryId: nodeId,
-          spouseId: spouseIds.isNotEmpty ? spouseIds.last : null,
-          childIds: validChildren.map((c) => c.id).toList(),
-        ));
+        final Map<int?, List<MemberEntity>> childrenByMother = {};
+        for (final child in validChildren) {
+          final mId = child.motherId;
+          childrenByMother.putIfAbsent(mId, () => []).add(child);
+        }
+
+        for (final entry in childrenByMother.entries) {
+          final mId = entry.key;
+          final children = entry.value;
+
+          int? edgeSpouseId;
+          if (mId != null && spouseIds.contains(mId)) {
+            edgeSpouseId = mId;
+          } else if (spouseIds.isNotEmpty) {
+            edgeSpouseId = spouseIds.last;
+          }
+
+          coupleEdges.add(_CoupleEdge(
+            primaryId: nodeId,
+            spouseId: edgeSpouseId,
+            childIds: children.map((c) => c.id).toList(),
+          ));
+        }
       }
 
       return (allPos, totalWidth);
@@ -582,8 +599,14 @@ class _TreeEdgePainter extends CustomPainter {
     for (final ce in coupleEdges) {
       final primary = positions[ce.primaryId];
       if (primary == null) continue;
-
+      // Điểm xuất phát X = từ chính thành viên gốc, nhưng nếu là nhánh của cụ thể 1 người mẹ (đa thê) thì xuất phát từ người mẹ.
       double sourceX = primary.dx;
+      if (ce.spouseId != null) {
+        final spouse = positions[ce.spouseId!];
+        if (spouse != null) {
+          sourceX = spouse.dx;
+        }
+      }
       final sourceY = primary.dy + _nodeHeight / 2;
 
       final childPositions =

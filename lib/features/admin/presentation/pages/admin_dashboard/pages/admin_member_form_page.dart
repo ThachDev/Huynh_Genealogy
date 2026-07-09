@@ -109,7 +109,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     if (widget.initialAvatarUrl != null) {
       _avatarUrlController.text = widget.initialAvatarUrl!;
     }
-    
+
     if (widget.memberId == null) {
       if (widget.initialParentId != null) {
         _parentId = widget.initialParentId;
@@ -168,7 +168,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       generation: int.tryParse(_generationController.text),
       branchId: _branchId,
       parentId: _parentId,
-      spouseId: _spouseId,
+      spouseId: (_maritalStatus == MaritalStatus.single ||
+              _maritalStatus == MaritalStatus.unknown)
+          ? null
+          : _spouseId,
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
@@ -275,10 +278,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               child: AppLoading(size: 80),
             );
           }
-          
+
           if (state is AdminMemberFormReady) {
-            final isCorrectMember = (widget.memberId == null && state.member == null) ||
-                                    (widget.memberId != null && state.member?.id == widget.memberId);
+            final isCorrectMember =
+                (widget.memberId == null && state.member == null) ||
+                    (widget.memberId != null &&
+                        state.member?.id == widget.memberId);
             if (!isCorrectMember) {
               return const Center(
                 child: AppLoading(size: 80),
@@ -322,12 +327,14 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             if (parentId == null) return;
             if (!ancestors.contains(parentId)) {
               ancestors.add(parentId);
-              final parent = allMembers.where((m) => m.id == parentId).firstOrNull;
+              final parent =
+                  allMembers.where((m) => m.id == parentId).firstOrNull;
               if (parent != null) {
                 dfsAncestors(parent.parentId);
               }
             }
           }
+
           if (existingMember != null) {
             dfsAncestors(existingMember.parentId);
           }
@@ -336,6 +343,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             if (dateStr == null) return null;
             return DateTime.tryParse(dateStr);
           }
+
           final myDob = parseDate(_formatBackendDate(_dateOfBirth));
 
           // Cha/Mẹ: thế hệ trước (gen - 1)
@@ -345,7 +353,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             if (existingMember != null && m.id == existingMember.parentId) {
               return true;
             }
-            if (widget.initialParentId != null && m.id == widget.initialParentId) {
+            if (widget.initialParentId != null &&
+                m.id == widget.initialParentId) {
               return true;
             }
 
@@ -353,7 +362,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             if (_spouseId != null && m.id == _spouseId) return false;
             // Không được chọn con cháu làm cha/mẹ
             if (descendants.contains(m.id)) return false;
-            
+
             // Ràng buộc tuổi tác: Cha mẹ phải lớn hơn con ít nhất 13 tuổi
             if (myDob != null) {
               final parentDob = parseDate(m.dateOfBirth);
@@ -376,7 +385,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             if (existingMember != null && m.id == existingMember.spouseId) {
               return true;
             }
-            if (widget.initialSpouseId != null && m.id == widget.initialSpouseId) {
+            if (widget.initialSpouseId != null &&
+                m.id == widget.initialSpouseId) {
               return true;
             }
 
@@ -527,10 +537,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                             if (val != null) {
                                               setState(() {
                                                 _maritalStatus = val;
-                                                if (val !=
-                                                    MaritalStatus.married) {
-                                                  _spouseId = null;
-                                                }
                                               });
                                             }
                                           },
@@ -762,15 +768,19 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     },
                                     showSearchBox: true,
                                   ),
-                                  if (_maritalStatus ==
-                                      MaritalStatus.married) ...[
+                                  if (_maritalStatus == MaritalStatus.married ||
+                                      _maritalStatus ==
+                                          MaritalStatus.divorced ||
+                                      _maritalStatus ==
+                                          MaritalStatus.widowed) ...[
                                     const SizedBox(height: 16),
                                     _buildDropdown<int?>(
                                       label: l10n.spouseLabel,
                                       value: spouseIds.contains(_spouseId)
                                           ? _spouseId
                                           : null,
-                                      locked: widget.isLockedContext && widget.initialSpouseId != null,
+                                      locked: widget.isLockedContext &&
+                                          widget.initialSpouseId != null,
                                       items: [
                                         DropdownItem<int?>(
                                             value: null,
@@ -791,9 +801,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                         setState(() {
                                           _spouseId = val;
                                           if (_gender == Gender.female &&
-                                              selectedSpouse?.gender == Gender.male &&
-                                              selectedSpouse?.branchId != null) {
-                                            _branchId = selectedSpouse!.branchId;
+                                              selectedSpouse?.gender ==
+                                                  Gender.male &&
+                                              selectedSpouse?.branchId !=
+                                                  null) {
+                                            _branchId =
+                                                selectedSpouse!.branchId;
                                           }
                                         });
                                       },
@@ -804,18 +817,28 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
                                   Builder(builder: (context) {
                                     // Lấy chi tộc của cha/mẹ hoặc vợ/chồng (nếu có) để hiển thị gợi ý và auto-select
-                                    final contextMemberId = _parentId ?? _spouseId;
-                                    final contextMember = contextMemberId == null
+                                    final contextMemberId =
+                                        _parentId ?? _spouseId;
+                                    final contextMember = contextMemberId ==
+                                            null
                                         ? null
                                         : allMembers
-                                            .where((m) => m.id == contextMemberId)
+                                            .where(
+                                                (m) => m.id == contextMemberId)
                                             .firstOrNull;
-                                    final contextBranchId = contextMember?.branchId;
-                                    
+                                    final contextBranchId =
+                                        contextMember?.branchId;
+
                                     // Auto-select branch cho contextual add
-                                    if (widget.isLockedContext && _branchId == null && contextBranchId != null) {
-                                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                                        if (mounted) setState(() => _branchId = contextBranchId);
+                                    if (widget.isLockedContext &&
+                                        _branchId == null &&
+                                        contextBranchId != null) {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        if (mounted) {
+                                          setState(() =>
+                                              _branchId = contextBranchId);
+                                        }
                                       });
                                     }
 
@@ -830,8 +853,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     return _buildDropdown<int?>(
                                       label: l10n.branchSectionLabel,
                                       locked: widget.isLockedContext,
-                                      value: allBranches
-                                              .any((b) => b.id == (_branchId ?? contextBranchId))
+                                      value: allBranches.any((b) =>
+                                              b.id ==
+                                              (_branchId ?? contextBranchId))
                                           ? (_branchId ?? contextBranchId)
                                           : null,
                                       items: [
@@ -1108,7 +1132,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       keyboardType: TextInputType.number,
       validator: (val) => AppValidators.validateGeneration(context, val),
     );
-    
+
     if (widget.isLockedContext && widget.initialGeneration != null) {
       return IgnorePointer(
         ignoring: true,

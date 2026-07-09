@@ -19,6 +19,7 @@ class MemberEntity extends Equatable {
   final int? branchId;            // Chi/Nhánh
   final String? branchName;
   final int? parentId;            // ID cha
+  final int? motherId;            // ID mẹ
   final int? spouseId;            // ID vợ/chồng
   final String? notes;
   final String? avatarUrl;
@@ -40,6 +41,7 @@ class MemberEntity extends Equatable {
     this.branchId,
     this.branchName,
     this.parentId,
+    this.motherId,
     this.spouseId,
     this.notes,
     this.avatarUrl,
@@ -63,6 +65,7 @@ class MemberEntity extends Equatable {
         branchId,
         branchName,
         parentId,
+        motherId,
         spouseId,
         notes,
         avatarUrl,

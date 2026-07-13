@@ -20,6 +20,7 @@ Future<void> init() async {
     () => FamilyTreeBloc(
       getMembers: sl(),
       getBranches: sl(),
+      getFamilyDetail: sl(),
     ),
   );
 

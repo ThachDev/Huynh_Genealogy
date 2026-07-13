@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/family_entity.dart';
 import '../../domain/usecase/get_branches.dart';
 import '../../domain/usecase/get_members.dart';
+import '../../../admin/domain/usecase/get_family_detail.dart';
 
 part 'family_tree_event.dart';
 part 'family_tree_state.dart';
@@ -10,10 +12,12 @@ part 'family_tree_state.dart';
 class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
   final GetMembers getMembers;
   final GetBranches getBranches;
+  final GetFamilyDetail getFamilyDetail;
 
   FamilyTreeBloc({
     required this.getMembers,
     required this.getBranches,
+    required this.getFamilyDetail,
   }) : super(FamilyTreeInitial()) {
     on<FamilyTreeLoadEvent>(_onLoadTree);
     on<FamilyTreeSelectMemberEvent>(_onSelectMember);
@@ -25,6 +29,15 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
     emit(FamilyTreeLoading());
 
     try {
+      FamilyEntity? family;
+      if (event.familyId != null) {
+        final familyResult = await getFamilyDetail(event.familyId!);
+        familyResult.fold(
+          (failure) => null,
+          (fam) => family = fam,
+        );
+      }
+
       final membersResult = await getMembers(
         GetMembersParams(branchId: event.branchId, familyId: event.familyId),
       );
@@ -42,6 +55,7 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
               branches: branches,
               filterBranchId: event.branchId,
               familyId: event.familyId,
+              family: family,
             )),
           );
         },

@@ -62,6 +62,59 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
   final TransformationController _transformationController =
       TransformationController();
 
+  bool _hasFitTree = false;
+  Map<int, Offset>? _lastPositions;
+  Size? _lastViewportSize;
+  Size _lastTreeSize = Size.zero;
+
+  void _fitTreeOverview() {
+    final viewport = _lastViewportSize;
+    final treeSize = _lastTreeSize;
+    if (viewport == null || treeSize == Size.zero) return;
+
+    final scaleX = viewport.width / treeSize.width;
+    final scaleY = viewport.height / treeSize.height;
+    final scale = (scaleX < scaleY ? scaleX : scaleY).clamp(0.2, 1.0);
+
+    final contentCenterX = (_padding + treeSize.width) / 2;
+    final contentCenterY = (_padding + treeSize.height) / 2;
+
+    final dx = viewport.width / 2 - contentCenterX * scale;
+    final dy = viewport.height / 2 - contentCenterY * scale;
+
+    final matrix = Matrix4.identity();
+    matrix.setEntry(0, 0, scale);
+    matrix.setEntry(1, 1, scale);
+    matrix.setEntry(2, 2, 1.0);
+    matrix.setEntry(0, 3, dx);
+    matrix.setEntry(1, 3, dy);
+
+    setState(() {
+      _transformationController.value = matrix;
+    });
+  }
+
+  void _centerOnNode(int memberId) {
+    final pos = _lastPositions?[memberId];
+    final viewport = _lastViewportSize;
+    if (pos == null || viewport == null) return;
+
+    const scale = 1.0;
+    final tx = viewport.width / 2 - pos.dx * scale;
+    final ty = viewport.height / 2 - pos.dy * scale;
+
+    final matrix = Matrix4.identity();
+    matrix.setEntry(0, 0, scale);
+    matrix.setEntry(1, 1, scale);
+    matrix.setEntry(2, 2, 1.0);
+    matrix.setEntry(0, 3, tx);
+    matrix.setEntry(1, 3, ty);
+
+    setState(() {
+      _transformationController.value = matrix;
+    });
+  }
+
   @override
   void dispose() {
     _transformationController.dispose();
@@ -80,28 +133,6 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
           .read<FamilyTreeBloc>()
           .add(FamilyTreeLoadEvent(familyId: familyId));
     });
-  }
-
-  void _zoomIn() {
-    final current = _transformationController.value;
-    final currentScale = current.getMaxScaleOnAxis();
-    final newScale = (currentScale * 1.3).clamp(0.3, 3.0);
-    final scaleFactor = newScale / currentScale;
-    _transformationController.value = current.clone()
-      ..multiply(Matrix4.diagonal3Values(scaleFactor, scaleFactor, 1.0));
-  }
-
-  void _zoomOut() {
-    final current = _transformationController.value;
-    final currentScale = current.getMaxScaleOnAxis();
-    final newScale = (currentScale / 1.3).clamp(0.3, 3.0);
-    final scaleFactor = newScale / currentScale;
-    _transformationController.value = current.clone()
-      ..multiply(Matrix4.diagonal3Values(scaleFactor, scaleFactor, 1.0));
-  }
-
-  void _resetZoom() {
-    _transformationController.value = Matrix4.identity();
   }
 
   Map<int, Offset> _calculateLayout(
@@ -358,44 +389,54 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
         (authState.user.role == 'OWNER' ||
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');
+    final treeState = context.watch<FamilyTreeBloc>().state;
+    String appBarTitle = l10n.familyTreeTitle;
+    List<Widget> appBarActions = [];
+
+    if (treeState is FamilyTreeLoaded) {
+      if (treeState.family != null) {
+        appBarTitle = 'Gia phả ${treeState.family!.name}';
+      }
+      if (treeState.members.isNotEmpty) {
+        appBarActions = [
+          IconButton(
+            icon: const Icon(LucideIcons.search, color: Colors.white),
+            onPressed: () async {
+              final selectedId = await showSearch<int?>(
+                context: context,
+                delegate: MemberSearchDelegate(treeState.members),
+              );
+              if (selectedId != null) {
+                _centerOnNode(selectedId);
+                if (context.mounted) {
+                  context
+                      .read<FamilyTreeBloc>()
+                      .add(FamilyTreeSelectMemberEvent(selectedId));
+                }
+              }
+            },
+          ),
+        ];
+      }
+    }
+
     return Scaffold(
       backgroundColor: context.appBarBg,
       extendBodyBehindAppBar: true,
       appBar: AppAppBar(
         transparent: true,
-        title: l10n.familyTreeTitle,
-        actions: [
-          IconButton(
-            icon: const Icon(LucideIcons.helpCircle, color: Colors.white),
-            tooltip: l10n.helpTooltip,
-            onPressed: () => _showHelp(context),
-          ),
-        ],
+        title: appBarTitle,
+        actions: appBarActions,
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _ZoomFab(
-            icon: LucideIcons.plus,
-            tooltip: 'Phóng to',
-            onPressed: _zoomIn,
-            color: const Color(0xFFD4AF37),
-          ),
-          const SizedBox(height: 8),
-          _ZoomFab(
-            icon: LucideIcons.maximize2,
-            tooltip: 'Đặt lại',
-            onPressed: _resetZoom,
-            color: const Color(0xFFD4AF37),
-          ),
-          const SizedBox(height: 8),
-          _ZoomFab(
-            icon: LucideIcons.minus,
-            tooltip: 'Thu nhỏ',
-            onPressed: _zoomOut,
-            color: const Color(0xFFD4AF37),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: _fitTreeOverview,
+        backgroundColor: context.resolve(Colors.white, const Color(0xFF2A2A2A)),
+        mini: true,
+        child: const Icon(
+          LucideIcons.maximize2,
+          color: Color(0xFFD4AF37),
+          size: 20,
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -409,6 +450,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
         child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
           builder: (context, state) {
             if (state is FamilyTreeLoading) {
+              _hasFitTree = false; // Reset to auto-fit on next load
               return const Center(child: AppLoading(size: 80));
             }
 
@@ -458,11 +500,26 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                   if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
                     return const SizedBox.shrink();
                   }
+
+                  // Update positions & viewport sizes for search node centering
+                  _lastPositions = positions;
+                  _lastViewportSize =
+                      Size(constraints.maxWidth, constraints.maxHeight);
+                  _lastTreeSize = treeSize;
+
+                  // Auto fit tree overview on load
+                  if (!_hasFitTree) {
+                    _hasFitTree = true;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _fitTreeOverview();
+                    });
+                  }
+
                   return InteractiveViewer(
                     transformationController: _transformationController,
                     constrained: false,
                     boundaryMargin: const EdgeInsets.all(double.infinity),
-                    minScale: 0.3,
+                    minScale: 0.1, // Allow zooming out further for overview
                     maxScale: 3.0,
                     child: SizedBox(
                       width: treeSize.width,
@@ -580,82 +637,6 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
             return const SizedBox.shrink();
           },
         ),
-      ),
-    );
-  }
-
-  void _showHelp(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: context.background,
-        title: Text(
-          l10n.usageGuideTitle,
-          style: GoogleFonts.beVietnamPro(
-            fontWeight: FontWeight.bold,
-            color: context.primary,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHelpItem(l10n.helpDragInstruction),
-            _buildHelpItem(l10n.helpZoomInstruction),
-            _buildHelpItem(l10n.helpTapInstruction),
-            Divider(color: context.accent, height: 20),
-            _buildLegendItem(l10n.genderMale, context.nodeMale),
-            _buildLegendItem(l10n.genderFemale, context.nodeFemale),
-            _buildLegendItem(l10n.deceasedLabel, context.nodeDeceased),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              l10n.understoodLabel,
-              style: GoogleFonts.inter(
-                color: context.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHelpItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Text(
-        text,
-        style: GoogleFonts.inter(fontSize: 14, color: context.textPrimary),
-      ),
-    );
-  }
-
-  Widget _buildLegendItem(String label, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
-      child: Row(
-        children: [
-          Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(
-              color: color,
-              border: Border.all(color: context.accent, width: 1),
-              borderRadius: BorderRadius.circular(3),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: GoogleFonts.inter(fontSize: 13, color: context.textPrimary),
-          ),
-        ],
       ),
     );
   }
@@ -797,53 +778,66 @@ class _TreeEdgePainter extends CustomPainter {
   }
 }
 
-/// Nút zoom nhỏ gọn — hiển thị ở góc phải dưới màn hình
-class _ZoomFab extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onPressed;
-  final Color color;
+class MemberSearchDelegate extends SearchDelegate<int?> {
+  final List<MemberEntity> members;
 
-  const _ZoomFab({
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-    required this.color,
-  });
+  MemberSearchDelegate(this.members);
 
   @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(28),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: context.resolve(
-                Colors.white.withValues(alpha: 0.92),
-                const Color(0xFF2A2A2A).withValues(alpha: 0.92),
-              ),
-              shape: BoxShape.circle,
-              border:
-                  Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.25),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Icon(icon, size: 18, color: color),
-          ),
-        ),
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
       ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return _buildSuggestions();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return _buildSuggestions();
+  }
+
+  Widget _buildSuggestions() {
+    final matches = members
+        .where((m) => m.fullName.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    return ListView.builder(
+      itemCount: matches.length,
+      itemBuilder: (context, index) {
+        final member = matches[index];
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundImage: member.avatarUrl != null
+                ? NetworkImage(member.avatarUrl!)
+                : null,
+            child: member.avatarUrl == null ? const Icon(Icons.person) : null,
+          ),
+          title: Text(member.fullName),
+          subtitle: Text('Thế hệ ${member.generation ?? 0}'),
+          onTap: () {
+            close(context, member.id);
+          },
+        );
+      },
     );
   }
 }

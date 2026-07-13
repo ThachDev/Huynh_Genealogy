@@ -12,6 +12,7 @@ class FamilyTreeLoaded extends FamilyTreeState {
   final int? selectedMemberId;
   final int? filterBranchId;
   final int? familyId;
+  final FamilyEntity? family;
 
   FamilyTreeLoaded({
     required this.members,
@@ -19,6 +20,7 @@ class FamilyTreeLoaded extends FamilyTreeState {
     this.selectedMemberId,
     this.filterBranchId,
     this.familyId,
+    this.family,
   });
 
   FamilyTreeLoaded copyWith({
@@ -27,6 +29,7 @@ class FamilyTreeLoaded extends FamilyTreeState {
     int? selectedMemberId,
     int? filterBranchId,
     int? familyId,
+    FamilyEntity? family,
   }) {
     return FamilyTreeLoaded(
       members: members ?? this.members,
@@ -34,6 +37,7 @@ class FamilyTreeLoaded extends FamilyTreeState {
       selectedMemberId: selectedMemberId ?? this.selectedMemberId,
       filterBranchId: filterBranchId ?? this.filterBranchId,
       familyId: familyId ?? this.familyId,
+      family: family ?? this.family,
     );
   }
 }

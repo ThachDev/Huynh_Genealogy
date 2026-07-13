@@ -78,12 +78,9 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
           width: 140,
           height: 160,
           decoration: BoxDecoration(
-            color: const Color(0xFFFFFDF2), // Giấy gió / Parchment
+            color: context.resolve(const Color(0xFFFFFDF2),
+                const Color(0xFF1E1E1E)), // Giấy gió / Parchment
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: const Color(0xFFD4AF37), // Vàng đồng hoàng tộc
-              width: 2.0,
-            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.15),
@@ -92,15 +89,8 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
               ),
             ],
           ),
-          child: Container(
-            margin: const EdgeInsets.all(2.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: const Color(0xFFD4AF37).withValues(alpha: 0.4),
-                width: 1.0,
-              ),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
             child: Stack(
               children: [
                 Padding(
@@ -145,7 +135,8 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF7D0C0E),
+                          color: context.resolve(
+                              const Color(0xFF7D0C0E), Colors.white),
                           height: 1.1,
                         ),
                       ),
@@ -232,57 +223,59 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                           ),
                         ],
                       ),
-                      const Spacer(),
-
-                      // DIVIDER
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: context.resolve(
-                            Colors.grey[300]!, Colors.grey[800]!),
-                      ),
-
-                      const Spacer(),
-                      // BOTTOM ICONS ROW
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          if (widget.onAddChildTap != null)
-                            GestureDetector(
-                              onTap: widget.onAddChildTap,
-                              child: Tooltip(
-                                message: 'Thêm Con',
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0, vertical: 4.0),
-                                  child: Icon(
-                                    LucideIcons.baby,
-                                    size: 18,
-                                    color: context.primary,
+                      if (widget.onAddChildTap != null ||
+                          widget.onAddSpouseTap != null) ...[
+                        const Spacer(),
+                        // DIVIDER
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: context.resolve(
+                              Colors.grey[300]!, Colors.grey[800]!),
+                        ),
+                        const Spacer(),
+                        // BOTTOM ICONS ROW
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (widget.onAddChildTap != null)
+                              GestureDetector(
+                                onTap: widget.onAddChildTap,
+                                child: Tooltip(
+                                  message: 'Thêm Con',
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 4.0),
+                                    child: Icon(
+                                      LucideIcons.baby,
+                                      size: 18,
+                                      color: context.primary,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          if (widget.onAddSpouseTap != null)
-                            GestureDetector(
-                              onTap: widget.onAddSpouseTap,
-                              child: Tooltip(
-                                message: 'Thêm Vợ/Chồng',
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0, vertical: 4.0),
-                                  child: Icon(
-                                    LucideIcons.heart,
-                                    size: 16,
-                                    color: context.resolve(
-                                        Colors.redAccent, Colors.red.shade300),
+                            if (widget.onAddSpouseTap != null)
+                              GestureDetector(
+                                onTap: widget.onAddSpouseTap,
+                                child: Tooltip(
+                                  message: 'Thêm Vợ/Chồng',
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 4.0),
+                                    child: Icon(
+                                      LucideIcons.heart,
+                                      size: 16,
+                                      color: context.resolve(Colors.redAccent,
+                                          Colors.red.shade300),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
-                      const Spacer(),
+                          ],
+                        ),
+                        const Spacer(),
+                      ] else
+                        const Spacer(flex: 3),
                     ],
                   ),
                 ),

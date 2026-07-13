@@ -3,7 +3,8 @@ class AppConstants {
 
   // API
   // static const String baseUrl = 'https://be-family-tree.thachhuynh-dev.workers.dev/api';
-  static const String baseUrl = 'http://10.0.2.2:8787/api';
+  // static const String baseUrl = 'http://10.0.2.2:8787/api';
+  static const String baseUrl = 'http://172.16.0.148:8787/api';
 
   // Endpoints
   static const String membersEndpoint = '/members';
@@ -17,7 +18,8 @@ class AppConstants {
   static const String verifyCodeEndpoint = '/families/verify-code';
   static const String joinFamilyEndpoint = '/families/join';
   static const String approveRequestEndpoint = '/families/requests';
-  static const String transferOwnershipEndpoint = '/families/transfer-ownership';
+  static const String transferOwnershipEndpoint =
+      '/families/transfer-ownership';
 
   // Storage keys
   static const String cachedMembers = 'CACHED_MEMBERS';

@@ -30,9 +30,15 @@ class QuickStatsRow extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: context.background,
+        color: context.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: context.textSecondary.withValues(alpha: 0.1)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -45,10 +51,13 @@ class QuickStatsRow extends StatelessWidget {
               onTap: () => onTabChanged(AdminDashboardTab.members),
             ),
           ),
-          Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.1)),
+          Container(
+              width: 1,
+              height: 32,
+              color: context.textSecondary.withValues(alpha: 0.1)),
           Expanded(
             child: StatItem(
-              icon: LucideIcons.menu,
+              icon: LucideIcons.gitBranch,
               label: l10n.statBranches,
               value: branchCount,
               isSelected: selectedTab == AdminDashboardTab.branches,
@@ -56,7 +65,10 @@ class QuickStatsRow extends StatelessWidget {
             ),
           ),
           if (showPending) ...[
-            Container(width: 1, height: 32, color: context.textSecondary.withValues(alpha: 0.1)),
+            Container(
+                width: 1,
+                height: 32,
+                color: context.textSecondary.withValues(alpha: 0.1)),
             Expanded(
               child: StatItem(
                 icon: LucideIcons.clock,
@@ -100,9 +112,7 @@ class StatItem extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
           decoration: BoxDecoration(
-            color: isSelected
-                ? context.surface
-                : Colors.transparent,
+            color: isSelected ? context.surface : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             boxShadow: isSelected
                 ? [

@@ -57,8 +57,9 @@ class _AdminClanAndPersonalInfoPageState
     // Check if current user is an EDITOR
     final role = widget.user?.role ?? 'VIEWER';
     _isEditor = role.toUpperCase() == 'EDITOR';
-    if (_isEditor) {
-      _isClanView = false; // Editors only see personal info
+    if (_isEditor || widget.family == null) {
+      _isClanView =
+          false; // Editors or users without family context only see personal info
     }
 
     // Initialize Clan Info
@@ -185,7 +186,7 @@ class _AdminClanAndPersonalInfoPageState
       appBar: AppAppBar(
         title: _isClanView ? l10n.clanInfoSettingsTitle : l10n.accountInfoTitle,
         transparent: true,
-        actions: _isEditor
+        actions: (_isEditor || widget.family == null)
             ? null
             : [
                 PopupMenuButton<String>(
@@ -443,7 +444,8 @@ class _AdminClanAndPersonalInfoPageState
           prefixIcon: Icon(LucideIcons.mail, color: context.appBarBg),
         ),
         const SizedBox(height: 32),
-        if (widget.user?.role == 'OWNER' &&
+        if (widget.family != null &&
+            widget.user?.role == 'OWNER' &&
             (widget.user?.memberId == null || widget.user?.memberId == 0))
           Padding(
             padding: const EdgeInsets.all(8.0),

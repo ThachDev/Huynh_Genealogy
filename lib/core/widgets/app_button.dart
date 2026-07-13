@@ -46,12 +46,16 @@ class AppButton extends StatelessWidget {
                 prefixIcon!,
                 const SizedBox(width: 8),
               ],
-              Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.inter(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
               if (suffixIcon != null) ...[
@@ -222,7 +226,7 @@ class AppFormActionButtons extends StatelessWidget {
                     child: CircularProgressIndicator(
                         color: Colors.white, strokeWidth: 2),
                   )
-                    : Text(
+                : Text(
                     save,
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,

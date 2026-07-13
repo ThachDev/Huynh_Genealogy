@@ -2099,7 +2099,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchMembersHint.
   ///
   /// In vi, this message translates to:
-  /// **'Tìm kiếm thành viên hoặc chi tộc...'**
+  /// **'Tìm kiếm thành viên...'**
   String get searchMembersHint;
 
   /// No description provided for @searchBranchesHint.
@@ -2159,7 +2159,7 @@ abstract class AppLocalizations {
   /// No description provided for @inviteCodeSectionLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Mã Tham Gia Gia Tộc'**
+  /// **'Mã Gia Tộc'**
   String get inviteCodeSectionLabel;
 
   /// No description provided for @inviteCodeCopied.
@@ -2267,7 +2267,7 @@ abstract class AppLocalizations {
   /// No description provided for @founderBadge.
   ///
   /// In vi, this message translates to:
-  /// **'Đời tổ/Sáng lập: {name}'**
+  /// **'Sáng lập: {name}'**
   String founderBadge(Object name);
 
   /// No description provided for @founderFormat.

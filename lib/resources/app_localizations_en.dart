@@ -1105,7 +1105,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pendingRequestTitle => 'Pending Requests';
 
   @override
-  String get searchMembersHint => 'Search members or branches...';
+  String get searchMembersHint => 'Search members...';
 
   @override
   String get searchBranchesHint => 'Search branches...';

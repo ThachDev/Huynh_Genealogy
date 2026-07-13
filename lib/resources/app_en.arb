@@ -412,7 +412,7 @@
   "memberListTitle": "Member List",
   "branchListTitle": "Branch List",
   "pendingRequestTitle": "Pending Requests",
-  "searchMembersHint": "Search members or branches...",
+  "searchMembersHint": "Search members...",
   "searchBranchesHint": "Search branches...",
   "emptyMembers": "No matching members found",
   "emptyBranches": "No matching branches found",

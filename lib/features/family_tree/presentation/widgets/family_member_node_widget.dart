@@ -76,7 +76,10 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
         scale: _scaleAnimation,
         child: Container(
           width: 140,
-          height: 160,
+          height: (widget.onAddChildTap != null ||
+                  widget.onAddSpouseTap != null)
+              ? 160
+              : 125,
           decoration: BoxDecoration(
             color: context.resolve(const Color(0xFFFFFDF2),
                 const Color(0xFF1E1E1E)), // Giấy gió / Parchment
@@ -102,26 +105,29 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: widget.member.isAlive
-                                  ? _genderColor.withValues(alpha: 0.3)
-                                  : Colors.grey.withValues(alpha: 0.3),
-                              width: 2),
+                            color: context.resolve(
+                                Colors.grey.shade300, Colors.grey.shade700),
+                            width: 1.0,
+                          ),
                         ),
                         child: CircleAvatar(
                           radius: 20,
-                          backgroundColor: widget.member.isAlive
-                              ? _genderColor.withValues(alpha: 0.2)
-                              : Colors.grey.withValues(alpha: 0.2),
+                          backgroundColor: context.resolve(
+                              Colors.grey.shade100, const Color(0xFF2C2C2C)),
                           backgroundImage: widget.member.avatarUrl != null
                               ? NetworkImage(widget.member.avatarUrl!)
                               : null,
                           child: widget.member.avatarUrl == null
                               ? Icon(
-                                  LucideIcons.user,
-                                  color: widget.member.isAlive
-                                      ? _genderColor
-                                      : Colors.grey,
-                                  size: 22,
+                                  widget.member.gender == Gender.male
+                                      ? LucideIcons.user
+                                      : LucideIcons.user2,
+                                  color: widget.member.gender == Gender.male
+                                      ? context.genderMale
+                                      : widget.member.gender == Gender.female
+                                          ? context.genderFemale
+                                          : context.textSecondary,
+                                  size: 18,
                                 )
                               : null,
                         ),

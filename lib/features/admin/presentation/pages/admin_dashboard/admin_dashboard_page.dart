@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -17,7 +16,6 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
-import '../../../../../core/utils/lunar_date_helper.dart';
 import '../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../../../auth/auth.dart';
@@ -159,7 +157,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final role = user?.role ?? 'VIEWER';
     final isEditor = role.toUpperCase() == 'EDITOR';
     final double topPadding = MediaQuery.of(context).padding.top;
-    final double headerHeight = 180 + topPadding;
+    final double headerHeight = 190 + topPadding;
 
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
 
@@ -268,36 +266,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               top: 0,
               left: 0,
               right: 0,
-              child: _buildHeader(context, user, headerHeight, familyName),
+              child: _buildHeader(
+                  context, user, headerHeight, familyName, inviteCode),
             ),
             Positioned(
-              top: headerHeight + 20,
+              top: headerHeight + 45,
               left: 0,
               right: 0,
               bottom: 0,
               child: Column(
                 children: [
-                  const SizedBox(height: 35),
-                  QuickStatsRow(
-                    showPending: !isEditor,
-                    memberCount: memberCount,
-                    branchCount: branchCount,
-                    pendingCount: pendingCount,
-                    selectedTab: _selectedTab,
-                    onTabChanged: (tab) {
-                      setState(() {
-                        _selectedTab = tab;
-                        _searchController.clear();
-                        _memberLimit = 5;
-                        _branchLimit = 5;
-                        _pendingLimit = 5;
-                        if (_scrollController.hasClients) {
-                          _scrollController.jumpTo(0);
-                        }
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 8),
                   Expanded(
                     child: _buildContentSection(
                       userTreeState: userTreeState,
@@ -314,9 +292,24 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               top: headerHeight - 45,
               left: 0,
               right: 0,
-              child: _buildInviteCodeCard(
-                context,
-                inviteCode,
+              child: QuickStatsRow(
+                showPending: !isEditor,
+                memberCount: memberCount,
+                branchCount: branchCount,
+                pendingCount: pendingCount,
+                selectedTab: _selectedTab,
+                onTabChanged: (tab) {
+                  setState(() {
+                    _selectedTab = tab;
+                    _searchController.clear();
+                    _memberLimit = 5;
+                    _branchLimit = 5;
+                    _pendingLimit = 5;
+                    if (_scrollController.hasClients) {
+                      _scrollController.jumpTo(0);
+                    }
+                  });
+                },
               ),
             ),
           ],
@@ -326,8 +319,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildHeader(BuildContext context, UserEntity? user, double height,
-      String familyName) {
-    final l10n = AppLocalizations.of(context)!;
+      String familyName, String inviteCode) {
     return Container(
       height: height,
       width: double.infinity,
@@ -366,15 +358,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               letterSpacing: 1.0,
                             ),
                           ),
-                          Text(
-                            l10n.adminDashboardTitle,
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white60,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
                         ],
                       ),
                       if (user != null)
@@ -382,10 +365,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AdminDashboardPage.roleColor(user.role),
+                            color: user.role == 'OWNER'
+                                ? context.primary
+                                : AdminDashboardPage.roleColor(user.role),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                                color: context.accent.withValues(alpha: 0.4)),
                           ),
                           child: Text(
                             AdminDashboardPage.roleLabel(user.role, context),
@@ -399,69 +382,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Center(
-                    child: Builder(builder: (context) {
-                      final now = DateTime.now();
-                      final locale =
-                          Localizations.localeOf(context).languageCode;
-                      final weekday = DateFormat('EEEE', locale).format(now);
-                      final day = DateFormat('dd', locale).format(now);
-                      final month = DateFormat('MM', locale).format(now);
-                      final year = now.year.toString();
-                      final solarDateString = '$weekday, $day/$month/$year';
-                      final lunarDateString =
-                          LunarDateHelper.getLunarDateString(now);
-
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.15),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(LucideIcons.calendar,
-                                color: context.accent, size: 16),
-                            const SizedBox(width: 8),
-                            Text(
-                              solarDateString,
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 12,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: Text(
-                                '|',
-                                style: GoogleFonts.inter(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              lunarDateString,
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 11,
-                                color: Colors.white.withValues(alpha: 0.9),
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
+                  const SizedBox(height: 16),
+                  _buildInviteCodeCard(context, inviteCode),
                 ],
               ),
             ),
@@ -531,6 +453,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     final member = filteredMembers[index];
                     return MemberItemWidget(
                       member: member,
+                      allMembers: members,
                       onEdit: () {
                         Navigator.push(
                           context,
@@ -640,34 +563,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Widget _buildInviteCodeCard(BuildContext context, String inviteCode) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.accent.withValues(alpha: 0.25)),
-        boxShadow: [
-          BoxShadow(
-            color: context.resolve(
-              Colors.black.withValues(alpha: 0.02),
-              Colors.transparent,
-            ),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: context.textPrimary.withValues(alpha: 0.08),
+              color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child:
-                Icon(LucideIcons.qrCode, color: context.textPrimary, size: 22),
+                const Icon(LucideIcons.qrCode, color: Colors.white, size: 22),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -679,7 +586,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.inter(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: context.textSecondary,
+                    color: Colors.white70,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -689,14 +596,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: context.textPrimary,
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
           ),
           IconButton(
-            icon: Icon(LucideIcons.copy, size: 18, color: context.textPrimary),
+            icon: const Icon(LucideIcons.copy, size: 18, color: Colors.white),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: inviteCode));
               AppSnackBar.success(context, l10n.inviteCodeCopied(inviteCode));
@@ -708,7 +615,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             label: l10n.qrCodeTooltip,
             onPressed: () => _showQrDialog(context, inviteCode),
             prefixIcon: const Icon(LucideIcons.maximize2, size: 10),
-            variant: AppButtonVariant.primary,
+            variant: AppButtonVariant.outline,
             size: AppButtonSize.small,
           ),
         ],
@@ -742,7 +649,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           child: Stack(
             children: [
               Container(
-                width: 280,
+                width: 340,
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -759,14 +666,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     RepaintBoundary(
                       key: qrKey,
                       child: Container(
-                        width: 200,
-                        height: 200,
+                        width: 260,
+                        height: 260,
                         padding: const EdgeInsets.all(16),
                         color: Colors.white,
                         child: QrImageView(
                           data: code,
                           version: QrVersions.auto,
-                          size: 200.0,
+                          size: 260.0,
                           gapless: false,
                         ),
                       ),
@@ -863,32 +770,69 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ),
           ),
           if (onAdd != null)
-            TextButton.icon(
-              onPressed: onAdd,
-              icon: Icon(
-                addLabel == l10n.viewAllLabel
-                    ? LucideIcons.eye
-                    : LucideIcons.plus,
-                size: 14,
-                color: Colors.black,
-              ),
-              label: Text(
-                addLabel ?? l10n.addNewLabel,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              style: TextButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                backgroundColor: context.accent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
+            addLabel == l10n.addMemberLabel
+                ? IconButton(
+                    onPressed: onAdd,
+                    icon: const Icon(LucideIcons.userPlus,
+                        size: 16, color: Colors.black),
+                    style: IconButton.styleFrom(
+                      backgroundColor: context.accent,
+                      padding: const EdgeInsets.all(8),
+                    ),
+                    tooltip: addLabel,
+                  )
+                : addLabel == l10n.addBranchLabel
+                    ? IconButton(
+                        onPressed: onAdd,
+                        icon: const Stack(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 3, bottom: 3),
+                              child: Icon(LucideIcons.gitBranch,
+                                  size: 14, color: Colors.black),
+                            ),
+                            Positioned(
+                              bottom: -1,
+                              right: -1,
+                              child: Icon(Icons.add,
+                                  size: 9,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        style: IconButton.styleFrom(
+                          backgroundColor: context.accent,
+                          padding: const EdgeInsets.all(8),
+                        ),
+                        tooltip: addLabel,
+                      )
+                    : TextButton.icon(
+                        onPressed: onAdd,
+                        icon: Icon(
+                          addLabel == l10n.viewAllLabel
+                              ? LucideIcons.eye
+                              : LucideIcons.plus,
+                          size: 14,
+                          color: Colors.black,
+                        ),
+                        label: Text(
+                          addLabel ?? l10n.addNewLabel,
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          backgroundColor: context.accent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
         ],
       ),
     );
@@ -989,9 +933,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 4, 20, 6),
       decoration: BoxDecoration(
-        color: context.background,
+        color: context.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.accent.withValues(alpha: 0.15)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: TextField(
         controller: _searchController,
@@ -1028,7 +978,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       decoration: BoxDecoration(
         color: context.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.accent.withValues(alpha: 0.1)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [

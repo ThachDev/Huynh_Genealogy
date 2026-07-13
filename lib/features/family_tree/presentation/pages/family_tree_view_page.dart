@@ -13,8 +13,6 @@ import 'family_member_detail_page.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 
 const double _nodeWidth = 140.0;
-const double _nodeHeight =
-    160.0; // Đồng bộ với height cố định trong FamilyMemberNodeWidget
 const double _hSpacing = 40.0;
 const double _vSpacing =
     220.0; // Phải > _nodeHeight (160) để nodes không chồng lên nhau
@@ -59,6 +57,16 @@ class FamilyTreeViewPage extends StatefulWidget {
 }
 
 class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
+  double get _nodeHeight {
+    final authState = context.read<AuthBloc>().state;
+    final canEdit = authState is Authenticated &&
+        (authState.user.role == 'OWNER' ||
+            authState.user.role == 'BRANCH_ADMIN' ||
+            authState.user.role == 'EDITOR') &&
+        UserMainNavigationPage.adminModeNotifier.value;
+    return canEdit ? 160.0 : 125.0;
+  }
+
   final TransformationController _transformationController =
       TransformationController();
 
@@ -388,7 +396,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
             authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR');
+            authState.user.role == 'EDITOR') &&
+        UserMainNavigationPage.adminModeNotifier.value;
     final treeState = context.watch<FamilyTreeBloc>().state;
     String appBarTitle = l10n.familyTreeTitle;
     List<Widget> appBarActions = [];
@@ -534,14 +543,19 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                               orphanEdges: orphanEdges,
                               spouseEdges: spouseEdges,
                               positions: positions,
+                              nodeHeight: _nodeHeight,
                               linePaint: Paint()
-                                ..color = const Color(0xFFD4AF37)
+                                ..color = context.resolve(
+                                    const Color(0xFFD4AF37),
+                                    Colors.grey.shade700)
                                 ..strokeWidth = 3.0
                                 ..strokeCap = StrokeCap.round
                                 ..style = PaintingStyle.stroke,
                               spousePaint: Paint()
-                                ..color = const Color(0xFFD4AF37)
-                                    .withValues(alpha: 0.8)
+                                ..color = context.resolve(
+                                    const Color(0xFFD4AF37)
+                                        .withValues(alpha: 0.8),
+                                    Colors.grey.shade700.withValues(alpha: 0.8))
                                 ..strokeWidth = 2.0
                                 ..strokeCap = StrokeCap.round
                                 ..style = PaintingStyle.stroke,
@@ -649,6 +663,7 @@ class _TreeEdgePainter extends CustomPainter {
   final Map<int, Offset> positions;
   final Paint linePaint;
   final Paint spousePaint;
+  final double nodeHeight;
 
   _TreeEdgePainter({
     required this.coupleEdges,
@@ -657,6 +672,7 @@ class _TreeEdgePainter extends CustomPainter {
     required this.positions,
     required this.linePaint,
     required this.spousePaint,
+    required this.nodeHeight,
   });
 
   @override
@@ -673,13 +689,13 @@ class _TreeEdgePainter extends CustomPainter {
           sourceX = spouse.dx;
         }
       }
-      final sourceY = primary.dy + _nodeHeight / 2;
+      final sourceY = primary.dy + nodeHeight / 2;
 
       final childPositions =
           ce.childIds.map((id) => positions[id]).whereType<Offset>().toList();
       if (childPositions.isEmpty) continue;
 
-      final childTopY = childPositions.first.dy - _nodeHeight / 2;
+      final childTopY = childPositions.first.dy - nodeHeight / 2;
       final junctionY = (sourceY + childTopY) / 2;
 
       final path = Path();
@@ -720,8 +736,8 @@ class _TreeEdgePainter extends CustomPainter {
       final child = positions[edge.childId];
       if (parent == null || child == null) continue;
 
-      final start = Offset(parent.dx, parent.dy + _nodeHeight / 2);
-      final end = Offset(child.dx, child.dy - _nodeHeight / 2);
+      final start = Offset(parent.dx, parent.dy + nodeHeight / 2);
+      final end = Offset(child.dx, child.dy - nodeHeight / 2);
       final midY = (start.dy + end.dy) / 2;
       final path = Path()
         ..moveTo(start.dx, start.dy)

@@ -8,7 +8,6 @@ import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/family_tree/family_tree.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
-import '../../features/user/presentation/pages/user_settings_page.dart';
 import '../../features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../features/admin/presentation/pages/setting_dashboard/admin_settings_page.dart';
 
@@ -94,7 +93,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.settings,
             label: l10n.navSettings,
-            page: const UserSettingsPage(),
+            page: const AdminSettingsPage(),
           ));
         }
 

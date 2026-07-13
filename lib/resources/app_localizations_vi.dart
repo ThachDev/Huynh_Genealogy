@@ -1107,7 +1107,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pendingRequestTitle => 'Yêu Cầu Chờ Duyệt';
 
   @override
-  String get searchMembersHint => 'Tìm kiếm thành viên hoặc chi tộc...';
+  String get searchMembersHint => 'Tìm kiếm thành viên...';
 
   @override
   String get searchBranchesHint => 'Tìm kiếm chi tộc...';
@@ -1138,7 +1138,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get statPending => 'Chờ Duyệt';
 
   @override
-  String get inviteCodeSectionLabel => 'Mã Tham Gia Gia Tộc';
+  String get inviteCodeSectionLabel => 'Mã Gia Tộc';
 
   @override
   String inviteCodeCopied(Object code) {
@@ -1202,7 +1202,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String founderBadge(Object name) {
-    return 'Đời tổ/Sáng lập: $name';
+    return 'Sáng lập: $name';
   }
 
   @override

@@ -8,6 +8,7 @@ import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/family_tree/family_tree.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
+import '../../features/user/presentation/pages/user_profile_page.dart';
 import '../../features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../features/admin/presentation/pages/setting_dashboard/admin_settings_page.dart';
 import '../../features/events/events.dart';
@@ -59,6 +60,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final List<_TabConfig> tabs = [];
 
         if (showAdminInterface) {
+          // Admin: Tổng quan, Cây gia phả, Sự kiện, Cài đặt, Tài khoản
           tabs.add(_TabConfig(
             icon: LucideIcons.layoutDashboard,
             label: l10n.navOverview,
@@ -66,15 +68,15 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           ));
 
           tabs.add(_TabConfig(
-            icon: LucideIcons.calendarDays,
-            label: 'Sự kiện',
-            page: EventsListPage(familyId: familyId ?? 0),
-          ));
-
-          tabs.add(_TabConfig(
             icon: LucideIcons.network,
             label: l10n.navFamilyTree,
             page: const FamilyTreeViewPage(),
+          ));
+
+          tabs.add(_TabConfig(
+            icon: LucideIcons.calendarDays,
+            label: 'Sự kiện',
+            page: EventsListPage(familyId: familyId ?? 0),
           ));
 
           tabs.add(_TabConfig(
@@ -82,7 +84,14 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             label: l10n.navSettings,
             page: const AdminSettingsPage(),
           ));
+
+          tabs.add(_TabConfig(
+            icon: LucideIcons.user,
+            label: 'Tài khoản',
+            page: const UserProfilePage(),
+          ));
         } else {
+          // User: Tổng quan, Cây gia phả, Sự kiện, Cài đặt, Tài khoản
           tabs.add(_TabConfig(
             icon: LucideIcons.home,
             label: l10n.navOverview,
@@ -90,21 +99,27 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           ));
 
           tabs.add(_TabConfig(
-            icon: LucideIcons.calendarDays,
-            label: 'Sự kiện',
-            page: EventsListPage(familyId: familyId ?? 0),
-          ));
-
-          tabs.add(_TabConfig(
             icon: LucideIcons.network,
             label: l10n.navFamilyTree,
             page: const FamilyTreeViewPage(),
           ));
 
           tabs.add(_TabConfig(
+            icon: LucideIcons.calendarDays,
+            label: 'Sự kiện',
+            page: EventsListPage(familyId: familyId ?? 0),
+          ));
+
+          tabs.add(_TabConfig(
             icon: LucideIcons.settings,
             label: l10n.navSettings,
             page: const AdminSettingsPage(),
+          ));
+
+          tabs.add(_TabConfig(
+            icon: LucideIcons.user,
+            label: 'Tài khoản',
+            page: const UserProfilePage(),
           ));
         }
 
@@ -130,10 +145,73 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 4),
+                padding: const EdgeInsets.only(top: 0, bottom: 4),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: List.generate(tabs.length, (index) {
                     final tab = tabs[index];
+                    if (index == 2) {
+                      final isSelected = safeIndex == index;
+                      return Expanded(
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            setState(() {
+                              _currentIndex = index;
+                            });
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Transform.translate(
+                                offset: const Offset(0, -10),
+                                child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: isSelected ? context.primary : context.accent,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: (isSelected ? context.primary : context.accent)
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                    border: Border.all(
+                                      color: context.surface,
+                                      width: 3.5,
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    LucideIcons.calendarDays,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                              Transform.translate(
+                                offset: const Offset(0, -6),
+                                child: Text(
+                                  tab.label,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 9.5,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                    color: isSelected
+                                        ? context.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.6),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
                     return _BottomTabItem(
                       icon: tab.icon,
                       label: tab.label,

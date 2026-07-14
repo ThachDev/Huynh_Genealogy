@@ -28,6 +28,16 @@ class _EventsListPageState extends State<EventsListPage> {
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (UserMainNavigationPage.fabNotifier.value?.label == 'Sự kiện +') {
+        UserMainNavigationPage.fabNotifier.value = null;
+      }
+    });
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final authState = context.watch<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
@@ -35,31 +45,36 @@ class _EventsListPageState extends State<EventsListPage> {
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');
 
+    if (canEdit) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        UserMainNavigationPage.fabNotifier.value = FABConfig(
+          icon: LucideIcons.calendar,
+          label: 'Sự kiện +',
+          onTap: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => AdminEventFormPage(familyId: widget.familyId),
+              ),
+            );
+            if (result == true) {
+              _loadEvents();
+            }
+          },
+        );
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        UserMainNavigationPage.fabNotifier.value = null;
+      });
+    }
+
     return Scaffold(
       backgroundColor: context.background,
       appBar: const AppAppBar(
         title: 'Sự Kiện Dòng Tộc',
       ),
-      floatingActionButton: canEdit
-          ? FloatingActionButton(
-              heroTag: 'events_list_fab',
-              backgroundColor: context.primary,
-              foregroundColor: Colors.white,
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        AdminEventFormPage(familyId: widget.familyId),
-                  ),
-                );
-                if (result == true) {
-                  _loadEvents();
-                }
-              },
-              child: const Icon(LucideIcons.plus),
-            )
-          : null,
+      floatingActionButton: null,
       body: BlocConsumer<EventsBloc, EventsState>(
         listener: (context, state) {
           if (state is EventsSubmitSuccess) {

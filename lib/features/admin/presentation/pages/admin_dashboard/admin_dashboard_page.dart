@@ -77,6 +77,45 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   int _branchLimit = 5;
   int _pendingLimit = 5;
 
+  void _updateFAB() {
+    final authState = context.read<AuthBloc>().state;
+    final user = authState is Authenticated ? authState.user : null;
+    final role = user?.role ?? 'VIEWER';
+    final roleUpper = role.toUpperCase();
+    final canEdit = roleUpper == 'OWNER' ||
+        roleUpper == 'BRANCH_ADMIN' ||
+        roleUpper == 'EDITOR' ||
+        roleUpper == 'CREATOR';
+
+    if (!canEdit) {
+      UserMainNavigationPage.fabNotifier.value = null;
+      return;
+    }
+
+    if (_selectedTab == AdminDashboardTab.members) {
+      UserMainNavigationPage.fabNotifier.value = FABConfig(
+        icon: LucideIcons.userPlus,
+        label: 'Thành viên +',
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AdminMemberFormPage(),
+            ),
+          ).then((_) => _loadTree());
+        },
+      );
+    } else if (_selectedTab == AdminDashboardTab.branches) {
+      UserMainNavigationPage.fabNotifier.value = FABConfig(
+        icon: LucideIcons.gitBranch,
+        label: 'Chi họ +',
+        onTap: () => _openBranchForm(context),
+      );
+    } else {
+      UserMainNavigationPage.fabNotifier.value = null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -87,11 +126,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadTree();
       _loadPendingRequests();
+      _updateFAB();
     });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (UserMainNavigationPage.fabNotifier.value?.label == 'Thành viên +' ||
+          UserMainNavigationPage.fabNotifier.value?.label == 'Chi họ +') {
+        UserMainNavigationPage.fabNotifier.value = null;
+      }
+    });
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _searchController.removeListener(_onSearchChanged);
@@ -308,6 +354,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     if (_scrollController.hasClients) {
                       _scrollController.jumpTo(0);
                     }
+                    _updateFAB();
                   });
                 },
               ),

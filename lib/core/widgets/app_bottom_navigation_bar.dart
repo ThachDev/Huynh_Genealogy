@@ -8,16 +8,32 @@ import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/family_tree/family_tree.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
-import '../../features/user/presentation/pages/user_profile_page.dart';
 import '../../features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../features/admin/presentation/pages/setting_dashboard/admin_settings_page.dart';
 import '../../features/events/events.dart';
+
+class FABConfig {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  final bool show;
+
+  const FABConfig({
+    required this.icon,
+    required this.label,
+    this.onTap,
+    this.show = true,
+  });
+}
 
 class UserMainNavigationPage extends StatefulWidget {
   const UserMainNavigationPage({super.key});
 
   static final ValueNotifier<bool> adminModeNotifier =
       ValueNotifier<bool>(true);
+
+  static final ValueNotifier<FABConfig?> fabNotifier =
+      ValueNotifier<FABConfig?>(null);
 
   @override
   State<UserMainNavigationPage> createState() => _UserMainNavigationPageState();
@@ -60,7 +76,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final List<_TabConfig> tabs = [];
 
         if (showAdminInterface) {
-          // Admin: Tổng quan, Cây gia phả, Sự kiện, Cài đặt, Tài khoản
+          // Admin: Tổng quan, Cây gia phả, Sự kiện, Cài đặt
           tabs.add(_TabConfig(
             icon: LucideIcons.layoutDashboard,
             label: l10n.navOverview,
@@ -84,14 +100,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             label: l10n.navSettings,
             page: const AdminSettingsPage(),
           ));
-
-          tabs.add(_TabConfig(
-            icon: LucideIcons.user,
-            label: 'Tài khoản',
-            page: const UserProfilePage(),
-          ));
         } else {
-          // User: Tổng quan, Cây gia phả, Sự kiện, Cài đặt, Tài khoản
+          // User: Tổng quan, Cây gia phả, Sự kiện, Cài đặt
           tabs.add(_TabConfig(
             icon: LucideIcons.home,
             label: l10n.navOverview,
@@ -115,12 +125,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             label: l10n.navSettings,
             page: const AdminSettingsPage(),
           ));
-
-          tabs.add(_TabConfig(
-            icon: LucideIcons.user,
-            label: 'Tài khoản',
-            page: const UserProfilePage(),
-          ));
         }
 
         final safeIndex = _currentIndex >= tabs.length ? 0 : _currentIndex;
@@ -141,77 +145,78 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                 padding: const EdgeInsets.only(top: 0, bottom: 4),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: List.generate(tabs.length, (index) {
-                    final tab = tabs[index];
+                  children: List.generate(5, (index) {
                     if (index == 2) {
-                      final isSelected = safeIndex == index;
-                      return Expanded(
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            setState(() {
-                              _currentIndex = index;
-                            });
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Transform.translate(
-                                offset: const Offset(0, -10),
-                                child: Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: isSelected ? context.primary : context.accent,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: (isSelected ? context.primary : context.accent)
-                                            .withValues(alpha: 0.3),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
+                      return ValueListenableBuilder<FABConfig?>(
+                        valueListenable: UserMainNavigationPage.fabNotifier,
+                        builder: (context, config, _) {
+                          final showFab = config != null && config.show;
+                          if (!showFab) {
+                            return const Expanded(child: SizedBox.shrink());
+                          }
+                          return Expanded(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: config.onTap,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Transform.translate(
+                                    offset: const Offset(0, -10),
+                                    child: Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: context.primary,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: context.primary.withValues(alpha: 0.3),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                        border: Border.all(
+                                          color: context.surface,
+                                          width: 3.5,
+                                        ),
                                       ),
-                                    ],
-                                    border: Border.all(
-                                      color: context.surface,
-                                      width: 3.5,
+                                      child: Icon(
+                                        config.icon,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
                                     ),
                                   ),
-                                  child: const Icon(
-                                    LucideIcons.calendarDays,
-                                    color: Colors.white,
-                                    size: 20,
+                                  Transform.translate(
+                                    offset: const Offset(0, -6),
+                                    child: Text(
+                                      config.label,
+                                      style: GoogleFonts.beVietnamPro(
+                                        fontSize: 9.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: context.primary,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                              Transform.translate(
-                                offset: const Offset(0, -6),
-                                child: Text(
-                                  tab.label,
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 9.5,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected
-                                        ? context.primary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.6),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       );
                     }
+
+                    final tabIndex = index < 2 ? index : index - 1;
+                    final tab = tabs[tabIndex];
                     return _BottomTabItem(
                       icon: tab.icon,
                       label: tab.label,
-                      isSelected: safeIndex == index,
+                      isSelected: safeIndex == tabIndex,
                       onTap: () {
                         setState(() {
-                          _currentIndex = index;
+                          _currentIndex = tabIndex;
+                          UserMainNavigationPage.fabNotifier.value = null;
                         });
                       },
                       selectedColor: context.primary,

@@ -10,6 +10,7 @@ import '../../features/family_tree/family_tree.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
 import '../../features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../features/admin/presentation/pages/setting_dashboard/admin_settings_page.dart';
+import '../../features/events/events.dart';
 
 class UserMainNavigationPage extends StatefulWidget {
   const UserMainNavigationPage({super.key});
@@ -34,10 +35,9 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final role = context.select<AuthBloc, String>((bloc) {
-      final state = bloc.state;
-      return state is Authenticated ? state.user.role : 'VIEWER';
-    });
+    final authState = context.select<AuthBloc, AuthState>((bloc) => bloc.state);
+    final role = authState is Authenticated ? authState.user.role : 'VIEWER';
+    final familyId = authState is Authenticated ? authState.user.familyId : null;
     final hasAdminPrivileges = _isAdminRole(role);
 
     if (!hasAdminPrivileges) {
@@ -58,11 +58,17 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final List<_TabConfig> tabs = [];
 
         if (showAdminInterface) {
-          // Admin: Tổng quan, Cây gia phả, Quỹ gia tộc, Cài đặt
+          // Admin: Tổng quan, Sự kiện, Cây gia phả, Cài đặt
           tabs.add(_TabConfig(
             icon: LucideIcons.layoutDashboard,
             label: l10n.navOverview,
             page: const AdminDashboardPage(),
+          ));
+
+          tabs.add(_TabConfig(
+            icon: LucideIcons.calendarDays,
+            label: 'Sự kiện',
+            page: EventsListPage(familyId: familyId ?? 0),
           ));
 
           tabs.add(_TabConfig(
@@ -77,11 +83,17 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             page: const AdminSettingsPage(),
           ));
         } else {
-          // User thường: Tổng quan, Cây gia phả, Quỹ gia tộc, Cài đặt
+          // User thường: Tổng quan, Sự kiện, Cây gia phả, Cài đặt
           tabs.add(_TabConfig(
             icon: LucideIcons.home,
             label: l10n.navOverview,
             page: const UserFamilyDashboardPage(),
+          ));
+
+          tabs.add(_TabConfig(
+            icon: LucideIcons.calendarDays,
+            label: 'Sự kiện',
+            page: EventsListPage(familyId: familyId ?? 0),
           ));
 
           tabs.add(_TabConfig(

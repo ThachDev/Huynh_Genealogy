@@ -197,14 +197,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
                       if (filteredMembers.isEmpty) {
                         return SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 32),
-                            child: Center(
-                              child: Text(
-                                l10n.noMemberFound,
-                                style: TextStyle(color: context.textSecondary),
-                              ),
-                            ),
+                          child: AppEmptyState(
+                            icon: LucideIcons.search,
+                            message: l10n.noMemberFound,
+                            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
                           ),
                         );
                       }

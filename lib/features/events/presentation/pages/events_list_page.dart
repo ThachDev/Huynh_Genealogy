@@ -76,26 +76,9 @@ class _EventsListPageState extends State<EventsListPage> {
           if (state is EventsLoaded) {
             final events = state.events;
             if (events.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.calendarDays,
-                      size: 64,
-                      color: context.textSecondary.withValues(alpha: 0.4),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Chưa có sự kiện nào được tạo',
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 16,
-                        color: context.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
+              return const AppEmptyState(
+                icon: LucideIcons.calendarDays,
+                message: 'Chưa có sự kiện nào được tạo',
               );
             }
 

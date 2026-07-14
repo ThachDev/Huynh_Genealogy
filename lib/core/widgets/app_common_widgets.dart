@@ -78,6 +78,9 @@ class AppEmptyState extends StatelessWidget {
   final String? subMessage;
   final IconData icon;
   final Widget? action;
+  final double iconSize;
+  final bool useCardStyle;
+  final EdgeInsets? padding;
 
   const AppEmptyState({
     super.key,
@@ -85,49 +88,74 @@ class AppEmptyState extends StatelessWidget {
     this.subMessage,
     this.icon = Icons.inbox_outlined,
     this.action,
+    this.iconSize = 64,
+    this.useCardStyle = false,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 64,
-              color: context.accent.withValues(alpha: 0.5),
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          size: iconSize,
+          color: context.accent.withValues(alpha: 0.5),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          message,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.beVietnamPro(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurface,
+          ),
+        ),
+        if (subMessage != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            subMessage!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
-            const SizedBox(height: 16),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurface,
-              ),
+          ),
+        ],
+        if (action != null) ...[
+          const SizedBox(height: 24),
+          action!,
+        ],
+      ],
+    );
+
+    if (useCardStyle) {
+      return Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: padding ?? const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: context.surface,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
             ),
-            if (subMessage != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                subMessage!,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-            if (action != null) ...[
-              const SizedBox(height: 24),
-              action!,
-            ],
           ],
         ),
+        child: content,
+      );
+    }
+
+    return Center(
+      child: Padding(
+        padding: padding ?? const EdgeInsets.all(32),
+        child: content,
       ),
     );
   }

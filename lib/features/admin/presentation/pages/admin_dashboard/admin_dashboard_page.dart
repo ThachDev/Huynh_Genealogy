@@ -971,36 +971,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildEmptyWidget(String message) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Icon(LucideIcons.folderOpen,
-              size: 40, color: context.textSecondary.withValues(alpha: 0.4)),
-          const SizedBox(height: 12),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 13,
-              color: context.textSecondary,
-            ),
-          ),
-        ],
-      ),
+    return AppEmptyState(
+      icon: LucideIcons.folderOpen,
+      iconSize: 40,
+      message: message,
+      useCardStyle: true,
     );
   }
 }

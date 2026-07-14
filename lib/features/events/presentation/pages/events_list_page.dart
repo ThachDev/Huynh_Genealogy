@@ -9,8 +9,13 @@ import '../../events.dart';
 
 class EventsListPage extends StatefulWidget {
   final int familyId;
+  final bool isActive;
 
-  const EventsListPage({super.key, required this.familyId});
+  const EventsListPage({
+    super.key,
+    required this.familyId,
+    this.isActive = false,
+  });
 
   @override
   State<EventsListPage> createState() => _EventsListPageState();
@@ -21,25 +26,25 @@ class _EventsListPageState extends State<EventsListPage> {
   void initState() {
     super.initState();
     _loadEvents();
+    if (widget.isActive) {
+      _updateFAB();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant EventsListPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !oldWidget.isActive) {
+      _updateFAB();
+    }
   }
 
   void _loadEvents() {
     context.read<EventsBloc>().add(LoadEventsEvent(familyId: widget.familyId));
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (UserMainNavigationPage.fabNotifier.value?.label == 'Sự kiện +') {
-        UserMainNavigationPage.fabNotifier.value = null;
-      }
-    });
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final authState = context.watch<AuthBloc>().state;
+  void _updateFAB() {
+    final authState = context.read<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
             authState.user.role == 'BRANCH_ADMIN' ||
@@ -68,6 +73,25 @@ class _EventsListPageState extends State<EventsListPage> {
         UserMainNavigationPage.fabNotifier.value = null;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (UserMainNavigationPage.fabNotifier.value?.label == 'Sự kiện +') {
+        UserMainNavigationPage.fabNotifier.value = null;
+      }
+    });
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authState = context.watch<AuthBloc>().state;
+    final canEdit = authState is Authenticated &&
+        (authState.user.role == 'OWNER' ||
+            authState.user.role == 'BRANCH_ADMIN' ||
+            authState.user.role == 'EDITOR');
 
     return Scaffold(
       backgroundColor: context.background,

@@ -20,6 +20,7 @@ class AppConstants {
   static const String approveRequestEndpoint = '/families/requests';
   static const String transferOwnershipEndpoint =
       '/families/transfer-ownership';
+  static const String eventsEndpoint = '/events';
 
   // Storage keys
   static const String cachedMembers = 'CACHED_MEMBERS';

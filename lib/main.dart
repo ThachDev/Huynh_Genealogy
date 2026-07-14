@@ -12,6 +12,7 @@ import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/admin/admin.dart';
 import 'features/family_tree/family_tree.dart';
+import 'features/events/events.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,6 +92,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
             create: (_) => di.sl<AdminDissolveClanBloc>()),
         BlocProvider<AdminTransferOwnershipBloc>(
             create: (_) => di.sl<AdminTransferOwnershipBloc>()),
+        BlocProvider<EventsBloc>(
+            create: (_) => di.sl<EventsBloc>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) {

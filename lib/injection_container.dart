@@ -11,6 +11,7 @@ import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/admin/admin.dart';
 import 'features/family_tree/family_tree.dart';
+import 'features/events/events.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 
@@ -95,11 +96,22 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory(
+    () => EventsBloc(
+      getEvents: sl(),
+      saveEvent: sl(),
+      deleteEvent: sl(),
+    ),
+  );
+
   // ─── Use Cases ────────────────────────────────────────────────────────────
   sl.registerLazySingleton(() => GetMembers(sl()));
   sl.registerLazySingleton(() => GetBranches(sl()));
   sl.registerLazySingleton(() => SaveMember(sl()));
   sl.registerLazySingleton(() => DeleteMember(sl()));
+  sl.registerLazySingleton(() => GetEvents(sl()));
+  sl.registerLazySingleton(() => SaveEvent(sl()));
+  sl.registerLazySingleton(() => DeleteEvent(sl()));
 
   // Auth Use Cases
   sl.registerLazySingleton(() => LoginWithGoogle(sl()));
@@ -142,6 +154,10 @@ Future<void> init() async {
     () => FamilyTreeRepositoryImpl(remoteDataSource: sl()),
   );
 
+  sl.registerLazySingleton<EventsRepository>(
+    () => EventsRepositoryImpl(remoteDataSource: sl()),
+  );
+
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       remoteDataSource: sl(),
@@ -158,6 +174,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<FamilyTreeRemoteDataSource>(
     () => FamilyTreeRemoteDataSourceImpl(dio: sl()),
+  );
+
+  sl.registerLazySingleton<EventsRemoteDataSource>(
+    () => EventsRemoteDataSourceImpl(dio: sl()),
   );
 
   sl.registerLazySingleton<AuthRemoteDataSource>(

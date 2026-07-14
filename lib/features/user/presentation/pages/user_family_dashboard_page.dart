@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import '../../../events/presentation/pages/events_list_page.dart';
 import '../../../family_tree/family_tree.dart';
 import '../widgets/user_branch_card.dart';
 import '../../../auth/auth.dart';
@@ -507,7 +508,32 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(l10n.eventsSectionTitle),
+        _buildSectionTitle(
+          l10n.eventsSectionTitle,
+          trailing: TextButton(
+            onPressed: () {
+              final authState = context.read<AuthBloc>().state;
+              final familyId =
+                  authState is Authenticated ? authState.user.familyId : null;
+              if (familyId != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EventsListPage(familyId: familyId),
+                  ),
+                );
+              }
+            },
+            child: Text(
+              'Sự kiện dòng tộc',
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: context.primary,
+              ),
+            ),
+          ),
+        ),
         SizedBox(
           height: 110,
           child: ListView.builder(
@@ -689,7 +715,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, {Widget? trailing}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: Row(
@@ -705,6 +731,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
               letterSpacing: 1,
             ),
           ),
+          if (trailing != null) ...[
+            const Spacer(),
+            trailing,
+          ],
         ],
       ),
     );

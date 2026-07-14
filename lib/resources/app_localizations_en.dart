@@ -1405,13 +1405,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get educationLabel => 'Education';
 
   @override
-  String get educationHint => 'Enter education, school...';
+  String get educationHint => 'Enter education level...';
 
   @override
   String get occupationLabel => 'Occupation';
 
   @override
-  String get occupationHint => 'Enter occupation, workplace...';
+  String get occupationHint => 'Enter occupation...';
 
   @override
   String get parentLabel => 'Parent';

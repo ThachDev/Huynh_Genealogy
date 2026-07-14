@@ -126,7 +126,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     ),
                     // ── Events/Anniversaries Carousel ──
                     SliverToBoxAdapter(
-                      child: _buildEventsCarousel(),
+                      child: _buildEventsCarousel(state.members),
                     ),
                     // ── Branches Section ──
                     SliverToBoxAdapter(
@@ -220,7 +220,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           delegate:
                               SliverChildBuilderDelegate((context, index) {
                             final member = filteredMembers[index];
-                            return _buildMemberCard(member);
+                            return _buildMemberCard(member, state.members);
                           }, childCount: filteredMembers.length),
                         ),
                       );
@@ -464,34 +464,45 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     );
   }
 
-  Widget _buildEventsCarousel() {
+  List<FamilyEvent> _calculateUpcomingEvents(List<MemberEntity> members) {
+    final List<FamilyEvent> events = [];
+
+    for (final member in members) {
+      if (!member.isAlive &&
+          member.dateOfDeath != null &&
+          member.dateOfDeath!.isNotEmpty) {
+        events.add(FamilyEvent(
+          title: 'Giỗ ${member.fullName}',
+          type: 'Ngày giỗ',
+          date: member.dateOfDeath!,
+          countdown: 'Tưởng nhớ',
+          generation: member.generation ?? 0,
+          badgeColor: Colors.orange,
+        ));
+      } else if (member.isAlive &&
+          member.dateOfBirth != null &&
+          member.dateOfBirth!.isNotEmpty) {
+        events.add(FamilyEvent(
+          title: 'Sinh nhật ${member.fullName}',
+          type: 'Sinh nhật',
+          date: member.dateOfBirth!,
+          countdown: 'Chúc mừng',
+          generation: member.generation ?? 0,
+          badgeColor: context.primary,
+        ));
+      }
+    }
+
+    return events.take(8).toList();
+  }
+
+  Widget _buildEventsCarousel(List<MemberEntity> members) {
     final l10n = AppLocalizations.of(context)!;
-    final events = [
-      FamilyEvent(
-        title: l10n.eventSample1,
-        type: l10n.eventTypeAncestors,
-        date: l10n.eventDateSample1,
-        countdown: l10n.todayLabel,
-        generation: 2,
-        badgeColor: context.primary,
-      ),
-      FamilyEvent(
-        title: l10n.eventSample2,
-        type: l10n.eventTypeEvent,
-        date: l10n.eventDateSample2,
-        countdown: l10n.eventCountdown(2),
-        generation: 0,
-        badgeColor: Colors.teal,
-      ),
-      FamilyEvent(
-        title: 'Giỗ cụ bà Nguyễn Thị Mai',
-        type: l10n.eventTypeAncestors,
-        date: '02/07 Âm lịch',
-        countdown: l10n.eventCountdown(15),
-        generation: 3,
-        badgeColor: Colors.orange,
-      ),
-    ];
+    final events = _calculateUpcomingEvents(members);
+
+    if (events.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -699,7 +710,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     );
   }
 
-  Widget _buildMemberCard(MemberEntity m) {
+  Widget _buildMemberCard(MemberEntity m, List<MemberEntity> allMembers) {
     final l10n = AppLocalizations.of(context)!;
     final bool isMale = m.gender == Gender.male;
     final String genText = m.generation != null
@@ -729,116 +740,129 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: IntrinsicHeight(
-          child: Row(
-            children: [
-              Container(
-                width: 6,
-                color: isMale ? context.nodeMale : context.nodeFemale,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => FamilyMemberDetailPage(
+                  member: m,
+                  allMembers: allMembers,
+                ),
               ),
-              const SizedBox(width: 12),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: context.accent.withValues(alpha: 0.4),
-                    width: 1.5,
+            );
+          },
+          child: IntrinsicHeight(
+            child: Row(
+              children: [
+                Container(
+                  width: 6,
+                  color: isMale ? context.nodeMale : context.nodeFemale,
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: context.accent.withValues(alpha: 0.4),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    backgroundColor: isMale
+                        ? context.nodeMale.withValues(alpha: 0.1)
+                        : context.nodeFemale.withValues(alpha: 0.1),
+                    radius: 24,
+                    backgroundImage:
+                        m.avatarUrl != null ? NetworkImage(m.avatarUrl!) : null,
+                    child: m.avatarUrl == null
+                        ? Icon(
+                            isMale ? LucideIcons.user : LucideIcons.userCheck,
+                            color:
+                                isMale ? context.nodeMale : context.nodeFemale,
+                            size: 20,
+                          )
+                        : null,
                   ),
                 ),
-                child: CircleAvatar(
-                  backgroundColor: isMale
-                      ? context.nodeMale.withValues(alpha: 0.1)
-                      : context.nodeFemale.withValues(alpha: 0.1),
-                  radius: 24,
-                  backgroundImage:
-                      m.avatarUrl != null ? NetworkImage(m.avatarUrl!) : null,
-                  child: m.avatarUrl == null
-                      ? Icon(
-                          isMale ? LucideIcons.user : LucideIcons.userCheck,
-                          color: isMale ? context.nodeMale : context.nodeFemale,
-                          size: 20,
-                        )
-                      : null,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        m.fullName,
+                        style: GoogleFonts.beVietnamPro(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: context.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: context.accent.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              genText,
+                              style: GoogleFonts.inter(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: context.appBarBg,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            m.branchName ?? l10n.unassignedBranch,
+                            style: GoogleFonts.inter(
+                              fontSize: 11,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      m.fullName,
-                      style: GoogleFonts.beVietnamPro(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: context.textPrimary,
+                    Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: statusColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        statusText,
+                        style: GoogleFonts.inter(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                          color: statusColor,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: context.accent.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            genText,
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: context.appBarBg,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          m.branchName ?? l10n.unassignedBranch,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color: context.textSecondary,
-                          ),
-                        ),
-                      ],
+                    Icon(
+                      LucideIcons.chevronRight,
+                      color: context.accent,
+                      size: 20,
                     ),
+                    const SizedBox(width: 16),
                   ],
                 ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 12),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: statusColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      statusText,
-                      style: GoogleFonts.inter(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                        color: statusColor,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  IconButton(
-                    icon: Icon(LucideIcons.chevronRight,
-                        color: context.accent, size: 20),
-                    onPressed: () {
-                      // Action details
-                    },
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

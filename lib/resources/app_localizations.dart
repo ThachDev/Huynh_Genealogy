@@ -2657,7 +2657,7 @@ abstract class AppLocalizations {
   /// No description provided for @educationHint.
   ///
   /// In vi, this message translates to:
-  /// **'Nhập trình độ học vấn, trường lớp...'**
+  /// **'Nhập trình độ học vấn...'**
   String get educationHint;
 
   /// No description provided for @occupationLabel.
@@ -2669,7 +2669,7 @@ abstract class AppLocalizations {
   /// No description provided for @occupationHint.
   ///
   /// In vi, this message translates to:
-  /// **'Nhập nghề nghiệp, nơi làm việc...'**
+  /// **'Nhập nghề nghiệp...'**
   String get occupationHint;
 
   /// No description provided for @parentLabel.

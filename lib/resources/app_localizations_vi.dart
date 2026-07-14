@@ -1409,13 +1409,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get educationLabel => 'Học vấn';
 
   @override
-  String get educationHint => 'Nhập trình độ học vấn, trường lớp...';
+  String get educationHint => 'Nhập trình độ học vấn...';
 
   @override
   String get occupationLabel => 'Nghề nghiệp';
 
   @override
-  String get occupationHint => 'Nhập nghề nghiệp, nơi làm việc...';
+  String get occupationHint => 'Nhập nghề nghiệp...';
 
   @override
   String get parentLabel => 'Cha/Mẹ';

@@ -130,17 +130,10 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             index: safeIndex,
             children: tabs.map((t) => t.page).toList(),
           ),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
+          bottomNavigationBar: CustomPaint(
+            painter: BottomNavCurvePainter(
               color: context.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: context.resolve(Colors.black.withValues(alpha: 0.08),
-                      Colors.white.withValues(alpha: 0.08)),
-                  blurRadius: 16,
-                  offset: const Offset(0, -4),
-                ),
-              ],
+              shadowColor: context.resolve(Colors.black, Colors.white),
             ),
             child: SafeArea(
               top: false,
@@ -350,3 +343,57 @@ class _BottomTabItemState extends State<_BottomTabItem>
     );
   }
 }
+
+
+class BottomNavCurvePainter extends CustomPainter {
+  final Color color;
+  final Color shadowColor;
+
+  BottomNavCurvePainter({required this.color, required this.shadowColor});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    path.moveTo(0, 0);
+
+    final centerX = size.width / 2;
+    // Bán kính và độ nhô lên của đường cong
+    const curveWidth = 90.0;
+    const curveHeight = 16.0;
+
+    path.lineTo(centerX - curveWidth / 2, 0);
+
+    // Vẽ đường cong lượn mượt mà đi lên và đi xuống
+    path.cubicTo(
+      centerX - curveWidth / 2.5, 0,
+      centerX - curveWidth / 3.5, -curveHeight,
+      centerX, -curveHeight,
+    );
+    path.cubicTo(
+      centerX + curveWidth / 3.5, -curveHeight,
+      centerX + curveWidth / 2.5, 0,
+      centerX + curveWidth / 2, 0,
+    );
+
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+
+    // Vẽ bóng đổ phía sau
+    final shadowPaint = Paint()
+      ..color = shadowColor.withValues(alpha: 0.08)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.outer, 8);
+
+    canvas.drawPath(path, shadowPaint);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+

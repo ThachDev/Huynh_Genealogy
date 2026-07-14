@@ -162,7 +162,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Transform.translate(
-                                    offset: const Offset(0, -10),
+                                    offset: const Offset(0, -14),
                                     child: Container(
                                       width: 48,
                                       height: 48,
@@ -171,8 +171,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                         color: context.primary,
                                         boxShadow: [
                                           BoxShadow(
-                                            color: context.primary
-                                                .withValues(alpha: 0.3),
+                                            color: context.primary.withValues(alpha: 0.3),
                                             blurRadius: 8,
                                             offset: const Offset(0, 4),
                                           ),
@@ -186,17 +185,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                         config.icon,
                                         color: Colors.white,
                                         size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  Transform.translate(
-                                    offset: const Offset(0, -6),
-                                    child: Text(
-                                      config.label,
-                                      style: GoogleFonts.beVietnamPro(
-                                        fontSize: 9.5,
-                                        fontWeight: FontWeight.bold,
-                                        color: context.primary,
                                       ),
                                     ),
                                   ),

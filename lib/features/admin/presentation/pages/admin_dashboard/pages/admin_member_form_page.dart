@@ -67,6 +67,14 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   Gender _gender = Gender.male;
   MaritalStatus _maritalStatus = MaritalStatus.single;
   bool _isAlive = true;
+  String? _selectedEducationOption;
+  static const List<String> _predefinedEducation = [
+    'Tiểu học',
+    'Trung học cơ sở',
+    'Trung học phổ thông',
+    'Đại Học',
+    'Cao Học',
+  ];
 
   String? _dateOfBirth;
   String? _dateOfDeath;
@@ -194,9 +202,13 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       phone: _phoneController.text.trim().isEmpty
           ? null
           : _phoneController.text.trim(),
-      education: _educationController.text.trim().isEmpty
-          ? null
-          : _educationController.text.trim(),
+      education: (_selectedEducationOption == 'Khác')
+          ? (_educationController.text.trim().isEmpty
+              ? null
+              : _educationController.text.trim())
+          : (_selectedEducationOption == null || _selectedEducationOption!.isEmpty
+              ? null
+              : _selectedEducationOption),
       occupation: _occupationController.text.trim().isEmpty
           ? null
           : _occupationController.text.trim(),
@@ -260,6 +272,15 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               _phoneController.text = m.phone ?? '';
               _educationController.text = m.education ?? '';
               _occupationController.text = m.occupation ?? '';
+              if (m.education != null && m.education!.isNotEmpty) {
+                if (_predefinedEducation.contains(m.education)) {
+                  _selectedEducationOption = m.education;
+                } else {
+                  _selectedEducationOption = 'Khác';
+                }
+              } else {
+                _selectedEducationOption = null;
+              }
               _gender = m.gender;
               _maritalStatus = m.maritalStatus;
               _isAlive = m.isAlive;
@@ -749,16 +770,47 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                   ),
                                   const SizedBox(height: 16),
                                   _buildTextField(
-                                    controller: _educationController,
-                                    label: l10n.educationLabel,
-                                    hintText: l10n.educationHint,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  _buildTextField(
                                     controller: _occupationController,
                                     label: l10n.occupationLabel,
                                     hintText: l10n.occupationHint,
                                   ),
+                                  const SizedBox(height: 16),
+                                  _buildDropdown<String?>(
+                                    label: l10n.educationLabel,
+                                    value: _selectedEducationOption,
+                                    items: [
+                                      DropdownItem<String?>(
+                                        value: null,
+                                        child: Text(l10n.genderUnknown),
+                                      ),
+                                      ..._predefinedEducation.map((edu) => DropdownItem<String?>(
+                                        value: edu,
+                                        child: Text(edu),
+                                      )),
+                                      const DropdownItem<String?>(
+                                        value: 'Khác',
+                                        child: Text('Khác'),
+                                      ),
+                                    ],
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _selectedEducationOption = val;
+                                        if (val != 'Khác') {
+                                          _educationController.text = val ?? '';
+                                        } else {
+                                          _educationController.clear();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  if (_selectedEducationOption == 'Khác') ...[
+                                    const SizedBox(height: 16),
+                                    _buildTextField(
+                                      controller: _educationController,
+                                      label: 'Nhập học vấn khác',
+                                      hintText: l10n.educationHint,
+                                    ),
+                                  ],
                                   const SizedBox(height: 16),
                                   _buildDropdown<int?>(
                                     label: l10n.parentLabel,

@@ -50,6 +50,36 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         r == 'CREATOR';
   }
 
+  Widget _buildFABIcon(IconData icon, BuildContext context) {
+    if (icon == LucideIcons.gitBranch || icon == LucideIcons.calendar) {
+      return Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          Icon(icon, color: Colors.white, size: 20),
+          Positioned(
+            right: -5,
+            bottom: -5,
+            child: Container(
+              padding: const EdgeInsets.all(0.5),
+              decoration: BoxDecoration(
+                color: context.primary,
+                shape: BoxShape.circle,
+                border: Border.all(color: context.surface, width: 1.5),
+              ),
+              child: const Icon(
+                LucideIcons.plus,
+                color: Colors.white,
+                size: 7,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return Icon(icon, color: Colors.white, size: 20);
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = context.select<AuthBloc, AuthState>((bloc) => bloc.state);
@@ -171,7 +201,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                         color: context.primary,
                                         boxShadow: [
                                           BoxShadow(
-                                            color: context.primary.withValues(alpha: 0.3),
+                                            color: context.primary
+                                                .withValues(alpha: 0.3),
                                             blurRadius: 8,
                                             offset: const Offset(0, 4),
                                           ),
@@ -181,11 +212,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                           width: 3.5,
                                         ),
                                       ),
-                                      child: Icon(
-                                        config.icon,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
+                                      child:
+                                          _buildFABIcon(config.icon, context),
                                     ),
                                   ),
                                 ],

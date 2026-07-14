@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../events.dart';
 
 class AdminEventFormPage extends StatefulWidget {
@@ -82,16 +83,18 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
       final formattedDate =
           "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
       setState(() {
-        _selectedDate = "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+        _selectedDate =
+            "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
         _dateController.text = formattedDate;
       });
     }
   }
 
   void _submitForm() {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
     if (_selectedDate.isEmpty) {
-      AppSnackBar.error(context, 'Vui lòng chọn ngày diễn ra sự kiện');
+      AppSnackBar.error(context, l10n.selectEventDateError);
       return;
     }
 
@@ -111,8 +114,9 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEdit = widget.event != null;
-    final title = isEdit ? 'Sửa Sự Kiện' : 'Thêm Sự Kiện';
+    final title = isEdit ? l10n.editEventTitle : l10n.addEventTitle;
 
     return Scaffold(
       backgroundColor: context.background,
@@ -154,14 +158,14 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                       // Tiêu đề sự kiện
                       AppOutlineTextField(
                         controller: _titleController,
-                        label: 'Tên sự kiện',
-                        hintText: 'VD: Ngày giỗ tổ dòng họ...',
+                        label: l10n.eventNameLabel,
+                        hintText: l10n.eventNameHint,
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
-                            return 'Vui lòng nhập tên sự kiện';
+                            return l10n.eventNameRequired;
                           }
                           if (val.trim().length < 2) {
-                            return 'Tên sự kiện phải từ 2 ký tự';
+                            return l10n.eventNameMinLength;
                           }
                           return null;
                         },
@@ -174,12 +178,12 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                         child: AbsorbPointer(
                           child: AppOutlineTextField(
                             controller: _dateController,
-                            label: 'Ngày diễn ra',
-                            hintText: 'Chọn ngày...',
+                            label: l10n.eventDateFormLabel,
+                            hintText: l10n.selectDateHint,
                             suffixIcon: const Icon(LucideIcons.calendar),
                             validator: (val) {
                               if (val == null || val.isEmpty) {
-                                return 'Vui lòng chọn ngày';
+                                return l10n.selectDateRequired;
                               }
                               return null;
                             },
@@ -192,7 +196,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                       Row(
                         children: [
                           Text(
-                            'Sử dụng ngày âm lịch',
+                            l10n.useLunarCalendar,
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -212,8 +216,8 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                       // Mô tả
                       AppOutlineTextField(
                         controller: _descriptionController,
-                        label: 'Mô tả chi tiết',
-                        hintText: 'Nhập mô tả về sự kiện (địa điểm, nội dung)...',
+                        label: l10n.eventDescriptionLabel,
+                        hintText: l10n.eventDescriptionHint,
                         maxLines: 4,
                       ),
                       const SizedBox(height: 24),
@@ -223,7 +227,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                         width: double.infinity,
                         height: 48,
                         child: AppButton(
-                          label: 'Lưu sự kiện',
+                          label: l10n.saveEventButton,
                           onPressed: _submitForm,
                         ),
                       ),

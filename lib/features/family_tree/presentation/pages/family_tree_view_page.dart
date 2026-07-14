@@ -546,14 +546,14 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                               nodeHeight: _nodeHeight,
                               linePaint: Paint()
                                 ..color = context.resolve(
-                                    const Color(0xFFD4AF37),
+                                    context.accent,
                                     Colors.grey.shade700)
                                 ..strokeWidth = 3.0
                                 ..strokeCap = StrokeCap.round
                                 ..style = PaintingStyle.stroke,
                               spousePaint: Paint()
                                 ..color = context.resolve(
-                                    const Color(0xFFD4AF37)
+                                    context.accent
                                         .withValues(alpha: 0.8),
                                     Colors.grey.shade700.withValues(alpha: 0.8))
                                 ..strokeWidth = 2.0
@@ -823,15 +823,16 @@ class MemberSearchDelegate extends SearchDelegate<int?> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return _buildSuggestions();
+    return _buildSuggestions(context);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return _buildSuggestions();
+    return _buildSuggestions(context);
   }
 
-  Widget _buildSuggestions() {
+  Widget _buildSuggestions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final matches = members
         .where((m) => m.fullName.toLowerCase().contains(query.toLowerCase()))
         .toList();
@@ -848,7 +849,7 @@ class MemberSearchDelegate extends SearchDelegate<int?> {
             child: member.avatarUrl == null ? const Icon(Icons.person) : null,
           ),
           title: Text(member.fullName),
-          subtitle: Text('Thế hệ ${member.generation ?? 0}'),
+          subtitle: Text(l10n.generationBadge('${member.generation ?? 0}')),
           onTap: () {
             close(context, member.id);
           },

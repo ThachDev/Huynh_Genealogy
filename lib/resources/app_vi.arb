@@ -193,6 +193,7 @@
   "navOverview": "Tổng quan",
   "navFamilyTree": "Cây gia phả",
   "navFamilyFund": "Quỹ gia tộc",
+  "navEvents": "Sự kiện",
   "navSettings": "Cài đặt",
   "errGenerationRequired": "Vui lòng nhập thế hệ",
   "errGenerationMustBeNumber": "Thế hệ phải là số",
@@ -650,5 +651,44 @@
         "type": "int"
       }
     }
-  }
+  },
+  "eventsListTitle": "Sự Kiện Dòng Tộc",
+  "noEventsMessage": "Chưa có sự kiện nào được tạo",
+  "errorOccurred": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+  "lunarCalendar": "Âm lịch",
+  "deleteEventTitle": "Xoá sự kiện",
+  "deleteEventConfirm": "Bạn có chắc chắn muốn xoá sự kiện \"{title}\"?",
+  "@deleteEventConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "addEventTitle": "Thêm Sự Kiện",
+  "editEventTitle": "Sửa Sự Kiện",
+  "selectEventDateError": "Vui lòng chọn ngày diễn ra sự kiện",
+  "eventNameLabel": "Tên sự kiện",
+  "eventNameHint": "VD: Ngày giỗ tổ dòng họ...",
+  "eventNameRequired": "Vui lòng nhập tên sự kiện",
+  "eventNameMinLength": "Tên sự kiện phải từ 2 ký tự",
+  "eventDateFormLabel": "Ngày diễn ra",
+  "selectDateHint": "Chọn ngày...",
+  "selectDateRequired": "Vui lòng chọn ngày",
+  "useLunarCalendar": "Sử dụng ngày âm lịch",
+  "eventDescriptionLabel": "Mô tả chi tiết",
+  "eventDescriptionHint": "Nhập mô tả về sự kiện (địa điểm, nội dung)...",
+  "saveEventButton": "Lưu sự kiện",
+  "educationPrimary": "Tiểu học",
+  "educationSecondary": "Trung học cơ sở",
+  "educationHighSchool": "Trung học phổ thông",
+  "educationUniversity": "Đại Học",
+  "educationPostgraduate": "Cao Học",
+  "otherLabel": "Khác",
+  "inputOtherEducationLabel": "Nhập học vấn khác",
+  "memberDetailTitle": "Chi tiết thành viên",
+  "fatherLabel": "Cha",
+  "motherLabel": "Mẹ",
+  "addChildTooltip": "Thêm Con",
+  "addSpouseTooltip": "Thêm Vợ/Chồng"
 }

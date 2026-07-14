@@ -50,36 +50,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         r == 'CREATOR';
   }
 
-  Widget _buildFABIcon(IconData icon, BuildContext context) {
-    if (icon == LucideIcons.gitBranch || icon == LucideIcons.calendar) {
-      return Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          Icon(icon, color: Colors.white, size: 20),
-          Positioned(
-            right: -5,
-            bottom: -5,
-            child: Container(
-              padding: const EdgeInsets.all(0.5),
-              decoration: BoxDecoration(
-                color: context.primary,
-                shape: BoxShape.circle,
-                border: Border.all(color: context.surface, width: 1.5),
-              ),
-              child: const Icon(
-                LucideIcons.plus,
-                color: Colors.white,
-                size: 7,
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-    return Icon(icon, color: Colors.white, size: 20);
-  }
-
   @override
   Widget build(BuildContext context) {
     final authState = context.select<AuthBloc, AuthState>((bloc) => bloc.state);
@@ -115,16 +85,16 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           ));
 
           tabs.add(_TabConfig(
-            icon: LucideIcons.network,
-            label: l10n.navFamilyTree,
-            page: const FamilyTreeViewPage(),
+            icon: LucideIcons.calendarDays,
+            label: l10n.navEvents,
+            page: EventsListPage(
+                familyId: familyId ?? 0, isActive: safeIndex == 1),
           ));
 
           tabs.add(_TabConfig(
-            icon: LucideIcons.calendarDays,
-            label: 'Sự kiện',
-            page: EventsListPage(
-                familyId: familyId ?? 0, isActive: safeIndex == 2),
+            icon: LucideIcons.network,
+            label: l10n.navFamilyTree,
+            page: const FamilyTreeViewPage(),
           ));
 
           tabs.add(_TabConfig(
@@ -141,16 +111,16 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           ));
 
           tabs.add(_TabConfig(
-            icon: LucideIcons.network,
-            label: l10n.navFamilyTree,
-            page: const FamilyTreeViewPage(),
+            icon: LucideIcons.calendarDays,
+            label: l10n.navEvents,
+            page: EventsListPage(
+                familyId: familyId ?? 0, isActive: safeIndex == 1),
           ));
 
           tabs.add(_TabConfig(
-            icon: LucideIcons.calendarDays,
-            label: 'Sự kiện',
-            page: EventsListPage(
-                familyId: familyId ?? 0, isActive: safeIndex == 2),
+            icon: LucideIcons.network,
+            label: l10n.navFamilyTree,
+            page: const FamilyTreeViewPage(),
           ));
 
           tabs.add(_TabConfig(
@@ -212,8 +182,11 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                           width: 3.5,
                                         ),
                                       ),
-                                      child:
-                                          _buildFABIcon(config.icon, context),
+                                      child: Icon(
+                                        config.icon,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -233,7 +206,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                           onTap: () {
                             setState(() {
                               _currentIndex = tabIndex;
-                              if (tabIndex == 1 || tabIndex == 3) {
+                              if (tabIndex == 2 || tabIndex == 3) {
                                 UserMainNavigationPage.fabNotifier.value = null;
                               }
                             });

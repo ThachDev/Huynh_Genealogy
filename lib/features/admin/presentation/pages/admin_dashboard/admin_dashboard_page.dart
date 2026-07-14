@@ -335,7 +335,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   context, user, headerHeight, familyName, inviteCode),
             ),
             Positioned(
-              top: headerHeight + 45,
+              top: headerHeight + 60,
               left: 0,
               right: 0,
               bottom: 0,
@@ -494,15 +494,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           children: [
             _buildSectionHeader(
               l10n.memberListTitle,
-              addLabel: l10n.addMemberLabel,
-              onAdd: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AdminMemberFormPage(),
-                  ),
-                );
-              },
             ),
             _buildSearchBar(l10n.searchMembersHint),
             if (filteredMembers.isEmpty)
@@ -560,8 +551,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           children: [
             _buildSectionHeader(
               l10n.branchListTitle,
-              addLabel: l10n.addBranchLabel,
-              onAdd: () => _openBranchForm(context),
             ),
             _buildSearchBar(l10n.searchBranchesHint),
             if (filteredBranches.isEmpty)

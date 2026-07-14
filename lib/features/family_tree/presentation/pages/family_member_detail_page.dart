@@ -38,7 +38,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
       backgroundColor: context.background,
       extendBodyBehindAppBar: true,
       appBar: AppAppBar(
-        title: 'Chi tiết thành viên',
+        title: l10n.memberDetailTitle,
         transparent: true,
         actions: canEdit
             ? [
@@ -245,17 +245,17 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                     return _buildInfoSection(l10n.familyRelationSectionTitle, [
                       _buildInfoRow(
                         LucideIcons.user,
-                        'Cha',
+                        l10n.fatherLabel,
                         father?.fullName ?? '-',
                       ),
                       _buildInfoRow(
                         LucideIcons.user,
-                        'Mẹ',
+                        l10n.motherLabel,
                         mother?.fullName ?? '-',
                       ),
                       _buildInfoRow(
                         LucideIcons.heart,
-                        'Vợ/Chồng',
+                        l10n.spouseLabel,
                         spouse?.fullName ?? '-',
                       ),
                       _buildInfoRow(

@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
-import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../core/widgets/widgets.dart';
@@ -418,7 +417,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                     borderRadius: BorderRadius.circular(12),
                                     color: context.resolve(
                                         const Color(0xFFFCFAF8),
-                                        AppColors.surfaceDark),
+                                        context.surface),
                                   ),
                                   child: IconButton(
                                     onPressed: () {

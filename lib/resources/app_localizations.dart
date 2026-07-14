@@ -968,6 +968,12 @@ abstract class AppLocalizations {
   /// **'Quỹ gia tộc'**
   String get navFamilyFund;
 
+  /// No description provided for @navEvents.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sự kiện'**
+  String get navEvents;
+
   /// No description provided for @navSettings.
   ///
   /// In vi, this message translates to:
@@ -3097,6 +3103,198 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Hướng dẫn sử dụng'**
   String get usageGuideTitle;
+
+  /// No description provided for @eventsListTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sự Kiện Dòng Tộc'**
+  String get eventsListTitle;
+
+  /// No description provided for @noEventsMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có sự kiện nào được tạo'**
+  String get noEventsMessage;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có lỗi xảy ra. Vui lòng thử lại.'**
+  String get errorOccurred;
+
+  /// No description provided for @lunarCalendar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Âm lịch'**
+  String get lunarCalendar;
+
+  /// No description provided for @deleteEventTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá sự kiện'**
+  String get deleteEventTitle;
+
+  /// No description provided for @deleteEventConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn xoá sự kiện \"{title}\"?'**
+  String deleteEventConfirm(String title);
+
+  /// No description provided for @addEventTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm Sự Kiện'**
+  String get addEventTitle;
+
+  /// No description provided for @editEventTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa Sự Kiện'**
+  String get editEventTitle;
+
+  /// No description provided for @selectEventDateError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chọn ngày diễn ra sự kiện'**
+  String get selectEventDateError;
+
+  /// No description provided for @eventNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên sự kiện'**
+  String get eventNameLabel;
+
+  /// No description provided for @eventNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Ngày giỗ tổ dòng họ...'**
+  String get eventNameHint;
+
+  /// No description provided for @eventNameRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập tên sự kiện'**
+  String get eventNameRequired;
+
+  /// No description provided for @eventNameMinLength.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên sự kiện phải từ 2 ký tự'**
+  String get eventNameMinLength;
+
+  /// No description provided for @eventDateFormLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày diễn ra'**
+  String get eventDateFormLabel;
+
+  /// No description provided for @selectDateHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày...'**
+  String get selectDateHint;
+
+  /// No description provided for @selectDateRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chọn ngày'**
+  String get selectDateRequired;
+
+  /// No description provided for @useLunarCalendar.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sử dụng ngày âm lịch'**
+  String get useLunarCalendar;
+
+  /// No description provided for @eventDescriptionLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả chi tiết'**
+  String get eventDescriptionLabel;
+
+  /// No description provided for @eventDescriptionHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập mô tả về sự kiện (địa điểm, nội dung)...'**
+  String get eventDescriptionHint;
+
+  /// No description provided for @saveEventButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu sự kiện'**
+  String get saveEventButton;
+
+  /// No description provided for @educationPrimary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiểu học'**
+  String get educationPrimary;
+
+  /// No description provided for @educationSecondary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung học cơ sở'**
+  String get educationSecondary;
+
+  /// No description provided for @educationHighSchool.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung học phổ thông'**
+  String get educationHighSchool;
+
+  /// No description provided for @educationUniversity.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đại Học'**
+  String get educationUniversity;
+
+  /// No description provided for @educationPostgraduate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cao Học'**
+  String get educationPostgraduate;
+
+  /// No description provided for @otherLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get otherLabel;
+
+  /// No description provided for @inputOtherEducationLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập học vấn khác'**
+  String get inputOtherEducationLabel;
+
+  /// No description provided for @memberDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết thành viên'**
+  String get memberDetailTitle;
+
+  /// No description provided for @fatherLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cha'**
+  String get fatherLabel;
+
+  /// No description provided for @motherLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẹ'**
+  String get motherLabel;
+
+  /// No description provided for @addChildTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm Con'**
+  String get addChildTooltip;
+
+  /// No description provided for @addSpouseTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm Vợ/Chồng'**
+  String get addSpouseTooltip;
 }
 
 class _AppLocalizationsDelegate

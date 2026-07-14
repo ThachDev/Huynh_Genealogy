@@ -494,6 +494,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navFamilyFund => 'Family Fund';
 
   @override
+  String get navEvents => 'Events';
+
+  @override
   String get navSettings => 'Settings';
 
   @override
@@ -1649,4 +1652,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usageGuideTitle => 'Usage Guide';
+
+  @override
+  String get eventsListTitle => 'Clan Events';
+
+  @override
+  String get noEventsMessage => 'No events have been created yet';
+
+  @override
+  String get errorOccurred => 'An error occurred. Please try again.';
+
+  @override
+  String get lunarCalendar => 'Lunar';
+
+  @override
+  String get deleteEventTitle => 'Delete Event';
+
+  @override
+  String deleteEventConfirm(String title) {
+    return 'Are you sure you want to delete the event \"$title\"?';
+  }
+
+  @override
+  String get addEventTitle => 'Add Event';
+
+  @override
+  String get editEventTitle => 'Edit Event';
+
+  @override
+  String get selectEventDateError => 'Please select the event date';
+
+  @override
+  String get eventNameLabel => 'Event Name';
+
+  @override
+  String get eventNameHint => 'e.g. Ancestor\'s Death Anniversary...';
+
+  @override
+  String get eventNameRequired => 'Please enter the event name';
+
+  @override
+  String get eventNameMinLength => 'Event name must be at least 2 characters';
+
+  @override
+  String get eventDateFormLabel => 'Event Date';
+
+  @override
+  String get selectDateHint => 'Select date...';
+
+  @override
+  String get selectDateRequired => 'Please select the date';
+
+  @override
+  String get useLunarCalendar => 'Use Lunar Calendar';
+
+  @override
+  String get eventDescriptionLabel => 'Detailed Description';
+
+  @override
+  String get eventDescriptionHint =>
+      'Enter description of the event (location, content)...';
+
+  @override
+  String get saveEventButton => 'Save Event';
+
+  @override
+  String get educationPrimary => 'Primary School';
+
+  @override
+  String get educationSecondary => 'Secondary School';
+
+  @override
+  String get educationHighSchool => 'High School';
+
+  @override
+  String get educationUniversity => 'University';
+
+  @override
+  String get educationPostgraduate => 'Postgraduate';
+
+  @override
+  String get otherLabel => 'Other';
+
+  @override
+  String get inputOtherEducationLabel => 'Enter other education';
+
+  @override
+  String get memberDetailTitle => 'Member Details';
+
+  @override
+  String get fatherLabel => 'Father';
+
+  @override
+  String get motherLabel => 'Mother';
+
+  @override
+  String get addChildTooltip => 'Add Child';
+
+  @override
+  String get addSpouseTooltip => 'Add Spouse';
 }

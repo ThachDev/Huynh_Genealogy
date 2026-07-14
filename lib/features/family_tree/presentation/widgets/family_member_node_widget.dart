@@ -81,12 +81,13 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
               ? 160
               : 125,
           decoration: BoxDecoration(
-            color: context.resolve(const Color(0xFFFFFDF2),
-                const Color(0xFF1E1E1E)), // Giấy gió / Parchment
+            color: context.background, // Giấy gió / Parchment
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
+                color: context.resolve(
+                    Colors.black.withValues(alpha: 0.15),
+                    Colors.transparent),
                 blurRadius: 6,
                 offset: const Offset(0, 3),
               ),
@@ -141,8 +142,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: context.resolve(
-                              const Color(0xFF7D0C0E), Colors.white),
+                          color: context.primary,
                           height: 1.1,
                         ),
                       ),
@@ -248,7 +248,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                               GestureDetector(
                                 onTap: widget.onAddChildTap,
                                 child: Tooltip(
-                                  message: 'Thêm Con',
+                                  message: l10n.addChildTooltip,
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12.0, vertical: 4.0),
@@ -264,7 +264,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                               GestureDetector(
                                 onTap: widget.onAddSpouseTap,
                                 child: Tooltip(
-                                  message: 'Thêm Vợ/Chồng',
+                                  message: l10n.addSpouseTooltip,
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12.0, vertical: 4.0),

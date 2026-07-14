@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../../../features/auth/auth.dart';
 import '../../events.dart';
 
@@ -54,7 +55,7 @@ class _EventsListPageState extends State<EventsListPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         UserMainNavigationPage.fabNotifier.value = FABConfig(
           icon: LucideIcons.calendar,
-          label: 'Sự kiện +',
+          label: 'event_add_fab',
           onTap: () async {
             final result = await Navigator.push(
               context,
@@ -78,7 +79,7 @@ class _EventsListPageState extends State<EventsListPage> {
   @override
   void dispose() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (UserMainNavigationPage.fabNotifier.value?.label == 'Sự kiện +') {
+      if (UserMainNavigationPage.fabNotifier.value?.label == 'event_add_fab') {
         UserMainNavigationPage.fabNotifier.value = null;
       }
     });
@@ -87,6 +88,7 @@ class _EventsListPageState extends State<EventsListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.watch<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
@@ -95,8 +97,8 @@ class _EventsListPageState extends State<EventsListPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: const AppAppBar(
-        title: 'Sự Kiện Dòng Tộc',
+      appBar: AppAppBar(
+        title: l10n.eventsListTitle,
       ),
       floatingActionButton: null,
       body: BlocConsumer<EventsBloc, EventsState>(
@@ -116,9 +118,9 @@ class _EventsListPageState extends State<EventsListPage> {
           if (state is EventsLoaded) {
             final events = state.events;
             if (events.isEmpty) {
-              return const AppEmptyState(
+              return AppEmptyState(
                 icon: LucideIcons.calendarDays,
-                message: 'Chưa có sự kiện nào được tạo',
+                message: l10n.noEventsMessage,
               );
             }
 
@@ -132,28 +134,27 @@ class _EventsListPageState extends State<EventsListPage> {
             );
           }
 
-          return const Center(
-              child: Text('Đã có lỗi xảy ra. Vui lòng thử lại.'));
+          return Center(child: Text(l10n.errorOccurred));
         },
       ),
     );
   }
 
   Widget _buildEventCard(EventEntity event, bool canEdit) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color:
-            context.resolve(const Color(0xFFFFFDF2), const Color(0xFF1E1E1E)),
+        color: context.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: context.resolve(const Color(0xFFD4AF37).withValues(alpha: 0.3),
-              Colors.grey.shade800),
+          color: context.accent.withValues(alpha: 0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: context.resolve(
+                Colors.black.withValues(alpha: 0.05), Colors.transparent),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -195,12 +196,11 @@ class _EventsListPageState extends State<EventsListPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 4, vertical: 2),
                       decoration: BoxDecoration(
-                        color: context.resolve(
-                            const Color(0xFFD4AF37), Colors.yellow.shade800),
+                        color: context.accent,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        'Âm lịch',
+                        l10n.lunarCalendar,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 8,
                           color: Colors.white,
@@ -223,8 +223,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: context.resolve(
-                          const Color(0xFF7D0C0E), Colors.white),
+                      color: context.primary,
                     ),
                   ),
                   if (event.description != null &&
@@ -274,23 +273,25 @@ class _EventsListPageState extends State<EventsListPage> {
                   }
                 },
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'edit',
                     child: Row(
                       children: [
-                        Icon(LucideIcons.edit3, size: 16),
-                        SizedBox(width: 8),
-                        Text('Sửa'),
+                        const Icon(LucideIcons.edit3, size: 16),
+                        const SizedBox(width: 8),
+                        Text(l10n.editLabel),
                       ],
                     ),
                   ),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'delete',
                     child: Row(
                       children: [
-                        Icon(LucideIcons.trash2, size: 16, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('Xoá', style: TextStyle(color: Colors.red)),
+                        const Icon(LucideIcons.trash2,
+                            size: 16, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Text(l10n.deleteLabel,
+                            style: const TextStyle(color: Colors.red)),
                       ],
                     ),
                   ),
@@ -324,20 +325,25 @@ class _EventsListPageState extends State<EventsListPage> {
   }
 
   Future<bool?> _showConfirmDeleteDialog(EventEntity event) {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Xoá sự kiện'),
-        content: Text('Bạn có chắc chắn muốn xoá sự kiện "${event.title}"?'),
+        backgroundColor: context.surface,
+        title: Text(l10n.deleteEventTitle,
+            style: GoogleFonts.beVietnamPro(color: context.textPrimary)),
+        content: Text(l10n.deleteEventConfirm(event.title),
+            style: GoogleFonts.inter(color: context.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Huỷ'),
+            child: Text(l10n.cancelLabel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Xoá', style: TextStyle(color: Colors.white)),
+            child: Text(l10n.deleteLabel,
+                style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),

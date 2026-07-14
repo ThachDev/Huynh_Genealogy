@@ -303,8 +303,9 @@ class _AdminClanAndPersonalInfoPageState
                                         color: context.accent, width: 2),
                                     boxShadow: [
                                       BoxShadow(
-                                        color:
+                                        color: context.resolve(
                                             Colors.black.withValues(alpha: 0.1),
+                                            Colors.transparent),
                                         blurRadius: 8,
                                         offset: const Offset(0, 4),
                                       ),

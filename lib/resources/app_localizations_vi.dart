@@ -494,6 +494,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get navFamilyFund => 'Quỹ gia tộc';
 
   @override
+  String get navEvents => 'Sự kiện';
+
+  @override
   String get navSettings => 'Cài đặt';
 
   @override
@@ -1654,4 +1657,103 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get usageGuideTitle => 'Hướng dẫn sử dụng';
+
+  @override
+  String get eventsListTitle => 'Sự Kiện Dòng Tộc';
+
+  @override
+  String get noEventsMessage => 'Chưa có sự kiện nào được tạo';
+
+  @override
+  String get errorOccurred => 'Đã có lỗi xảy ra. Vui lòng thử lại.';
+
+  @override
+  String get lunarCalendar => 'Âm lịch';
+
+  @override
+  String get deleteEventTitle => 'Xoá sự kiện';
+
+  @override
+  String deleteEventConfirm(String title) {
+    return 'Bạn có chắc chắn muốn xoá sự kiện \"$title\"?';
+  }
+
+  @override
+  String get addEventTitle => 'Thêm Sự Kiện';
+
+  @override
+  String get editEventTitle => 'Sửa Sự Kiện';
+
+  @override
+  String get selectEventDateError => 'Vui lòng chọn ngày diễn ra sự kiện';
+
+  @override
+  String get eventNameLabel => 'Tên sự kiện';
+
+  @override
+  String get eventNameHint => 'VD: Ngày giỗ tổ dòng họ...';
+
+  @override
+  String get eventNameRequired => 'Vui lòng nhập tên sự kiện';
+
+  @override
+  String get eventNameMinLength => 'Tên sự kiện phải từ 2 ký tự';
+
+  @override
+  String get eventDateFormLabel => 'Ngày diễn ra';
+
+  @override
+  String get selectDateHint => 'Chọn ngày...';
+
+  @override
+  String get selectDateRequired => 'Vui lòng chọn ngày';
+
+  @override
+  String get useLunarCalendar => 'Sử dụng ngày âm lịch';
+
+  @override
+  String get eventDescriptionLabel => 'Mô tả chi tiết';
+
+  @override
+  String get eventDescriptionHint =>
+      'Nhập mô tả về sự kiện (địa điểm, nội dung)...';
+
+  @override
+  String get saveEventButton => 'Lưu sự kiện';
+
+  @override
+  String get educationPrimary => 'Tiểu học';
+
+  @override
+  String get educationSecondary => 'Trung học cơ sở';
+
+  @override
+  String get educationHighSchool => 'Trung học phổ thông';
+
+  @override
+  String get educationUniversity => 'Đại Học';
+
+  @override
+  String get educationPostgraduate => 'Cao Học';
+
+  @override
+  String get otherLabel => 'Khác';
+
+  @override
+  String get inputOtherEducationLabel => 'Nhập học vấn khác';
+
+  @override
+  String get memberDetailTitle => 'Chi tiết thành viên';
+
+  @override
+  String get fatherLabel => 'Cha';
+
+  @override
+  String get motherLabel => 'Mẹ';
+
+  @override
+  String get addChildTooltip => 'Thêm Con';
+
+  @override
+  String get addSpouseTooltip => 'Thêm Vợ/Chồng';
 }

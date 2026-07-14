@@ -9,7 +9,6 @@ import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
@@ -51,6 +50,23 @@ class AdminMemberFormPage extends StatefulWidget {
 }
 
 class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
+  String _getEducationText(String edu, AppLocalizations l10n) {
+    switch (edu) {
+      case 'Tiểu học':
+        return l10n.educationPrimary;
+      case 'Trung học cơ sở':
+        return l10n.educationSecondary;
+      case 'Trung học phổ thông':
+        return l10n.educationHighSchool;
+      case 'Đại Học':
+        return l10n.educationUniversity;
+      case 'Cao Học':
+        return l10n.educationPostgraduate;
+      default:
+        return edu;
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
@@ -638,7 +654,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                             decoration: InputDecoration(
                                               fillColor: context.resolve(
                                                 const Color(0xFFFCFAF8),
-                                                AppColors.surfaceDark,
+                                                context.surface,
                                               ),
                                               filled: true,
                                               labelText: l10n.statusLabel,
@@ -781,15 +797,15 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     items: [
                                       DropdownItem<String?>(
                                         value: null,
-                                        child: Text(l10n.genderUnknown),
+                                        child: Text(l10n.noSelectionLabel),
                                       ),
                                       ..._predefinedEducation.map((edu) => DropdownItem<String?>(
                                         value: edu,
-                                        child: Text(edu),
+                                        child: Text(_getEducationText(edu, l10n)),
                                       )),
-                                      const DropdownItem<String?>(
+                                      DropdownItem<String?>(
                                         value: 'Khác',
-                                        child: Text('Khác'),
+                                        child: Text(l10n.otherLabel),
                                       ),
                                     ],
                                     onChanged: (val) {
@@ -807,7 +823,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     const SizedBox(height: 16),
                                     _buildTextField(
                                       controller: _educationController,
-                                      label: 'Nhập học vấn khác',
+                                      label: l10n.inputOtherEducationLabel,
                                       hintText: l10n.educationHint,
                                     ),
                                   ],
@@ -1059,9 +1075,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                 width: 110,
                 height: 110,
                 decoration: BoxDecoration(
-                  color: context.isDarkMode
-                      ? AppColors.surfaceDark
-                      : const Color(0xFFEAE7E3),
+                  color: context.resolve(
+                    const Color(0xFFEAE7E3),
+                    context.surface,
+                  ),
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: context.resolve(
@@ -1079,10 +1096,10 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                   color: context.appBarBg,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   LucideIcons.camera,
                   size: 16,
-                  color: AppColors.gold,
+                  color: context.accent,
                 ),
               ),
             ],

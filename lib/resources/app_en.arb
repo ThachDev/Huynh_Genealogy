@@ -193,6 +193,7 @@
   "navOverview": "Overview",
   "navFamilyTree": "Family Tree",
   "navFamilyFund": "Family Fund",
+  "navEvents": "Events",
   "navSettings": "Settings",
   "errGenerationRequired": "Please enter the generation number",
   "errGenerationMustBeNumber": "Generation must be a number",
@@ -650,5 +651,44 @@
         "type": "int"
       }
     }
-  }
+  },
+  "eventsListTitle": "Clan Events",
+  "noEventsMessage": "No events have been created yet",
+  "errorOccurred": "An error occurred. Please try again.",
+  "lunarCalendar": "Lunar",
+  "deleteEventTitle": "Delete Event",
+  "deleteEventConfirm": "Are you sure you want to delete the event \"{title}\"?",
+  "@deleteEventConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "addEventTitle": "Add Event",
+  "editEventTitle": "Edit Event",
+  "selectEventDateError": "Please select the event date",
+  "eventNameLabel": "Event Name",
+  "eventNameHint": "e.g. Ancestor's Death Anniversary...",
+  "eventNameRequired": "Please enter the event name",
+  "eventNameMinLength": "Event name must be at least 2 characters",
+  "eventDateFormLabel": "Event Date",
+  "selectDateHint": "Select date...",
+  "selectDateRequired": "Please select the date",
+  "useLunarCalendar": "Use Lunar Calendar",
+  "eventDescriptionLabel": "Detailed Description",
+  "eventDescriptionHint": "Enter description of the event (location, content)...",
+  "saveEventButton": "Save Event",
+  "educationPrimary": "Primary School",
+  "educationSecondary": "Secondary School",
+  "educationHighSchool": "High School",
+  "educationUniversity": "University",
+  "educationPostgraduate": "Postgraduate",
+  "otherLabel": "Other",
+  "inputOtherEducationLabel": "Enter other education",
+  "memberDetailTitle": "Member Details",
+  "fatherLabel": "Father",
+  "motherLabel": "Mother",
+  "addChildTooltip": "Add Child",
+  "addSpouseTooltip": "Add Spouse"
 }

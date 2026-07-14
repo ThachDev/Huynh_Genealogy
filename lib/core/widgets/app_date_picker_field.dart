@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:vnlunar/vnlunar.dart';
-import '../theme/app_theme.dart';
 import '../theme/theme_extensions.dart';
+import '../../resources/app_localizations.dart';
 import 'app_lunar_calendar_picker.dart';
 
 class AppDatePickerField extends StatelessWidget {
@@ -21,7 +21,7 @@ class AppDatePickerField extends StatelessWidget {
   });
 
   /// Returns {solar, lunar} or null if can't parse
-  Map<String, String>? _parseDateParts() {
+  Map<String, String>? _parseDateParts(BuildContext context) {
     if (dateString == null) return null;
     final parts = dateString!.split('/');
     if (parts.length != 3) return null;
@@ -37,9 +37,10 @@ class AppDatePickerField extends StatelessWidget {
       final ld = lunar.day.toString().padLeft(2, '0');
       final lm = lunar.month.toString().padLeft(2, '0');
       final leap = lunar.leapMonth == true ? ' Nhuận' : '';
+      final l10n = AppLocalizations.of(context)!;
       return {
         'solar': '$sd/$sm/$year',
-        'lunar': '$ld/$lm$leap ÂL',
+        'lunar': '$ld/$lm$leap ${l10n.lunarCalendar}',
       };
     } catch (_) {
       return null;
@@ -47,7 +48,7 @@ class AppDatePickerField extends StatelessWidget {
   }
 
   Widget _buildDisplayText(BuildContext context) {
-    final parsed = _parseDateParts();
+    final parsed = _parseDateParts(context);
     if (parsed == null) {
       return Text(
         dateString ?? hintText,
@@ -115,7 +116,7 @@ class AppDatePickerField extends StatelessWidget {
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          fillColor: context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
+          fillColor: context.resolve(const Color(0xFFFCFAF8), context.surface),
           filled: true,
           labelText: label.toUpperCase(),
           labelStyle: GoogleFonts.inter(

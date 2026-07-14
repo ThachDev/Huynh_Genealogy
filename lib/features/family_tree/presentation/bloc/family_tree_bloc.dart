@@ -4,7 +4,7 @@ import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import 'package:giatocviet/core/domain/entity/family_entity.dart';
 import '../../domain/usecase/get_branches.dart';
 import '../../domain/usecase/get_members.dart';
-import '../../../admin/domain/usecase/get_family_detail.dart';
+import '../../../../core/domain/usecase/get_family_detail.dart';
 
 part 'family_tree_event.dart';
 part 'family_tree_state.dart';

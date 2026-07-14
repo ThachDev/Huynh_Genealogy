@@ -243,6 +243,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: title,
+        automaticallyImplyLeading: false,
       ),
       body: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
         listener: (context, state) async {

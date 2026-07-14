@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../repository/events_repository.dart';
+import '../../../../core/domain/repository/events_repository.dart';
 
 class DeleteEvent implements UseCase<bool, DeleteEventParams> {
   final EventsRepository repository;

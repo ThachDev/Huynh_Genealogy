@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entity/event_entity.dart';
-import '../repository/events_repository.dart';
+import '../../../../core/domain/entity/event_entity.dart';
+import '../../../../core/domain/repository/events_repository.dart';
 
 class SaveEvent implements UseCase<EventEntity, SaveEventParams> {
   final EventsRepository repository;

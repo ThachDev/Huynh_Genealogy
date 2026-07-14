@@ -5,7 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import '../../../events/presentation/pages/events_list_page.dart';
+import '../../../admin/admin.dart';
 import '../../../family_tree/family_tree.dart';
 import '../widgets/user_branch_card.dart';
 import '../../../auth/auth.dart';

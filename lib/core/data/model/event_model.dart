@@ -8,6 +8,11 @@ class EventModel extends EventEntity {
     required super.eventDate,
     super.isLunar,
     required super.familyId,
+    super.content,
+    super.imageUrl,
+    super.location,
+    super.type,
+    super.organizer,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
@@ -18,6 +23,11 @@ class EventModel extends EventEntity {
       eventDate: json['eventDate'] as String? ?? '',
       isLunar: _parseBool(json['isLunar'] ?? false),
       familyId: _parseInt(json['familyId']) ?? 0,
+      content: json['content'] as String?,
+      imageUrl: json['imageUrl'] as String?,
+      location: json['location'] as String?,
+      type: json['type'] as String? ?? 'event',
+      organizer: json['organizer'] as String?,
     );
   }
 
@@ -29,6 +39,11 @@ class EventModel extends EventEntity {
       'eventDate': eventDate,
       'isLunar': isLunar,
       'familyId': familyId,
+      'content': content,
+      'imageUrl': imageUrl,
+      'location': location,
+      'type': type,
+      'organizer': organizer,
     };
   }
 
@@ -40,6 +55,11 @@ class EventModel extends EventEntity {
       eventDate: entity.eventDate,
       isLunar: entity.isLunar,
       familyId: entity.familyId,
+      content: entity.content,
+      imageUrl: entity.imageUrl,
+      location: entity.location,
+      type: entity.type,
+      organizer: entity.organizer,
     );
   }
 

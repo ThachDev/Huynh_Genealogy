@@ -238,6 +238,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: title,
+        automaticallyImplyLeading: false,
         actions: [
           if (isEdit)
             IconButton(

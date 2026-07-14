@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecase/approve_request.dart';
 import '../../../domain/usecase/reject_request.dart';
 import '../../../domain/usecase/get_pending_requests.dart';
-import '../../../domain/usecase/get_family_detail.dart';
+import '../../../../../core/domain/usecase/get_family_detail.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../../../../core/domain/entity/family_entity.dart';
 

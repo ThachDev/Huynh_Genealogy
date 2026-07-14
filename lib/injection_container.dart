@@ -5,13 +5,17 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/network/dio_client.dart';
+import 'core/domain/repository/events_repository.dart';
+import 'core/domain/usecase/get_events.dart';
+import 'core/domain/usecase/get_family_detail.dart';
+import 'core/data/repository/events_repository_impl.dart';
+import 'core/data/source/events_remote_data_source.dart';
 
 // Features (Encapsulated Entry Points)
 import 'features/auth/auth.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/admin/admin.dart';
 import 'features/family_tree/family_tree.dart';
-import 'features/events/events.dart';
 
 final sl = GetIt.instance; // sl = Service Locator
 

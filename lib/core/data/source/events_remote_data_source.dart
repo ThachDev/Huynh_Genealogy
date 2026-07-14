@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../../../../core/errors/exceptions.dart';
+import '../../constants/app_constants.dart';
+import '../../errors/exceptions.dart';
 import '../model/event_model.dart';
 
 abstract class EventsRemoteDataSource {

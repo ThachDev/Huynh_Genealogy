@@ -42,6 +42,7 @@ class _EventsListPageState extends State<EventsListPage> {
       ),
       floatingActionButton: canEdit
           ? FloatingActionButton(
+              heroTag: 'events_list_fab',
               backgroundColor: context.primary,
               foregroundColor: Colors.white,
               onPressed: () async {

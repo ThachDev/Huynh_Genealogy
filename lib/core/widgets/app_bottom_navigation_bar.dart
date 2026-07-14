@@ -37,7 +37,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   Widget build(BuildContext context) {
     final authState = context.select<AuthBloc, AuthState>((bloc) => bloc.state);
     final role = authState is Authenticated ? authState.user.role : 'VIEWER';
-    final familyId = authState is Authenticated ? authState.user.familyId : null;
+    final familyId =
+        authState is Authenticated ? authState.user.familyId : null;
     final hasAdminPrivileges = _isAdminRole(role);
 
     if (!hasAdminPrivileges) {
@@ -58,7 +59,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final List<_TabConfig> tabs = [];
 
         if (showAdminInterface) {
-          // Admin: Tổng quan, Sự kiện, Cây gia phả, Cài đặt
           tabs.add(_TabConfig(
             icon: LucideIcons.layoutDashboard,
             label: l10n.navOverview,
@@ -83,7 +83,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             page: const AdminSettingsPage(),
           ));
         } else {
-          // User thường: Tổng quan, Sự kiện, Cây gia phả, Cài đặt
           tabs.add(_TabConfig(
             icon: LucideIcons.home,
             label: l10n.navOverview,
@@ -109,7 +108,6 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           ));
         }
 
-        // Đảm bảo currentIndex không vượt quá phạm vi nếu chế độ thay đổi
         final safeIndex = _currentIndex >= tabs.length ? 0 : _currentIndex;
 
         return Scaffold(

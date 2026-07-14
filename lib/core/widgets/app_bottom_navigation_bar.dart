@@ -93,7 +93,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.calendarDays,
             label: 'Sự kiện',
-            page: EventsListPage(familyId: familyId ?? 0, isActive: safeIndex == 2),
+            page: EventsListPage(
+                familyId: familyId ?? 0, isActive: safeIndex == 2),
           ));
 
           tabs.add(_TabConfig(
@@ -118,7 +119,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.calendarDays,
             label: 'Sự kiện',
-            page: EventsListPage(familyId: familyId ?? 0, isActive: safeIndex == 2),
+            page: EventsListPage(
+                familyId: familyId ?? 0, isActive: safeIndex == 2),
           ));
 
           tabs.add(_TabConfig(
@@ -169,7 +171,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                         color: context.primary,
                                         boxShadow: [
                                           BoxShadow(
-                                            color: context.primary.withValues(alpha: 0.3),
+                                            color: context.primary
+                                                .withValues(alpha: 0.3),
                                             blurRadius: 8,
                                             offset: const Offset(0, 4),
                                           ),
@@ -203,9 +206,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                           );
                         }
 
-                        final tabIndex = showFab
-                            ? (index < 2 ? index : index - 1)
-                            : index;
+                        final tabIndex =
+                            showFab ? (index < 2 ? index : index - 1) : index;
                         final tab = tabs[tabIndex];
 
                         return _BottomTabItem(
@@ -215,7 +217,9 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                           onTap: () {
                             setState(() {
                               _currentIndex = tabIndex;
-                              UserMainNavigationPage.fabNotifier.value = null;
+                              if (tabIndex == 1 || tabIndex == 3) {
+                                UserMainNavigationPage.fabNotifier.value = null;
+                              }
                             });
                           },
                           selectedColor: context.primary,

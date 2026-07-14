@@ -1402,6 +1402,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addressHint => 'Enter hometown, address info...';
 
   @override
+  String get educationLabel => 'Education';
+
+  @override
+  String get educationHint => 'Enter education, school...';
+
+  @override
+  String get occupationLabel => 'Occupation';
+
+  @override
+  String get occupationHint => 'Enter occupation, workplace...';
+
+  @override
   String get parentLabel => 'Parent';
 
   @override

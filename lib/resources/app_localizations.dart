@@ -2648,6 +2648,30 @@ abstract class AppLocalizations {
   /// **'Nhập thông tin quê quán, nơi ở...'**
   String get addressHint;
 
+  /// No description provided for @educationLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Học vấn'**
+  String get educationLabel;
+
+  /// No description provided for @educationHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập trình độ học vấn, trường lớp...'**
+  String get educationHint;
+
+  /// No description provided for @occupationLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nghề nghiệp'**
+  String get occupationLabel;
+
+  /// No description provided for @occupationHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập nghề nghiệp, nơi làm việc...'**
+  String get occupationHint;
+
   /// No description provided for @parentLabel.
   ///
   /// In vi, this message translates to:

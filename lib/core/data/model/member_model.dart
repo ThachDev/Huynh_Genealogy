@@ -22,6 +22,8 @@ class MemberModel extends MemberEntity {
     super.lunarBirthDate,
     super.lunarDeathDate,
     super.phone,
+    super.education,
+    super.occupation,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,8 @@ class MemberModel extends MemberEntity {
       lunarBirthDate: json['lunarBirthDate'] as String?,
       lunarDeathDate: json['lunarDeathDate'] as String?,
       phone: json['phone'] as String?,
+      education: json['education'] as String?,
+      occupation: json['occupation'] as String?,
     );
   }
 
@@ -70,6 +74,8 @@ class MemberModel extends MemberEntity {
       'lunarBirthDate': lunarBirthDate,
       'lunarDeathDate': lunarDeathDate,
       'phone': phone,
+      'education': education,
+      'occupation': occupation,
     };
   }
 
@@ -95,6 +101,8 @@ class MemberModel extends MemberEntity {
       lunarBirthDate: entity.lunarBirthDate,
       lunarDeathDate: entity.lunarDeathDate,
       phone: entity.phone,
+      education: entity.education,
+      occupation: entity.occupation,
     );
   }
 

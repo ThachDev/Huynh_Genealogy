@@ -195,6 +195,16 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                       l10n.placeOfBirthLabel,
                       widget.member.placeOfBirth ?? '-',
                     ),
+                    _buildInfoRow(
+                      LucideIcons.bookOpen,
+                      l10n.educationLabel,
+                      widget.member.education ?? '-',
+                    ),
+                    _buildInfoRow(
+                      LucideIcons.briefcase,
+                      l10n.occupationLabel,
+                      widget.member.occupation ?? '-',
+                    ),
                   ]),
                   const SizedBox(height: 20),
                   Builder(builder: (context) {

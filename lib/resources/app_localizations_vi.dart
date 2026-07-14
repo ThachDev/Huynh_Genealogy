@@ -1406,6 +1406,18 @@ class AppLocalizationsVi extends AppLocalizations {
   String get addressHint => 'Nhập thông tin quê quán, nơi ở...';
 
   @override
+  String get educationLabel => 'Học vấn';
+
+  @override
+  String get educationHint => 'Nhập trình độ học vấn, trường lớp...';
+
+  @override
+  String get occupationLabel => 'Nghề nghiệp';
+
+  @override
+  String get occupationHint => 'Nhập nghề nghiệp, nơi làm việc...';
+
+  @override
   String get parentLabel => 'Cha/Mẹ';
 
   @override

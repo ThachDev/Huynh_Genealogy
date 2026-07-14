@@ -60,6 +60,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   final _notesController = TextEditingController();
   final _avatarUrlController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _educationController = TextEditingController();
+  final _occupationController = TextEditingController();
 
   // Selected values
   Gender _gender = Gender.male;
@@ -149,6 +151,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     _notesController.dispose();
     _avatarUrlController.dispose();
     _phoneController.dispose();
+    _educationController.dispose();
+    _occupationController.dispose();
     super.dispose();
   }
 
@@ -190,6 +194,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       phone: _phoneController.text.trim().isEmpty
           ? null
           : _phoneController.text.trim(),
+      education: _educationController.text.trim().isEmpty
+          ? null
+          : _educationController.text.trim(),
+      occupation: _occupationController.text.trim().isEmpty
+          ? null
+          : _occupationController.text.trim(),
     );
 
     context.read<AdminMemberFormBloc>().add(SubmitAdminMemberFormEvent(member));
@@ -248,6 +258,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               _notesController.text = m.notes ?? '';
               _avatarUrlController.text = m.avatarUrl ?? '';
               _phoneController.text = m.phone ?? '';
+              _educationController.text = m.education ?? '';
+              _occupationController.text = m.occupation ?? '';
               _gender = m.gender;
               _maritalStatus = m.maritalStatus;
               _isAlive = m.isAlive;
@@ -734,6 +746,18 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                     controller: _placeOfBirthController,
                                     label: l10n.addressLabel,
                                     hintText: l10n.addressHint,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  _buildTextField(
+                                    controller: _educationController,
+                                    label: l10n.educationLabel,
+                                    hintText: l10n.educationHint,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  _buildTextField(
+                                    controller: _occupationController,
+                                    label: l10n.occupationLabel,
+                                    hintText: l10n.occupationHint,
                                   ),
                                   const SizedBox(height: 16),
                                   _buildDropdown<int?>(

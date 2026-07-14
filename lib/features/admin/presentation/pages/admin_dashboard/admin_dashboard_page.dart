@@ -33,7 +33,12 @@ import '../../widgets/admin_dashboard/pending_request_item_widget.dart';
 enum AdminDashboardTab { members, branches, pending }
 
 class AdminDashboardPage extends StatefulWidget {
-  const AdminDashboardPage({super.key});
+  final bool isActive;
+
+  const AdminDashboardPage({
+    super.key,
+    this.isActive = false,
+  });
 
   /// Role label & color helper
   static String roleLabel(String role, BuildContext context) {
@@ -78,6 +83,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   int _pendingLimit = 5;
 
   void _updateFAB() {
+    if (!widget.isActive) return;
+
     final authState = context.read<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
     final role = user?.role ?? 'VIEWER';
@@ -87,32 +94,42 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         roleUpper == 'EDITOR' ||
         roleUpper == 'CREATOR';
 
-    if (!canEdit) {
-      UserMainNavigationPage.fabNotifier.value = null;
-      return;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!canEdit) {
+        UserMainNavigationPage.fabNotifier.value = null;
+        return;
+      }
 
-    if (_selectedTab == AdminDashboardTab.members) {
-      UserMainNavigationPage.fabNotifier.value = FABConfig(
-        icon: LucideIcons.userPlus,
-        label: 'Thành viên +',
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AdminMemberFormPage(),
-            ),
-          ).then((_) => _loadTree());
-        },
-      );
-    } else if (_selectedTab == AdminDashboardTab.branches) {
-      UserMainNavigationPage.fabNotifier.value = FABConfig(
-        icon: LucideIcons.gitBranch,
-        label: 'Chi họ +',
-        onTap: () => _openBranchForm(context),
-      );
-    } else {
-      UserMainNavigationPage.fabNotifier.value = null;
+      if (_selectedTab == AdminDashboardTab.members) {
+        UserMainNavigationPage.fabNotifier.value = FABConfig(
+          icon: LucideIcons.userPlus,
+          label: 'Thành viên +',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminMemberFormPage(),
+              ),
+            ).then((_) => _loadTree());
+          },
+        );
+      } else if (_selectedTab == AdminDashboardTab.branches) {
+        UserMainNavigationPage.fabNotifier.value = FABConfig(
+          icon: LucideIcons.gitBranch,
+          label: 'Chi họ +',
+          onTap: () => _openBranchForm(context),
+        );
+      } else {
+        UserMainNavigationPage.fabNotifier.value = null;
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant AdminDashboardPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !oldWidget.isActive) {
+      _updateFAB();
     }
   }
 
@@ -126,7 +143,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadTree();
       _loadPendingRequests();
-      _updateFAB();
+      if (widget.isActive) {
+        _updateFAB();
+      }
     });
   }
 

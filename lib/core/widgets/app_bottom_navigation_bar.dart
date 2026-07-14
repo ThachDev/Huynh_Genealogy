@@ -72,6 +72,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final showAdminInterface = hasAdminPrivileges && isCurrentlyAdminMode;
         final l10n = AppLocalizations.of(context)!;
 
+        final safeIndex = _currentIndex >= 4 ? 0 : _currentIndex;
         // Xây dựng danh sách các trang dựa trên chế độ hiển thị
         final List<_TabConfig> tabs = [];
 
@@ -80,7 +81,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.layoutDashboard,
             label: l10n.navOverview,
-            page: const AdminDashboardPage(),
+            page: AdminDashboardPage(isActive: safeIndex == 0),
           ));
 
           tabs.add(_TabConfig(
@@ -92,7 +93,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.calendarDays,
             label: 'Sự kiện',
-            page: EventsListPage(familyId: familyId ?? 0),
+            page: EventsListPage(familyId: familyId ?? 0, isActive: safeIndex == 2),
           ));
 
           tabs.add(_TabConfig(
@@ -117,7 +118,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.calendarDays,
             label: 'Sự kiện',
-            page: EventsListPage(familyId: familyId ?? 0),
+            page: EventsListPage(familyId: familyId ?? 0, isActive: safeIndex == 2),
           ));
 
           tabs.add(_TabConfig(
@@ -127,33 +128,30 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           ));
         }
 
-        final safeIndex = _currentIndex >= tabs.length ? 0 : _currentIndex;
-
         return Scaffold(
           body: IndexedStack(
             index: safeIndex,
             children: tabs.map((t) => t.page).toList(),
           ),
-          bottomNavigationBar: CustomPaint(
-            painter: BottomNavCurvePainter(
-              color: context.surface,
-              shadowColor: context.resolve(Colors.black, Colors.white),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 0, bottom: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: List.generate(5, (index) {
-                    if (index == 2) {
-                      return ValueListenableBuilder<FABConfig?>(
-                        valueListenable: UserMainNavigationPage.fabNotifier,
-                        builder: (context, config, _) {
-                          final showFab = config != null && config.show;
-                          if (!showFab) {
-                            return const Expanded(child: SizedBox.shrink());
-                          }
+          bottomNavigationBar: ValueListenableBuilder<FABConfig?>(
+            valueListenable: UserMainNavigationPage.fabNotifier,
+            builder: (context, config, _) {
+              final showFab = config != null && config.show;
+
+              return CustomPaint(
+                painter: BottomNavCurvePainter(
+                  color: context.surface,
+                  shadowColor: context.resolve(Colors.black, Colors.white),
+                  hasCurve: showFab,
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: showFab ? 0 : 8, bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: List.generate(showFab ? 5 : 4, (index) {
+                        if (showFab && index == 2) {
                           return Expanded(
                             child: GestureDetector(
                               behavior: HitTestBehavior.opaque,
@@ -203,32 +201,35 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                               ),
                             ),
                           );
-                        },
-                      );
-                    }
+                        }
 
-                    final tabIndex = index < 2 ? index : index - 1;
-                    final tab = tabs[tabIndex];
-                    return _BottomTabItem(
-                      icon: tab.icon,
-                      label: tab.label,
-                      isSelected: safeIndex == tabIndex,
-                      onTap: () {
-                        setState(() {
-                          _currentIndex = tabIndex;
-                          UserMainNavigationPage.fabNotifier.value = null;
-                        });
-                      },
-                      selectedColor: context.primary,
-                      unselectedColor: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.6),
-                    );
-                  }),
+                        final tabIndex = showFab
+                            ? (index < 2 ? index : index - 1)
+                            : index;
+                        final tab = tabs[tabIndex];
+
+                        return _BottomTabItem(
+                          icon: tab.icon,
+                          label: tab.label,
+                          isSelected: safeIndex == tabIndex,
+                          onTap: () {
+                            setState(() {
+                              _currentIndex = tabIndex;
+                              UserMainNavigationPage.fabNotifier.value = null;
+                            });
+                          },
+                          selectedColor: context.primary,
+                          unselectedColor: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.6),
+                        );
+                      }),
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         );
       },
@@ -349,12 +350,16 @@ class _BottomTabItemState extends State<_BottomTabItem>
   }
 }
 
-
 class BottomNavCurvePainter extends CustomPainter {
   final Color color;
   final Color shadowColor;
+  final bool hasCurve;
 
-  BottomNavCurvePainter({required this.color, required this.shadowColor});
+  BottomNavCurvePainter({
+    required this.color,
+    required this.shadowColor,
+    this.hasCurve = true,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -365,24 +370,32 @@ class BottomNavCurvePainter extends CustomPainter {
     final path = Path();
     path.moveTo(0, 0);
 
-    final centerX = size.width / 2;
-    // Bán kính và độ nhô lên của đường cong
-    const curveWidth = 90.0;
-    const curveHeight = 16.0;
+    if (hasCurve) {
+      final centerX = size.width / 2;
+      // Bán kính và độ nhô lên của đường cong
+      const curveWidth = 90.0;
+      const curveHeight = 16.0;
 
-    path.lineTo(centerX - curveWidth / 2, 0);
+      path.lineTo(centerX - curveWidth / 2, 0);
 
-    // Vẽ đường cong lượn mượt mà đi lên và đi xuống
-    path.cubicTo(
-      centerX - curveWidth / 2.5, 0,
-      centerX - curveWidth / 3.5, -curveHeight,
-      centerX, -curveHeight,
-    );
-    path.cubicTo(
-      centerX + curveWidth / 3.5, -curveHeight,
-      centerX + curveWidth / 2.5, 0,
-      centerX + curveWidth / 2, 0,
-    );
+      // Vẽ đường cong lượn mượt mà đi lên và đi xuống
+      path.cubicTo(
+        centerX - curveWidth / 2.5,
+        0,
+        centerX - curveWidth / 3.5,
+        -curveHeight,
+        centerX,
+        -curveHeight,
+      );
+      path.cubicTo(
+        centerX + curveWidth / 3.5,
+        -curveHeight,
+        centerX + curveWidth / 2.5,
+        0,
+        centerX + curveWidth / 2,
+        0,
+      );
+    }
 
     path.lineTo(size.width, 0);
     path.lineTo(size.width, size.height);
@@ -399,6 +412,9 @@ class BottomNavCurvePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant BottomNavCurvePainter oldDelegate) {
+    return oldDelegate.hasCurve != hasCurve ||
+        oldDelegate.color != color ||
+        oldDelegate.shadowColor != shadowColor;
+  }
 }
-

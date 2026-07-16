@@ -3295,6 +3295,144 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thêm Vợ/Chồng'**
   String get addSpouseTooltip;
+
+  /// No description provided for @eventTypeArticle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tin tức'**
+  String get eventTypeArticle;
+
+  /// No description provided for @eventTypeAnnouncement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo'**
+  String get eventTypeAnnouncement;
+
+  /// No description provided for @eventTypeAnniversary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giỗ chạp / Kỷ niệm'**
+  String get eventTypeAnniversary;
+
+  /// No description provided for @selectPostType.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn loại bài đăng'**
+  String get selectPostType;
+
+  /// No description provided for @eventTitleHintArticle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề bài viết...'**
+  String get eventTitleHintArticle;
+
+  /// No description provided for @eventTitleHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên sự kiện...'**
+  String get eventTitleHint;
+
+  /// No description provided for @eventTitleRequiredArticle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập tiêu đề'**
+  String get eventTitleRequiredArticle;
+
+  /// No description provided for @eventTitleRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập tên sự kiện'**
+  String get eventTitleRequired;
+
+  /// No description provided for @eventAddDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm mô tả...'**
+  String get eventAddDescription;
+
+  /// No description provided for @eventSelectDate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ngày tổ chức'**
+  String get eventSelectDate;
+
+  /// No description provided for @eventAddLocation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm địa điểm'**
+  String get eventAddLocation;
+
+  /// No description provided for @eventAddOrganizer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người viết'**
+  String get eventAddOrganizer;
+
+  /// No description provided for @eventAddAuthor.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm tác giả'**
+  String get eventAddAuthor;
+
+  /// No description provided for @eventLocationLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa điểm'**
+  String get eventLocationLabel;
+
+  /// No description provided for @eventLocationHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập địa điểm...'**
+  String get eventLocationHint;
+
+  /// No description provided for @eventOrganizerLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người viết'**
+  String get eventOrganizerLabel;
+
+  /// No description provided for @eventOrganizerHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên người viết...'**
+  String get eventOrganizerHint;
+
+  /// No description provided for @eventAuthorLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tác giả'**
+  String get eventAuthorLabel;
+
+  /// No description provided for @eventAuthorHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên tác giả...'**
+  String get eventAuthorHint;
+
+  /// No description provided for @eventPickPhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh'**
+  String get eventPickPhoto;
+
+  /// No description provided for @eventChangePhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay ảnh'**
+  String get eventChangePhoto;
+
+  /// No description provided for @doneLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xong'**
+  String get doneLabel;
+
+  /// No description provided for @eventDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết sự kiện'**
+  String get eventDetailTitle;
 }
 
 class _AppLocalizationsDelegate

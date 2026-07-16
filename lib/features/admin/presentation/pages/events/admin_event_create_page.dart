@@ -12,17 +12,16 @@ import '../../../../../resources/app_localizations.dart';
 import '../../../admin.dart';
 import '../../../../../core/domain/entity/event_entity.dart';
 
-class AdminEventFormPage extends StatefulWidget {
+class AdminEventCreatePage extends StatefulWidget {
   final int familyId;
-  final EventEntity? event;
 
-  const AdminEventFormPage({super.key, required this.familyId, this.event});
+  const AdminEventCreatePage({super.key, required this.familyId});
 
   @override
-  State<AdminEventFormPage> createState() => _AdminEventFormPageState();
+  State<AdminEventCreatePage> createState() => _AdminEventCreatePageState();
 }
 
-class _AdminEventFormPageState extends State<AdminEventFormPage> {
+class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   final _formKey = GlobalKey<FormState>();
 
   final _titleController = TextEditingController();
@@ -31,7 +30,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
   final _locationController = TextEditingController();
   final _organizerController = TextEditingController();
 
-  bool _isLunar = false;
+  final bool _isLunar = false;
   String _selectedDate = '';
   String _displayDate = '';
   String _type = 'event';
@@ -39,45 +38,22 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-  // ── Type config ───────────────────────────────────────────────────────────────
-  // Màu dùng AppColors của hệ thống: primary (crimson) và accent (gold)
   static const _typeIcons = {
     'event': LucideIcons.calendar,
     'article': LucideIcons.bookOpen,
     'announcement': LucideIcons.megaphone,
-    'anniversary': LucideIcons.heart,
   };
 
-  static const _typeLabels = {
-    'event': 'Sự kiện',
-    'article': 'Bài viết / Tin tức',
-    'announcement': 'Thông báo',
-    'anniversary': 'Giỗ chạp / Kỷ niệm',
-  };
+  Map<String, String> _typeLabels(AppLocalizations l10n) => {
+        'event': l10n.eventTypeEvent,
+        'article': l10n.eventTypeArticle,
+        'announcement': l10n.eventTypeAnnouncement,
+      };
 
   IconData get _typeIcon => _typeIcons[_type] ?? LucideIcons.calendar;
-  String get _typeLabel => _typeLabels[_type] ?? 'Sự kiện';
-  // Tất cả loại dùng context.primary (crimson) — nhất quán với theme hệ thống
-  // iconColor của row sẽ lấy từ context sẵn có trong build()
-  bool get _showLocation => _type == 'event' || _type == 'anniversary';
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.event != null) {
-      final e = widget.event!;
-      _titleController.text = e.title;
-      _descriptionController.text = e.description ?? '';
-      _contentController.text = e.content ?? '';
-      _locationController.text = e.location ?? '';
-      _organizerController.text = e.organizer ?? '';
-      _isLunar = e.isLunar;
-      _selectedDate = e.eventDate;
-      _displayDate = _formatUIDate(e.eventDate);
-      _type = e.type;
-      _localImagePath = e.imageUrl;
-    }
-  }
+  String _typeLabel(AppLocalizations l10n) =>
+      _typeLabels(l10n)[_type] ?? l10n.eventTypeEvent;
+  bool get _showLocation => _type == 'event';
 
   @override
   void dispose() {
@@ -87,16 +63,6 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
     _locationController.dispose();
     _organizerController.dispose();
     super.dispose();
-  }
-
-  // ── Helpers ──────────────────────────────────────────────────────────────────
-
-  String _formatUIDate(String dateStr) {
-    try {
-      final parts = dateStr.split('-');
-      if (parts.length == 3) return '${parts[2]}/${parts[1]}/${parts[0]}';
-    } catch (_) {}
-    return dateStr;
   }
 
   Future<void> _pickImage() async {
@@ -151,6 +117,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
   }
 
   void _showTypeSheet() {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: context.surface,
@@ -175,7 +142,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Chọn loại bài đăng',
+              l10n.selectPostType,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -185,7 +152,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
             const SizedBox(height: 12),
             ..._typeIcons.entries.map((entry) {
               final isSelected = _type == entry.key;
-              final label = _typeLabels[entry.key] ?? entry.key;
+              final label = _typeLabels(l10n)[entry.key] ?? entry.key;
               return ListTile(
                 onTap: () {
                   setState(() => _type = entry.key);
@@ -233,7 +200,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
     }
     context.read<EventsBloc>().add(SaveEventEvent(
           event: EventEntity(
-            id: widget.event?.id ?? 0,
+            id: 0,
             title: _titleController.text.trim(),
             description: _descriptionController.text.trim().isEmpty
                 ? null
@@ -256,9 +223,6 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
         ));
   }
 
-  // ── Build helpers ─────────────────────────────────────────────────────────────
-
-  /// TikTok-style section row with leading icon, title, optional trailing widget
   Widget _buildRow({
     required IconData icon,
     required String label,
@@ -306,19 +270,17 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
     );
   }
 
-  /// Composer top section: text fields + thumbnail
   Widget _buildComposerSection() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Left: text fields
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title
                 Form(
                   key: _formKey,
                   child: Column(
@@ -331,8 +293,8 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
                             return _type == 'article'
-                                ? 'Vui lòng nhập tiêu đề'
-                                : 'Vui lòng nhập tên sự kiện';
+                                ? l10n.eventTitleRequiredArticle
+                                : l10n.eventTitleRequired;
                           }
                           return null;
                         },
@@ -344,8 +306,8 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                         ),
                         decoration: InputDecoration(
                           hintText: _type == 'article'
-                              ? 'Tiêu đề bài viết...'
-                              : 'Tên sự kiện...',
+                              ? l10n.eventTitleHintArticle
+                              : l10n.eventTitleHint,
                           hintStyle: GoogleFonts.beVietnamPro(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -362,7 +324,6 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      // Description
                       TextField(
                         controller: _descriptionController,
                         maxLines: 3,
@@ -373,7 +334,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                           height: 1.5,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Thêm mô tả...',
+                          hintText: l10n.eventAddDescription,
                           hintStyle: GoogleFonts.inter(
                             fontSize: 13,
                             color: context.textSecondary.withValues(alpha: 0.4),
@@ -392,7 +353,6 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
             ),
           ),
           const SizedBox(width: 12),
-          // Right: thumbnail + "Chọn ảnh" button
           GestureDetector(
             onTap: _pickImage,
             child: Stack(
@@ -424,7 +384,6 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                           ),
                         ),
                 ),
-                // "Chọn ảnh" label at bottom
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -437,7 +396,9 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                           bottom: Radius.circular(10)),
                     ),
                     child: Text(
-                      _localImagePath != null ? 'Thay ảnh' : 'Chọn ảnh',
+                      _localImagePath != null
+                          ? l10n.eventChangePhoto
+                          : l10n.eventPickPhoto,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 10,
@@ -475,12 +436,13 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isEdit = widget.event != null;
-    final pageTitle = isEdit ? l10n.editEventTitle : l10n.addEventTitle;
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppAppBar(title: pageTitle, automaticallyImplyLeading: false),
+      appBar: AppAppBar(
+        title: l10n.addEventTitle,
+        automaticallyImplyLeading: false,
+      ),
       body: BlocConsumer<EventsBloc, EventsState>(
         listener: (context, state) {
           if (state is EventsSubmitSuccess) {
@@ -496,25 +458,21 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
 
           return Column(
             children: [
-              // ── Scrollable body ────────────────────────────────────────────
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      // ── Composer: title + description + thumbnail ────────────
                       _buildComposerSection(),
                       const SizedBox(height: 12),
                       Divider(
                         height: 1,
                         color: context.textSecondary.withValues(alpha: 0.1),
                       ),
-
-                      // ── Row: Loại bài đăng ───────────────────────────────────
                       _buildRow(
                         icon: _typeIcon,
-                        label: _typeLabel,
+                        label: _typeLabel(l10n),
                         iconColor: context.primary,
                         showDivider: false,
                         onTap: _showTypeSheet,
@@ -528,12 +486,10 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                           ],
                         ),
                       ),
-
-                      // ── Row: Ngày tổ chức ─────────────────────────────────
                       _buildRow(
                         icon: LucideIcons.calendarDays,
                         label: _displayDate.isEmpty
-                            ? 'Chọn ngày tổ chức'
+                            ? l10n.eventSelectDate
                             : _displayDate,
                         iconColor: context.accent,
                         showDivider: false,
@@ -551,13 +507,11 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                               )
                             : null,
                       ),
-
-                      // ── Row: Địa điểm (chỉ hiện cho event/anniversary) ───────
                       if (_showLocation)
                         _buildRow(
                           icon: LucideIcons.mapPin,
                           label: _locationController.text.isEmpty
-                              ? 'Thêm địa điểm'
+                              ? l10n.eventAddLocation
                               : _locationController.text,
                           iconColor: AppColors.error,
                           showDivider: false,
@@ -597,8 +551,8 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                                     const SizedBox(height: 16),
                                     AppOutlineTextField(
                                       controller: _locationController,
-                                      label: 'Địa điểm',
-                                      hintText: 'Nhập địa điểm...',
+                                      label: l10n.eventLocationLabel,
+                                      hintText: l10n.eventLocationHint,
                                       prefixIcon: const Icon(LucideIcons.mapPin,
                                           color: AppColors.error, size: 18),
                                     ),
@@ -610,7 +564,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                                           setState(() {});
                                           Navigator.pop(ctx);
                                         },
-                                        child: const Text('Xong'),
+                                        child: Text(l10n.doneLabel),
                                       ),
                                     ),
                                   ],
@@ -619,16 +573,14 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                             );
                           },
                         ),
-
-                      // ── Row: Người tổ chức / tác giả ────────────────────────
                       _buildRow(
                         icon: _type == 'article'
                             ? LucideIcons.user
                             : LucideIcons.users,
                         label: _organizerController.text.isEmpty
                             ? (_type == 'article'
-                                ? 'Thêm tác giả'
-                                : 'Người / đơn vị tổ chức')
+                                ? l10n.eventAddAuthor
+                                : l10n.eventAddOrganizer)
                             : _organizerController.text,
                         iconColor: context.primary,
                         showDivider: false,
@@ -668,11 +620,11 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                                   AppOutlineTextField(
                                     controller: _organizerController,
                                     label: _type == 'article'
-                                        ? 'Tác giả'
-                                        : 'Người / đơn vị tổ chức',
+                                        ? l10n.eventAuthorLabel
+                                        : l10n.eventOrganizerLabel,
                                     hintText: _type == 'article'
-                                        ? 'Tên tác giả...'
-                                        : 'Tên người / đơn vị...',
+                                        ? l10n.eventAuthorHint
+                                        : l10n.eventOrganizerHint,
                                     prefixIcon: Icon(
                                         _type == 'article'
                                             ? LucideIcons.user
@@ -701,8 +653,6 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                   ),
                 ),
               ),
-
-              // ── Sticky bottom bar ─────────────────────────────────────────────
               Container(
                 padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                 decoration: BoxDecoration(

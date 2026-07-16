@@ -1751,4 +1751,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addSpouseTooltip => 'Add Spouse';
+
+  @override
+  String get eventTypeArticle => 'News';
+
+  @override
+  String get eventTypeAnnouncement => 'Announcement';
+
+  @override
+  String get eventTypeAnniversary => 'Anniversary / Commemoration';
+
+  @override
+  String get selectPostType => 'Select post type';
+
+  @override
+  String get eventTitleHintArticle => 'Article title...';
+
+  @override
+  String get eventTitleHint => 'Event name...';
+
+  @override
+  String get eventTitleRequiredArticle => 'Please enter title';
+
+  @override
+  String get eventTitleRequired => 'Please enter event name';
+
+  @override
+  String get eventAddDescription => 'Add description...';
+
+  @override
+  String get eventSelectDate => 'Select event date';
+
+  @override
+  String get eventAddLocation => 'Add location';
+
+  @override
+  String get eventAddOrganizer => 'Organizer';
+
+  @override
+  String get eventAddAuthor => 'Add author';
+
+  @override
+  String get eventLocationLabel => 'Location';
+
+  @override
+  String get eventLocationHint => 'Enter location...';
+
+  @override
+  String get eventOrganizerLabel => 'Organizer';
+
+  @override
+  String get eventOrganizerHint => 'Name of person ...';
+
+  @override
+  String get eventAuthorLabel => 'Author';
+
+  @override
+  String get eventAuthorHint => 'Author name...';
+
+  @override
+  String get eventPickPhoto => 'Pick photo';
+
+  @override
+  String get eventChangePhoto => 'Pick photo';
+
+  @override
+  String get doneLabel => 'Done';
+
+  @override
+  String get eventDetailTitle => 'Event Detail';
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../constants/app_constants.dart';
 import '../../errors/exceptions.dart';
@@ -43,14 +44,41 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
   Future<EventModel> saveEvent(EventModel event) async {
     try {
       final isNew = event.id == 0;
+      dynamic requestData;
+
+      final imageUrl = event.imageUrl;
+      final isLocalImage = imageUrl != null &&
+          !imageUrl.startsWith('http://') &&
+          !imageUrl.startsWith('https://') &&
+          File(imageUrl).existsSync();
+
+      if (isLocalImage) {
+        final Map<String, dynamic> dataMap = event.toJson();
+        // Xóa imageUrl dạng chuỗi vì ta sẽ truyền file nhị phân qua key 'image'
+        dataMap.remove('imageUrl');
+        dataMap['image'] = await MultipartFile.fromFile(
+          imageUrl,
+          filename: imageUrl.split('/').last,
+        );
+        requestData = FormData.fromMap(dataMap);
+      } else {
+        requestData = event.toJson();
+      }
+
       final response = isNew
           ? await dio.post(
               AppConstants.eventsEndpoint,
-              data: event.toJson(),
+              data: requestData,
+              options: isLocalImage
+                  ? Options(contentType: 'multipart/form-data')
+                  : null,
             )
           : await dio.put(
               '${AppConstants.eventsEndpoint}/${event.id}',
-              data: event.toJson(),
+              data: requestData,
+              options: isLocalImage
+                  ? Options(contentType: 'multipart/form-data')
+                  : null,
             );
       final responseData = _parseMapResponse(response.data);
       final rawData = responseData['data'];

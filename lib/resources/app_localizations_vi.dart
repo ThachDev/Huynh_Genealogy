@@ -1756,4 +1756,73 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get addSpouseTooltip => 'Thêm Vợ/Chồng';
+
+  @override
+  String get eventTypeArticle => 'Tin tức';
+
+  @override
+  String get eventTypeAnnouncement => 'Thông báo';
+
+  @override
+  String get eventTypeAnniversary => 'Giỗ chạp / Kỷ niệm';
+
+  @override
+  String get selectPostType => 'Chọn loại bài đăng';
+
+  @override
+  String get eventTitleHintArticle => 'Tiêu đề bài viết...';
+
+  @override
+  String get eventTitleHint => 'Tên sự kiện...';
+
+  @override
+  String get eventTitleRequiredArticle => 'Vui lòng nhập tiêu đề';
+
+  @override
+  String get eventTitleRequired => 'Vui lòng nhập tên sự kiện';
+
+  @override
+  String get eventAddDescription => 'Thêm mô tả...';
+
+  @override
+  String get eventSelectDate => 'Chọn ngày tổ chức';
+
+  @override
+  String get eventAddLocation => 'Thêm địa điểm';
+
+  @override
+  String get eventAddOrganizer => 'Người viết';
+
+  @override
+  String get eventAddAuthor => 'Thêm tác giả';
+
+  @override
+  String get eventLocationLabel => 'Địa điểm';
+
+  @override
+  String get eventLocationHint => 'Nhập địa điểm...';
+
+  @override
+  String get eventOrganizerLabel => 'Người viết';
+
+  @override
+  String get eventOrganizerHint => 'Tên người viết...';
+
+  @override
+  String get eventAuthorLabel => 'Tác giả';
+
+  @override
+  String get eventAuthorHint => 'Tên tác giả...';
+
+  @override
+  String get eventPickPhoto => 'Chọn ảnh';
+
+  @override
+  String get eventChangePhoto => 'Thay ảnh';
+
+  @override
+  String get doneLabel => 'Xong';
+
+  @override
+  String get eventDetailTitle => 'Chi tiết sự kiện';
 }

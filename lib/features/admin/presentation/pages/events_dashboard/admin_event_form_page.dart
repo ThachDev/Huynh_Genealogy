@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
@@ -36,38 +37,28 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
   String _type = 'event';
   String? _localImagePath;
 
-  // Show/hide expanded fields
-  bool _showOrganizerField = false;
-
   final ImagePicker _picker = ImagePicker();
 
   // ── Type config ───────────────────────────────────────────────────────────────
-  static const _typeConfig = {
-    'event': (
-      label: 'Sự kiện',
-      icon: LucideIcons.calendar,
-      color: Color(0xFF1877F2),
-    ),
-    'article': (
-      label: 'Bài viết / Tin tức',
-      icon: LucideIcons.bookOpen,
-      color: Color(0xFF2E7D32),
-    ),
-    'announcement': (
-      label: 'Thông báo',
-      icon: LucideIcons.megaphone,
-      color: Color(0xFFE65100),
-    ),
-    'anniversary': (
-      label: 'Giỗ chạp / Kỷ niệm',
-      icon: LucideIcons.heart,
-      color: Color(0xFF6A1B9A),
-    ),
+  // Màu dùng AppColors của hệ thống: primary (crimson) và accent (gold)
+  static const _typeIcons = {
+    'event': LucideIcons.calendar,
+    'article': LucideIcons.bookOpen,
+    'announcement': LucideIcons.megaphone,
+    'anniversary': LucideIcons.heart,
   };
 
-  Color get _typeColor => _typeConfig[_type]?.color ?? const Color(0xFF1877F2);
-  IconData get _typeIcon => _typeConfig[_type]?.icon ?? LucideIcons.calendar;
-  String get _typeLabel => _typeConfig[_type]?.label ?? 'Sự kiện';
+  static const _typeLabels = {
+    'event': 'Sự kiện',
+    'article': 'Bài viết / Tin tức',
+    'announcement': 'Thông báo',
+    'anniversary': 'Giỗ chạp / Kỷ niệm',
+  };
+
+  IconData get _typeIcon => _typeIcons[_type] ?? LucideIcons.calendar;
+  String get _typeLabel => _typeLabels[_type] ?? 'Sự kiện';
+  // Tất cả loại dùng context.primary (crimson) — nhất quán với theme hệ thống
+  // iconColor của row sẽ lấy từ context sẵn có trong build()
   bool get _showLocation => _type == 'event' || _type == 'anniversary';
 
   @override
@@ -85,7 +76,6 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
       _displayDate = _formatUIDate(e.eventDate);
       _type = e.type;
       _localImagePath = e.imageUrl;
-      _showOrganizerField = e.organizer?.isNotEmpty == true;
     }
   }
 
@@ -132,23 +122,23 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
   }
 
   Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
+    DateTime? parsedDate;
+    if (_displayDate.isNotEmpty) {
+      final parts = _displayDate.split('/');
+      if (parts.length == 3) {
+        final day = int.tryParse(parts[0]);
+        final month = int.tryParse(parts[1]);
+        final year = int.tryParse(parts[2]);
+        if (day != null && month != null && year != null) {
+          parsedDate = DateTime(year, month, day);
+        }
+      }
+    }
+    final picked = await showLunarCalendarPicker(
       context: context,
-      initialDate: _selectedDate.isNotEmpty
-          ? DateTime.tryParse(_selectedDate) ?? DateTime.now()
-          : DateTime.now(),
+      initialDate: parsedDate ?? DateTime.now(),
       firstDate: DateTime(1800),
       lastDate: DateTime(2100),
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.light(
-            primary: context.primary,
-            onPrimary: Colors.white,
-            onSurface: context.textPrimary,
-          ),
-        ),
-        child: child!,
-      ),
     );
     if (picked != null) {
       setState(() {
@@ -178,7 +168,7 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: context.textSecondary.withValues(alpha: 0.3),
+                  color: ctx.textSecondary.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -189,12 +179,13 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
               style: GoogleFonts.beVietnamPro(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: context.textPrimary,
+                color: ctx.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
-            ..._typeConfig.entries.map((entry) {
+            ..._typeIcons.entries.map((entry) {
               final isSelected = _type == entry.key;
+              final label = _typeLabels[entry.key] ?? entry.key;
               return ListTile(
                 onTap: () {
                   setState(() => _type = entry.key);
@@ -204,29 +195,27 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: entry.value.color.withValues(alpha: 0.12),
+                    color: ctx.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(entry.value.icon,
-                      color: entry.value.color, size: 20),
+                  child: Icon(entry.value, color: ctx.primary, size: 20),
                 ),
                 title: Text(
-                  entry.value.label,
+                  label,
                   style: GoogleFonts.beVietnamPro(
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? entry.value.color : context.textPrimary,
+                    color: isSelected ? ctx.primary : ctx.textPrimary,
                   ),
                 ),
                 trailing: isSelected
                     ? Icon(LucideIcons.checkCircle2,
-                        color: entry.value.color, size: 20)
+                        color: ctx.primary, size: 20)
                     : null,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
-                tileColor: isSelected
-                    ? entry.value.color.withValues(alpha: 0.06)
-                    : null,
+                tileColor:
+                    isSelected ? ctx.primary.withValues(alpha: 0.06) : null,
               );
             }),
           ],
@@ -267,146 +256,218 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
         ));
   }
 
-  // ── Widgets ──────────────────────────────────────────────────────────────────
+  // ── Build helpers ─────────────────────────────────────────────────────────────
 
-  /// Type pill tapped → open sheet
-  Widget _buildTypePill() {
-    return GestureDetector(
-      onTap: _showTypeSheet,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: _typeColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: _typeColor.withValues(alpha: 0.3)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(_typeIcon, size: 13, color: _typeColor),
-            const SizedBox(width: 5),
-            Text(
-              _typeLabel,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: _typeColor,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Icon(LucideIcons.chevronsUpDown, size: 11, color: _typeColor),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Tag chip (date, location, lunar)
-  Widget _buildTag({
+  /// TikTok-style section row with leading icon, title, optional trailing widget
+  Widget _buildRow({
     required IconData icon,
     required String label,
-    Color? color,
+    Color? iconColor,
+    Widget? trailing,
     VoidCallback? onTap,
-    VoidCallback? onRemove,
+    bool showDivider = true,
   }) {
-    final c = color ?? context.primary;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color: c.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: c.withValues(alpha: 0.25)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 12, color: c),
-            const SizedBox(width: 4),
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: c,
-                fontWeight: FontWeight.w600,
-              ),
+    final ic = iconColor ?? context.textSecondary;
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Icon(icon, size: 20, color: ic),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 15,
+                      color: context.textPrimary,
+                    ),
+                  ),
+                ),
+                trailing ??
+                    Icon(LucideIcons.chevronRight,
+                        size: 18,
+                        color: context.textSecondary.withValues(alpha: 0.5)),
+              ],
             ),
-            if (onRemove != null) ...[
-              const SizedBox(width: 4),
-              GestureDetector(
-                onTap: onRemove,
-                child: Icon(LucideIcons.x, size: 11, color: c),
-              ),
-            ],
-          ],
+          ),
         ),
-      ),
+        if (showDivider)
+          Divider(
+            height: 1,
+            indent: 50,
+            endIndent: 0,
+            color: context.textSecondary.withValues(alpha: 0.1),
+          ),
+      ],
     );
   }
 
-  /// Clean text area (no outline border — composer style)
-  Widget _buildComposerField({
-    required TextEditingController controller,
-    required String hint,
-    TextStyle? style,
-    int? maxLines,
-    int? minLines,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      minLines: minLines ?? 1,
-      validator: validator,
-      style: style ??
-          GoogleFonts.beVietnamPro(fontSize: 15, color: context.textPrimary),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.beVietnamPro(
-            fontSize: 15, color: context.textSecondary.withValues(alpha: 0.55)),
-        border: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        focusedErrorBorder: InputBorder.none,
-        contentPadding: EdgeInsets.zero,
-        isDense: true,
-      ),
-    );
-  }
-
-  /// Toolbar button (photo, location, etc.)
-  Widget _buildToolbarBtn({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-    bool active = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: active ? color.withValues(alpha: 0.12) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 18, color: active ? color : context.textSecondary),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: active ? color : context.textSecondary,
-              ),
+  /// Composer top section: text fields + thumbnail
+  Widget _buildComposerSection() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left: text fields
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: _titleController,
+                        maxLines: 2,
+                        minLines: 1,
+                        validator: (val) {
+                          if (val == null || val.trim().isEmpty) {
+                            return _type == 'article'
+                                ? 'Vui lòng nhập tiêu đề'
+                                : 'Vui lòng nhập tên sự kiện';
+                          }
+                          return null;
+                        },
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: context.textPrimary,
+                          height: 1.4,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: _type == 'article'
+                              ? 'Tiêu đề bài viết...'
+                              : 'Tên sự kiện...',
+                          hintStyle: GoogleFonts.beVietnamPro(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color:
+                                context.textSecondary.withValues(alpha: 0.45),
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // Description
+                      TextField(
+                        controller: _descriptionController,
+                        maxLines: 3,
+                        minLines: 2,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: context.textSecondary,
+                          height: 1.5,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Thêm mô tả...',
+                          hintStyle: GoogleFonts.inter(
+                            fontSize: 13,
+                            color: context.textSecondary.withValues(alpha: 0.4),
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 12),
+          // Right: thumbnail + "Chọn ảnh" button
+          GestureDetector(
+            onTap: _pickImage,
+            child: Stack(
+              children: [
+                Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: context.textSecondary.withValues(alpha: 0.08),
+                    border: Border.all(
+                      color: context.textSecondary.withValues(alpha: 0.15),
+                    ),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: _localImagePath != null
+                      ? Image.file(
+                          File(_localImagePath!),
+                          fit: BoxFit.cover,
+                          width: 90,
+                          height: 90,
+                        )
+                      : Center(
+                          child: Icon(
+                            LucideIcons.image,
+                            size: 28,
+                            color:
+                                context.textSecondary.withValues(alpha: 0.35),
+                          ),
+                        ),
+                ),
+                // "Chọn ảnh" label at bottom
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.55),
+                      borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(10)),
+                    ),
+                    child: Text(
+                      _localImagePath != null ? 'Thay ảnh' : 'Chọn ảnh',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 10,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                if (_localImagePath != null)
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: GestureDetector(
+                      onTap: () => setState(() => _localImagePath = null),
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: const BoxDecoration(
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(LucideIcons.x,
+                            size: 12, color: Colors.white),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -435,340 +496,208 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
 
           return Column(
             children: [
-              // ── Scrollable composer area ─────────────────────────────────────
+              // ── Scrollable body ────────────────────────────────────────────
               Expanded(
                 child: SingleChildScrollView(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // ── Header: avatar + type pill ──────────────────────────
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                          child: Row(
-                            children: [
-                              // Admin avatar
-                              Container(
-                                width: 42,
-                                height: 42,
-                                decoration: BoxDecoration(
-                                  color: _typeColor.withValues(alpha: 0.15),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(_typeIcon,
-                                    size: 20, color: _typeColor),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      // ── Composer: title + description + thumbnail ────────────
+                      _buildComposerSection(),
+                      const SizedBox(height: 12),
+                      Divider(
+                        height: 1,
+                        color: context.textSecondary.withValues(alpha: 0.1),
+                      ),
+
+                      // ── Row: Loại bài đăng ───────────────────────────────────
+                      _buildRow(
+                        icon: _typeIcon,
+                        label: _typeLabel,
+                        iconColor: context.primary,
+                        showDivider: false,
+                        onTap: _showTypeSheet,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(LucideIcons.chevronRight,
+                                size: 16,
+                                color: context.textSecondary
+                                    .withValues(alpha: 0.5)),
+                          ],
+                        ),
+                      ),
+
+                      // ── Row: Ngày tổ chức ─────────────────────────────────
+                      _buildRow(
+                        icon: LucideIcons.calendarDays,
+                        label: _displayDate.isEmpty
+                            ? 'Chọn ngày tổ chức'
+                            : _displayDate,
+                        iconColor: context.accent,
+                        showDivider: false,
+                        onTap: _selectDate,
+                        trailing: _displayDate.isNotEmpty
+                            ? GestureDetector(
+                                onTap: () => setState(() {
+                                  _selectedDate = '';
+                                  _displayDate = '';
+                                }),
+                                child: Icon(LucideIcons.x,
+                                    size: 16,
+                                    color: context.textSecondary
+                                        .withValues(alpha: 0.5)),
+                              )
+                            : null,
+                      ),
+
+                      // ── Row: Địa điểm (chỉ hiện cho event/anniversary) ───────
+                      if (_showLocation)
+                        _buildRow(
+                          icon: LucideIcons.mapPin,
+                          label: _locationController.text.isEmpty
+                              ? 'Thêm địa điểm'
+                              : _locationController.text,
+                          iconColor: AppColors.error,
+                          showDivider: false,
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: context.surface,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20)),
                               ),
-                              const SizedBox(width: 10),
-                              Column(
+                              builder: (ctx) => Padding(
+                                padding: EdgeInsets.only(
+                                  left: 16,
+                                  right: 16,
+                                  top: 16,
+                                  bottom:
+                                      MediaQuery.of(ctx).viewInsets.bottom + 24,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Container(
+                                        width: 40,
+                                        height: 4,
+                                        decoration: BoxDecoration(
+                                          color: ctx.textSecondary
+                                              .withValues(alpha: 0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(2),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    AppOutlineTextField(
+                                      controller: _locationController,
+                                      label: 'Địa điểm',
+                                      hintText: 'Nhập địa điểm...',
+                                      prefixIcon: const Icon(LucideIcons.mapPin,
+                                          color: AppColors.error, size: 18),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {});
+                                          Navigator.pop(ctx);
+                                        },
+                                        child: const Text('Xong'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+
+                      // ── Row: Người tổ chức / tác giả ────────────────────────
+                      _buildRow(
+                        icon: _type == 'article'
+                            ? LucideIcons.user
+                            : LucideIcons.users,
+                        label: _organizerController.text.isEmpty
+                            ? (_type == 'article'
+                                ? 'Thêm tác giả'
+                                : 'Người / đơn vị tổ chức')
+                            : _organizerController.text,
+                        iconColor: context.primary,
+                        showDivider: false,
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: context.surface,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20)),
+                            ),
+                            builder: (ctx) => Padding(
+                              padding: EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                top: 16,
+                                bottom:
+                                    MediaQuery.of(ctx).viewInsets.bottom + 24,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    'Ban quản trị',
-                                    style: GoogleFonts.beVietnamPro(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: context.textPrimary,
+                                  Center(
+                                    child: Container(
+                                      width: 40,
+                                      height: 4,
+                                      decoration: BoxDecoration(
+                                        color: ctx.textSecondary
+                                            .withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 3),
-                                  _buildTypePill(),
+                                  const SizedBox(height: 16),
+                                  AppOutlineTextField(
+                                    controller: _organizerController,
+                                    label: _type == 'article'
+                                        ? 'Tác giả'
+                                        : 'Người / đơn vị tổ chức',
+                                    hintText: _type == 'article'
+                                        ? 'Tên tác giả...'
+                                        : 'Tên người / đơn vị...',
+                                    prefixIcon: Icon(
+                                        _type == 'article'
+                                            ? LucideIcons.user
+                                            : LucideIcons.users,
+                                        color: ctx.primary,
+                                        size: 18),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {});
+                                        Navigator.pop(ctx);
+                                      },
+                                      child: const Text('Xong'),
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
-
-                        // ── Title (large, no border) ────────────────────────────
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                          child: _buildComposerField(
-                            controller: _titleController,
-                            hint: _type == 'article'
-                                ? 'Tiêu đề bài viết...'
-                                : 'Tên sự kiện...',
-                            minLines: 1,
-                            maxLines: 3,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: context.textPrimary,
                             ),
-                            validator: (val) {
-                              if (val == null || val.trim().isEmpty) {
-                                return _type == 'article'
-                                    ? 'Vui lòng nhập tiêu đề'
-                                    : l10n.eventNameRequired;
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-
-                        // ── Mô tả / tóm tắt ────────────────────────────────────
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                          child: _buildComposerField(
-                            controller: _descriptionController,
-                            hint: 'Thêm mô tả ngắn...',
-                            minLines: 1,
-                            maxLines: 4,
-                            style: GoogleFonts.inter(
-                              fontSize: 15,
-                              color: context.textPrimary,
-                              height: 1.5,
-                            ),
-                          ),
-                        ),
-
-                        // ── Nội dung chi tiết ───────────────────────────────────
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                          child: _buildComposerField(
-                            controller: _contentController,
-                            hint: 'Nội dung chi tiết (nếu có)...',
-                            minLines: 2,
-                            maxLines: 20,
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: context.textSecondary,
-                              height: 1.6,
-                            ),
-                          ),
-                        ),
-
-                        // ── Người tổ chức / tác giả ─────────────────────────────
-                        if (_showOrganizerField) ...[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  _type == 'article'
-                                      ? LucideIcons.user
-                                      : LucideIcons.users,
-                                  size: 14,
-                                  color: context.textSecondary,
-                                ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: _buildComposerField(
-                                    controller: _organizerController,
-                                    hint: _type == 'article'
-                                        ? 'Tên tác giả...'
-                                        : 'Người / đơn vị tổ chức...',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      color: context.textSecondary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-
-                        // ── Địa điểm ────────────────────────────────────────────
-                        if (_showLocation &&
-                                _locationController.text.isNotEmpty ||
-                            (_showLocation && _showOrganizerField)) ...[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                            child: Row(
-                              children: [
-                                Icon(LucideIcons.mapPin,
-                                    size: 14, color: Colors.red.shade400),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: _buildComposerField(
-                                    controller: _locationController,
-                                    hint: 'Địa điểm tổ chức...',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      color: context.textSecondary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-
-                        // ── Active metadata tags ─────────────────────────────────
-                        if (_displayDate.isNotEmpty ||
-                            _isLunar ||
-                            (_showLocation &&
-                                _locationController.text.isNotEmpty &&
-                                !_showOrganizerField)) ...[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                            child: Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                if (_displayDate.isNotEmpty)
-                                  _buildTag(
-                                    icon: LucideIcons.calendar,
-                                    label: _displayDate,
-                                    color: const Color(0xFF1877F2),
-                                    onTap: _selectDate,
-                                    onRemove: () => setState(() {
-                                      _selectedDate = '';
-                                      _displayDate = '';
-                                    }),
-                                  ),
-                                if (_isLunar)
-                                  _buildTag(
-                                    icon: LucideIcons.moon,
-                                    label: 'Âm lịch',
-                                    color: Colors.amber.shade800,
-                                    onRemove: () =>
-                                        setState(() => _isLunar = false),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
-
-                        // ── Image preview ────────────────────────────────────────
-                        if (_localImagePath != null) ...[
-                          const SizedBox(height: 12),
-                          Stack(
-                            children: [
-                              Image.file(
-                                File(_localImagePath!),
-                                width: double.infinity,
-                                height: 220,
-                                fit: BoxFit.cover,
-                              ),
-                              // Remove button
-                              Positioned(
-                                top: 8,
-                                right: 8,
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      setState(() => _localImagePath = null),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.55),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(LucideIcons.x,
-                                        size: 16, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                              // Change photo button
-                              Positioned(
-                                bottom: 8,
-                                right: 8,
-                                child: GestureDetector(
-                                  onTap: _pickImage,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.55),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(LucideIcons.camera,
-                                            size: 13, color: Colors.white),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          'Thay ảnh',
-                                          style: GoogleFonts.beVietnamPro(
-                                            fontSize: 11,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-
-                        const SizedBox(height: 24),
-
-                        // ── Divider ─────────────────────────────────────────────
-                        Divider(
-                          height: 1,
-                          color: context.accent.withValues(alpha: 0.12),
-                        ),
-
-                        // ── Quick-action toolbar ─────────────────────────────────
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 6),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                _buildToolbarBtn(
-                                  icon: LucideIcons.image,
-                                  label: 'Ảnh',
-                                  color: Colors.green,
-                                  active: _localImagePath != null,
-                                  onTap: _pickImage,
-                                ),
-                                _buildToolbarBtn(
-                                  icon: LucideIcons.calendarDays,
-                                  label: _displayDate.isEmpty
-                                      ? 'Ngày'
-                                      : _displayDate,
-                                  color: const Color(0xFF1877F2),
-                                  active: _displayDate.isNotEmpty,
-                                  onTap: _selectDate,
-                                ),
-                                if (_showLocation)
-                                  _buildToolbarBtn(
-                                    icon: LucideIcons.mapPin,
-                                    label: 'Địa điểm',
-                                    color: Colors.red,
-                                    active: _locationController.text.isNotEmpty,
-                                    onTap: () => setState(
-                                        () => _showOrganizerField = true),
-                                  ),
-                                _buildToolbarBtn(
-                                  icon: LucideIcons.user,
-                                  label: _type == 'article'
-                                      ? 'Tác giả'
-                                      : 'Tổ chức',
-                                  color: Colors.deepPurple,
-                                  active: _showOrganizerField,
-                                  onTap: () => setState(
-                                      () => _showOrganizerField = true),
-                                ),
-                                _buildToolbarBtn(
-                                  icon: LucideIcons.moon,
-                                  label: 'Âm lịch',
-                                  color: Colors.amber.shade800,
-                                  active: _isLunar,
-                                  onTap: () =>
-                                      setState(() => _isLunar = !_isLunar),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        Divider(
-                          height: 1,
-                          color: context.accent.withValues(alpha: 0.12),
-                        ),
-
-                        const SizedBox(height: 8),
-                      ],
-                    ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -778,16 +707,12 @@ class _AdminEventFormPageState extends State<AdminEventFormPage> {
                 padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                 decoration: BoxDecoration(
                   color: context.background,
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.resolve(
-                        Colors.black.withValues(alpha: 0.06),
-                        Colors.transparent,
-                      ),
-                      blurRadius: 8,
-                      offset: const Offset(0, -2),
+                  border: Border(
+                    top: BorderSide(
+                      color: context.textSecondary.withValues(alpha: 0.12),
+                      width: 1,
                     ),
-                  ],
+                  ),
                 ),
                 child: AppFormActionButtons(
                   saveLabel: l10n.saveEventButton,

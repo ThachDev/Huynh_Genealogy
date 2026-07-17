@@ -1619,7 +1619,7 @@ abstract class AppLocalizations {
   /// No description provided for @regSection2Content.
   ///
   /// In vi, this message translates to:
-  /// **'**Ứng dụng:** Gia Tộc Việt và các tính năng của ứng dụng.\n**Người dùng:** Cá nhân đã đăng ký tài khoản.\n**Dòng họ:** Nhóm thành viên do Trưởng tộc tạo lập, gồm chi tộc, thành viên và dữ liệu gia phả.\n**Trưởng tộc:** Người quản trị cao nhất của dòng họ.\n**Quản trị chi:** Người được ủy quyền quản lý một chi tộc.\n**Biên tập viên:** Người được phép thêm, sửa thông tin.\n**Thành viên:** Người có quyền xem gia phả.\n**Dữ liệu cá nhân:** Họ tên, ngày sinh, giới tính, quan hệ gia đình, hình ảnh, số điện thoại, email…'**
+  /// **'**Ứng dụng:** Gia Tộc Việt và các tính năng của ứng dụng.\n**Người dùng:** Cá nhân đã đăng ký tài khoản.\n**Dòng họ:** Nhóm thành viên do Trưởng tộc tạo lập, gồm chi tộc, thành viên và dữ liệu gia phả.\n**Trưởng tộc:** Người quản trị cao nhất của dòng họ.\n**Trưởng chi:** Người được phân quyền quản lý một chi tộc.\n**Biên tập viên:** Người được quyền đóng góp và chỉnh sửa thông tin gia phả.\n**Thành viên:** Người có quyền xem gia phả và các hoạt động của dòng họ.\n**Dữ liệu cá nhân:** Họ tên, ngày sinh, giới tính, quan hệ gia đình, hình ảnh, số điện thoại, email…'**
   String get regSection2Content;
 
   /// No description provided for @regSection3Title.
@@ -1643,7 +1643,7 @@ abstract class AppLocalizations {
   /// No description provided for @regSection4Content.
   ///
   /// In vi, this message translates to:
-  /// **'**Thành viên** – Xem gia phả, quỹ dòng họ, sửa thông tin cá nhân.\n**Biên tập viên** – Thêm, sửa thông tin thành viên (không được xóa).\n**Quản trị chi** – Quản lý chi tộc, phê duyệt yêu cầu, quản lý quỹ.\n**Trưởng tộc** – Toàn quyền quản trị, phân quyền, chuyển nhượng, giải tán.'**
+  /// **'**Thành viên** – Xem gia phả, xem tin tức & sự kiện dòng tộc, cập nhật thông tin cá nhân.\n**Biên tập viên** – Thêm, sửa thông tin thành viên (không được xóa).\n**Trưởng chi** – Quản lý chi tộc được phân công, phê duyệt yêu cầu tham gia chi tộc.\n**Trưởng tộc** – Toàn quyền quản trị dòng họ, phân quyền vai trò cho thành viên, chuyển nhượng quyền Trưởng tộc, giải tán dòng họ.'**
   String get regSection4Content;
 
   /// No description provided for @regSection5Title.

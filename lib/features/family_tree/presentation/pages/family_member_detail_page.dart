@@ -8,8 +8,7 @@ import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../../features/auth/auth.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
-import '../../../../core/widgets/app_appbar.dart';
-import '../../../../core/widgets/app_bottom_navigation_bar.dart';
+import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
   final MemberEntity member;
@@ -37,12 +36,44 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');
 
+    // Lấy thông tin gia đình
+    final parentNode = widget.allMembers
+        .where((m) => m.id == widget.member.parentId)
+        .firstOrNull;
+    final spouseNode = (parentNode != null && parentNode.spouseId != null)
+        ? widget.allMembers
+            .where((m) => m.id == parentNode.spouseId)
+            .firstOrNull
+        : null;
+
+    MemberEntity? father;
+    MemberEntity? mother;
+
+    if (parentNode != null) {
+      if (parentNode.gender == Gender.female) {
+        mother = parentNode;
+        father = spouseNode;
+      } else {
+        father = parentNode;
+        mother = spouseNode;
+      }
+    }
+
+    if (mother == null && widget.member.motherId != null) {
+      mother = widget.allMembers
+          .where((m) => m.id == widget.member.motherId)
+          .firstOrNull;
+    }
+
+    final spouse = widget.allMembers
+        .where((m) => m.id == widget.member.spouseId)
+        .firstOrNull;
+
     return Scaffold(
       backgroundColor: context.background,
-      extendBodyBehindAppBar: true,
       appBar: AppAppBar(
         title: l10n.memberDetailTitle,
-        transparent: true,
+        transparent: false,
         actions: canEdit
             ? [
                 IconButton(
@@ -64,188 +95,118 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
               ]
             : null,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // ── Header Stack ──
-            Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                // Clouds background banner
-                Container(
-                  height: 150 + MediaQuery.of(context).padding.top,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/clouds.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Container(
-                    color: context.appBarBg.withValues(alpha: 0.8),
-                  ),
-                ),
-                // Avatar overlapping
-                Positioned(
-                  bottom: -40,
-                  child: Container(
-                    width: 90,
-                    height: 90,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: context.accent, width: 3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.resolve(
-                              Colors.black.withValues(alpha: 0.15),
-                              Colors.transparent),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: [
+              // ── Khối thông tin gộp chung ──
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 48), // Chừa chỗ cho avatar nổi lên
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 64, 16, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Họ và tên
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.member.fullName.toUpperCase(),
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: context.primary,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _buildBadge(
+                                  l10n.generationBadge(
+                                      '${widget.member.generation ?? "?"}'),
+                                  context.accent,
+                                ),
+                                const SizedBox(width: 8),
+                                _buildBadge(
+                                  widget.member.isAlive
+                                      ? l10n.aliveLabel
+                                      : l10n.deceasedLabel,
+                                  widget.member.isAlive
+                                      ? Colors.green
+                                      : context.textSecondary,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 42,
-                      backgroundColor: context.background,
-                      backgroundImage: widget.member.avatarUrl != null
-                          ? NetworkImage(widget.member.avatarUrl!)
-                          : null,
-                      child: widget.member.avatarUrl == null
-                          ? Icon(
-                              LucideIcons.user,
-                              size: 45,
-                              color: context.primary,
-                            )
-                          : null,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 50),
+                      ),
+                      const SizedBox(height: 24),
+                      const Divider(height: 1),
+                      const SizedBox(height: 16),
 
-            // ── Name & Badges ──
-            Column(
-              children: [
-                Text(
-                  widget.member.fullName.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: context.primary,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildBadge(
-                      l10n.generationBadge(
-                          '${widget.member.generation ?? "?"}'),
-                      context.accent,
-                    ),
-                    const SizedBox(width: 8),
-                    _buildBadge(
-                      widget.member.isAlive
-                          ? l10n.aliveLabel
-                          : l10n.deceasedLabel,
-                      widget.member.isAlive
-                          ? Colors.green
-                          : context.textSecondary,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // ── Detailed Information ──
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-              child: Column(
-                children: [
-                  _buildInfoSection(l10n.personalInfoSectionTitle, [
-                    _buildInfoRow(
-                      LucideIcons.cake,
-                      l10n.dateOfBirthLabel,
-                      DateFormatter.formatForDisplay(
-                              widget.member.dateOfBirth) ??
-                          '-',
-                    ),
-                    if (!widget.member.isAlive)
+                      // Section 1: Thông tin cá nhân
+                      _buildSectionHeader(l10n.personalInfoSectionTitle),
+                      const SizedBox(height: 8),
                       _buildInfoRow(
-                        LucideIcons.skull,
-                        l10n.dateOfDeathLabel,
+                        LucideIcons.cake,
+                        l10n.dateOfBirthLabel,
                         DateFormatter.formatForDisplay(
-                                widget.member.dateOfDeath) ??
+                                widget.member.dateOfBirth) ??
                             '-',
                       ),
-                    _buildInfoRow(
-                      widget.member.gender == Gender.male
-                          ? LucideIcons.user
-                          : LucideIcons.user,
-                      l10n.genderLabel,
-                      widget.member.gender == Gender.male
-                          ? l10n.genderMale
-                          : l10n.genderFemale,
-                    ),
-                    _buildInfoRow(
-                      LucideIcons.mapPin,
-                      l10n.placeOfBirthLabel,
-                      widget.member.placeOfBirth ?? '-',
-                    ),
-                    _buildInfoRow(
-                      LucideIcons.bookOpen,
-                      l10n.educationLabel,
-                      widget.member.education ?? '-',
-                    ),
-                    _buildInfoRow(
-                      LucideIcons.briefcase,
-                      l10n.occupationLabel,
-                      widget.member.occupation ?? '-',
-                    ),
-                  ]),
-                  const SizedBox(height: 20),
-                  Builder(builder: (context) {
-                    final parentNode = widget.allMembers
-                        .where((m) => m.id == widget.member.parentId)
-                        .firstOrNull;
-                    final spouseNode =
-                        (parentNode != null && parentNode.spouseId != null)
-                            ? widget.allMembers
-                                .where((m) => m.id == parentNode.spouseId)
-                                .firstOrNull
-                            : null;
+                      if (!widget.member.isAlive)
+                        _buildInfoRow(
+                          LucideIcons.skull,
+                          l10n.dateOfDeathLabel,
+                          DateFormatter.formatForDisplay(
+                                  widget.member.dateOfDeath) ??
+                              '-',
+                        ),
+                      _buildInfoRow(
+                        LucideIcons.user,
+                        l10n.genderLabel,
+                        widget.member.gender == Gender.male
+                            ? l10n.genderMale
+                            : l10n.genderFemale,
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.mapPin,
+                        l10n.placeOfBirthLabel,
+                        widget.member.placeOfBirth ?? '-',
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.bookOpen,
+                        l10n.educationLabel,
+                        widget.member.education ?? '-',
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.briefcase,
+                        l10n.occupationLabel,
+                        widget.member.occupation ?? '-',
+                      ),
+                      const SizedBox(height: 24),
+                      const Divider(height: 1),
+                      const SizedBox(height: 16),
 
-                    MemberEntity? father;
-                    MemberEntity? mother;
-
-                    if (parentNode != null) {
-                      if (parentNode.gender == Gender.female) {
-                        mother = parentNode;
-                        father = spouseNode;
-                      } else {
-                        father = parentNode;
-                        mother = spouseNode;
-                      }
-                    }
-
-                    // If mother is still null, check if we have a direct motherId
-                    if (mother == null && widget.member.motherId != null) {
-                      mother = widget.allMembers
-                          .where((m) => m.id == widget.member.motherId)
-                          .firstOrNull;
-                    }
-
-                    final spouse = widget.allMembers
-                        .where((m) => m.id == widget.member.spouseId)
-                        .firstOrNull;
-
-                    return _buildInfoSection(l10n.familyRelationSectionTitle, [
+                      // Section 2: Quan hệ gia đình
+                      _buildSectionHeader(l10n.familyRelationSectionTitle),
+                      const SizedBox(height: 8),
                       _buildInfoRow(
                         LucideIcons.user,
                         l10n.fatherLabel,
@@ -266,15 +227,77 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                         l10n.branchLabel,
                         widget.member.branchName ?? '-',
                       ),
-                    ]);
-                  }),
-                  const SizedBox(height: 20),
-                  _buildBiographySection(l10n),
-                ],
+                      const SizedBox(height: 24),
+                      const Divider(height: 1),
+                      const SizedBox(height: 16),
+
+                      // Section 3: Tiểu sử
+                      _buildSectionHeader(l10n.biographySectionTitle),
+                      const SizedBox(height: 12),
+                      Text(
+                        widget.member.notes != null &&
+                                widget.member.notes!.isNotEmpty
+                            ? widget.member.notes!
+                            : l10n.noBiographyMessage,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          height: 1.6,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+
+              // ── Avatar nổi ở mép trên ──
+              Positioned(
+                top: 0,
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: context.accent, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                        color: context.resolve(
+                            Colors.black.withValues(alpha: 0.15),
+                            Colors.transparent),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 45,
+                    backgroundColor: context.background,
+                    backgroundImage: widget.member.avatarUrl != null
+                        ? NetworkImage(widget.member.avatarUrl!)
+                        : null,
+                    child: widget.member.avatarUrl == null
+                        ? Icon(
+                            LucideIcons.user,
+                            size: 48,
+                            color: context.primary,
+                          )
+                        : null,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.beVietnamPro(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: context.primary,
       ),
     );
   }
@@ -294,40 +317,6 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
           fontWeight: FontWeight.bold,
           color: color,
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoSection(String title, List<Widget> children) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.accent.withValues(alpha: 0.1)),
-        boxShadow: [
-          BoxShadow(
-            color: context.resolve(
-                Colors.black.withValues(alpha: 0.01), Colors.transparent),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: context.primary,
-            ),
-          ),
-          const Divider(height: 24),
-          ...children,
-        ],
       ),
     );
   }
@@ -352,41 +341,6 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
             style: GoogleFonts.beVietnamPro(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: context.textPrimary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBiographySection(AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.accent.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.biographySectionTitle,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: context.primary,
-            ),
-          ),
-          const Divider(height: 24),
-          Text(
-            widget.member.notes != null && widget.member.notes!.isNotEmpty
-                ? widget.member.notes!
-                : l10n.noBiographyMessage,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              height: 1.6,
               color: context.textPrimary,
             ),
           ),

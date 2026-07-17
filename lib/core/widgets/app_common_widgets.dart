@@ -429,6 +429,7 @@ class TraditionalOrnamentalCard extends StatelessWidget {
   final double? width;
   final double? height;
   final EdgeInsetsGeometry padding;
+  final Color? fillColor;
 
   const TraditionalOrnamentalCard({
     super.key,
@@ -436,6 +437,7 @@ class TraditionalOrnamentalCard extends StatelessWidget {
     this.width,
     this.height,
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+    this.fillColor,
   });
 
   @override
@@ -446,7 +448,7 @@ class TraditionalOrnamentalCard extends StatelessWidget {
       child: CustomPaint(
         painter: TraditionalOrnamentalBorderPainter(
           borderColor: context.accent.withValues(alpha: 0.5),
-          fillColor: context.surface,
+          fillColor: fillColor ?? context.surface,
         ),
         child: Padding(
           padding: padding,

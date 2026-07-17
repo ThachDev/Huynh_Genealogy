@@ -268,7 +268,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         l10n.logoutLabel,
                         style: GoogleFonts.beVietnamPro(
                           fontWeight: FontWeight.bold,
-                          color: context.textPrimary,
+                          color: context.primary,
                         ),
                       ),
                       content: Text(

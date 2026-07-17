@@ -837,7 +837,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get regSection2Content =>
-      '**App:** Gia Tộc Việt and its features.\n**User:** An individual who has registered an account.\n**Clan:** A group of members created by the Clan Leader, including branches, members, and genealogy data.\n**Clan Leader:** The highest administrator of the clan.\n**Branch Admin:** A person authorized to manage a branch.\n**Editor:** A person allowed to add and edit information.\n**Member:** A person with permission to view the genealogy.\n**Personal Data:** Full name, date of birth, gender, family relationships, images, phone number, email...';
+      '**App:** Gia Tộc Việt and its features.\n**User:** An individual who has registered an account.\n**Clan:** A group of members created by the Clan Leader, including branches, members, and genealogy data.\n**Clan Leader:** The highest administrator of the clan.\n**Branch Admin:** A person authorized to manage a family branch.\n**Editor:** A person allowed to contribute and edit genealogy information.\n**Member:** A person with permission to view the genealogy and family activities.\n**Personal Data:** Full name, date of birth, gender, family relationships, images, phone number, email...';
 
   @override
   String get regSection3Title => 'Accounts';
@@ -851,7 +851,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get regSection4Content =>
-      '**Member** – View genealogy, family fund, edit personal information.\n**Editor** – Add, edit member information (cannot delete).\n**Branch Admin** – Manage branch, approve requests, manage fund.\n**Clan Leader** – Full administrative rights, assign roles, transfer ownership, dissolve clan.';
+      '**Member** – View genealogy, view family events & news, update personal information.\n**Editor** – Add, edit member information (cannot delete).\n**Branch Admin** – Manage assigned family branch, approve member requests for the branch.\n**Clan Leader** – Full administrative rights, assign roles, transfer ownership, dissolve clan.';
 
   @override
   String get regSection5Title => 'Clan Management';

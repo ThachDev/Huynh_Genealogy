@@ -8,6 +8,7 @@ import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/family_tree/family_tree.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
+import '../../features/user/presentation/pages/user_events_page.dart';
 import '../../features/admin/admin.dart';
 
 class FABConfig {
@@ -85,8 +86,10 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.calendarDays,
             label: l10n.navEvents,
-            page: EventsListPage(
-                familyId: familyId ?? 0, isActive: safeIndex == 1),
+            page: UserEventsPage(
+                familyId: familyId ?? 0,
+                isActive: safeIndex == 1,
+                isAdminMode: true),
           ));
 
           tabs.add(_TabConfig(
@@ -111,8 +114,10 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.calendarDays,
             label: l10n.navEvents,
-            page: EventsListPage(
-                familyId: familyId ?? 0, isActive: safeIndex == 1),
+            page: UserEventsPage(
+                familyId: familyId ?? 0,
+                isActive: safeIndex == 1,
+                isAdminMode: false),
           ));
 
           tabs.add(_TabConfig(

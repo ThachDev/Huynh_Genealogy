@@ -10,15 +10,17 @@ import '../../../../family_tree/presentation/pages/family_member_detail_page.dar
 class MemberItemWidget extends StatelessWidget {
   final MemberEntity member;
   final List<MemberEntity> allMembers;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final bool showMenu;
 
   const MemberItemWidget({
     super.key,
     required this.member,
     this.allMembers = const [],
-    required this.onEdit,
+    this.onEdit,
     this.onDelete,
+    this.showMenu = true,
   });
 
   @override
@@ -206,64 +208,67 @@ class MemberItemWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                PopupMenuButton<String>(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  color: context.surface,
-                  elevation: 4,
-                  offset: const Offset(18, 30),
-                  onSelected: (value) {
-                    if (value == 'edit') {
-                      onEdit();
-                    } else if (value == 'delete') {
-                      onDelete?.call();
-                    }
-                  },
-                  itemBuilder: (BuildContext context) => [
-                    PopupMenuItem<String>(
-                      value: 'edit',
-                      height: 38,
-                      child: Row(
-                        children: [
-                          const Icon(LucideIcons.edit,
-                              color: Colors.green, size: 18),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.editLabel,
-                            style: GoogleFonts.beVietnamPro(fontSize: 13),
+                if (showMenu) ...[
+                  const SizedBox(width: 8),
+                  PopupMenuButton<String>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    color: context.surface,
+                    elevation: 4,
+                    offset: const Offset(18, 30),
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        onEdit?.call();
+                      } else if (value == 'delete') {
+                        onDelete?.call();
+                      }
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      if (onEdit != null)
+                        PopupMenuItem<String>(
+                          value: 'edit',
+                          height: 38,
+                          child: Row(
+                            children: [
+                              const Icon(LucideIcons.edit,
+                                  color: Colors.green, size: 18),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.editLabel,
+                                style: GoogleFonts.beVietnamPro(fontSize: 13),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    if (onDelete != null)
-                      PopupMenuItem<String>(
-                        value: 'delete',
-                        height: 38,
-                        child: Row(
-                          children: [
-                            const Icon(LucideIcons.trash2,
-                                color: Colors.red, size: 18),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.deleteLabel,
-                              style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13, color: Colors.red),
-                            ),
-                          ],
                         ),
+                      if (onDelete != null)
+                        PopupMenuItem<String>(
+                          value: 'delete',
+                          height: 38,
+                          child: Row(
+                            children: [
+                              const Icon(LucideIcons.trash2,
+                                  color: Colors.red, size: 18),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.deleteLabel,
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13, color: Colors.red),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        LucideIcons.moreVertical,
+                        color: context.textSecondary,
+                        size: 20,
                       ),
-                  ],
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      LucideIcons.moreVertical,
-                      color: context.textSecondary,
-                      size: 20,
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

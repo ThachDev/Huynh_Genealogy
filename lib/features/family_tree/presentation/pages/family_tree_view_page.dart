@@ -546,15 +546,13 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                               nodeHeight: _nodeHeight,
                               linePaint: Paint()
                                 ..color = context.resolve(
-                                    context.accent,
-                                    Colors.grey.shade700)
+                                    context.accent, Colors.grey.shade700)
                                 ..strokeWidth = 3.0
                                 ..strokeCap = StrokeCap.round
                                 ..style = PaintingStyle.stroke,
                               spousePaint: Paint()
                                 ..color = context.resolve(
-                                    context.accent
-                                        .withValues(alpha: 0.8),
+                                    context.accent.withValues(alpha: 0.8),
                                     Colors.grey.shade700.withValues(alpha: 0.8))
                                 ..strokeWidth = 2.0
                                 ..strokeCap = StrokeCap.round

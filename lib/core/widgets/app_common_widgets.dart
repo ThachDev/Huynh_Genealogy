@@ -380,3 +380,150 @@ class AppSectionHeader extends StatelessWidget {
     );
   }
 }
+
+/// Section title with side colored line and optional trailing widget
+class AppSectionTitle extends StatelessWidget {
+  final String title;
+  final Widget? trailing;
+
+  const AppSectionTitle({
+    super.key,
+    required this.title,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 18,
+            color: context.primary,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            title.toUpperCase(),
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: context.textPrimary,
+              letterSpacing: 1,
+            ),
+          ),
+          if (trailing != null) ...[
+            const Spacer(),
+            trailing!,
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// A card with traditional Vietnamese geometric ornamental corner patterns
+class TraditionalOrnamentalCard extends StatelessWidget {
+  final Widget child;
+  final double? width;
+  final double? height;
+  final EdgeInsetsGeometry padding;
+
+  const TraditionalOrnamentalCard({
+    super.key,
+    required this.child,
+    this.width,
+    this.height,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: CustomPaint(
+        painter: TraditionalOrnamentalBorderPainter(
+          borderColor: Colors.black.withValues(alpha: 0.15),
+          fillColor: context.surface,
+        ),
+        child: Padding(
+          padding: padding,
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class TraditionalOrnamentalBorderPainter extends CustomPainter {
+  final Color borderColor;
+  final Color fillColor;
+  final double borderRadius;
+
+  TraditionalOrnamentalBorderPainter({
+    required this.borderColor,
+    required this.fillColor,
+    this.borderRadius = 18.0,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final path = Path();
+
+    // Start at top edge after top-left corner
+    path.moveTo(18, 0);
+
+    // Top edge
+    path.lineTo(w - 18, 0);
+
+    // Top-Right corner curve (Curved traditional pattern)
+    path.quadraticBezierTo(w - 8, 0, w - 8, 8);
+    path.quadraticBezierTo(w, 8, w, 18);
+
+    // Right edge
+    path.lineTo(w, h - 18);
+
+    // Bottom-Right corner curve (Curved traditional pattern)
+    path.quadraticBezierTo(w, h - 8, w - 8, h - 8);
+    path.quadraticBezierTo(w - 8, h, w - 18, h);
+
+    // Bottom edge
+    path.lineTo(18, h);
+
+    // Bottom-Left corner curve (Curved traditional pattern)
+    path.quadraticBezierTo(8, h, 8, h - 8);
+    path.quadraticBezierTo(0, h - 8, 0, h - 18);
+
+    // Left edge
+    path.lineTo(0, 18);
+
+    // Top-Left corner curve to close (Curved traditional pattern)
+    path.quadraticBezierTo(0, 8, 8, 8);
+    path.quadraticBezierTo(8, 0, 18, 0);
+
+    path.close();
+
+    // 1. Draw shadow matching the custom path shape
+    canvas.drawShadow(path, Colors.black.withValues(alpha: 0.1), 4.0, true);
+
+    // 2. Draw fill color matching the custom path shape
+    final fillPaint = Paint()
+      ..color = fillColor
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(path, fillPaint);
+
+    // 3. Draw stroke border
+    final paint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}

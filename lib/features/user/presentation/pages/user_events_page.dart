@@ -399,39 +399,55 @@ class _UserEventsPageState extends State<UserEventsPage> {
   }
 
   Widget _buildDeathAnniversariesList(List<_UpcomingAnniversary> list) {
-    return SizedBox(
-      height: 115,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
+    return ClipRect(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          final data = list[index];
-          return Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: AncestorCard(data: data),
-          );
-        },
+        child: SizedBox(
+          height: 115,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            clipBehavior: Clip.none,
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              final data = list[index];
+              return Padding(
+                padding: EdgeInsets.only(
+                  right: index < list.length - 1 ? 16 : 0,
+                ),
+                child: AncestorCard(data: data),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildBirthdaysList(List<_UpcomingAnniversary> list) {
-    return SizedBox(
-      height: 115,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
+    return ClipRect(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          final data = list[index];
-          return Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: BirthdayCard(data: data),
-          );
-        },
+        child: SizedBox(
+          height: 115,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            clipBehavior: Clip.none,
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              final data = list[index];
+              return Padding(
+                padding: EdgeInsets.only(
+                  right: index < list.length - 1 ? 16 : 0,
+                ),
+                child: BirthdayCard(data: data),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

@@ -34,12 +34,35 @@ class UserMainNavigationPage extends StatefulWidget {
   static final ValueNotifier<FABConfig?> fabNotifier =
       ValueNotifier<FABConfig?>(null);
 
+  /// Dùng để chuyển tab từ bất kỳ đâu trong app
+  static final ValueNotifier<int> tabIndexNotifier =
+      ValueNotifier<int>(0);
+
   @override
   State<UserMainNavigationPage> createState() => _UserMainNavigationPageState();
 }
 
 class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    UserMainNavigationPage.tabIndexNotifier.addListener(_onTabIndexChanged);
+  }
+
+  @override
+  void dispose() {
+    UserMainNavigationPage.tabIndexNotifier.removeListener(_onTabIndexChanged);
+    super.dispose();
+  }
+
+  void _onTabIndexChanged() {
+    final idx = UserMainNavigationPage.tabIndexNotifier.value;
+    if (mounted && idx != _currentIndex) {
+      setState(() => _currentIndex = idx);
+    }
+  }
 
   static bool _isAdminRole(String role) {
     final r = role.toUpperCase();

@@ -20,9 +20,8 @@ class UserFamilyDashboardPage extends StatefulWidget {
 }
 
 class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
-  int? _selectedBranchId;
   final TextEditingController _searchController = TextEditingController();
-  String _selectedGender = 'Tất cả';
+  final String _selectedGender = 'Tất cả';
   final ScrollController _scrollController = ScrollController();
 
   int? _familyId() {
@@ -56,7 +55,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
       body: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
         builder: (context, state) {
           final double topPadding = MediaQuery.of(context).padding.top;
-          final double headerHeight = 200.0 + topPadding;
+          final double headerHeight = 155.0 + topPadding;
 
           return Stack(
             children: [
@@ -69,7 +68,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
               ),
               // Content Panel
               Positioned(
-                top: headerHeight + 35.0,
+                top: headerHeight,
                 left: 0,
                 right: 0,
                 bottom: 0,
@@ -78,6 +77,12 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     color: context.background,
                     borderRadius:
                         const BorderRadius.vertical(top: Radius.circular(24)),
+                    image: DecorationImage(
+                      image: const AssetImage('assets/images/background.png'),
+                      fit: BoxFit.cover,
+                      opacity: context.isDarkMode ? 0.06 : 0.55,
+                      alignment: Alignment.topCenter,
+                    ),
                   ),
                   child: CustomScrollView(
                     controller: _scrollController,
@@ -114,43 +119,50 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           ),
                         ),
                       if (state is FamilyTreeLoaded) ...[
-                        // Spacer for Search Section overlapping
-                        const SliverToBoxAdapter(
-                          child: SizedBox(height: 25),
-                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 50)),
+
                         // ── Branches Section ──
                         SliverToBoxAdapter(
                           child: AppSectionTitle(title: l10n.branchTabLabel),
                         ),
                         SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 140,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
+                          child: ClipRect(
+                            child: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              itemCount: state.branches.length,
-                              itemBuilder: (_, index) {
-                                final branch = state.branches[index];
-                                return SizedBox(
-                                  width: 220,
-                                  child: UserBranchCard(
-                                    branch: branch,
-                                    isSelected: _selectedBranchId == branch.id,
-                                    onTap: () {
-                                      setState(
-                                          () => _selectedBranchId = branch.id);
-                                      context.read<FamilyTreeBloc>().add(
-                                            FamilyTreeFilterByBranchEvent(
-                                                branch.id),
-                                          );
-                                    },
-                                  ),
-                                );
-                              },
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: SizedBox(
+                                height: 140,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  padding: EdgeInsets.zero,
+                                  clipBehavior: Clip.none,
+                                  itemCount: state.branches.length,
+                                  itemBuilder: (_, index) {
+                                    final branch = state.branches[index];
+                                    return SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                          right:
+                                              index < state.branches.length - 1
+                                                  ? 12
+                                                  : 0,
+                                        ),
+                                        child: UserBranchCard(
+                                          branch: branch,
+                                          isSelected: false,
+                                          onTap: null,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                           ),
                         ),
+
                         // ── Members Grid ──
                         SliverToBoxAdapter(
                           child: AppSectionTitle(title: l10n.memberTabLabel),
@@ -220,14 +232,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   ),
                 ),
               ),
-              // Search & Filter Section
-              if (state is FamilyTreeLoaded)
-                Positioned(
-                  top: headerHeight - 25.0,
-                  left: 0,
-                  right: 0,
-                  child: _buildSearchAndFilterSection(),
-                ),
             ],
           );
         },
@@ -235,54 +239,27 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     );
   }
 
-  Color _getRoleColor(String role) {
-    switch (role.toUpperCase()) {
-      case 'OWNER':
-      case 'CREATOR':
-        return context.primary;
-      case 'BRANCH_ADMIN':
-      case 'EDITOR':
-        return Colors.orange;
-      default:
-        return Colors.blueGrey;
-    }
-  }
-
-  String _getRoleLabel(String role) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (role.toUpperCase()) {
-      case 'OWNER':
-      case 'CREATOR':
-        return l10n.roleOwner;
-      case 'BRANCH_ADMIN':
-        return l10n.roleBranchAdminTitle.toUpperCase();
-      case 'EDITOR':
-        return l10n.roleEditorTitle.toUpperCase();
-      default:
-        return l10n.roleViewerTitle.toUpperCase();
-    }
-  }
-
   Widget _buildHeader(
       BuildContext context, FamilyTreeState state, double height) {
     final l10n = AppLocalizations.of(context)!;
-    final authState = context.read<AuthBloc>().state;
-    final user = authState is Authenticated ? authState.user : null;
 
     String familyName = l10n.familyTreeTitle;
-    if (state is FamilyTreeLoaded && state.members.isNotEmpty) {
-      final rootMembers = state.members.where(
-        (m) => m.generation == 1 || m.parentId == null,
-      );
-      final rootMember =
-          rootMembers.isNotEmpty ? rootMembers.first : state.members.first;
-      final parts = rootMember.fullName.trim().split(' ');
-      if (parts.isNotEmpty) {
-        familyName = l10n.familyTreeNameFormat(parts.first.toUpperCase());
+    if (state is FamilyTreeLoaded) {
+      if (state.family != null && state.family!.name.isNotEmpty) {
+        familyName = state.family!.name;
+      } else if (state.members.isNotEmpty) {
+        final rootMembers = state.members.where(
+          (m) => m.generation == 1 || m.parentId == null,
+        );
+        final rootMember =
+            rootMembers.isNotEmpty ? rootMembers.first : state.members.first;
+        final parts = rootMember.fullName.trim().split(' ');
+        if (parts.isNotEmpty) {
+          familyName = l10n.familyTreeNameFormat(parts.first.toUpperCase());
+        }
       }
     }
 
-    final now = DateTime.now();
     return Container(
       height: height,
       color: context.appBarBg,
@@ -306,103 +283,76 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           // Content
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Brand Logo + Family Name + Role Badge
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: context.accent, width: 1.5),
-                          borderRadius: BorderRadius.circular(8),
-                          color: context.background.withValues(alpha: 0.1),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) => Icon(
-                                LucideIcons.gitBranch,
-                                color: context.accent,
-                                size: 24),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                familyName,
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: context.accent,
-                                  letterSpacing: 1.2,
-                                ),
-                              ),
-                              if (user != null) ...[
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: _getRoleColor(user.role),
-                                    borderRadius: BorderRadius.circular(4),
-                                    border: Border.all(
-                                      color:
-                                          context.accent.withValues(alpha: 0.5),
-                                      width: 0.5,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    _getRoleLabel(user.role),
-                                    style: GoogleFonts.inter(
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                  // Brand Logo / Avatar (Căn giữa)
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: context.accent, width: 1.5),
+                      borderRadius: BorderRadius.circular(8),
+                      color: context.background.withValues(alpha: 0.1),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: () {
+                        final familyLogo = (state is FamilyTreeLoaded)
+                            ? state.family?.logoUrl
+                            : null;
+                        if (familyLogo != null && familyLogo.isNotEmpty) {
+                          return Image.network(
+                            familyLogo,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                              'assets/images/logo.png',
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(LucideIcons.gitBranch,
+                                      color: context.accent, size: 24),
+                            ),
+                          );
+                        }
+                        return Image.asset(
+                          'assets/images/logo.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                              LucideIcons.gitBranch,
+                              color: context.accent,
+                              size: 24),
+                        );
+                      }(),
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  // Motto
+                  const SizedBox(height: 8),
+                  // Tên Gia Phả (Căn giữa)
+                  Text(
+                    familyName,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: context.accent,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  // Motto (Căn giữa)
                   Text(
                     l10n.spiritualMotto,
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.beVietnamPro(
-                      fontSize: 11,
+                      fontSize: 10,
                       fontWeight: FontWeight.bold,
                       color: context.accent.withValues(alpha: 0.9),
-                      letterSpacing: 1.5,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  // Date
-                  Text(
-                    l10n.currentDateDisplay(now.day, now.month, now.year),
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 8),
                   // Stats Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -442,89 +392,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSearchAndFilterSection() {
-    final l10n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.surface,
-          borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: context.accent.withValues(alpha: 0.3)),
-          boxShadow: [
-            BoxShadow(
-              color: context.resolve(
-                  Colors.black.withValues(alpha: 0.08), Colors.transparent),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            const SizedBox(width: 14),
-            Icon(LucideIcons.search, color: context.accent, size: 16),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                controller: _searchController,
-                onChanged: (val) => setState(() {}),
-                decoration: InputDecoration(
-                  hintText: l10n.searchMemberYearHint,
-                  hintStyle: GoogleFonts.inter(
-                    color: context.textSecondary.withValues(alpha: 0.6),
-                    fontSize: 13,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                  border: InputBorder.none,
-                  isDense: true,
-                ),
-                style: GoogleFonts.inter(
-                  color: context.textPrimary,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-            Container(
-              width: 1,
-              height: 20,
-              color: context.accent.withValues(alpha: 0.3),
-            ),
-            const SizedBox(width: 4),
-            DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedGender,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                icon: Icon(
-                  LucideIcons.chevronsUpDown,
-                  color: context.accent,
-                  size: 14,
-                ),
-                dropdownColor: context.surface,
-                style: GoogleFonts.inter(
-                  color: context.textPrimary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-                items: ['Tất cả', 'Nam', 'Nữ'].map((String val) {
-                  return DropdownMenuItem<String>(
-                    value: val,
-                    child: Text(val),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  if (val != null) {
-                    setState(() => _selectedGender = val);
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

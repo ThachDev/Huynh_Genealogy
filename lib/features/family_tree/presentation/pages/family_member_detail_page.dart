@@ -9,6 +9,7 @@ import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../../features/auth/auth.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 import '../../../../core/widgets/app_appbar.dart';
+import '../../../../core/widgets/app_bottom_navigation_bar.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
   final MemberEntity member;
@@ -29,7 +30,9 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final authState = context.watch<AuthBloc>().state;
-    final canEdit = authState is Authenticated &&
+    final isAdminMode = UserMainNavigationPage.adminModeNotifier.value;
+    final canEdit = isAdminMode &&
+        authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');

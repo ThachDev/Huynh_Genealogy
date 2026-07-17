@@ -3433,6 +3433,30 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chi tiết sự kiện'**
   String get eventDetailTitle;
+
+  /// No description provided for @deathAnniversariesSectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'NGÀY GIỖ DÒNG HỌ'**
+  String get deathAnniversariesSectionTitle;
+
+  /// No description provided for @birthdaysSectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'NGÀY SINH NHẬT DÒNG HỌ'**
+  String get birthdaysSectionTitle;
+
+  /// No description provided for @newsEventsSectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'SỰ KIỆN & TIN TỨC'**
+  String get newsEventsSectionTitle;
+
+  /// No description provided for @generationLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đời thứ {gen}'**
+  String generationLabel(int gen);
 }
 
 class _AppLocalizationsDelegate

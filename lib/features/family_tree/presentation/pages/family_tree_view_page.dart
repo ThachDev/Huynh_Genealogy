@@ -123,6 +123,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     });
   }
 
+  /// Reload cây gia phả sau khi thêm thành viên/vợ chồng.
+  void _reloadTree() {
+    if (!mounted) return;
+    final authState = context.read<AuthBloc>().state;
+    final familyId =
+        authState is Authenticated ? authState.user.familyId : null;
+    context.read<FamilyTreeBloc>().add(FamilyTreeLoadEvent(familyId: familyId));
+  }
+
   @override
   void dispose() {
     _transformationController.dispose();
@@ -404,12 +413,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 
     if (treeState is FamilyTreeLoaded) {
       if (treeState.family != null) {
-        appBarTitle = 'Gia phả ${treeState.family!.name}';
+        appBarTitle = l10n.familyTreeNameFormat(treeState.family!.name);
       }
       if (treeState.members.isNotEmpty) {
         appBarActions = [
           IconButton(
-            icon: const Icon(LucideIcons.search, color: Colors.white),
+            icon: Icon(LucideIcons.search, color: context.textOnPrimary),
             onPressed: () async {
               final selectedId = await showSearch<int?>(
                 context: context,
@@ -431,9 +440,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 
     return Scaffold(
       backgroundColor: context.appBarBg,
-      extendBodyBehindAppBar: true,
       appBar: AppAppBar(
-        transparent: true,
+        transparent: false,
         title: appBarTitle,
         actions: appBarActions,
       ),
@@ -441,19 +449,17 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
         onPressed: _fitTreeOverview,
         backgroundColor: context.resolve(Colors.white, const Color(0xFF2A2A2A)),
         mini: true,
-        child: const Icon(
+        child: Icon(
           LucideIcons.maximize2,
-          color: Color(0xFFD4AF37),
+          color: context.accent,
           size: 20,
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          color: context.appBarBg,
-          image: const DecorationImage(
-            image: AssetImage('assets/images/clouds.png'),
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.png'),
             fit: BoxFit.cover,
-            opacity: 0.15,
           ),
         ),
         child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
@@ -597,15 +603,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                                           ),
                                         );
                                         if (result == true && context.mounted) {
-                                          final authState =
-                                              context.read<AuthBloc>().state;
-                                          final familyId =
-                                              authState is Authenticated
-                                                  ? authState.user.familyId
-                                                  : null;
-                                          context.read<FamilyTreeBloc>().add(
-                                              FamilyTreeLoadEvent(
-                                                  familyId: familyId));
+                                          _reloadTree();
                                         }
                                       }
                                     : null,
@@ -623,15 +621,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                                           ),
                                         );
                                         if (result == true && context.mounted) {
-                                          final authState =
-                                              context.read<AuthBloc>().state;
-                                          final familyId =
-                                              authState is Authenticated
-                                                  ? authState.user.familyId
-                                                  : null;
-                                          context.read<FamilyTreeBloc>().add(
-                                              FamilyTreeLoadEvent(
-                                                  familyId: familyId));
+                                          _reloadTree();
                                         }
                                       }
                                     : null,
@@ -751,10 +741,6 @@ class _TreeEdgePainter extends CustomPainter {
 
       final start = Offset(left.dx + _nodeWidth / 2, left.dy);
       final end = Offset(right.dx - _nodeWidth / 2, right.dy);
-
-      // Bỏ đường gạch nối ngang, chỉ giữ icon
-      // canvas.drawLine(start, end, spousePaint);
-
       final midX = (start.dx + end.dx) / 2;
 
       // Chọn icon dựa vào trạng thái hôn nhân
@@ -801,10 +787,8 @@ class MemberSearchDelegate extends SearchDelegate<int?> {
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
+        icon: const Icon(LucideIcons.x),
+        onPressed: () => query = '',
       ),
     ];
   }
@@ -812,10 +796,8 @@ class MemberSearchDelegate extends SearchDelegate<int?> {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
+      icon: const Icon(LucideIcons.arrowLeft),
+      onPressed: () => close(context, null),
     );
   }
 

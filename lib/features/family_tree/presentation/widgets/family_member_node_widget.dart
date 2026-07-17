@@ -4,7 +4,8 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import '../../../../core/domain/entity/member_entity.dart';
+import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
@@ -74,145 +75,122 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
       onTapCancel: () => _controller.reverse(),
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: Container(
+        child: SizedBox(
           width: 140,
-          height: (widget.onAddChildTap != null ||
-                  widget.onAddSpouseTap != null)
-              ? 160
-              : 125,
-          decoration: BoxDecoration(
-            color: context.background, // Giấy gió / Parchment
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: context.resolve(
-                    Colors.black.withValues(alpha: 0.15),
-                    Colors.transparent),
-                blurRadius: 6,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                  child: Column(
-                    children: [
-                      // TOP: Avatar, Name, DOB
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: context.resolve(
-                                Colors.grey.shade300, Colors.grey.shade700),
-                            width: 1.0,
+          height:
+              (widget.onAddChildTap != null || widget.onAddSpouseTap != null)
+                  ? 160
+                  : 125,
+          child: CustomPaint(
+            painter: TraditionalOrnamentalBorderPainter(
+              borderColor: widget.isSelected
+                  ? context.primary
+                  : context.accent.withValues(alpha: 0.6),
+              fillColor: context.surface,
+              borderRadius: 12.0,
+              bottomAccentColor: _genderColor,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                    child: Column(
+                      children: [
+                        // TOP: Avatar, Name, DOB
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: context.resolve(
+                                  Colors.grey.shade300, Colors.grey.shade700),
+                              width: 1.0,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: context.resolve(
+                                Colors.grey.shade100, const Color(0xFF2C2C2C)),
+                            backgroundImage: widget.member.avatarUrl != null
+                                ? NetworkImage(widget.member.avatarUrl!)
+                                : null,
+                            child: widget.member.avatarUrl == null
+                                ? Icon(
+                                    widget.member.gender == Gender.male
+                                        ? LucideIcons.user
+                                        : LucideIcons.user2,
+                                    color: widget.member.gender == Gender.male
+                                        ? context.genderMale
+                                        : widget.member.gender == Gender.female
+                                            ? context.genderFemale
+                                            : context.textSecondary,
+                                    size: 18,
+                                  )
+                                : null,
                           ),
                         ),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: context.resolve(
-                              Colors.grey.shade100, const Color(0xFF2C2C2C)),
-                          backgroundImage: widget.member.avatarUrl != null
-                              ? NetworkImage(widget.member.avatarUrl!)
-                              : null,
-                          child: widget.member.avatarUrl == null
-                              ? Icon(
-                                  widget.member.gender == Gender.male
-                                      ? LucideIcons.user
-                                      : LucideIcons.user2,
-                                  color: widget.member.gender == Gender.male
-                                      ? context.genderMale
-                                      : widget.member.gender == Gender.female
-                                          ? context.genderFemale
-                                          : context.textSecondary,
-                                  size: 18,
-                                )
-                              : null,
+                        const SizedBox(height: 6),
+                        Text(
+                          widget.member.fullName,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: context.primary,
+                            height: 1.1,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        widget.member.fullName,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: context.primary,
-                          height: 1.1,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // TIMELINE ICONS
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 14,
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  LucideIcons.activity,
-                                  size: 8,
-                                  color: context.textSecondary,
-                                ),
-                              ),
-                              if (!widget.member.isAlive) ...[
-                                Container(
-                                  width: 1,
-                                  height: 4,
-                                  color: context.textSecondary
-                                      .withValues(alpha: 0.5),
-                                ),
+                        const SizedBox(height: 2),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // TIMELINE ICONS
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
                                 Container(
                                   height: 14,
                                   alignment: Alignment.center,
                                   child: Icon(
-                                    LucideIcons.cross,
+                                    LucideIcons.activity,
                                     size: 8,
                                     color: context.textSecondary,
                                   ),
                                 ),
-                              ],
-                            ],
-                          ),
-                          const SizedBox(width: 6),
-                          // DATES TEXT
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 14,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  DateFormatter.formatForDisplay(
-                                          widget.member.dateOfBirth) ??
-                                      l10n.unknownLabel,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w500,
-                                    color: context.textSecondary,
-                                    height: 1.0,
+                                if (!widget.member.isAlive) ...[
+                                  Container(
+                                    width: 1,
+                                    height: 4,
+                                    color: context.textSecondary
+                                        .withValues(alpha: 0.5),
                                   ),
-                                ),
-                              ),
-                              if (!widget.member.isAlive) ...[
-                                const SizedBox(height: 4),
+                                  Container(
+                                    height: 14,
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      LucideIcons.cross,
+                                      size: 8,
+                                      color: context.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            const SizedBox(width: 6),
+                            // DATES TEXT
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Container(
                                   height: 14,
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     DateFormatter.formatForDisplay(
-                                            widget.member.dateOfDeath) ??
+                                            widget.member.dateOfBirth) ??
                                         l10n.unknownLabel,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -224,102 +202,106 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                     ),
                                   ),
                                 ),
+                                if (!widget.member.isAlive) ...[
+                                  const SizedBox(height: 4),
+                                  Container(
+                                    height: 14,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      DateFormatter.formatForDisplay(
+                                              widget.member.dateOfDeath) ??
+                                          l10n.unknownLabel,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w500,
+                                        color: context.textSecondary,
+                                        height: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ],
-                            ],
-                          ),
-                        ],
-                      ),
-                      if (widget.onAddChildTap != null ||
-                          widget.onAddSpouseTap != null) ...[
-                        const Spacer(),
-                        // DIVIDER
-                        Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: context.resolve(
-                              Colors.grey[300]!, Colors.grey[800]!),
-                        ),
-                        const Spacer(),
-                        // BOTTOM ICONS ROW
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            if (widget.onAddChildTap != null)
-                              GestureDetector(
-                                onTap: widget.onAddChildTap,
-                                child: Tooltip(
-                                  message: l10n.addChildTooltip,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0, vertical: 4.0),
-                                    child: Icon(
-                                      LucideIcons.baby,
-                                      size: 18,
-                                      color: context.primary,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            if (widget.onAddSpouseTap != null)
-                              GestureDetector(
-                                onTap: widget.onAddSpouseTap,
-                                child: Tooltip(
-                                  message: l10n.addSpouseTooltip,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0, vertical: 4.0),
-                                    child: Icon(
-                                      LucideIcons.heart,
-                                      size: 16,
-                                      color: context.resolve(Colors.redAccent,
-                                          Colors.red.shade300),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            ),
                           ],
                         ),
-                        const Spacer(),
-                      ] else
-                        const Spacer(flex: 3),
-                    ],
+                        if (widget.onAddChildTap != null ||
+                            widget.onAddSpouseTap != null) ...[
+                          const Spacer(),
+                          // DIVIDER
+                          Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: context.resolve(
+                                Colors.grey[300]!, Colors.grey[800]!),
+                          ),
+                          const Spacer(),
+                          // BOTTOM ICONS ROW
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              if (widget.onAddChildTap != null)
+                                GestureDetector(
+                                  onTap: widget.onAddChildTap,
+                                  child: Tooltip(
+                                    message: l10n.addChildTooltip,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12.0, vertical: 4.0),
+                                      child: Icon(
+                                        LucideIcons.baby,
+                                        size: 18,
+                                        color: context.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              if (widget.onAddSpouseTap != null)
+                                GestureDetector(
+                                  onTap: widget.onAddSpouseTap,
+                                  child: Tooltip(
+                                    message: l10n.addSpouseTooltip,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12.0, vertical: 4.0),
+                                      child: Icon(
+                                        LucideIcons.heart,
+                                        size: 16,
+                                        color: context.resolve(Colors.redAccent,
+                                            Colors.red.shade300),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const Spacer(),
+                        ] else
+                          const Spacer(flex: 3),
+                      ],
+                    ),
                   ),
-                ),
 
-                // BOTTOM COLORED BAR
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: _genderColor,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
+                  // BOTTOM CIRCLE MARKER
+                  Positioned(
+                    bottom: -2,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: context.surface,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: _genderColor, width: 2),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // BOTTOM CIRCLE MARKER
-                Positioned(
-                  bottom: -2,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: context.surface,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: _genderColor, width: 2),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

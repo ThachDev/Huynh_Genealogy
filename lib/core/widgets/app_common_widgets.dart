@@ -445,7 +445,7 @@ class TraditionalOrnamentalCard extends StatelessWidget {
       height: height,
       child: CustomPaint(
         painter: TraditionalOrnamentalBorderPainter(
-          borderColor: Colors.black.withValues(alpha: 0.15),
+          borderColor: context.accent.withValues(alpha: 0.5),
           fillColor: context.surface,
         ),
         child: Padding(
@@ -462,12 +462,14 @@ class TraditionalOrnamentalBorderPainter extends CustomPainter {
   final Color fillColor;
   final double borderRadius;
   final Color? leftAccentColor;
+  final Color? bottomAccentColor;
 
   TraditionalOrnamentalBorderPainter({
     required this.borderColor,
     required this.fillColor,
     this.borderRadius = 18.0,
     this.leftAccentColor,
+    this.bottomAccentColor,
   });
 
   @override
@@ -526,6 +528,17 @@ class TraditionalOrnamentalBorderPainter extends CustomPainter {
         ..color = leftAccentColor!
         ..style = PaintingStyle.fill;
       canvas.drawRect(Rect.fromLTWH(0, 0, 4, h), accentPaint);
+      canvas.restore();
+    }
+
+    // 3b. Draw bottom accent bar (clipped to the custom path)
+    if (bottomAccentColor != null) {
+      canvas.save();
+      canvas.clipPath(path);
+      final accentPaint = Paint()
+        ..color = bottomAccentColor!
+        ..style = PaintingStyle.fill;
+      canvas.drawRect(Rect.fromLTWH(0, h - 4, w, 4), accentPaint);
       canvas.restore();
     }
 

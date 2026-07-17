@@ -40,7 +40,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/clouds.png',
+                    'assets/images/wood_dragon_top.png',
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) =>
                         Container(color: context.appBarBg),
@@ -48,8 +48,9 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 Positioned.fill(
                   child: Container(
-                    color: context.appBarBg.withValues(alpha: 0.8),
-                  ),
+                      color: context.resolve(
+                          Colors.black.withValues(alpha: 0.45),
+                          Colors.transparent)),
                 ),
               ],
             ),
@@ -62,14 +63,15 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
       iconTheme: const IconThemeData(color: Colors.white),
-      title: titleWidget ?? Text(
-        title,
-        style: GoogleFonts.beVietnamPro(
-          color: context.accent,
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-        ),
-      ),
+      title: titleWidget ??
+          Text(
+            title,
+            style: GoogleFonts.beVietnamPro(
+              color: context.accent,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
       actions: actions,
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,

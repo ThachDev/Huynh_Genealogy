@@ -1825,4 +1825,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get eventDetailTitle => 'Chi tiết sự kiện';
+
+  @override
+  String get deathAnniversariesSectionTitle => 'NGÀY GIỖ DÒNG HỌ';
+
+  @override
+  String get birthdaysSectionTitle => 'NGÀY SINH NHẬT DÒNG HỌ';
+
+  @override
+  String get newsEventsSectionTitle => 'SỰ KIỆN & TIN TỨC';
+
+  @override
+  String generationLabel(int gen) {
+    return 'Đời thứ $gen';
+  }
 }

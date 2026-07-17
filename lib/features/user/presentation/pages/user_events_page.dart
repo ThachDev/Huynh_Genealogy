@@ -252,153 +252,121 @@ class _UserEventsPageState extends State<UserEventsPage> {
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.appBarBg,
-        image: const DecorationImage(
-          image: AssetImage('assets/images/clouds.png'),
-          fit: BoxFit.cover,
-          opacity: 0.15,
-        ),
+    return Scaffold(
+      appBar: AppAppBar(
+        title: l10n.eventsListTitle,
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppAppBar(
-          title: l10n.eventsListTitle,
-          transparent: true,
-        ),
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: context.background,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage('assets/images/background.png'),
+            fit: BoxFit.cover,
           ),
-          child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
-            builder: (context, treeState) {
-              return BlocBuilder<EventsBloc, EventsState>(
-                builder: (context, eventsState) {
-                  if (eventsState is EventsLoading ||
-                      eventsState is EventsSubmitting ||
-                      treeState is FamilyTreeLoading) {
-                    return const Center(child: AppLoading(size: 80));
-                  }
+        ),
+        child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
+          builder: (context, treeState) {
+            return BlocBuilder<EventsBloc, EventsState>(
+              builder: (context, eventsState) {
+                if (eventsState is EventsLoading ||
+                    eventsState is EventsSubmitting ||
+                    treeState is FamilyTreeLoading) {
+                  return const Center(child: AppLoading(size: 80));
+                }
 
-                  List<MemberEntity> members = [];
-                  if (treeState is FamilyTreeLoaded) {
-                    members = treeState.members;
-                  }
+                List<MemberEntity> members = [];
+                if (treeState is FamilyTreeLoaded) {
+                  members = treeState.members;
+                }
 
-                  final deathAnniversaries =
-                      _calculateDeathAnniversaries(members);
-                  final birthdays = _calculateBirthdays(members);
+                final deathAnniversaries =
+                    _calculateDeathAnniversaries(members);
+                final birthdays = _calculateBirthdays(members);
 
-                  List<EventEntity> allEvents = [];
-                  if (eventsState is EventsLoaded) {
-                    allEvents = eventsState.events;
-                  }
+                List<EventEntity> allEvents = [];
+                if (eventsState is EventsLoaded) {
+                  allEvents = eventsState.events;
+                }
 
-                  return SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // ── Section 1: Ngày Giỗ Dòng Họ ──
-                        if (deathAnniversaries.isNotEmpty) ...[
-                          AppSectionTitle(
-                            title: 'NGÀY GIỖ DÒNG HỌ',
-                            trailing: _buildTrailingSeeAll(),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildDeathAnniversariesList(deathAnniversaries),
-                          const SizedBox(height: 28),
-                        ],
-
-                        // ── Section 2: Sinh Nhật Dòng Họ ──
-                        if (birthdays.isNotEmpty) ...[
-                          AppSectionTitle(
-                            title: 'NGÀY SINH NHẬT DÒNG HỌ',
-                            trailing: _buildTrailingSeeAll(),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildBirthdaysList(birthdays),
-                          const SizedBox(height: 28),
-                        ],
-
-                        // ── Section 3: Sự Kiện & Tin Tức ──
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Section 1: Ngày Giỗ Dòng Họ ──
+                      if (deathAnniversaries.isNotEmpty) ...[
                         AppSectionTitle(
-                          title: 'SỰ KIỆN & TIN TỨC',
+                          title: l10n.deathAnniversariesSectionTitle,
                           trailing: _buildTrailingSeeAll(),
                         ),
-                        const SizedBox(height: 12),
-
-                        if (allEvents.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 48, horizontal: 16),
-                            child: AppEmptyState(
-                              icon: LucideIcons.calendarDays,
-                              message: l10n.noEventsMessage,
-                            ),
-                          )
-                        else
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: allEvents.length,
-                              itemBuilder: (context, index) {
-                                final event = allEvents[index];
-                                return _buildEventCard(event, canEdit);
-                              },
-                            ),
-                          ),
+                        _buildAnniversaryList(deathAnniversaries),
                       ],
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+
+                      // ── Section 2: Sinh Nhật Dòng Họ ──
+                      if (birthdays.isNotEmpty) ...[
+                        AppSectionTitle(
+                          title: l10n.birthdaysSectionTitle,
+                          trailing: _buildTrailingSeeAll(),
+                        ),
+                        _buildAnniversaryList(birthdays),
+                      ],
+
+                      // ── Section 3: Sự Kiện & Tin Tức ──
+                      AppSectionTitle(
+                        title: l10n.newsEventsSectionTitle,
+                        trailing: _buildTrailingSeeAll(),
+                      ),
+
+                      if (allEvents.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 48, horizontal: 16),
+                          child: AppEmptyState(
+                            icon: LucideIcons.calendarDays,
+                            message: l10n.noEventsMessage,
+                          ),
+                        )
+                      else
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: allEvents.length,
+                            itemBuilder: (context, index) {
+                              final event = allEvents[index];
+                              return _buildEventCard(event, canEdit);
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );
   }
 
   Widget _buildTrailingSeeAll() {
-    return TextButton(
+    return IconButton(
       onPressed: () {},
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Xem tất cả',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: context.textSecondary,
-                ),
-          ),
-          const SizedBox(width: 4),
-          Icon(
-            Icons.arrow_forward_ios,
-            size: 10,
-            color: context.textSecondary,
-          ),
-        ],
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints(),
+      icon: Icon(
+        LucideIcons.chevronRight,
+        size: 18,
+        color: context.textSecondary,
       ),
     );
   }
 
-  Widget _buildDeathAnniversariesList(List<_UpcomingAnniversary> list) {
+  /// Danh sách cuộn ngang dùng chung cho cả Ngày Giỗ và Sinh Nhật.
+  Widget _buildAnniversaryList(List<_UpcomingAnniversary> list) {
     return ClipRect(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -416,34 +384,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
                 padding: EdgeInsets.only(
                   right: index < list.length - 1 ? 16 : 0,
                 ),
-                child: AncestorCard(data: data),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBirthdaysList(List<_UpcomingAnniversary> list) {
-    return ClipRect(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SizedBox(
-          height: 115,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.zero,
-            clipBehavior: Clip.none,
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              final data = list[index];
-              return Padding(
-                padding: EdgeInsets.only(
-                  right: index < list.length - 1 ? 16 : 0,
-                ),
-                child: BirthdayCard(data: data),
+                child: AnniversaryCard(data: data),
               );
             },
           ),
@@ -455,28 +396,17 @@ class _UserEventsPageState extends State<UserEventsPage> {
   Widget _buildEventCard(EventEntity event, bool canEdit) {
     final l10n = AppLocalizations.of(context)!;
 
-    Color badgeColor = context.primary;
-    String badgeLabel = 'Sự kiện';
-    IconData badgeIcon = LucideIcons.calendar;
-
-    switch (event.type) {
-      case 'article':
-        badgeColor = context.primary;
-        badgeLabel = 'Tin tức';
-        badgeIcon = LucideIcons.bookOpen;
-        break;
-      case 'announcement':
-        badgeColor = context.primary;
-        badgeLabel = 'Thông báo';
-        badgeIcon = LucideIcons.megaphone;
-        break;
-      case 'event':
-      default:
-        badgeColor = context.primary;
-        badgeLabel = 'Sự kiện';
-        badgeIcon = LucideIcons.calendar;
-        break;
-    }
+    final Color badgeColor = context.primary;
+    final String badgeLabel = switch (event.type) {
+      'article' => l10n.eventTypeArticle,
+      'announcement' => l10n.eventTypeAnnouncement,
+      _ => l10n.eventTypeEvent,
+    };
+    final IconData badgeIcon = switch (event.type) {
+      'article' => LucideIcons.bookOpen,
+      'announcement' => LucideIcons.megaphone,
+      _ => LucideIcons.calendar,
+    };
 
     final imageUrl = event.imageUrl;
     final isNetworkImage = imageUrl != null &&
@@ -551,8 +481,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     ),
                     const SizedBox(height: 8),
                     if (event.description != null &&
-                        event.description!.isNotEmpty) ...[
-                      const SizedBox(height: 6),
+                        event.description!.isNotEmpty)
                       Text(
                         event.description!,
                         maxLines: 2,
@@ -563,7 +492,6 @@ class _UserEventsPageState extends State<UserEventsPage> {
                           height: 1.4,
                         ),
                       ),
-                    ],
                     const SizedBox(height: 8),
                     if (event.location != null &&
                         event.location!.isNotEmpty) ...[
@@ -717,27 +645,28 @@ class _UserEventsPageState extends State<UserEventsPage> {
 
 // ── CUSTOM REUSABLE WIDGETS ──
 
-class AncestorCard extends StatelessWidget {
+/// Card dùng chung cho cả Ngày Giỗ (isBirthday: false) và Sinh Nhật (isBirthday: true).
+class AnniversaryCard extends StatelessWidget {
   final _UpcomingAnniversary data;
 
-  const AncestorCard({super.key, required this.data});
+  const AnniversaryCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
+    final isBirthday = data.isBirthday;
+    final icon = isBirthday ? LucideIcons.cake : LucideIcons.flame;
+
     return TraditionalOrnamentalCard(
       width: 230,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          // ── Header: icon + tên + đời ──
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                LucideIcons.flame,
-                size: 20,
-                color: context.primary,
-              ),
+              Icon(icon, size: 20, color: context.primary),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -753,15 +682,17 @@ class AncestorCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
-                    if (data.member.generation != null)
+                    if (data.member.generation != null) ...[
+                      const SizedBox(height: 2),
                       Text(
-                        'Đời thứ ${data.member.generation}',
+                        AppLocalizations.of(context)!
+                            .generationLabel(data.member.generation!),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontSize: 12,
                               color: context.textSecondary,
                             ),
                       ),
+                    ],
                   ],
                 ),
               ),
@@ -770,10 +701,11 @@ class AncestorCard extends StatelessWidget {
           const SizedBox(height: 8),
           const Divider(height: 1, thickness: 0.5),
           const SizedBox(height: 8),
+          // ── Footer: ngày + countdown ──
           Row(
             children: [
-              Icon(LucideIcons.calendar, size: 12, color: context.accent),
-              const SizedBox(width: 6),
+              Icon(LucideIcons.calendar, size: 20, color: context.accent),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -797,83 +729,7 @@ class AncestorCard extends StatelessWidget {
                   ],
                 ),
               ),
-              CountdownBadge(days: data.daysRemaining, isBirthday: false),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BirthdayCard extends StatelessWidget {
-  final _UpcomingAnniversary data;
-
-  const BirthdayCard({super.key, required this.data});
-
-  @override
-  Widget build(BuildContext context) {
-    return TraditionalOrnamentalCard(
-      width: 230,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                LucideIcons.cake,
-                size: 20,
-                color: context.primary,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.title,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: context.textPrimary,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    if (data.member.generation != null)
-                      Text(
-                        'Đời thứ ${data.member.generation}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12,
-                              color: context.textSecondary,
-                            ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Divider(height: 1, thickness: 0.5),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(LucideIcons.calendar, size: 12, color: context.accent),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  data.solarDateLabel,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: context.textPrimary,
-                      ),
-                ),
-              ),
-              CountdownBadge(days: data.daysRemaining, isBirthday: true),
+              CountdownBadge(days: data.daysRemaining, isBirthday: isBirthday),
             ],
           ),
         ],
@@ -901,7 +757,7 @@ class CountdownBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        'Còn $days ngày',
+        AppLocalizations.of(context)!.eventCountdown(days),
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
               fontSize: 11,
               fontWeight: FontWeight.bold,

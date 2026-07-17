@@ -211,7 +211,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           // Wood Background
           Positioned.fill(
             child: Image.asset(
-              'assets/images/wood_dragon.png',
+              'assets/images/wood_dragon_top.png',
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
                   Container(color: context.appBarBg),

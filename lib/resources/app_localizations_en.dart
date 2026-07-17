@@ -1820,4 +1820,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventDetailTitle => 'Event Detail';
+
+  @override
+  String get deathAnniversariesSectionTitle => 'CLAN DEATH ANNIVERSARIES';
+
+  @override
+  String get birthdaysSectionTitle => 'CLAN BIRTHDAYS';
+
+  @override
+  String get newsEventsSectionTitle => 'EVENTS & NEWS';
+
+  @override
+  String generationLabel(int gen) {
+    return 'Generation $gen';
+  }
 }

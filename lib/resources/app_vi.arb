@@ -713,5 +713,16 @@
   "eventPickPhoto": "Chọn ảnh",
   "eventChangePhoto": "Thay ảnh",
   "doneLabel": "Xong",
-  "eventDetailTitle": "Chi tiết sự kiện"
+  "eventDetailTitle": "Chi tiết sự kiện",
+  "deathAnniversariesSectionTitle": "NGÀY GIỖ DÒNG HỌ",
+  "birthdaysSectionTitle": "NGÀY SINH NHẬT DÒNG HỌ",
+  "newsEventsSectionTitle": "SỰ KIỆN & TIN TỨC",
+  "generationLabel": "Đời thứ {gen}",
+  "@generationLabel": {
+    "placeholders": {
+      "gen": {
+        "type": "int"
+      }
+    }
+  }
 }

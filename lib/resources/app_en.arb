@@ -713,5 +713,16 @@
   "eventPickPhoto": "Pick photo",
   "eventChangePhoto": "Pick photo",
   "doneLabel": "Done",
-  "eventDetailTitle": "Event Detail"
+  "eventDetailTitle": "Event Detail",
+  "deathAnniversariesSectionTitle": "CLAN DEATH ANNIVERSARIES",
+  "birthdaysSectionTitle": "CLAN BIRTHDAYS",
+  "newsEventsSectionTitle": "EVENTS & NEWS",
+  "generationLabel": "Generation {gen}",
+  "@generationLabel": {
+    "placeholders": {
+      "gen": {
+        "type": "int"
+      }
+    }
+  }
 }

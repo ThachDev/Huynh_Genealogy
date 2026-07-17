@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+
 import '../../../family_tree/family_tree.dart';
 import '../widgets/user_branch_card.dart';
 import '../../../auth/auth.dart';
@@ -20,31 +20,9 @@ class UserFamilyDashboardPage extends StatefulWidget {
 }
 
 class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
-  final TextEditingController _searchController = TextEditingController();
-  final String _selectedGender = 'Tất cả';
-  final ScrollController _scrollController = ScrollController();
-
   int? _familyId() {
     final authState = context.read<AuthBloc>().state;
     return authState is Authenticated ? authState.user.familyId : null;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    _searchController.dispose();
-    super.dispose();
   }
 
   @override
@@ -85,7 +63,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     ),
                   ),
                   child: CustomScrollView(
-                    controller: _scrollController,
                     slivers: [
                       if (state is FamilyTreeLoading)
                         const SliverFillRemaining(
@@ -167,65 +144,31 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                         SliverToBoxAdapter(
                           child: AppSectionTitle(title: l10n.memberTabLabel),
                         ),
-                        // Local filter block
-                        () {
-                          final search =
-                              _searchController.text.toLowerCase().trim();
-                          final filteredMembers = state.members.where((member) {
-                            if (_selectedGender != 'Tất cả') {
-                              final isMale = member.gender == Gender.male;
-                              final isFemale = member.gender == Gender.female;
-                              if (_selectedGender == 'Nam' && !isMale) {
-                                return false;
-                              }
-                              if (_selectedGender == 'Nữ' && !isFemale) {
-                                return false;
-                              }
-                            }
-                            if (search.isNotEmpty) {
-                              final matchesName = member.fullName
-                                  .toLowerCase()
-                                  .contains(search);
-                              final matchesBirth =
-                                  member.dateOfBirth?.contains(search) ?? false;
-                              final matchesBranch = member.branchName
-                                      ?.toLowerCase()
-                                      .contains(search) ??
-                                  false;
-                              if (!matchesName &&
-                                  !matchesBirth &&
-                                  !matchesBranch) {
-                                return false;
-                              }
-                            }
-                            return true;
-                          }).toList();
 
-                          if (filteredMembers.isEmpty) {
-                            return SliverToBoxAdapter(
-                              child: AppEmptyState(
-                                icon: LucideIcons.search,
-                                message: l10n.noMemberFound,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 40, horizontal: 16),
-                              ),
-                            );
-                          }
-
-                          return SliverList(
+                        // Hiển thị danh sách thành viên trực tiếp
+                        if (state.members.isEmpty)
+                          SliverToBoxAdapter(
+                            child: AppEmptyState(
+                              icon: LucideIcons.search,
+                              message: l10n.noMemberFound,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 40, horizontal: 16),
+                            ),
+                          )
+                        else
+                          SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
-                                final member = filteredMembers[index];
+                                final member = state.members[index];
                                 return MemberItemWidget(
                                   member: member,
                                   allMembers: state.members,
                                   showMenu: false,
                                 );
                               },
-                              childCount: filteredMembers.length,
+                              childCount: state.members.length,
                             ),
-                          );
-                        }(),
+                          ),
                         const SliverToBoxAdapter(child: SizedBox(height: 80)),
                       ],
                     ],

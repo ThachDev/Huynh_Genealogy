@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../resources/app_localizations.dart';
+import '../../../../../core/widgets/app_common_widgets.dart';
 
 import '../../../../family_tree/presentation/pages/family_member_detail_page.dart';
 
@@ -29,46 +30,38 @@ class MemberItemWidget extends StatelessWidget {
     final String aliveText =
         member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: context.textSecondary.withValues(alpha: 0.12),
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => FamilyMemberDetailPage(
-                  member: member,
-                  allMembers: allMembers,
-                ),
-              ),
-            );
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: member.gender == Gender.male
-                      ? context.genderMale
-                      : member.gender == Gender.female
-                          ? context.genderFemale
-                          : Colors.grey,
-                  width: 4,
-                ),
-              ),
+    final genderColor = member.gender == Gender.male
+        ? context.genderMale
+        : member.gender == Gender.female
+            ? context.genderFemale
+            : Colors.grey;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FamilyMemberDetailPage(
+              member: member,
+              allMembers: allMembers,
             ),
-            padding: const EdgeInsets.all(16),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        child: CustomPaint(
+          painter: TraditionalOrnamentalBorderPainter(
+            borderColor: context.textSecondary.withValues(alpha: 0.2),
+            fillColor: context.surface,
+            leftAccentColor: genderColor,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // ── Avatar ──
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -100,12 +93,15 @@ class MemberItemWidget extends StatelessWidget {
                         : null,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
+
+                // ── Thông tin ──
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Họ tên
                       Text(
                         member.fullName,
                         style: GoogleFonts.beVietnamPro(
@@ -115,80 +111,66 @@ class MemberItemWidget extends StatelessWidget {
                           letterSpacing: -0.1,
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      const SizedBox(height: 5),
+
+                      // Đời | Trạng thái sống
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 4),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  LucideIcons.gitCommit,
-                                  size: 10,
-                                  color: context.accent,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  l10n.generationBadge(
-                                      '${member.generation ?? "?"}'),
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: context.textPrimary,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  '|',
-                                  style: TextStyle(
-                                    color: context.resolve(Colors.grey.shade400,
-                                        Colors.grey.shade700),
-                                    fontSize: 10,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Icon(
-                                  member.isAlive
-                                      ? LucideIcons.heart
-                                      : LucideIcons.heartCrack,
-                                  size: 10,
-                                  color: member.isAlive
-                                      ? context.primary
-                                      : Colors.grey,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  aliveText,
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                    color: member.isAlive
-                                        ? context.primary
-                                        : context.textSecondary,
-                                  ),
-                                ),
-                              ],
+                          Icon(LucideIcons.gitCommit,
+                              size: 10, color: context.accent),
+                          const SizedBox(width: 4),
+                          Text(
+                            l10n.generationBadge('${member.generation ?? "?"}'),
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: context.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '|',
+                            style: TextStyle(
+                              color: context.resolve(
+                                  Colors.grey.shade400, Colors.grey.shade700),
+                              fontSize: 10,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Icon(
+                            member.isAlive
+                                ? LucideIcons.heart
+                                : LucideIcons.heartCrack,
+                            size: 10,
+                            color:
+                                member.isAlive ? context.primary : Colors.grey,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            aliveText,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: member.isAlive
+                                  ? context.primary
+                                  : context.textSecondary,
                             ),
                           ),
                         ],
                       ),
+
+                      // Chi tộc (nếu có)
                       if (member.branchName != null &&
                           member.branchName!.isNotEmpty) ...[
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 6),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
-                              LucideIcons.gitBranch,
-                              size: 12,
-                              color:
-                                  context.textSecondary.withValues(alpha: 0.7),
-                            ),
+                            Icon(LucideIcons.gitBranch,
+                                size: 12,
+                                color: context.textSecondary
+                                    .withValues(alpha: 0.7)),
                             const SizedBox(width: 4),
                             Flexible(
                               child: Text(
@@ -208,8 +190,10 @@ class MemberItemWidget extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                // ── Menu ──
                 if (showMenu) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   PopupMenuButton<String>(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -234,10 +218,9 @@ class MemberItemWidget extends StatelessWidget {
                               const Icon(LucideIcons.edit,
                                   color: Colors.green, size: 18),
                               const SizedBox(width: 8),
-                              Text(
-                                l10n.editLabel,
-                                style: GoogleFonts.beVietnamPro(fontSize: 13),
-                              ),
+                              Text(l10n.editLabel,
+                                  style:
+                                      GoogleFonts.beVietnamPro(fontSize: 13)),
                             ],
                           ),
                         ),
@@ -250,22 +233,17 @@ class MemberItemWidget extends StatelessWidget {
                               const Icon(LucideIcons.trash2,
                                   color: Colors.red, size: 18),
                               const SizedBox(width: 8),
-                              Text(
-                                l10n.deleteLabel,
-                                style: GoogleFonts.beVietnamPro(
-                                    fontSize: 13, color: Colors.red),
-                              ),
+                              Text(l10n.deleteLabel,
+                                  style: GoogleFonts.beVietnamPro(
+                                      fontSize: 13, color: Colors.red)),
                             ],
                           ),
                         ),
                     ],
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        LucideIcons.moreVertical,
-                        color: context.textSecondary,
-                        size: 20,
-                      ),
+                      child: Icon(LucideIcons.moreVertical,
+                          color: context.textSecondary, size: 20),
                     ),
                   ),
                 ],

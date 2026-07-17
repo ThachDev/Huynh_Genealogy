@@ -461,11 +461,13 @@ class TraditionalOrnamentalBorderPainter extends CustomPainter {
   final Color borderColor;
   final Color fillColor;
   final double borderRadius;
+  final Color? leftAccentColor;
 
   TraditionalOrnamentalBorderPainter({
     required this.borderColor,
     required this.fillColor,
     this.borderRadius = 18.0,
+    this.leftAccentColor,
   });
 
   @override
@@ -516,7 +518,18 @@ class TraditionalOrnamentalBorderPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
     canvas.drawPath(path, fillPaint);
 
-    // 3. Draw stroke border
+    // 3. Draw left accent bar (clipped to the custom path)
+    if (leftAccentColor != null) {
+      canvas.save();
+      canvas.clipPath(path);
+      final accentPaint = Paint()
+        ..color = leftAccentColor!
+        ..style = PaintingStyle.fill;
+      canvas.drawRect(Rect.fromLTWH(0, 0, 4, h), accentPaint);
+      canvas.restore();
+    }
+
+    // 4. Draw stroke border
     final paint = Paint()
       ..color = borderColor
       ..style = PaintingStyle.stroke
@@ -525,5 +538,8 @@ class TraditionalOrnamentalBorderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant TraditionalOrnamentalBorderPainter old) =>
+      old.borderColor != borderColor ||
+      old.fillColor != fillColor ||
+      old.leftAccentColor != leftAccentColor;
 }

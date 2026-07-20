@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../core/theme/app_theme.dart';
 
 class SwipeableCard extends StatefulWidget {
   final Widget child;
@@ -78,13 +77,7 @@ class _SwipeableCardState extends State<SwipeableCard>
             child: Container(
               width: _maxDragExtent,
               height: double.infinity,
-              margin: const EdgeInsets.only(bottom: 12),
-              decoration: const BoxDecoration(
-                color: AppColors.error,
-                borderRadius: BorderRadius.horizontal(
-                  right: Radius.circular(16),
-                ),
-              ),
+              margin: const EdgeInsets.only(bottom: 16),
               child: ClipRRect(
                 borderRadius: const BorderRadius.horizontal(
                   right: Radius.circular(16),

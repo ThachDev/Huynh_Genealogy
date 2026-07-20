@@ -288,7 +288,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // ── Section 1: Ngày Giỗ Dòng Họ ──
-                      if (deathAnniversaries.isNotEmpty) ...[
+                      if (deathAnniversaries.isNotEmpty &&
+                          !widget.isAdminMode) ...[
                         AppSectionTitle(
                           title: l10n.deathAnniversariesSectionTitle,
                           trailing: _buildTrailingSeeAll(),
@@ -297,7 +298,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
                       ],
 
                       // ── Section 2: Sinh Nhật Dòng Họ ──
-                      if (birthdays.isNotEmpty) ...[
+                      if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
                         AppSectionTitle(
                           title: l10n.birthdaysSectionTitle,
                           trailing: _buildTrailingSeeAll(),

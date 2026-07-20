@@ -109,10 +109,9 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           tabs.add(_TabConfig(
             icon: LucideIcons.calendarDays,
             label: l10n.navEvents,
-            page: UserEventsPage(
+            page: EventsListPage(
                 familyId: familyId ?? 0,
-                isActive: safeIndex == 1,
-                isAdminMode: true),
+                isActive: safeIndex == 1),
           ));
 
           tabs.add(_TabConfig(

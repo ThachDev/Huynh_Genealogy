@@ -13,6 +13,7 @@ class AppDropdown<T> extends StatefulWidget {
   final bool showSearchBox;
   final String? searchHint;
   final String? label;
+  final double? buttonHeight;
 
   const AppDropdown({
     super.key,
@@ -22,6 +23,7 @@ class AppDropdown<T> extends StatefulWidget {
     this.showSearchBox = false,
     this.searchHint,
     this.label,
+    this.buttonHeight,
   });
 
   @override
@@ -44,9 +46,9 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
       items: widget.items,
       onChanged: widget.onChanged,
       isExpanded: true,
-      buttonStyleData: const FormFieldButtonStyleData(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        height: 48,
+      buttonStyleData: FormFieldButtonStyleData(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        height: widget.buttonHeight ?? 48,
         width: double.infinity,
       ),
       iconStyleData: IconStyleData(

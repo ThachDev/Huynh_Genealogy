@@ -81,46 +81,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 const SizedBox(height: 12),
                 _buildSettingsCard(children: [
                   _buildSectionHeaderInsideCard(
-                    context,
-                    showAdminInterface
-                        ? l10n.accountAndClanSection
-                        : l10n.accountSectionTitle,
-                  ),
-                  if (showAdminInterface)
-                    _buildSettingsTile(
-                      context: context,
-                      icon: LucideIcons.landmark,
-                      title: l10n.clanInfoLabel,
-                      destination: AdminClanInfoPage(
-                        family: family,
-                        user: user,
-                      ),
-                    ),
-                  _buildSettingsTile(
-                    context: context,
-                    icon: LucideIcons.lock,
-                    title: l10n.accountSecurityLabel,
-                    destination: const AdminAccountSecurityPage(),
-                  ),
-                  if (showAdminInterface)
-                    _buildSettingsTile(
-                      context: context,
-                      icon: LucideIcons.userCheck,
-                      title: l10n.switchToMemberPage,
-                      onTap: () {
-                        UserMainNavigationPage.adminModeNotifier.value = false;
-                      },
-                    )
-                  else if (hasAdminPrivileges)
-                    _buildSettingsTile(
-                      context: context,
-                      icon: LucideIcons.shieldAlert,
-                      title: l10n.switchToAdminLabel,
-                      onTap: () {
-                        UserMainNavigationPage.adminModeNotifier.value = true;
-                      },
-                    ),
-                  _buildSectionHeaderInsideCard(
                       context, l10n.appSettingsSection),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -139,10 +99,9 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                             Text(
                               l10n.languageLabel,
                               style: GoogleFonts.beVietnamPro(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: context.textPrimary,
-                              ),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: context.textPrimary),
                             ),
                           ],
                         ),
@@ -184,10 +143,9 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                             Text(
                               l10n.themeLabel,
                               style: GoogleFonts.beVietnamPro(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: context.textPrimary,
-                              ),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: context.textPrimary),
                             ),
                           ],
                         ),
@@ -212,6 +170,46 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       ],
                     ),
                   ),
+                  _buildSectionHeaderInsideCard(
+                    context,
+                    showAdminInterface
+                        ? l10n.accountAndClanSection
+                        : l10n.accountSectionTitle,
+                  ),
+                  if (showAdminInterface)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: LucideIcons.landmark,
+                      title: l10n.clanInfoLabel,
+                      destination: AdminClanInfoPage(
+                        family: family,
+                        user: user,
+                      ),
+                    ),
+                  _buildSettingsTile(
+                    context: context,
+                    icon: LucideIcons.lock,
+                    title: l10n.accountSecurityLabel,
+                    destination: const AdminAccountSecurityPage(),
+                  ),
+                  if (showAdminInterface)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: LucideIcons.userCheck,
+                      title: l10n.switchToMemberPage,
+                      onTap: () {
+                        UserMainNavigationPage.adminModeNotifier.value = false;
+                      },
+                    )
+                  else if (hasAdminPrivileges)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: LucideIcons.shieldAlert,
+                      title: l10n.switchToAdminLabel,
+                      onTap: () {
+                        UserMainNavigationPage.adminModeNotifier.value = true;
+                      },
+                    ),
                   _buildSectionHeaderInsideCard(
                       context, l10n.infoAndHelpSection),
                   _buildSettingsTile(

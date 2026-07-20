@@ -60,18 +60,20 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
         if (mounted) {
           setState(() => _isSaving = false);
           if (response.statusCode == 200 && response.data['success'] == true) {
-            AppSnackBar.success(context, AppLocalizations.of(context)!.changePasswordSuccess);
+            AppSnackBar.success(
+                context, AppLocalizations.of(context)!.changePasswordSuccess);
             Navigator.pop(context);
           } else {
-            final msg =
-                response.data['message'] ?? AppLocalizations.of(context)!.passwordChangeFailed;
+            final msg = response.data['message'] ??
+                AppLocalizations.of(context)!.passwordChangeFailed;
             AppSnackBar.error(context, msg);
           }
         }
       } on DioException catch (e) {
         if (mounted) {
           setState(() => _isSaving = false);
-          final errorMsg = e.response?.data['message'] ?? AppLocalizations.of(context)!.serverConnectionError;
+          final errorMsg = e.response?.data['message'] ??
+              AppLocalizations.of(context)!.serverConnectionError;
           AppSnackBar.error(context, errorMsg);
         }
       } catch (e) {
@@ -94,52 +96,48 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Form(
             key: _formKey,
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: context.surface.withValues(alpha: 0.82),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: context.primary.withValues(alpha: 0.12),
-                  width: 1,
-                ),
-              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: context.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            LucideIcons.lock,
-                            size: 16,
-                            color: context.primary,
-                          ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: Icon(
+                                LucideIcons.lock,
+                                size: 16,
+                                color: context.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              l10n.changePasswordTitle,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: context.primary,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(height: 10),
                         Text(
-                          l10n.changePasswordTitle,
+                          l10n.passwordRequirementsDesc,
                           style: GoogleFonts.beVietnamPro(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: context.primary,
+                            fontSize: 11,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  Divider(
-                    height: 1,
-                    thickness: 0.5,
-                    color: context.primary.withValues(alpha: 0.12),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
@@ -168,7 +166,8 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                           prefixIcon:
                               Icon(LucideIcons.key, color: context.primary),
                           validator: (val) =>
-                              AppValidators.validateStrongPassword(context, val),
+                              AppValidators.validateStrongPassword(
+                                  context, val),
                         ),
                         const SizedBox(height: 12),
                         AppOutlineTextField(
@@ -178,7 +177,8 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                           obscureText: true,
                           prefixIcon: Icon(LucideIcons.checkSquare,
                               color: context.primary),
-                          validator: (val) => AppValidators.validateConfirmPassword(
+                          validator: (val) =>
+                              AppValidators.validateConfirmPassword(
                             context,
                             val,
                             _newPasswordController.text,
@@ -190,7 +190,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                           onPressed: _updatePassword,
                           isLoading: _isSaving,
                           fullWidth: true,
-                          size: AppButtonSize.large,
+                          size: AppButtonSize.medium,
                         ),
                       ],
                     ),

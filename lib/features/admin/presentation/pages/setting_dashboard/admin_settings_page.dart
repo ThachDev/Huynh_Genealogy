@@ -10,7 +10,7 @@ import '../../../../../resources/app_localizations.dart';
 import '../../../../auth/auth.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
-import 'pages/admin_clan_and_personal_info_page.dart';
+import 'pages/admin_clan_info_page.dart';
 import 'pages/admin_account_security_page.dart';
 import 'pages/admin_transfer_ownership_page.dart';
 import 'pages/admin_dissolve_clan_page.dart';
@@ -18,6 +18,7 @@ import 'pages/admin_regulations_page.dart';
 import 'pages/admin_help_center_page.dart';
 import 'pages/admin_about_us_page.dart';
 import 'pages/admin_member_roles_page.dart';
+import 'pages/admin_settings_profile_card.dart';
 
 import '../../../../../main.dart';
 
@@ -75,6 +76,9 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               children: [
+                // ── Profile card ──────────────────────
+                AdminSettingsProfileCard(user: user),
+                const SizedBox(height: 12),
                 _buildSettingsCard(children: [
                   _buildSectionHeaderInsideCard(
                     context,
@@ -82,15 +86,16 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         ? l10n.accountAndClanSection
                         : l10n.accountSectionTitle,
                   ),
-                  _buildSettingsTile(
-                    context: context,
-                    icon: LucideIcons.user,
-                    title: showAdminInterface
-                        ? l10n.clanAndPersonalInfoTitle
-                        : l10n.personalInfoLabel,
-                    destination: AdminClanAndPersonalInfoPage(
-                        family: showAdminInterface ? family : null, user: user),
-                  ),
+                  if (showAdminInterface)
+                    _buildSettingsTile(
+                      context: context,
+                      icon: LucideIcons.landmark,
+                      title: l10n.clanInfoLabel,
+                      destination: AdminClanInfoPage(
+                        family: family,
+                        user: user,
+                      ),
+                    ),
                   _buildSettingsTile(
                     context: context,
                     icon: LucideIcons.lock,

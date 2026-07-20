@@ -1829,7 +1829,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqRegisterAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Tải ứng dụng Gia Tộc Việt từ CH Play (Android). Mở ứng dụng, nhấn \"Đăng ký\" và điền đầy đủ họ tên, email, số điện thoại và mật khẩu.'**
+  /// **'Tải ứng dụng Gia Tộc Việt, nhấn \"Đăng ký\" và điền đầy đủ họ tên, email và mật khẩu. Sau khi đăng ký thành công, bạn dùng mã mời từ Trưởng tộc để yêu cầu tham gia Dòng tộc.'**
   String get faqRegisterAnswer;
 
   /// No description provided for @faqForgotPasswordQuestion.
@@ -1841,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqForgotPasswordAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Trên màn hình đăng nhập, nhấn \"Quên mật khẩu\". Nhập email đã đăng ký, hệ thống sẽ gửi mã OTP gồm 6 chữ số qua email. Nhập mã OTP để xác thực, sau đó tạo mật khẩu mới.'**
+  /// **'Trên màn hình đăng nhập, nhấn \"Quên mật khẩu\". Nhập email đã đăng ký, hệ thống sẽ gửi mã OTP 6 chữ số qua email. Nhập mã OTP để xác thực và đặt mật khẩu mới.'**
   String get faqForgotPasswordAnswer;
 
   /// No description provided for @faqChangePasswordQuestion.
@@ -1853,7 +1853,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqChangePasswordAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Bảo mật tài khoản, nhập mật khẩu hiện tại, sau đó nhập mật khẩu mới và xác nhận. Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.'**
+  /// **'Vào Cài đặt > Bảo mật tài khoản, nhập mật khẩu hiện tại, sau đó nhập mật khẩu mới và xác nhận. Mật khẩu phải có ít nhất 8 ký tự.'**
   String get faqChangePasswordAnswer;
 
   /// No description provided for @faqAddMemberQuestion.
@@ -1865,19 +1865,19 @@ abstract class AppLocalizations {
   /// No description provided for @faqAddMemberAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Dashboard > Quản lý thành viên, nhấn nút \"Thêm thành viên\". Điền đầy đủ thông tin: họ tên, giới tính, ngày sinh, nơi sinh, thế hệ, chi tộc, cha/mẹ (nếu có). Bạn có thể thêm thông tin chi tiết như ngày mất, tình trạng hôn nhân, số điện thoại, ghi chú. Nhấn \"Lưu\" để hoàn tất.'**
+  /// **'Vào Dashboard, nhấn nút \"+\" ở tab Thành viên. Điền thông tin: họ tên, giới tính, ngày sinh, nơi sinh, thế hệ, chi tộc, cha/mẹ (nếu có). Bạn có thể bổ sung ngày mất, tình trạng hôn nhân, ghi chú. Nhấn \"Lưu\" để hoàn tất. Yêu cầu quyền Biên tập viên trở lên.'**
   String get faqAddMemberAnswer;
 
   /// No description provided for @faqAddBranchQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Làm sao để thêm nhánh (chi tộc) mới?'**
+  /// **'Làm sao để thêm chi tộc mới?'**
   String get faqAddBranchQuestion;
 
   /// No description provided for @faqAddBranchAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Dashboard > Quản lý chi tộc, nhấn \"Thêm chi tộc\". Điền tên chi tộc, mô tả và thông tin người sáng lập (nếu có). Sau khi tạo, bạn có thể phân quyền Quản trị chi cho thành viên phụ trách nhánh đó.'**
+  /// **'Vào Dashboard, chọn tab Chi họ và nhấn nút \"+\". Điền tên chi tộc, mô tả và thông tin người sáng lập (nếu có). Sau khi tạo, Trưởng tộc có thể phân quyền Trưởng chi cho thành viên phụ trách chi đó.'**
   String get faqAddBranchAnswer;
 
   /// No description provided for @faqEditMemberQuestion.
@@ -1889,7 +1889,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqEditMemberAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Dashboard > Quản lý thành viên, chọn thành viên cần chỉnh sửa. Nhấn vào biểu tượng chỉnh sửa (bút) để cập nhật thông tin. Lưu ý: chỉ Biên tập viên và các vai trò cao hơn mới có quyền chỉnh sửa.'**
+  /// **'Trong danh sách thành viên, chọn thành viên cần chỉnh sửa và nhấn biểu tượng bút. Cập nhật thông tin rồi nhấn \"Lưu\". Chỉ Biên tập viên và các vai trò cao hơn mới có quyền này.'**
   String get faqEditMemberAnswer;
 
   /// No description provided for @faqDeleteMemberQuestion.
@@ -1901,31 +1901,31 @@ abstract class AppLocalizations {
   /// No description provided for @faqDeleteMemberAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Chọn thành viên trong danh sách, nhấn biểu tượng xóa (thùng rác). Một hộp thoại xác nhận sẽ hiện ra. Lưu ý: chỉ Trưởng tộc và Quản trị chi mới có quyền xóa thành viên. Biên tập viên không có quyền này.'**
+  /// **'Chọn thành viên trong danh sách, nhấn biểu tượng xóa (thùng rác) và xác nhận. Lưu ý: chỉ Trưởng tộc và Trưởng chi mới có quyền xóa thành viên; Biên tập viên không có quyền này.'**
   String get faqDeleteMemberAnswer;
 
   /// No description provided for @faqImportGenealogyQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Nhập gia phả từ file được không?'**
+  /// **'Có thể nhập gia phả từ file không?'**
   String get faqImportGenealogyQuestion;
 
   /// No description provided for @faqImportGenealogyAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Ứng dụng hiện hỗ trợ thêm từng thành viên thủ công. Tính năng nhập hàng loạt từ file đang được phát triển.'**
+  /// **'Hiện tại ứng dụng hỗ trợ thêm từng thành viên thủ công. Tính năng nhập hàng loạt từ file đang được phát triển.'**
   String get faqImportGenealogyAnswer;
 
   /// No description provided for @faqInviteCodeQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Mã mời gia tộc hoạt động như thế nào?'**
+  /// **'Mã mời hoạt động như thế nào?'**
   String get faqInviteCodeQuestion;
 
   /// No description provided for @faqInviteCodeAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Mỗi Dòng tộc có một Mã mời duy nhất do hệ thống tạo. Trưởng tộc có thể xem, sao chép hoặc chia sẻ Mã mời qua QR code trong Dashboard. Thành viên mới nhập mã này khi đăng ký hoặc trong mục \"Tham gia gia tộc\" để gửi yêu cầu gia nhập. Trưởng tộc hoặc Quản trị chi sẽ phê duyệt yêu cầu trước khi thành viên có thể truy cập.'**
+  /// **'Mỗi Dòng tộc có một Mã mời duy nhất do hệ thống tạo. Trưởng tộc có thể xem, sao chép và chia sẻ Mã mời (kèm QR code) ngay trong Dashboard. Thành viên mới dùng mã này để gửi yêu cầu gia nhập — Trưởng tộc hoặc Trưởng chi sẽ phê duyệt.'**
   String get faqInviteCodeAnswer;
 
   /// No description provided for @faqRolesQuestion.
@@ -1937,7 +1937,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqRolesAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Hệ thống có 4 cấp vai trò:\n• Trưởng tộc — Quyền cao nhất, quản lý toàn bộ Dòng tộc, phân quyền và giải tán.\n• Quản trị chi — Quản lý một hoặc nhiều nhánh, phê duyệt yêu cầu gia nhập.\n• Biên tập viên — Thêm và chỉnh sửa thông tin thành viên, không được xóa.\n• Thành viên — Xem thông tin gia phả, không được chỉnh sửa.'**
+  /// **'Hệ thống có 4 cấp vai trò:\n• Trưởng tộc — Quyền cao nhất: quản lý toàn bộ Dòng tộc, phân quyền, chuyển nhượng và giải tán.\n• Trưởng chi — Quản lý chi tộc được phân công, phê duyệt yêu cầu gia nhập.\n• Biên tập viên — Thêm và chỉnh sửa thông tin thành viên (không được xóa).\n• Thành viên — Xem gia phả và các sự kiện của dòng tộc.'**
   String get faqRolesAnswer;
 
   /// No description provided for @faqAssignRoleQuestion.
@@ -1949,7 +1949,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqAssignRoleAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Phân quyền thành viên (chỉ Trưởng tộc mới thấy mục này). Chọn thành viên cần thay đổi vai trò và chọn cấp quyền tương ứng. Trưởng tộc không thể tự hạ cấp vai trò của mình — cần sử dụng tính năng Chuyển nhượng quyền Trưởng tộc.'**
+  /// **'Vào Cài đặt > Phân quyền thành viên (chỉ Trưởng tộc thấy mục này). Chọn thành viên và chọn vai trò phù hợp. Trưởng tộc không thể tự hạ quyền của mình — cần dùng tính năng Chuyển nhượng quyền Trưởng tộc.'**
   String get faqAssignRoleAnswer;
 
   /// No description provided for @faqTransferOwnershipQuestion.
@@ -1961,31 +1961,31 @@ abstract class AppLocalizations {
   /// No description provided for @faqTransferOwnershipAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Chuyển nhượng quyền Trưởng tộc. Chọn thành viên đã kích hoạt tài khoản từ danh sách. Xác nhận chuyển nhượng — thao tác này không thể hoàn tác. Sau khi chuyển nhượng, bạn sẽ trở thành Thành viên và người nhận trở thành Trưởng tộc mới.'**
+  /// **'Vào Cài đặt > Chuyển nhượng quyền Trưởng tộc. Chọn thành viên đã có tài khoản từ danh sách. Xác nhận chuyển nhượng — thao tác này không thể hoàn tác. Sau khi chuyển, bạn trở thành Thành viên và người nhận là Trưởng tộc mới.'**
   String get faqTransferOwnershipAnswer;
 
   /// No description provided for @faqDissolveClanQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Làm sao để giải tán dòng tộc?'**
+  /// **'Làm sao để giải tán Dòng tộc?'**
   String get faqDissolveClanQuestion;
 
   /// No description provided for @faqDissolveClanAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Giải tán dòng họ (chỉ Trưởng tộc). Gõ chính xác tên Dòng tộc để xác nhận. Toàn bộ dữ liệu bao gồm thành viên, nhánh, gia phả và quỹ gia tộc sẽ bị xóa vĩnh viễn khỏi hệ thống và không thể khôi phục. Cân nhắc kỹ trước khi thực hiện.'**
+  /// **'Vào Cài đặt > Giải tán dòng họ (chỉ Trưởng tộc). Gõ chính xác tên Dòng tộc để xác nhận. Toàn bộ dữ liệu — thành viên, chi tộc, gia phả — sẽ bị xóa vĩnh viễn và không thể khôi phục. Hành động này không thể hoàn tác.'**
   String get faqDissolveClanAnswer;
 
   /// No description provided for @faqDataSecurityQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Dữ liệu gia phả của tôi có được bảo mật không?'**
+  /// **'Dữ liệu gia phả có được bảo mật không?'**
   String get faqDataSecurityQuestion;
 
   /// No description provided for @faqDataSecurityAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Có. Toàn bộ dữ liệu được lưu trữ trên máy chủ đặt tại Việt Nam, áp dụng mã hóa đầu cuối TLS 1.3 khi truyền tải và mã hóa AES-256 khi lưu trữ. Chúng tôi tuân thủ nghiêm ngặt Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân và cam kết không bán, chia sẻ dữ liệu cho bên thứ ba.'**
+  /// **'Có. Dữ liệu được lưu trữ trên máy chủ tại Việt Nam, mã hóa khi truyền tải và lưu trữ. Chúng tôi tuân thủ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân và cam kết không chia sẻ dữ liệu cho bên thứ ba. Thông tin dòng họ chỉ hiển thị cho thành viên đã được phê duyệt.'**
   String get faqDataSecurityAnswer;
 
   /// No description provided for @faqDeleteAccountQuestion.
@@ -1997,19 +1997,19 @@ abstract class AppLocalizations {
   /// No description provided for @faqDeleteAccountAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Bảo mật tài khoản, chọn \"Xóa tài khoản\". Xác nhận yêu cầu xóa. Dữ liệu cá nhân của bạn sẽ được xóa khỏi hệ thống trong vòng 30 ngày. Lưu ý: nếu bạn là Trưởng tộc, cần chuyển nhượng quyền Trưởng tộc hoặc giải tán Dòng tộc trước khi xóa tài khoản.'**
+  /// **'Vào Cài đặt > Bảo mật tài khoản, chọn \"Xóa tài khoản\" và xác nhận. Lưu ý: nếu bạn đang là Trưởng tộc, hãy chuyển nhượng quyền Trưởng tộc hoặc giải tán Dòng tộc trước khi xóa tài khoản.'**
   String get faqDeleteAccountAnswer;
 
   /// No description provided for @faqMultiDeviceQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Tôi có thể sử dụng ứng dụng trên nhiều thiết bị không?'**
+  /// **'Có thể dùng ứng dụng trên nhiều thiết bị không?'**
   String get faqMultiDeviceQuestion;
 
   /// No description provided for @faqMultiDeviceAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Có. Tài khoản của bạn có thể đăng nhập trên nhiều thiết bị cùng lúc. Dữ liệu sẽ được đồng bộ hóa theo thời gian thực. Tuy nhiên, vì lý do bảo mật, bạn nên đăng xuất khỏi thiết bị không sử dụng.'**
+  /// **'Có. Tài khoản của bạn có thể đăng nhập trên nhiều thiết bị, dữ liệu được đồng bộ theo thời gian thực. Vì lý do bảo mật, hãy đăng xuất trên các thiết bị không còn sử dụng.'**
   String get faqMultiDeviceAnswer;
 
   /// No description provided for @faqEnglishSupportQuestion.
@@ -2021,7 +2021,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqEnglishSupportAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Có. Vào Cài đặt > Ngôn ngữ, chuyển đổi giữa Tiếng Việt và Tiếng Anh. Giao diện sẽ cập nhật ngay lập tức. Dữ liệu gia phả và thông tin thành viên vẫn được giữ nguyên.'**
+  /// **'Có. Vào Cài đặt > Ngôn ngữ, bật công tắc để chuyển sang Tiếng Anh. Giao diện cập nhật ngay lập tức. Dữ liệu gia phả và thông tin thành viên vẫn được giữ nguyên.'**
   String get faqEnglishSupportAnswer;
 
   /// No description provided for @aboutUsTitle.
@@ -2033,7 +2033,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutUsTagline.
   ///
   /// In vi, this message translates to:
-  /// **'Gia Tộc Việt giúp bạn gìn giữ cây gia phả dòng họ trên nền tảng số, kết nối các thế hệ dù ở bất kỳ nơi đâu. Từ ông bà tổ tiên đến con cháu hôm nay — tất cả đều trong tầm tay.'**
+  /// **'Gia Tộc Việt giúp bạn gìn giữ gia phả dòng họ trên nền tảng số, kết nối các thế hệ dù ở bất kỳ nơi đâu.'**
   String get aboutUsTagline;
 
   /// No description provided for @versionLabel.

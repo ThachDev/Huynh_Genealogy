@@ -84,3 +84,39 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize =>
       Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 }
+
+/// A reusable scaffold body widget that renders [child] on top of
+/// the app's traditional background image (`assets/images/background.png`).
+///
+/// Usage:
+/// ```dart
+/// Scaffold(
+///   appBar: AppAppBar(title: 'Page Title'),
+///   body: AppBackgroundBody(
+///     child: YourContent(),
+///   ),
+/// )
+/// ```
+class AppBackgroundBody extends StatelessWidget {
+  const AppBackgroundBody({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/background.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: child,
+    );
+  }
+}

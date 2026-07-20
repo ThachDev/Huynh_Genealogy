@@ -90,78 +90,80 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(title: l10n.accountSecurityTitle),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.changePasswordTitle,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: context.primary,
+      body: AppBackgroundBody(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.changePasswordTitle,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: context.primary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.passwordRequirementsDesc,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: context.textSecondary,
+                const SizedBox(height: 8),
+                Text(
+                  l10n.passwordRequirementsDesc,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: context.textSecondary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              AppOutlineTextField(
-                controller: _currentPasswordController,
-                label: l10n.currentPasswordLabel,
-                hintText: l10n.currentPasswordHint,
-                obscureText: true,
-                prefixIcon:
-                    Icon(LucideIcons.lock, color: context.primary),
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return l10n.currentPasswordRequired;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              AppOutlineTextField(
-                controller: _newPasswordController,
-                label: l10n.newPasswordLabel,
-                hintText: l10n.newPasswordHint,
-                obscureText: true,
-                prefixIcon:
-                    Icon(LucideIcons.key, color: context.primary),
-                validator: (val) =>
-                    AppValidators.validateStrongPassword(context, val),
-              ),
-              const SizedBox(height: 16),
-              AppOutlineTextField(
-                controller: _confirmPasswordController,
-                label: l10n.confirmNewPasswordLabel,
-                hintText: l10n.confirmNewPasswordHint,
-                obscureText: true,
-                prefixIcon: Icon(LucideIcons.checkSquare,
-                    color: context.primary),
-                validator: (val) => AppValidators.validateConfirmPassword(
-                  context,
-                  val,
-                  _newPasswordController.text,
+                const SizedBox(height: 24),
+                AppOutlineTextField(
+                  controller: _currentPasswordController,
+                  label: l10n.currentPasswordLabel,
+                  hintText: l10n.currentPasswordHint,
+                  obscureText: true,
+                  prefixIcon:
+                      Icon(LucideIcons.lock, color: context.primary),
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return l10n.currentPasswordRequired;
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              const SizedBox(height: 32),
-              AppButton(
-                label: l10n.updatePasswordButton,
-                onPressed: _updatePassword,
-                isLoading: _isSaving,
-                fullWidth: true,
-                size: AppButtonSize.large,
-              ),
-            ],
+                const SizedBox(height: 16),
+                AppOutlineTextField(
+                  controller: _newPasswordController,
+                  label: l10n.newPasswordLabel,
+                  hintText: l10n.newPasswordHint,
+                  obscureText: true,
+                  prefixIcon:
+                      Icon(LucideIcons.key, color: context.primary),
+                  validator: (val) =>
+                      AppValidators.validateStrongPassword(context, val),
+                ),
+                const SizedBox(height: 16),
+                AppOutlineTextField(
+                  controller: _confirmPasswordController,
+                  label: l10n.confirmNewPasswordLabel,
+                  hintText: l10n.confirmNewPasswordHint,
+                  obscureText: true,
+                  prefixIcon: Icon(LucideIcons.checkSquare,
+                      color: context.primary),
+                  validator: (val) => AppValidators.validateConfirmPassword(
+                    context,
+                    val,
+                    _newPasswordController.text,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                AppButton(
+                  label: l10n.updatePasswordButton,
+                  onPressed: _updatePassword,
+                  isLoading: _isSaving,
+                  fullWidth: true,
+                  size: AppButtonSize.large,
+                ),
+              ],
+            ),
           ),
         ),
       ),

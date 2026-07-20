@@ -92,8 +92,9 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
       child: Scaffold(
         backgroundColor: context.background,
       appBar: AppAppBar(title: l10n.dissolveClanTitle),
-        body: BlocBuilder<AdminDissolveClanBloc, AdminDissolveClanState>(
-          builder: (context, state) {
+        body: AppBackgroundBody(
+          child: BlocBuilder<AdminDissolveClanBloc, AdminDissolveClanState>(
+            builder: (context, state) {
             final isLoading = state is AdminDissolveClanLoading;
 
             return SingleChildScrollView(
@@ -239,7 +240,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
               ),
             );
           },
-        ),
+        ),),
       ),
     );
   }

@@ -171,8 +171,9 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: BlocConsumer<AdminMemberRolesBloc, AdminMemberRolesState>(
+      body: AppBackgroundBody(
+        child: SafeArea(
+          child: BlocConsumer<AdminMemberRolesBloc, AdminMemberRolesState>(
           listener: (context, state) {
             if (state is AdminMemberRoleUpdatedSuccess) {
               AppSnackBar.success(context, l10n.updateRoleSuccess);
@@ -356,7 +357,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
             );
           },
         ),
-      ),
+      ),),
     );
   }
 }

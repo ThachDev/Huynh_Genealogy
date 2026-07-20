@@ -15,113 +15,115 @@ class AdminHelpCenterPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(title: l10n.helpCenterTitle),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionTitle(context, l10n.contactSection),
-            const SizedBox(height: 16),
-            _buildContactRow(context),
-            const SizedBox(height: 32),
-            _buildSectionTitle(context, l10n.accountLoginSection),
-            const SizedBox(height: 16),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqRegisterQuestion,
-              answer: l10n.faqRegisterAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqForgotPasswordQuestion,
-              answer: l10n.faqForgotPasswordAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqChangePasswordQuestion,
-              answer: l10n.faqChangePasswordAnswer,
-            ),
-            const SizedBox(height: 24),
-            _buildSectionTitle(context, l10n.genealogyMemberSection),
-            const SizedBox(height: 16),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqAddMemberQuestion,
-              answer: l10n.faqAddMemberAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqAddBranchQuestion,
-              answer: l10n.faqAddBranchAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqEditMemberQuestion,
-              answer: l10n.faqEditMemberAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqDeleteMemberQuestion,
-              answer: l10n.faqDeleteMemberAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqImportGenealogyQuestion,
-              answer: l10n.faqImportGenealogyAnswer,
-            ),
-            const SizedBox(height: 24),
-            _buildSectionTitle(context, l10n.clanAndRolesSection),
-            const SizedBox(height: 16),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqInviteCodeQuestion,
-              answer: l10n.faqInviteCodeAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqRolesQuestion,
-              answer: l10n.faqRolesAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqAssignRoleQuestion,
-              answer: l10n.faqAssignRoleAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqTransferOwnershipQuestion,
-              answer: l10n.faqTransferOwnershipAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqDissolveClanQuestion,
-              answer: l10n.faqDissolveClanAnswer,
-            ),
-            const SizedBox(height: 24),
-            _buildSectionTitle(context, l10n.techSecuritySection),
-            const SizedBox(height: 16),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqDataSecurityQuestion,
-              answer: l10n.faqDataSecurityAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqDeleteAccountQuestion,
-              answer: l10n.faqDeleteAccountAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqMultiDeviceQuestion,
-              answer: l10n.faqMultiDeviceAnswer,
-            ),
-            _buildFaqItem(
-              context: context,
-              question: l10n.faqEnglishSupportQuestion,
-              answer: l10n.faqEnglishSupportAnswer,
-            ),
-            const SizedBox(height: 32),
-          ],
+      body: AppBackgroundBody(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionTitle(context, l10n.contactSection),
+              const SizedBox(height: 16),
+              _buildContactRow(context),
+              const SizedBox(height: 32),
+              _buildSectionTitle(context, l10n.accountLoginSection),
+              const SizedBox(height: 16),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqRegisterQuestion,
+                answer: l10n.faqRegisterAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqForgotPasswordQuestion,
+                answer: l10n.faqForgotPasswordAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqChangePasswordQuestion,
+                answer: l10n.faqChangePasswordAnswer,
+              ),
+              const SizedBox(height: 24),
+              _buildSectionTitle(context, l10n.genealogyMemberSection),
+              const SizedBox(height: 16),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqAddMemberQuestion,
+                answer: l10n.faqAddMemberAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqAddBranchQuestion,
+                answer: l10n.faqAddBranchAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqEditMemberQuestion,
+                answer: l10n.faqEditMemberAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqDeleteMemberQuestion,
+                answer: l10n.faqDeleteMemberAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqImportGenealogyQuestion,
+                answer: l10n.faqImportGenealogyAnswer,
+              ),
+              const SizedBox(height: 24),
+              _buildSectionTitle(context, l10n.clanAndRolesSection),
+              const SizedBox(height: 16),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqInviteCodeQuestion,
+                answer: l10n.faqInviteCodeAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqRolesQuestion,
+                answer: l10n.faqRolesAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqAssignRoleQuestion,
+                answer: l10n.faqAssignRoleAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqTransferOwnershipQuestion,
+                answer: l10n.faqTransferOwnershipAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqDissolveClanQuestion,
+                answer: l10n.faqDissolveClanAnswer,
+              ),
+              const SizedBox(height: 24),
+              _buildSectionTitle(context, l10n.techSecuritySection),
+              const SizedBox(height: 16),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqDataSecurityQuestion,
+                answer: l10n.faqDataSecurityAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqDeleteAccountQuestion,
+                answer: l10n.faqDeleteAccountAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqMultiDeviceQuestion,
+                answer: l10n.faqMultiDeviceAnswer,
+              ),
+              _buildFaqItem(
+                context: context,
+                question: l10n.faqEnglishSupportQuestion,
+                answer: l10n.faqEnglishSupportAnswer,
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );
@@ -153,38 +155,19 @@ class AdminHelpCenterPage extends StatelessWidget {
 
   Widget _buildContactRow(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: _buildContactCard(
-            context: context,
-            icon: LucideIcons.phoneCall,
-            title: l10n.hotlineTitle,
-            value: l10n.hotlineValue,
-            subtitle: l10n.hotlineSubtitle,
-            onTap: () => launchUrl(Uri.parse('tel:19008888')),
-          ),
+    return _buildContactCard(
+      context: context,
+      icon: LucideIcons.mail,
+      title: l10n.supportEmailTitle,
+      value: l10n.supportEmailValue,
+      subtitle: l10n.supportEmailSubtitle,
+      onTap: () => launchUrl(
+        Uri(
+          scheme: 'mailto',
+          path: 'thachhuynh.dev@gmail.com',
+          query: 'subject=${Uri.encodeComponent(l10n.emailSubjectHelp)}',
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          flex: 3,
-          child: _buildContactCard(
-            context: context,
-            icon: LucideIcons.mail,
-            title: l10n.supportEmailTitle,
-            value: l10n.supportEmailValue,
-            subtitle: l10n.supportEmailSubtitle,
-            onTap: () => launchUrl(
-              Uri(
-                scheme: 'mailto',
-                path: 'thachhuynh.dev@gmail.com',
-                query: 'subject=${Uri.encodeComponent(l10n.emailSubjectHelp)}',
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
@@ -200,6 +183,7 @@ class AdminHelpCenterPage extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: context.surface,

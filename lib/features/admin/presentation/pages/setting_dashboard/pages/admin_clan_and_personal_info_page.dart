@@ -261,10 +261,11 @@ class _AdminClanAndPersonalInfoPageState
                 ),
               ],
       ),
-      body: _isSaving
-          ? const Center(child: AppLoading(size: 80))
-          : SingleChildScrollView(
-              child: Column(
+      body: AppBackgroundBody(
+        child: _isSaving
+            ? const Center(child: AppLoading(size: 80))
+            : SingleChildScrollView(
+                child: Column(
                 children: [
                   // Banner & Avatar Stack
                   Stack(
@@ -378,6 +379,7 @@ class _AdminClanAndPersonalInfoPageState
                 ],
               ),
             ),
+      ),
     );
   }
 

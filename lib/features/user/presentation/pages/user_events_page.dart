@@ -256,15 +256,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
       appBar: AppAppBar(
         title: l10n.eventsListTitle,
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: const DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+      body: AppBackgroundBody(
         child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
           builder: (context, treeState) {
             return BlocBuilder<EventsBloc, EventsState>(

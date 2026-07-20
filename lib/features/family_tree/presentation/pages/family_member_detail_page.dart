@@ -95,15 +95,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
               ]
             : null,
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+      body: AppBackgroundBody(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
           child: Stack(

@@ -115,8 +115,8 @@ class _AdminTransferOwnershipPageState
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(title: l10n.transferOwnershipLabel),
-      body:
-          BlocConsumer<AdminTransferOwnershipBloc, AdminTransferOwnershipState>(
+      body: AppBackgroundBody(
+        child: BlocConsumer<AdminTransferOwnershipBloc, AdminTransferOwnershipState>(
         listener: (context, state) {
           if (state is AdminTransferOwnershipSuccess) {
             AppSnackBar.success(
@@ -388,7 +388,7 @@ class _AdminTransferOwnershipPageState
             ),
           );
         },
-      ),
+      ),),
     );
   }
 }

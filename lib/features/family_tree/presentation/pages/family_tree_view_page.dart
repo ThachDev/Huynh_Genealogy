@@ -455,13 +455,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
           size: 20,
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+      body: AppBackgroundBody(
         child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
           builder: (context, state) {
             if (state is FamilyTreeLoading) {

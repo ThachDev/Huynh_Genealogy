@@ -54,40 +54,32 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(title: l10n.regulationsTitle),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-        child: Column(
-          children: [
-            // ── Header ──
-            FadeTransition(
-              opacity: _headerFade,
-              child: _buildHeader(context, l10n),
-            ),
-            const SizedBox(height: 24),
-
-            // ── Sections ──
-            ...List.generate(sections.length, (i) {
-              return _buildSection(
-                context,
-                index: i,
-                number: '${i + 1}',
-                title: sections[i].$1,
-                content: sections[i].$2,
-              );
-            }),
-
-            const SizedBox(height: 16),
-
-            // ── Copyright ──
-            Text(
-              l10n.copyrightText,
-              style: GoogleFonts.inter(
-                fontSize: 10,
-                color: context.textSecondary.withValues(alpha: 0.5),
+      body: AppBackgroundBody(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+          child: Column(
+            children: [
+              // ── Header ──
+              FadeTransition(
+                opacity: _headerFade,
+                child: _buildHeader(context, l10n),
               ),
-            ),
-            const SizedBox(height: 8),
-          ],
+              const SizedBox(height: 24),
+
+              // ── Sections ──
+              ...List.generate(sections.length, (i) {
+                return _buildSection(
+                  context,
+                  index: i,
+                  number: '${i + 1}',
+                  title: sections[i].$1,
+                  content: sections[i].$2,
+                );
+              }),
+
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
@@ -265,8 +257,7 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
                           size: 20,
                           color: isExpanded
                               ? context.primary
-                              : context.textSecondary
-                                  .withValues(alpha: 0.5),
+                              : context.textSecondary.withValues(alpha: 0.5),
                         ),
                       ),
                     ],

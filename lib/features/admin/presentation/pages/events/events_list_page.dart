@@ -8,9 +8,8 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../../features/auth/auth.dart';
+import '../../../../events/events.dart';
 import '../../../admin.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import '../../../../../core/domain/entity/event_entity.dart';
 
 class EventsListPage extends StatefulWidget {
   final int familyId;
@@ -28,7 +27,7 @@ class EventsListPage extends StatefulWidget {
 
 class _EventsListPageState extends State<EventsListPage> {
   final TextEditingController _searchController = TextEditingController();
-  final String _selectedType = 'all'; // all, event, article, announcement
+  String _selectedType = 'all'; // all, event, article, announcement
   final String _selectedStatus = 'all'; // all, active, upcoming, past
   String _selectedSort = 'newest'; // newest, oldest
 
@@ -97,36 +96,48 @@ class _EventsListPageState extends State<EventsListPage> {
   }
 
   // ── Stat Card builder using TraditionalOrnamentalCard ──
-  Widget _buildStatCard(
-      String title, String count, IconData icon, Color color) {
+  Widget _buildStatCard(String title, String count, IconData icon, Color color,
+      {required String typeKey}) {
+    final isSelected = _selectedType == typeKey;
     return Expanded(
-      child: TraditionalOrnamentalCard(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        child: Column(
-          children: [
-            Icon(icon, size: 20, color: color),
-            const SizedBox(height: 6),
-            Text(
-              title,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 10,
-                color: context.textSecondary,
-                fontWeight: FontWeight.w600,
+      child: GestureDetector(
+        onTap: () => setState(() {
+          _selectedType = isSelected ? 'all' : typeKey;
+        }),
+        child: TraditionalOrnamentalCard(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          borderColor:
+              isSelected ? color : context.accent.withValues(alpha: 0.4),
+          child: Column(
+            children: [
+              Icon(icon,
+                  size: 20,
+                  color: isSelected
+                      ? color
+                      : context.textSecondary.withValues(alpha: 0.7)),
+              const SizedBox(height: 6),
+              Text(
+                title,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 10,
+                  color: isSelected ? color : context.textSecondary,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              count,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: context.textPrimary,
+              const SizedBox(height: 4),
+              Text(
+                count,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected ? color : context.textPrimary,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -238,17 +249,21 @@ class _EventsListPageState extends State<EventsListPage> {
                         horizontal: 16, vertical: 12),
                     child: Row(
                       children: [
-                        _buildStatCard('Tổng bài viết', '$totalCount',
-                            LucideIcons.package, Colors.purple),
+                        _buildStatCard('Tất cả', '$totalCount',
+                            LucideIcons.package, context.primary,
+                            typeKey: 'all'),
                         const SizedBox(width: 8),
                         _buildStatCard('Sự kiện', '$eventsCount',
-                            LucideIcons.calendar, Colors.green),
+                            LucideIcons.calendar, context.accent,
+                            typeKey: 'event'),
                         const SizedBox(width: 8),
                         _buildStatCard('Tin tức', '$articlesCount',
-                            LucideIcons.fileText, Colors.orange),
+                            LucideIcons.fileText, context.primary,
+                            typeKey: 'article'),
                         const SizedBox(width: 8),
                         _buildStatCard('Thông báo', '$announcementsCount',
-                            LucideIcons.megaphone, Colors.blue),
+                            LucideIcons.megaphone, context.accent,
+                            typeKey: 'announcement'),
                       ],
                     ),
                   ),
@@ -262,46 +277,50 @@ class _EventsListPageState extends State<EventsListPage> {
                         Expanded(
                           child: TextField(
                             controller: _searchController,
-                            style: GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
+                            style: GoogleFonts.beVietnamPro(
+                                fontSize: 14, color: context.textPrimary),
                             decoration: InputDecoration(
                               hintText: 'Tìm kiếm bài viết...',
                               hintStyle: GoogleFonts.beVietnamPro(
-                                  fontSize: 14, color: context.textSecondary.withValues(alpha: 0.6)),
+                                  fontSize: 14,
+                                  color: context.textSecondary
+                                      .withValues(alpha: 0.6)),
                               prefixIcon: Icon(LucideIcons.search,
                                   size: 16, color: context.textSecondary),
+                              suffixIcon: IconButton(
+                                onPressed: () => setState(() {
+                                  _selectedSort = _selectedSort == 'newest'
+                                      ? 'oldest'
+                                      : 'newest';
+                                }),
+                                icon: Icon(
+                                  _selectedSort == 'newest'
+                                      ? LucideIcons.arrowDownNarrowWide
+                                      : LucideIcons.arrowUpNarrowWide,
+                                  size: 18,
+                                  color: context.primary,
+                                ),
+                                tooltip: _selectedSort == 'newest'
+                                    ? 'Mới nhất'
+                                    : 'Cũ nhất',
+                              ),
                               filled: true,
                               fillColor: context.surface,
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(
-                                    color: context.textSecondary.withValues(alpha: 0.2)),
+                                    color: context.textSecondary
+                                        .withValues(alpha: 0.2)),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: context.primary, width: 1.2),
+                                borderSide: BorderSide(
+                                    color: context.primary, width: 1.2),
                               ),
                             ),
                             onChanged: (_) => setState(() {}),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        SizedBox(
-                          width: 120,
-                          child: AppDropdown<String>(
-                            value: _selectedSort,
-                            items: const [
-                              DropdownItem(
-                                  value: 'newest', child: Text('Mới nhất')),
-                              DropdownItem(
-                                  value: 'oldest', child: Text('Cũ nhất')),
-                            ],
-                            onChanged: (val) {
-                              if (val != null) {
-                                setState(() => _selectedSort = val);
-                              }
-                            },
                           ),
                         ),
                       ],
@@ -382,24 +401,6 @@ class _EventsListPageState extends State<EventsListPage> {
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () {},
-            child: Row(
-              children: [
-                Text(
-                  'Xem tất cả',
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 11,
-                    color: context.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Icon(LucideIcons.chevronRight,
-                    size: 12, color: context.primary),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -443,15 +444,11 @@ class _EventsListPageState extends State<EventsListPage> {
   }
 
   Widget _buildEmptyGroupMessage() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Text(
-        'Không có bài viết nào trong mục này.',
-        style: GoogleFonts.beVietnamPro(
-            fontSize: 12,
-            color: context.textSecondary,
-            fontStyle: FontStyle.italic),
-      ),
+    return const AppEmptyState(
+      message: 'Không có bài viết nào',
+      icon: LucideIcons.fileX,
+      iconSize: 36,
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
     );
   }
 

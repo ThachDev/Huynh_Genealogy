@@ -7,8 +7,6 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../../../core/domain/entity/branch_entity.dart';
-import '../../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../auth/auth.dart';
 import '../../../../../family_tree/family_tree.dart';
 import '../../../bloc/admin_branch_form/admin_branch_form_bloc.dart';

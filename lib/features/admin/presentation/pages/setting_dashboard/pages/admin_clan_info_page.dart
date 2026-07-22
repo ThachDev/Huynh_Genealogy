@@ -10,7 +10,7 @@ import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/domain/entity/family_entity.dart';
 import '../../../../../../resources/app_localizations.dart';
-import '../../../../../../injection_container.dart';
+import '../../../../../../core/di/injection_container.dart';
 import '../../../../admin.dart';
 import '../../../../../../core/domain/entity/user_entity.dart';
 

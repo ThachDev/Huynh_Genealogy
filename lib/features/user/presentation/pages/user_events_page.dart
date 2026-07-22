@@ -11,8 +11,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../features/auth/auth.dart';
 import '../../../../features/family_tree/family_tree.dart';
-import '../../../../core/domain/entity/member_entity.dart';
-import '../../../../core/domain/entity/event_entity.dart';
+import '../../../events/events.dart';
 import '../../../admin/admin.dart';
 
 class UserEventsPage extends StatefulWidget {

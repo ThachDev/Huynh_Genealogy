@@ -13,7 +13,7 @@ import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
 import '../../../../../../core/utils/lunar_date_helper.dart';
-import '../../../../../../injection_container.dart';
+import '../../../../../../core/di/injection_container.dart';
 import '../../../../../auth/auth.dart';
 import '../../../../../onboarding/onboarding.dart';
 import '../../../bloc/admin_member_form/admin_member_form_bloc.dart';

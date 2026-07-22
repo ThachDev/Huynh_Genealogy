@@ -288,11 +288,7 @@ class _AdminTransferOwnershipPageState
                                       ),
                                     ),
                                   )
-                                : RadioGroup<int>(
-                                    groupValue: _selectedIndex,
-                                    onChanged: (val) =>
-                                        setState(() => _selectedIndex = val),
-                                    child: ListView.separated(
+                                  : ListView.separated(
                                       itemCount: filtered.length,
                                       separatorBuilder: (context, index) =>
                                           Divider(
@@ -348,11 +344,17 @@ class _AdminTransferOwnershipPageState
                                               color: context.textSecondary,
                                             ),
                                           ),
-                                          trailing: Radio<int>(value: index),
+                                          trailing: Icon(
+                                            _selectedIndex == index
+                                                ? Icons.radio_button_checked
+                                                : Icons.radio_button_unchecked,
+                                            color: _selectedIndex == index
+                                                ? context.primary
+                                                : context.textSecondary,
+                                          ),
                                         );
                                       },
                                     ),
-                                  ),
                           ),
                         ],
                       ),

@@ -9,8 +9,7 @@ import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
-import '../../../admin.dart';
-import '../../../../../core/domain/entity/event_entity.dart';
+import '../../../../events/events.dart';
 
 class AdminEventCreatePage extends StatefulWidget {
   final int familyId;

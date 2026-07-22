@@ -1,5 +1,5 @@
 // Domain Entities
-export 'package:giatocviet/core/domain/entity/user_entity.dart';
+export 'domain/entities/user_entity.dart';
 // Domain Repositories
 export 'domain/repository/auth_repository.dart';
 

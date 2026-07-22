@@ -12,7 +12,7 @@ import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import 'register_page.dart';
 import 'forgot_password_page.dart';
-import '../../../../injection_container.dart' as di;
+import '../../../../core/di/injection_container.dart' as di;
 import '../../domain/usecase/get_cached_credentials.dart';
 import '../../../../core/usecases/usecase.dart';
 

@@ -27,12 +27,7 @@ export 'presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 export 'presentation/pages/setting_dashboard/pages/admin_member_roles_page.dart';
 export 'presentation/pages/setting_dashboard/admin_settings_page.dart';
 
-// Events
-export 'domain/usecase/save_event.dart';
-export 'domain/usecase/delete_event.dart';
-export 'presentation/bloc/events/events_bloc.dart';
-export 'presentation/bloc/events/events_event.dart';
-export 'presentation/bloc/events/events_state.dart';
+// Events Pages & Widgets
 export 'presentation/pages/events/events_list_page.dart';
 export 'presentation/pages/events/admin_event_create_page.dart';
 export 'presentation/pages/events/admin_event_detail_page.dart';

@@ -15,8 +15,6 @@ import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../../core/domain/entity/member_entity.dart';
-import '../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../../../auth/auth.dart';
 import '../../../../family_tree/family_tree.dart';
@@ -849,10 +847,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             Positioned(
                               bottom: -1,
                               right: -1,
-                              child: Icon(Icons.add,
-                                  size: 9,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
+                              child:
+                                  Icon(Icons.add, size: 9, color: Colors.black),
                             ),
                           ],
                         ),

@@ -5,7 +5,6 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
-import 'package:giatocviet/core/data/model/user_model.dart';
 import '../source/auth_local_data_source.dart';
 import '../source/auth_remote_data_source.dart';
 
@@ -110,7 +109,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> cacheUser(UserEntity user) async {
     try {
-      await localDataSource.cacheUser(UserModel.fromEntity(user));
+      await localDataSource.cacheUser(user);
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

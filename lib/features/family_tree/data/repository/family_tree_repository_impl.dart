@@ -3,7 +3,6 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import 'package:giatocviet/core/data/model/branch_model.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
 import '../../domain/repository/family_tree_repository.dart';
 import '../source/family_tree_remote_data_source.dart';
@@ -97,8 +96,7 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   @override
   Future<Either<Failure, BranchEntity>> saveBranch(BranchEntity branch) async {
     try {
-      final model = BranchModel.fromEntity(branch);
-      final saved = await remoteDataSource.saveBranch(model);
+      final saved = await remoteDataSource.saveBranch(branch);
       return Right(saved);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));

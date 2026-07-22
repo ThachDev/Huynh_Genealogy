@@ -1,3 +1,8 @@
+// Domain Entities
+export 'domain/entities/member_entity.dart';
+export 'domain/entities/branch_entity.dart';
+export 'domain/entities/family_entity.dart';
+
 // Domain Repositories
 export 'domain/repository/family_tree_repository.dart';
 

@@ -9,7 +9,7 @@ import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../../resources/app_localizations.dart';
-import '../../../../../../injection_container.dart';
+import '../../../../../../core/di/injection_container.dart';
 import '../../../../../auth/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import '../../../../domain/usecase/get_member_detail.dart';

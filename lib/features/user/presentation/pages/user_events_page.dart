@@ -409,168 +409,183 @@ class _UserEventsPageState extends State<UserEventsPage> {
 
     Widget cardContent = Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: TraditionalOrnamentalCard(
-        padding: const EdgeInsets.all(16.0),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                flex: 2,
-                child: EventCalendarWidget(
-                  eventDate: event.eventDate,
-                  badgeColor: badgeColor,
-                  l10n: l10n,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                flex: 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+      child: RepaintBoundary(
+        child: Semantics(
+          label: 'Sự kiện ${event.title}, Ngày: ${event.eventDate}',
+          button: true,
+          child: TraditionalOrnamentalCard(
+            padding: const EdgeInsets.all(16.0),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: EventCalendarWidget(
+                      eventDate: event.eventDate,
+                      badgeColor: badgeColor,
+                      l10n: l10n,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    flex: 5,
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            event.title,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                event.title,
+                                style: GoogleFonts.beVietnamPro(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: context.textPrimary,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: badgeColor.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: badgeColor.withValues(alpha: 0.3),
+                                  width: 0.8,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    badgeIcon,
+                                    size: 10,
+                                    color: badgeColor,
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    badgeLabel.toUpperCase(),
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                      color: badgeColor,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        if (event.description != null &&
+                            event.description!.isNotEmpty)
+                          Text(
+                            event.description!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: context.textPrimary,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: context.textSecondary,
+                              height: 1.4,
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: badgeColor.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                        const SizedBox(height: 8),
+                        if (event.location != null &&
+                            event.location!.isNotEmpty) ...[
+                          Row(
                             children: [
-                              Icon(badgeIcon, size: 10, color: badgeColor),
+                              Icon(LucideIcons.mapPin,
+                                  size: 12, color: context.textSecondary),
                               const SizedBox(width: 4),
-                              Text(
-                                badgeLabel.toUpperCase(),
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                  color: badgeColor,
-                                  letterSpacing: 0.5,
+                              Expanded(
+                                child: Text(
+                                  event.location!,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11,
+                                    color: context.textSecondary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                        ],
+                        if (event.organizer != null &&
+                            event.organizer!.isNotEmpty) ...[
+                          Row(
+                            children: [
+                              Icon(LucideIcons.user,
+                                  size: 12, color: context.textSecondary),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  event.organizer!,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11,
+                                    color: context.textSecondary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    if (event.description != null &&
-                        event.description!.isNotEmpty)
-                      Text(
-                        event.description!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: context.textSecondary,
-                          height: 1.4,
+                  ),
+                  if (hasImage) ...[
+                    const SizedBox(width: 12),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Hero(
+                        tag: 'event_image_${event.id}',
+                        child: Container(
+                          width: 75,
+                          height: 75,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: context.textSecondary.withValues(alpha: 0.1),
+                              width: 1,
+                            ),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: isNetworkImage
+                              ? Image.network(
+                                  imageUrl,
+                                  width: 75,
+                                  height: 75,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Center(
+                                    child: Icon(LucideIcons.image, size: 20),
+                                  ),
+                                )
+                              : Image.file(
+                                  File(imageUrl),
+                                  width: 75,
+                                  height: 75,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Center(
+                                    child: Icon(LucideIcons.image, size: 20),
+                                  ),
+                                ),
                         ),
                       ),
-                    const SizedBox(height: 8),
-                    if (event.location != null &&
-                        event.location!.isNotEmpty) ...[
-                      Row(
-                        children: [
-                          Icon(LucideIcons.mapPin,
-                              size: 12, color: context.textSecondary),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              event.location!,
-                              style: GoogleFonts.inter(
-                                fontSize: 11,
-                                color: context.textSecondary,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                    if (event.organizer != null &&
-                        event.organizer!.isNotEmpty) ...[
-                      Row(
-                        children: [
-                          Icon(LucideIcons.user,
-                              size: 12, color: context.textSecondary),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              event.organizer!,
-                              style: GoogleFonts.inter(
-                                fontSize: 11,
-                                color: context.textSecondary,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              if (hasImage) ...[
-                const SizedBox(width: 12),
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 75,
-                    height: 75,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: context.textSecondary.withValues(alpha: 0.1),
-                        width: 1,
-                      ),
                     ),
-                    clipBehavior: Clip.antiAlias,
-                    child: isNetworkImage
-                        ? Image.network(
-                            imageUrl,
-                            width: 75,
-                            height: 75,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Center(
-                              child: Icon(LucideIcons.image, size: 20),
-                            ),
-                          )
-                        : Image.file(
-                            File(imageUrl),
-                            width: 75,
-                            height: 75,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Center(
-                              child: Icon(LucideIcons.image, size: 20),
-                            ),
-                          ),
-                  ),
-                ),
-              ],
-            ],
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
       ),

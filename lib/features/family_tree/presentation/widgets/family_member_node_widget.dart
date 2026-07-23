@@ -66,70 +66,84 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return GestureDetector(
-      onTapDown: (_) => _controller.forward(),
-      onTapUp: (_) {
-        _controller.reverse();
-        widget.onTap?.call();
-      },
-      onTapCancel: () => _controller.reverse(),
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: SizedBox(
-          width: 140,
-          height:
-              (widget.onAddChildTap != null || widget.onAddSpouseTap != null)
-                  ? 160
-                  : 125,
-          child: CustomPaint(
-            painter: TraditionalOrnamentalBorderPainter(
-              borderColor: widget.isSelected
-                  ? context.primary
-                  : context.accent.withValues(alpha: 0.6),
-              fillColor: context.surface,
-              borderRadius: 12.0,
-              bottomAccentColor: _genderColor,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                    child: Column(
-                      children: [
-                        // TOP: Avatar, Name, DOB
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: context.resolve(
-                                  Colors.grey.shade300, Colors.grey.shade700),
-                              width: 1.0,
+    final genderText = widget.member.gender == Gender.male
+        ? 'Nam'
+        : widget.member.gender == Gender.female
+            ? 'Nữ'
+            : 'Chưa rõ';
+
+    return RepaintBoundary(
+      child: Semantics(
+        label: 'Thành viên ${widget.member.fullName}, Giới tính: $genderText',
+        button: true,
+        selected: widget.isSelected,
+        child: GestureDetector(
+          onTapDown: (_) => _controller.forward(),
+          onTapUp: (_) {
+            _controller.reverse();
+            widget.onTap?.call();
+          },
+          onTapCancel: () => _controller.reverse(),
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: SizedBox(
+              width: 140,
+              height:
+                  (widget.onAddChildTap != null || widget.onAddSpouseTap != null)
+                      ? 160
+                      : 125,
+              child: CustomPaint(
+                painter: TraditionalOrnamentalBorderPainter(
+                  borderColor: widget.isSelected
+                      ? context.primary
+                      : context.accent.withValues(alpha: 0.6),
+                  fillColor: context.surface,
+                  borderRadius: 12.0,
+                  bottomAccentColor: _genderColor,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                        child: Column(
+                          children: [
+                            // TOP: Avatar, Name, DOB
+                            Hero(
+                              tag: 'member_avatar_${widget.member.id}',
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: context.resolve(
+                                        Colors.grey.shade300, Colors.grey.shade700),
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: context.resolve(
+                                      Colors.grey.shade100, const Color(0xFF2C2C2C)),
+                                  backgroundImage: widget.member.avatarUrl != null
+                                      ? NetworkImage(widget.member.avatarUrl!)
+                                      : null,
+                                  child: widget.member.avatarUrl == null
+                                      ? Icon(
+                                          widget.member.gender == Gender.male
+                                              ? LucideIcons.user
+                                              : LucideIcons.user2,
+                                          color: widget.member.gender == Gender.male
+                                              ? context.genderMale
+                                              : widget.member.gender == Gender.female
+                                                  ? context.genderFemale
+                                                  : context.textSecondary,
+                                          size: 18,
+                                        )
+                                      : null,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: context.resolve(
-                                Colors.grey.shade100, const Color(0xFF2C2C2C)),
-                            backgroundImage: widget.member.avatarUrl != null
-                                ? NetworkImage(widget.member.avatarUrl!)
-                                : null,
-                            child: widget.member.avatarUrl == null
-                                ? Icon(
-                                    widget.member.gender == Gender.male
-                                        ? LucideIcons.user
-                                        : LucideIcons.user2,
-                                    color: widget.member.gender == Gender.male
-                                        ? context.genderMale
-                                        : widget.member.gender == Gender.female
-                                            ? context.genderFemale
-                                            : context.textSecondary,
-                                    size: 18,
-                                  )
-                                : null,
-                          ),
-                        ),
                         const SizedBox(height: 6),
                         Text(
                           widget.member.fullName,
@@ -306,6 +320,8 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

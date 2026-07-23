@@ -1,7 +1,13 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'auth.dart';
 
 void initAuthDependencies(GetIt sl) {
+  // External
+  if (!sl.isRegistered<FlutterSecureStorage>()) {
+    sl.registerLazySingleton(() => const FlutterSecureStorage());
+  }
+
   // BLoC
   sl.registerFactory(
     () => AuthBloc(
@@ -55,6 +61,6 @@ void initAuthDependencies(GetIt sl) {
   );
 
   sl.registerLazySingleton<AuthLocalDataSource>(
-    () => AuthLocalDataSourceImpl(sharedPreferences: sl()),
+    () => AuthLocalDataSourceImpl(secureStorage: sl()),
   );
 }

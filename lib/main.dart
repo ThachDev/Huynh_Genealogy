@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,9 +17,23 @@ import 'features/family_tree/family_tree.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/events/events.dart';
 import 'features/admin/admin.dart';
+import 'features/user/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Catch Flutter framework errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint('Flutter Framework Error: ${details.exceptionAsString()}');
+  };
+
+  // Catch asynchronous errors outside Flutter framework
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    debugPrint('Uncaught Async Error: $error\n$stack');
+    return true;
+  };
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -92,6 +107,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         BlocProvider<AdminTransferOwnershipBloc>(
             create: (_) => di.sl<AdminTransferOwnershipBloc>()),
         BlocProvider<EventsBloc>(create: (_) => di.sl<EventsBloc>()),
+        BlocProvider<UserBloc>(create: (_) => di.sl<UserBloc>()),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

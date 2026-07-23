@@ -244,35 +244,38 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
               // ── Avatar nổi ở mép trên ──
               Positioned(
                 top: 0,
-                child: Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: context.accent, width: 3),
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.resolve(
-                            Colors.black.withValues(alpha: 0.15),
-                            Colors.transparent),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: 45,
-                    backgroundColor: context.background,
-                    backgroundImage: widget.member.avatarUrl != null
-                        ? NetworkImage(widget.member.avatarUrl!)
-                        : null,
-                    child: widget.member.avatarUrl == null
-                        ? Icon(
-                            LucideIcons.user,
-                            size: 48,
-                            color: context.primary,
-                          )
-                        : null,
+                child: Hero(
+                  tag: 'member_avatar_${widget.member.id}',
+                  child: Container(
+                    width: 96,
+                    height: 96,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: context.accent, width: 3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.resolve(
+                              Colors.black.withValues(alpha: 0.15),
+                              Colors.transparent),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 45,
+                      backgroundColor: context.background,
+                      backgroundImage: widget.member.avatarUrl != null
+                          ? NetworkImage(widget.member.avatarUrl!)
+                          : null,
+                      child: widget.member.avatarUrl == null
+                          ? Icon(
+                              LucideIcons.user,
+                              size: 48,
+                              color: context.primary,
+                            )
+                          : null,
+                    ),
                   ),
                 ),
               ),

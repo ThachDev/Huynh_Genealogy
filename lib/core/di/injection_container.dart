@@ -12,6 +12,7 @@ import '../../features/family_tree/family_tree_injection.dart';
 import '../../features/events/events_injection.dart';
 import '../../features/onboarding/onboarding_injection.dart';
 import '../../features/admin/admin_injection.dart';
+import '../../features/user/user_injection.dart';
 
 final sl = GetIt.instance;
 
@@ -29,4 +30,5 @@ Future<void> init() async {
   initEventsDependencies(sl);
   initOnboardingDependencies(sl);
   initAdminDependencies(sl);
+  initUserDependencies(sl);
 }

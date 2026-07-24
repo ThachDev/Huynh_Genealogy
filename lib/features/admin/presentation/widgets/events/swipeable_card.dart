@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../../../../core/theme/app_theme.dart';
 
 class SwipeableCard extends StatefulWidget {
   final Widget child;
@@ -78,10 +79,15 @@ class _SwipeableCardState extends State<SwipeableCard>
               width: _maxDragExtent,
               height: double.infinity,
               margin: const EdgeInsets.only(bottom: 16),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.horizontal(
-                  right: Radius.circular(16),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.3),
                 ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
                 child: InkWell(
                   onTap: () {
                     _controller.reverse();
@@ -90,15 +96,18 @@ class _SwipeableCardState extends State<SwipeableCard>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(LucideIcons.trash2,
-                          color: Colors.white, size: 22),
+                      const Icon(
+                        LucideIcons.trash2,
+                        color: AppColors.error,
+                        size: 22,
+                      ),
                       const SizedBox(height: 4),
                       Text(
                         widget.deleteLabel,
                         style: GoogleFonts.beVietnamPro(
-                          fontSize: 11,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                          color: AppColors.error,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],

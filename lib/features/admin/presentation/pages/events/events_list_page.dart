@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
+import '../../../../../core/utils/lunar_date_helper.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../../features/auth/auth.dart';
@@ -99,6 +101,7 @@ class _EventsListPageState extends State<EventsListPage> {
   Widget _buildStatCard(String title, String count, IconData icon, Color color,
       {required String typeKey}) {
     final isSelected = _selectedType == typeKey;
+    const activeColor = AppColors.error;
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() {
@@ -107,20 +110,20 @@ class _EventsListPageState extends State<EventsListPage> {
         child: TraditionalOrnamentalCard(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           borderColor:
-              isSelected ? color : context.accent.withValues(alpha: 0.4),
+              isSelected ? activeColor : context.accent.withValues(alpha: 0.4),
           child: Column(
             children: [
               Icon(icon,
                   size: 20,
                   color: isSelected
-                      ? color
+                      ? activeColor
                       : context.textSecondary.withValues(alpha: 0.7)),
               const SizedBox(height: 6),
               Text(
                 title,
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 10,
-                  color: isSelected ? color : context.textSecondary,
+                  color: isSelected ? activeColor : context.textSecondary,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
@@ -133,7 +136,7 @@ class _EventsListPageState extends State<EventsListPage> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: isSelected ? color : context.textPrimary,
+                  color: isSelected ? activeColor : context.textPrimary,
                 ),
               ),
             ],
@@ -360,50 +363,67 @@ class _EventsListPageState extends State<EventsListPage> {
 
   Widget _buildSectionHeader(String title, int count) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 4,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: context.primary,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+          Container(
+            width: 3.5,
+            height: 18,
+            decoration: BoxDecoration(
+              color: AppColors.error,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+              color: context.textPrimary,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+            decoration: BoxDecoration(
+              color: context.textSecondary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '$count',
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: context.textSecondary,
               ),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: context.textPrimary,
-                ),
-              ),
-              const SizedBox(width: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '$count',
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                    color: context.primary,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  String _formatEventDate(EventEntity event) {
+    if (event.eventDate.isEmpty) return '';
+    try {
+      final parts = event.eventDate.split('-');
+      if (parts.length == 3) {
+        final year = int.parse(parts[0]);
+        final month = int.parse(parts[1]);
+        final day = int.parse(parts[2]);
+        final dt = DateTime(year, month, day);
+        final dateStr =
+            '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+        if (event.isLunar) {
+          final lunarStr = LunarDateHelper.getLunarDateString(dt);
+          return '$dateStr ($lunarStr)';
+        }
+        return dateStr;
+      }
+    } catch (_) {}
+    return event.eventDate;
   }
 
   // ── Render Group 1: Sự kiện ──
@@ -452,15 +472,83 @@ class _EventsListPageState extends State<EventsListPage> {
     );
   }
 
-  // ── Card Item 1: Sự kiện ──
-  Widget _buildEventItemCard(EventEntity event, bool canEdit) {
-    final l10n = AppLocalizations.of(context)!;
-    final imageUrl = event.imageUrl;
+  Widget _buildCardBannerImage(String? imageUrl) {
     final isNetworkImage = imageUrl != null &&
         (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
     final isLocalImage =
         imageUrl != null && !isNetworkImage && File(imageUrl).existsSync();
-    final hasImage = isNetworkImage || isLocalImage;
+
+    Widget defaultLogoFallback = Container(
+      height: 140,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: context.surface.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: context.textSecondary.withValues(alpha: 0.1),
+        ),
+      ),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => Icon(
+              LucideIcons.image,
+              size: 36,
+              color: AppColors.error.withValues(alpha: 0.7),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (isNetworkImage) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.network(
+          imageUrl,
+          height: 140,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => defaultLogoFallback,
+        ),
+      );
+    }
+
+    if (isLocalImage) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.file(
+          File(imageUrl),
+          height: 140,
+          width: double.infinity,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => defaultLogoFallback,
+        ),
+      );
+    }
+
+    return defaultLogoFallback;
+  }
+
+  Future<void> _navigateToDetail(EventEntity event) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AdminEventDetailPage(
+          familyId: widget.familyId,
+          event: event,
+        ),
+      ),
+    );
+    if (result == true) _loadEvents();
+  }
+
+  // ── Card Item 1: Sự kiện (Layout Dọc) ──
+  Widget _buildEventItemCard(EventEntity event, bool canEdit) {
+    final l10n = AppLocalizations.of(context)!;
 
     String statusText = 'Đã kết thúc';
     Color statusColor = Colors.grey;
@@ -470,437 +558,115 @@ class _EventsListPageState extends State<EventsListPage> {
       statusColor = Colors.green;
     } else if (status == 'upcoming') {
       statusText = 'Sắp diễn ra';
-      statusColor = Colors.orange;
+      statusColor = Colors.blue;
     }
 
     Widget cardContent = Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 16),
       child: TraditionalOrnamentalCard(
         padding: const EdgeInsets.all(12.0),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Left Image
-            if (hasImage)
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: isNetworkImage
-                        ? NetworkImage(imageUrl)
-                        : FileImage(File(imageUrl)) as ImageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )
-            else
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child:
-                    Icon(LucideIcons.image, size: 24, color: context.primary),
-              ),
-            const SizedBox(width: 12),
+            // Top Image Banner (with default logo fallback)
+            _buildCardBannerImage(event.imageUrl),
+            const SizedBox(height: 12),
 
-            // Right Info details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      // Status tag
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: statusColor.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 5,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                  color: statusColor, shape: BoxShape.circle),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              statusText,
-                              style: GoogleFonts.beVietnamPro(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.bold,
-                                  color: statusColor),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Spacer(),
-                      // View count
-                      Row(
-                        children: [
-                          Icon(LucideIcons.eye,
-                              size: 10, color: context.textSecondary),
-                          const SizedBox(width: 4),
-                          Text('1.256',
-                              style: GoogleFonts.inter(
-                                  fontSize: 9, color: context.textSecondary)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    event.title,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: context.textPrimary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Icon(LucideIcons.calendar,
-                          size: 11, color: context.textSecondary),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          '${event.eventDate}  •  158 người đăng ký',
-                          style: GoogleFonts.inter(
-                              fontSize: 10, color: context.textSecondary),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(LucideIcons.mapPin,
-                          size: 11, color: context.textSecondary),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          event.location ?? 'Nhà thờ họ',
-                          style: GoogleFonts.beVietnamPro(
-                              fontSize: 10, color: context.textSecondary),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  // Action Buttons Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      _buildActionOutlineButton(
-                        icon: LucideIcons.pencil,
-                        label: 'Sửa',
-                        onTap: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => AdminEventDetailPage(
-                                familyId: widget.familyId,
-                                event: event,
-                              ),
-                            ),
-                          );
-                          if (result == true) _loadEvents();
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                      _buildActionOutlineButton(
-                        icon: LucideIcons.moreHorizontal,
-                        label: 'Khác',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (canEdit) {
-      return SwipeableCard(
-        deleteLabel: l10n.deleteLabel,
-        onDelete: () async {
-          final confirm = await _showConfirmDeleteDialog(event);
-          if (confirm == true && mounted) {
-            context.read<EventsBloc>().add(
-                  DeleteEventEvent(id: event.id, familyId: widget.familyId),
-                );
-          }
-        },
-        onTap: () {},
-        child: cardContent,
-      );
-    }
-    return cardContent;
-  }
-
-  // ── Card Item 2: Tin tức ──
-  Widget _buildArticleItemCard(EventEntity event, bool canEdit) {
-    final l10n = AppLocalizations.of(context)!;
-    final imageUrl = event.imageUrl;
-    final isNetworkImage = imageUrl != null &&
-        (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
-    final isLocalImage =
-        imageUrl != null && !isNetworkImage && File(imageUrl).existsSync();
-    final hasImage = isNetworkImage || isLocalImage;
-
-    Widget cardContent = Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TraditionalOrnamentalCard(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Left Image
-            if (hasImage)
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: isNetworkImage
-                        ? NetworkImage(imageUrl)
-                        : FileImage(File(imageUrl)) as ImageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )
-            else
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child:
-                    Icon(LucideIcons.image, size: 24, color: context.primary),
-              ),
-            const SizedBox(width: 12),
-
-            // Right Info details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Spacer(),
-                      // View count
-                      Row(
-                        children: [
-                          Icon(LucideIcons.eye,
-                              size: 10, color: context.textSecondary),
-                          const SizedBox(width: 4),
-                          Text('632',
-                              style: GoogleFonts.inter(
-                                  fontSize: 9, color: context.textSecondary)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    event.title,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: context.textPrimary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Icon(LucideIcons.calendar,
-                          size: 11, color: context.textSecondary),
-                      const SizedBox(width: 6),
-                      Text(
-                        event.eventDate,
-                        style: GoogleFonts.inter(
-                            fontSize: 10, color: context.textSecondary),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(LucideIcons.user,
-                          size: 11, color: context.textSecondary),
-                      const SizedBox(width: 6),
-                      Text(
-                        'Admin',
-                        style: GoogleFonts.beVietnamPro(
-                            fontSize: 10, color: context.textSecondary),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  // Action Buttons Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      _buildActionOutlineButton(
-                        icon: LucideIcons.pencil,
-                        label: 'Sửa',
-                        onTap: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => AdminEventDetailPage(
-                                      familyId: widget.familyId,
-                                      event: event,
-                                    )),
-                          );
-                          if (result == true) _loadEvents();
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                      _buildActionOutlineButton(
-                        icon: LucideIcons.moreHorizontal,
-                        label: 'Khác',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (canEdit) {
-      return SwipeableCard(
-        deleteLabel: l10n.deleteLabel,
-        onDelete: () async {
-          final confirm = await _showConfirmDeleteDialog(event);
-          if (confirm == true && mounted) {
-            context.read<EventsBloc>().add(
-                  DeleteEventEvent(id: event.id, familyId: widget.familyId),
-                );
-          }
-        },
-        onTap: () {},
-        child: cardContent,
-      );
-    }
-    return cardContent;
-  }
-
-  // ── Card Item 3: Thông báo ──
-  Widget _buildAnnouncementItemCard(EventEntity event, bool canEdit) {
-    final l10n = AppLocalizations.of(context)!;
-    Widget cardContent = Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: TraditionalOrnamentalCard(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: context.primary.withValues(alpha: 0.1),
-              child: Icon(LucideIcons.bell, size: 16, color: context.primary),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    event.title,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: context.textPrimary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(LucideIcons.calendar,
-                          size: 10, color: context.textSecondary),
-                      const SizedBox(width: 4),
-                      Text(
-                        event.eventDate,
-                        style: GoogleFonts.inter(
-                            fontSize: 9, color: context.textSecondary),
-                      ),
-                      const SizedBox(width: 12),
-                      Icon(LucideIcons.user,
-                          size: 10, color: context.textSecondary),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Admin',
-                        style: GoogleFonts.beVietnamPro(
-                            fontSize: 9, color: context.textSecondary),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            // Tag & View count
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            // Status Tag
+            Row(
               children: [
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(4),
+                    color: statusColor.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text(
-                    'Đã hiển thị',
-                    style: GoogleFonts.beVietnamPro(
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                            color: statusColor, shape: BoxShape.circle),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        statusText,
+                        style: GoogleFonts.beVietnamPro(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: statusColor),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(LucideIcons.eye,
-                        size: 10, color: context.textSecondary),
-                    const SizedBox(width: 4),
-                    Text('356',
-                        style: GoogleFonts.inter(
-                            fontSize: 9, color: context.textSecondary)),
-                    const SizedBox(width: 4),
-                    Icon(LucideIcons.moreVertical,
-                        size: 12, color: context.textSecondary),
-                  ],
+              ],
+            ),
+            const SizedBox(height: 8),
+
+            // Title
+            Text(
+              event.title,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: context.textPrimary,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+
+            // Date
+            Row(
+              children: [
+                Icon(LucideIcons.calendar,
+                    size: 13, color: context.textSecondary),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    _formatEventDate(event),
+                    style: GoogleFonts.inter(
+                        fontSize: 12, color: context.textSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+
+            // Location (if available)
+            if (event.location != null && event.location!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(LucideIcons.mapPin,
+                      size: 13, color: context.textSecondary),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      event.location!,
+                      style: GoogleFonts.beVietnamPro(
+                          fontSize: 12, color: context.textSecondary),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            const SizedBox(height: 12),
+
+            // Action Button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _buildActionOutlineButton(
+                  icon: LucideIcons.pencil,
+                  label: 'Sửa',
+                  onTap: () => _navigateToDetail(event),
                 ),
               ],
             ),
@@ -920,11 +686,231 @@ class _EventsListPageState extends State<EventsListPage> {
                 );
           }
         },
-        onTap: () {},
-        child: cardContent,
+        onTap: () => _navigateToDetail(event),
+        child: GestureDetector(
+          onTap: () => _navigateToDetail(event),
+          child: cardContent,
+        ),
       );
     }
-    return cardContent;
+    return GestureDetector(
+      onTap: () => _navigateToDetail(event),
+      child: cardContent,
+    );
+  }
+
+  // ── Card Item 2: Tin tức (Layout Dọc) ──
+  Widget _buildArticleItemCard(EventEntity event, bool canEdit) {
+    final l10n = AppLocalizations.of(context)!;
+
+    Widget cardContent = Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TraditionalOrnamentalCard(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Top Image Banner (with default logo fallback)
+            _buildCardBannerImage(event.imageUrl),
+            const SizedBox(height: 12),
+
+            // Title
+            Text(
+              event.title,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: context.textPrimary,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+
+            // Date & Author
+            Row(
+              children: [
+                Icon(LucideIcons.calendar,
+                    size: 13, color: context.textSecondary),
+                const SizedBox(width: 6),
+                Text(
+                  _formatEventDate(event),
+                  style: GoogleFonts.inter(
+                      fontSize: 12, color: context.textSecondary),
+                ),
+                const SizedBox(width: 14),
+                Icon(LucideIcons.user,
+                    size: 13, color: context.textSecondary),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    event.organizer ?? 'Admin',
+                    style: GoogleFonts.beVietnamPro(
+                        fontSize: 12, color: context.textSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // Action Button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _buildActionOutlineButton(
+                  icon: LucideIcons.pencil,
+                  label: 'Sửa',
+                  onTap: () => _navigateToDetail(event),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (canEdit) {
+      return SwipeableCard(
+        deleteLabel: l10n.deleteLabel,
+        onDelete: () async {
+          final confirm = await _showConfirmDeleteDialog(event);
+          if (confirm == true && mounted) {
+            context.read<EventsBloc>().add(
+                  DeleteEventEvent(id: event.id, familyId: widget.familyId),
+                );
+          }
+        },
+        onTap: () => _navigateToDetail(event),
+        child: GestureDetector(
+          onTap: () => _navigateToDetail(event),
+          child: cardContent,
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: () => _navigateToDetail(event),
+      child: cardContent,
+    );
+  }
+
+  // ── Card Item 3: Thông báo ──
+  Widget _buildAnnouncementItemCard(EventEntity event, bool canEdit) {
+    final l10n = AppLocalizations.of(context)!;
+
+    Widget cardContent = Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TraditionalOrnamentalCard(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundColor: context.textSecondary.withValues(alpha: 0.08),
+              child: Icon(
+                LucideIcons.bell,
+                size: 18,
+                color: AppColors.error.withValues(alpha: 0.75),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    event.title,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: context.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(LucideIcons.calendar,
+                          size: 12, color: context.textSecondary),
+                      const SizedBox(width: 4),
+                      Text(
+                        _formatEventDate(event),
+                        style: GoogleFonts.inter(
+                            fontSize: 10, color: context.textSecondary),
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(LucideIcons.user,
+                          size: 12, color: context.textSecondary),
+                      const SizedBox(width: 4),
+                      Text(
+                        event.organizer ?? 'Admin',
+                        style: GoogleFonts.beVietnamPro(
+                            fontSize: 10, color: context.textSecondary),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            // Tag & Edit Button
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    'Đã hiển thị',
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.green.shade700,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _buildActionOutlineButton(
+                  icon: LucideIcons.pencil,
+                  label: 'Sửa',
+                  onTap: () => _navigateToDetail(event),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (canEdit) {
+      return SwipeableCard(
+        deleteLabel: l10n.deleteLabel,
+        onDelete: () async {
+          final confirm = await _showConfirmDeleteDialog(event);
+          if (confirm == true && mounted) {
+            context.read<EventsBloc>().add(
+                  DeleteEventEvent(id: event.id, familyId: widget.familyId),
+                );
+          }
+        },
+        onTap: () => _navigateToDetail(event),
+        child: GestureDetector(
+          onTap: () => _navigateToDetail(event),
+          child: cardContent,
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: () => _navigateToDetail(event),
+      child: cardContent,
+    );
   }
 
   Widget _buildActionOutlineButton({

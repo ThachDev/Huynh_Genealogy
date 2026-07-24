@@ -15,7 +15,8 @@ class AdminEventDetailPage extends StatefulWidget {
   final int familyId;
   final EventEntity event;
 
-  const AdminEventDetailPage({super.key, required this.familyId, required this.event});
+  const AdminEventDetailPage(
+      {super.key, required this.familyId, required this.event});
 
   @override
   State<AdminEventDetailPage> createState() => _AdminEventDetailPageState();
@@ -46,13 +47,14 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
   };
 
   Map<String, String> _typeLabels(AppLocalizations l10n) => {
-    'event': l10n.eventTypeEvent,
-    'article': l10n.eventTypeArticle,
-    'announcement': l10n.eventTypeAnnouncement,
-  };
+        'event': l10n.eventTypeEvent,
+        'article': l10n.eventTypeArticle,
+        'announcement': l10n.eventTypeAnnouncement,
+      };
 
   IconData get _typeIcon => _typeIcons[_type] ?? LucideIcons.calendar;
-  String _typeLabel(AppLocalizations l10n) => _typeLabels(l10n)[_type] ?? l10n.eventTypeEvent;
+  String _typeLabel(AppLocalizations l10n) =>
+      _typeLabels(l10n)[_type] ?? l10n.eventTypeEvent;
   bool get _showLocation => _type == 'event';
 
   @override
@@ -442,7 +444,9 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                             bottom: Radius.circular(10)),
                       ),
                       child: Text(
-                        _localImagePath != null ? l10n.eventChangePhoto : l10n.eventPickPhoto,
+                        _localImagePath != null
+                            ? l10n.eventChangePhoto
+                            : l10n.eventPickPhoto,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 10,
@@ -590,12 +594,15 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                                         left: 16,
                                         right: 16,
                                         top: 16,
-                                        bottom:
-                                            MediaQuery.of(ctx).viewInsets.bottom + 24,
+                                        bottom: MediaQuery.of(ctx)
+                                                .viewInsets
+                                                .bottom +
+                                            24,
                                       ),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Center(
                                             child: Container(
@@ -614,8 +621,10 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                                             controller: _locationController,
                                             label: l10n.eventLocationLabel,
                                             hintText: l10n.eventLocationHint,
-                                            prefixIcon: const Icon(LucideIcons.mapPin,
-                                                color: AppColors.error, size: 18),
+                                            prefixIcon: const Icon(
+                                                LucideIcons.mapPin,
+                                                color: AppColors.error,
+                                                size: 18),
                                           ),
                                           const SizedBox(height: 12),
                                           SizedBox(
@@ -662,11 +671,13 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                                       right: 16,
                                       top: 16,
                                       bottom:
-                                          MediaQuery.of(ctx).viewInsets.bottom + 24,
+                                          MediaQuery.of(ctx).viewInsets.bottom +
+                                              24,
                                     ),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Center(
                                           child: Container(
@@ -675,7 +686,8 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                                             decoration: BoxDecoration(
                                               color: ctx.textSecondary
                                                   .withValues(alpha: 0.3),
-                                              borderRadius: BorderRadius.circular(2),
+                                              borderRadius:
+                                                  BorderRadius.circular(2),
                                             ),
                                           ),
                                         ),

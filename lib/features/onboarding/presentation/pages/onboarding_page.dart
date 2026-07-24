@@ -78,6 +78,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     familyId: state.family.id,
                     role: 'OWNER',
                   );
+                  UserMainNavigationPage.adminModeNotifier.value = true;
                   context.read<AuthBloc>().add(AuthUserUpdated(user: updatedUser));
                 },
               ),

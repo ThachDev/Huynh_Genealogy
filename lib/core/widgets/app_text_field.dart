@@ -246,11 +246,13 @@ class AppOutlineTextField extends StatelessWidget {
   final String hintText;
   final TextInputType? keyboardType;
   final int maxLines;
+  final int? minLines;
   final String? Function(String?)? validator;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool enabled;
   final bool obscureText;
+  final Color? fillColor;
 
   const AppOutlineTextField({
     super.key,
@@ -259,11 +261,13 @@ class AppOutlineTextField extends StatelessWidget {
     required this.hintText,
     this.keyboardType,
     this.maxLines = 1,
+    this.minLines,
     this.validator,
     this.prefixIcon,
     this.suffixIcon,
     this.enabled = true,
     this.obscureText = false,
+    this.fillColor,
   });
 
   @override
@@ -273,6 +277,7 @@ class AppOutlineTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      minLines: minLines,
       obscureText: obscureText,
       validator: validator,
       enabled: enabled,
@@ -291,7 +296,8 @@ class AppOutlineTextField extends StatelessWidget {
             fontSize: 13, color: context.textSecondary.withValues(alpha: 0.6)),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        fillColor: isDark ? AppColors.surfaceDark : const Color(0xFFFCFAF8),
+        fillColor: fillColor ??
+            (isDark ? AppColors.surfaceDark : const Color(0xFFFCFAF8)),
         filled: true,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

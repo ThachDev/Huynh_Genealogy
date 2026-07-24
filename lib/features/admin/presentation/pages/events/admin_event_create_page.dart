@@ -8,7 +8,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../core/utils/lunar_date_helper.dart';
 import '../../../../../resources/app_localizations.dart';
+import '../../../../auth/auth.dart';
 import '../../../../events/events.dart';
 
 class AdminEventCreatePage extends StatefulWidget {
@@ -24,7 +26,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   final _formKey = GlobalKey<FormState>();
 
   final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
   final _contentController = TextEditingController();
   final _locationController = TextEditingController();
   final _organizerController = TextEditingController();
@@ -50,18 +51,40 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       };
 
   IconData get _typeIcon => _typeIcons[_type] ?? LucideIcons.calendar;
-  String _typeLabel(AppLocalizations l10n) =>
-      _typeLabels(l10n)[_type] ?? l10n.eventTypeEvent;
   bool get _showLocation => _type == 'event';
+
+  @override
+  void initState() {
+    super.initState();
+    final authState = context.read<AuthBloc>().state;
+    if (authState is Authenticated) {
+      _organizerController.text = authState.user.fullName;
+    }
+  }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     _contentController.dispose();
     _locationController.dispose();
     _organizerController.dispose();
     super.dispose();
+  }
+
+  String _formattedDateDisplay(AppLocalizations l10n) {
+    if (_displayDate.isEmpty) return l10n.eventSelectDate;
+    final parts = _displayDate.split('/');
+    if (parts.length == 3) {
+      final day = int.tryParse(parts[0]);
+      final month = int.tryParse(parts[1]);
+      final year = int.tryParse(parts[2]);
+      if (day != null && month != null && year != null) {
+        final parsedDate = DateTime(year, month, day);
+        final lunarStr = LunarDateHelper.getLunarDateString(parsedDate, l10n);
+        return '$_displayDate ($lunarStr)';
+      }
+    }
+    return _displayDate;
   }
 
   Future<void> _pickImage() async {
@@ -115,81 +138,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
     }
   }
 
-  void _showTypeSheet() {
-    final l10n = AppLocalizations.of(context)!;
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: context.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: ctx.textSecondary.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.selectPostType,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: ctx.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            ..._typeIcons.entries.map((entry) {
-              final isSelected = _type == entry.key;
-              final label = _typeLabels(l10n)[entry.key] ?? entry.key;
-              return ListTile(
-                onTap: () {
-                  setState(() => _type = entry.key);
-                  Navigator.pop(ctx);
-                },
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: ctx.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(entry.value, color: ctx.primary, size: 20),
-                ),
-                title: Text(
-                  label,
-                  style: GoogleFonts.beVietnamPro(
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? ctx.primary : ctx.textPrimary,
-                  ),
-                ),
-                trailing: isSelected
-                    ? Icon(LucideIcons.checkCircle2,
-                        color: ctx.primary, size: 20)
-                    : null,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                tileColor:
-                    isSelected ? ctx.primary.withValues(alpha: 0.06) : null,
-              );
-            }),
-          ],
-        ),
-      ),
-    );
-  }
-
   void _submitForm() {
     final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
@@ -197,22 +145,24 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       AppSnackBar.error(context, l10n.selectEventDateError);
       return;
     }
+
+    final authState = context.read<AuthBloc>().state;
+    final authorName = _organizerController.text.trim().isNotEmpty
+        ? _organizerController.text.trim()
+        : (authState is Authenticated ? authState.user.fullName : null);
+
+    final contentText = _contentController.text.trim();
+
     context.read<EventsBloc>().add(SaveEventEvent(
           event: EventEntity(
             id: 0,
             title: _titleController.text.trim(),
-            description: _descriptionController.text.trim().isEmpty
-                ? null
-                : _descriptionController.text.trim(),
-            content: _contentController.text.trim().isEmpty
-                ? null
-                : _contentController.text.trim(),
+            description: contentText.isEmpty ? null : contentText,
+            content: contentText.isEmpty ? null : contentText,
             location: _locationController.text.trim().isEmpty
                 ? null
                 : _locationController.text.trim(),
-            organizer: _organizerController.text.trim().isEmpty
-                ? null
-                : _organizerController.text.trim(),
+            organizer: authorName,
             imageUrl: _localImagePath,
             type: _type,
             eventDate: _selectedDate,
@@ -222,212 +172,194 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
         ));
   }
 
-  Widget _buildRow({
-    required IconData icon,
-    required String label,
-    Color? iconColor,
-    Widget? trailing,
-    VoidCallback? onTap,
-    bool showDivider = true,
-  }) {
-    final ic = iconColor ?? context.textSecondary;
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                Icon(icon, size: 20, color: ic),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 15,
-                      color: context.textPrimary,
-                    ),
-                  ),
-                ),
-                trailing ??
-                    Icon(LucideIcons.chevronRight,
-                        size: 18,
-                        color: context.textSecondary.withValues(alpha: 0.5)),
-              ],
-            ),
-          ),
-        ),
-        if (showDivider)
-          Divider(
-            height: 1,
-            indent: 50,
-            endIndent: 0,
-            color: context.textSecondary.withValues(alpha: 0.1),
-          ),
-      ],
+  Widget _buildSectionCard({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      child: child,
     );
   }
 
-  Widget _buildComposerSection() {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildSectionTitle(String title, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextFormField(
-                        controller: _titleController,
-                        maxLines: 2,
-                        minLines: 1,
-                        validator: (val) {
-                          if (val == null || val.trim().isEmpty) {
-                            return _type == 'article'
-                                ? l10n.eventTitleRequiredArticle
-                                : l10n.eventTitleRequired;
-                          }
-                          return null;
-                        },
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: context.textPrimary,
-                          height: 1.4,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: _type == 'article'
-                              ? l10n.eventTitleHintArticle
-                              : l10n.eventTitleHint,
-                          hintStyle: GoogleFonts.beVietnamPro(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color:
-                                context.textSecondary.withValues(alpha: 0.45),
-                          ),
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          focusedErrorBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                          isDense: true,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _descriptionController,
-                        maxLines: 3,
-                        minLines: 2,
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: context.textSecondary,
-                          height: 1.5,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: l10n.eventAddDescription,
-                          hintStyle: GoogleFonts.inter(
-                            fontSize: 13,
-                            color: context.textSecondary.withValues(alpha: 0.4),
-                          ),
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                          isDense: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+          Icon(icon, size: 18, color: context.primary),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: context.textPrimary,
             ),
           ),
-          const SizedBox(width: 12),
-          GestureDetector(
-            onTap: _pickImage,
-            child: Stack(
-              children: [
-                Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: context.textSecondary.withValues(alpha: 0.08),
-                    border: Border.all(
-                      color: context.textSecondary.withValues(alpha: 0.15),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTypeSelector(AppLocalizations l10n) {
+    return Row(
+      children: _typeIcons.entries.map((entry) {
+        final key = entry.key;
+        final icon = entry.value;
+        final label = _typeLabels(l10n)[key] ?? key;
+        final isSelected = _type == key;
+
+        return Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => _type = key),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? context.primary.withValues(alpha: 0.18)
+                    : context.surface.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSelected
+                      ? context.primary
+                      : context.textSecondary.withValues(alpha: 0.15),
+                  width: isSelected ? 1.5 : 1,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    icon,
+                    size: 22,
+                    color: isSelected ? context.primary : context.textSecondary,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 13,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color:
+                          isSelected ? context.primary : context.textSecondary,
                     ),
                   ),
-                  clipBehavior: Clip.antiAlias,
-                  child: _localImagePath != null
-                      ? Image.file(
-                          File(_localImagePath!),
-                          fit: BoxFit.cover,
-                          width: 90,
-                          height: 90,
-                        )
-                      : Center(
-                          child: Icon(
-                            LucideIcons.image,
-                            size: 28,
-                            color:
-                                context.textSecondary.withValues(alpha: 0.35),
-                          ),
-                        ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.55),
-                      borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(10)),
-                    ),
-                    child: Text(
-                      _localImagePath != null
-                          ? l10n.eventChangePhoto
-                          : l10n.eventPickPhoto,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 10,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildImageBannerPicker(AppLocalizations l10n) {
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        height: 150,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: context.textSecondary.withValues(alpha: 0.06),
+          border: Border.all(
+            color: context.textSecondary.withValues(alpha: 0.2),
+            style: BorderStyle.solid,
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: _localImagePath != null
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.file(
+                    File(_localImagePath!),
+                    fit: BoxFit.cover,
                   ),
-                ),
-                if (_localImagePath != null)
                   Positioned(
-                    top: 4,
-                    right: 4,
+                    right: 8,
+                    top: 8,
                     child: GestureDetector(
                       onTap: () => setState(() => _localImagePath = null),
                       child: Container(
-                        padding: const EdgeInsets.all(3),
+                        padding: const EdgeInsets.all(6),
                         decoration: const BoxDecoration(
                           color: Colors.black54,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(LucideIcons.x,
-                            size: 12, color: Colors.white),
+                            size: 16, color: Colors.white),
                       ),
                     ),
                   ),
-              ],
-            ),
-          ),
-        ],
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.65),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(LucideIcons.camera,
+                              size: 13, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Text(
+                            l10n.eventChangePhoto,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 11,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: context.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      LucideIcons.imagePlus,
+                      size: 28,
+                      color: context.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.eventPickPhoto,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: context.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Định dạng JPG, PNG (Tối đa 5MB)',
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 11,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -437,240 +369,221 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: context.background,
+      backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: l10n.addEventTitle,
         automaticallyImplyLeading: false,
       ),
-      body: BlocConsumer<EventsBloc, EventsState>(
-        listener: (context, state) {
-          if (state is EventsSubmitSuccess) {
-            Navigator.pop(context, true);
-          } else if (state is EventsError) {
-            AppSnackBar.error(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is EventsSubmitting) {
-            return const Center(child: AppLoading(size: 80));
-          }
+      body: AppBackgroundBody(
+        child: BlocConsumer<EventsBloc, EventsState>(
+          listener: (context, state) {
+            if (state is EventsSubmitSuccess) {
+              Navigator.pop(context, true);
+            } else if (state is EventsError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is EventsSubmitting) {
+              return const Center(child: AppLoading(size: 80));
+            }
 
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      _buildComposerSection(),
-                      const SizedBox(height: 12),
-                      Divider(
-                        height: 1,
-                        color: context.textSecondary.withValues(alpha: 0.1),
-                      ),
-                      _buildRow(
-                        icon: _typeIcon,
-                        label: _typeLabel(l10n),
-                        iconColor: context.primary,
-                        showDivider: false,
-                        onTap: _showTypeSheet,
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(LucideIcons.chevronRight,
-                                size: 16,
-                                color: context.textSecondary
-                                    .withValues(alpha: 0.5)),
-                          ],
-                        ),
-                      ),
-                      _buildRow(
-                        icon: LucideIcons.calendarDays,
-                        label: _displayDate.isEmpty
-                            ? l10n.eventSelectDate
-                            : _displayDate,
-                        iconColor: context.accent,
-                        showDivider: false,
-                        onTap: _selectDate,
-                        trailing: _displayDate.isNotEmpty
-                            ? GestureDetector(
-                                onTap: () => setState(() {
-                                  _selectedDate = '';
-                                  _displayDate = '';
-                                }),
-                                child: Icon(LucideIcons.x,
-                                    size: 16,
-                                    color: context.textSecondary
-                                        .withValues(alpha: 0.5)),
-                              )
-                            : null,
-                      ),
-                      if (_showLocation)
-                        _buildRow(
-                          icon: LucideIcons.mapPin,
-                          label: _locationController.text.isEmpty
-                              ? l10n.eventAddLocation
-                              : _locationController.text,
-                          iconColor: AppColors.error,
-                          showDivider: false,
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: context.surface,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20)),
-                              ),
-                              builder: (ctx) => Padding(
-                                padding: EdgeInsets.only(
-                                  left: 16,
-                                  right: 16,
-                                  top: 16,
-                                  bottom:
-                                      MediaQuery.of(ctx).viewInsets.bottom + 24,
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Khối 1: Chọn loại bài đăng
+                          _buildSectionCard(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildSectionTitle(
+                                  l10n.selectPostType,
+                                  LucideIcons.layers,
                                 ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        width: 40,
-                                        height: 4,
-                                        decoration: BoxDecoration(
-                                          color: ctx.textSecondary
-                                              .withValues(alpha: 0.3),
-                                          borderRadius:
-                                              BorderRadius.circular(2),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    AppOutlineTextField(
-                                      controller: _locationController,
-                                      label: l10n.eventLocationLabel,
-                                      hintText: l10n.eventLocationHint,
-                                      prefixIcon: const Icon(LucideIcons.mapPin,
-                                          color: AppColors.error, size: 18),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {});
-                                          Navigator.pop(ctx);
-                                        },
-                                        child: Text(l10n.doneLabel),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      _buildRow(
-                        icon: _type == 'article'
-                            ? LucideIcons.user
-                            : LucideIcons.users,
-                        label: _organizerController.text.isEmpty
-                            ? (_type == 'article'
-                                ? l10n.eventAddAuthor
-                                : l10n.eventAddOrganizer)
-                            : _organizerController.text,
-                        iconColor: context.primary,
-                        showDivider: false,
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: context.surface,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(20)),
+                                _buildTypeSelector(l10n),
+                              ],
                             ),
-                            builder: (ctx) => Padding(
-                              padding: EdgeInsets.only(
-                                left: 16,
-                                right: 16,
-                                top: 16,
-                                bottom:
-                                    MediaQuery.of(ctx).viewInsets.bottom + 24,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: Container(
-                                      width: 40,
-                                      height: 4,
-                                      decoration: BoxDecoration(
-                                        color: ctx.textSecondary
-                                            .withValues(alpha: 0.3),
-                                        borderRadius: BorderRadius.circular(2),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Khối 2: Ảnh bìa & Thông tin bài viết
+                          _buildSectionCard(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildSectionTitle(
+                                  'Thông tin cơ bản',
+                                  LucideIcons.fileText,
+                                ),
+                                _buildImageBannerPicker(l10n),
+                                const SizedBox(height: 16),
+                                AppOutlineTextField(
+                                  controller: _titleController,
+                                  label: _type == 'article'
+                                      ? 'Tiêu đề bài viết'
+                                      : (_type == 'announcement'
+                                          ? 'Tiêu đề thông báo'
+                                          : 'Tên sự kiện'),
+                                  hintText: _type == 'article'
+                                      ? l10n.eventTitleHintArticle
+                                      : l10n.eventTitleHint,
+                                  prefixIcon: Icon(_typeIcon, size: 18),
+                                  fillColor:
+                                      context.surface.withValues(alpha: 0.3),
+                                  validator: (val) {
+                                    if (val == null || val.trim().isEmpty) {
+                                      return _type == 'article'
+                                          ? l10n.eventTitleRequiredArticle
+                                          : l10n.eventTitleRequired;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 14),
+                                AppOutlineTextField(
+                                  controller: _contentController,
+                                  label: 'Nội dung chi tiết',
+                                  hintText:
+                                      'Nhập nội dung chi tiết bài viết, lịch trình sự kiện hoặc thông báo...',
+                                  minLines: 4,
+                                  maxLines: 10,
+                                  fillColor:
+                                      context.surface.withValues(alpha: 0.3),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Khối 3: Thời gian & Địa điểm (nếu có)
+                          _buildSectionCard(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildSectionTitle(
+                                  'Thời gian & Địa điểm',
+                                  LucideIcons.calendarClock,
+                                ),
+                                InkWell(
+                                  onTap: _selectDate,
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 14),
+                                    decoration: BoxDecoration(
+                                      color: context.surface
+                                          .withValues(alpha: 0.3),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: context.textSecondary
+                                            .withValues(alpha: 0.2),
                                       ),
                                     ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          LucideIcons.calendarDays,
+                                          size: 18,
+                                          color: context.accent,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            _formattedDateDisplay(l10n),
+                                            style: GoogleFonts.beVietnamPro(
+                                              fontSize: 14,
+                                              fontWeight:
+                                                  _displayDate.isNotEmpty
+                                                      ? FontWeight.w600
+                                                      : FontWeight.normal,
+                                              color: _displayDate.isNotEmpty
+                                                  ? context.textPrimary
+                                                  : context.textSecondary,
+                                            ),
+                                          ),
+                                        ),
+                                        if (_displayDate.isNotEmpty)
+                                          GestureDetector(
+                                            onTap: () => setState(() {
+                                              _selectedDate = '';
+                                              _displayDate = '';
+                                            }),
+                                            child: Icon(
+                                              LucideIcons.x,
+                                              size: 16,
+                                              color: context.textSecondary,
+                                            ),
+                                          )
+                                        else
+                                          Icon(
+                                            LucideIcons.chevronRight,
+                                            size: 18,
+                                            color: context.textSecondary,
+                                          ),
+                                      ],
+                                    ),
                                   ),
-                                  const SizedBox(height: 16),
+                                ),
+                                if (_showLocation) ...[
+                                  const SizedBox(height: 14),
                                   AppOutlineTextField(
-                                    controller: _organizerController,
-                                    label: _type == 'article'
-                                        ? l10n.eventAuthorLabel
-                                        : l10n.eventOrganizerLabel,
-                                    hintText: _type == 'article'
-                                        ? l10n.eventAuthorHint
-                                        : l10n.eventOrganizerHint,
-                                    prefixIcon: Icon(
-                                        _type == 'article'
-                                            ? LucideIcons.user
-                                            : LucideIcons.users,
-                                        color: ctx.primary,
-                                        size: 18),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {});
-                                        Navigator.pop(ctx);
-                                      },
-                                      child: const Text('Xong'),
+                                    controller: _locationController,
+                                    label: l10n.eventLocationLabel,
+                                    hintText: l10n.eventLocationHint,
+                                    fillColor:
+                                        context.surface.withValues(alpha: 0.3),
+                                    prefixIcon: const Icon(
+                                      LucideIcons.mapPin,
+                                      color: AppColors.error,
+                                      size: 18,
                                     ),
                                   ),
                                 ],
-                              ),
+                              ],
                             ),
-                          );
-                        },
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
-                decoration: BoxDecoration(
-                  color: context.background,
-                  border: Border(
-                    top: BorderSide(
-                      color: context.textSecondary.withValues(alpha: 0.12),
-                      width: 1,
                     ),
                   ),
                 ),
-                child: AppFormActionButtons(
-                  saveLabel: l10n.saveEventButton,
-                  onSave: _submitForm,
+
+                // Fixed Action Bar ở dưới
+                Container(
+                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
+                  decoration: BoxDecoration(
+                    color: context.surface.withValues(alpha: 0.7),
+                    border: Border(
+                      top: BorderSide(
+                        color: context.textSecondary.withValues(alpha: 0.12),
+                        width: 1,
+                      ),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: AppFormActionButtons(
+                    saveLabel: l10n.saveEventButton,
+                    onSave: _submitForm,
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

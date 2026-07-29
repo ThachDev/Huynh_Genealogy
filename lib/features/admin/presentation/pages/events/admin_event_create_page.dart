@@ -176,13 +176,27 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: context.textSecondary.withValues(alpha: 0.12),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: child,
     );
   }
 
   Widget _buildSectionTitle(String title, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 14),
       child: Row(
         children: [
           Icon(icon, size: 18, color: context.primary),
@@ -191,7 +205,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
             title,
             style: GoogleFonts.beVietnamPro(
               fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               color: context.textPrimary,
             ),
           ),
@@ -217,8 +231,8 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? context.primary.withValues(alpha: 0.18)
-                    : context.surface.withValues(alpha: 0.3),
+                    ? context.primary.withValues(alpha: 0.15)
+                    : context.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isSelected
@@ -241,9 +255,9 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.beVietnamPro(
-                      fontSize: 13,
+                      fontSize: 12.5,
                       fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                          isSelected ? FontWeight.bold : FontWeight.w500,
                       color:
                           isSelected ? context.primary : context.textSecondary,
                     ),
@@ -265,10 +279,9 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: context.textSecondary.withValues(alpha: 0.06),
+          color: context.textSecondary.withValues(alpha: 0.05),
           border: Border.all(
             color: context.textSecondary.withValues(alpha: 0.2),
-            style: BorderStyle.solid,
           ),
         ),
         clipBehavior: Clip.antiAlias,
@@ -337,7 +350,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                     ),
                     child: Icon(
                       LucideIcons.imagePlus,
-                      size: 28,
+                      size: 26,
                       color: context.primary,
                     ),
                   ),
@@ -346,7 +359,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                     l10n.eventPickPhoto,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: context.textPrimary,
                     ),
                   ),
@@ -372,12 +385,13 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: l10n.addEventTitle,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
       ),
       body: AppBackgroundBody(
         child: BlocConsumer<EventsBloc, EventsState>(
           listener: (context, state) {
             if (state is EventsSubmitSuccess) {
+              AppSnackBar.success(context, state.message);
               Navigator.pop(context, true);
             } else if (state is EventsError) {
               AppSnackBar.error(context, state.message);
@@ -392,13 +406,14 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
               children: [
                 Expanded(
                   child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Khối 1: Chọn loại bài đăng
+                          // Section 1: Post type
                           _buildSectionCard(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,7 +428,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Khối 2: Ảnh bìa & Thông tin bài viết
+                          // Section 2: Banner image & Details
                           _buildSectionCard(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -427,16 +442,14 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                 AppOutlineTextField(
                                   controller: _titleController,
                                   label: _type == 'article'
-                                      ? 'Tiêu đề bài viết'
+                                      ? 'Tiêu đề bài viết *'
                                       : (_type == 'announcement'
-                                          ? 'Tiêu đề thông báo'
-                                          : 'Tên sự kiện'),
+                                          ? 'Tiêu đề thông báo *'
+                                          : 'Tên sự kiện *'),
                                   hintText: _type == 'article'
                                       ? l10n.eventTitleHintArticle
                                       : l10n.eventTitleHint,
                                   prefixIcon: Icon(_typeIcon, size: 18),
-                                  fillColor:
-                                      context.surface.withValues(alpha: 0.3),
                                   validator: (val) {
                                     if (val == null || val.trim().isEmpty) {
                                       return _type == 'article'
@@ -454,15 +467,13 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                       'Nhập nội dung chi tiết bài viết, lịch trình sự kiện hoặc thông báo...',
                                   minLines: 4,
                                   maxLines: 10,
-                                  fillColor:
-                                      context.surface.withValues(alpha: 0.3),
                                 ),
                               ],
                             ),
                           ),
                           const SizedBox(height: 16),
 
-                          // Khối 3: Thời gian & Địa điểm (nếu có)
+                          // Section 3: Time & Location
                           _buildSectionCard(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,8 +489,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 14, vertical: 14),
                                     decoration: BoxDecoration(
-                                      color: context.surface
-                                          .withValues(alpha: 0.3),
+                                      color: context.surface,
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
                                         color: context.textSecondary
@@ -537,8 +547,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                     controller: _locationController,
                                     label: l10n.eventLocationLabel,
                                     hintText: l10n.eventLocationHint,
-                                    fillColor:
-                                        context.surface.withValues(alpha: 0.3),
                                     prefixIcon: const Icon(
                                       LucideIcons.mapPin,
                                       color: AppColors.error,
@@ -549,31 +557,24 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 24),
                         ],
                       ),
                     ),
                   ),
                 ),
 
-                // Fixed Action Bar ở dưới
+                // Fixed Action Bar at bottom
                 Container(
                   padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                   decoration: BoxDecoration(
-                    color: context.surface.withValues(alpha: 0.7),
+                    color: context.background,
                     border: Border(
                       top: BorderSide(
                         color: context.textSecondary.withValues(alpha: 0.12),
                         width: 1,
                       ),
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 8,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
                   ),
                   child: AppFormActionButtons(
                     saveLabel: l10n.saveEventButton,

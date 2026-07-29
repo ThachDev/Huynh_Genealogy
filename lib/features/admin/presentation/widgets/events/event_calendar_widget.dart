@@ -103,7 +103,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
               child: Container(
                 key: ValueKey<bool>(_showLunar),
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 decoration: BoxDecoration(
                   color: _showLunar ? context.accent : widget.badgeColor,
                   borderRadius: const BorderRadius.vertical(
@@ -114,7 +114,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                   _showLunar ? lunarMonthLabel : 'Tháng $monthInt',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.beVietnamPro(
-                    fontSize: 9,
+                    fontSize: 9.5,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     letterSpacing: 0.2,
@@ -123,72 +123,79 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
               ),
             ),
             Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(scale: animation, child: child),
-                  );
-                },
-                child: _showLunar
-                    ? Column(
-                        key: const ValueKey<String>('lunar'),
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            lunarDay,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: context.accent,
-                              height: 1.1,
-                            ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.center,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(scale: animation, child: child),
+                      );
+                    },
+                    child: _showLunar
+                        ? Column(
+                            key: const ValueKey<String>('lunar'),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                lunarDay,
+                                style: GoogleFonts.beVietnamPro(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: context.accent,
+                                  height: 1.0,
+                                ),
+                              ),
+                              const SizedBox(height: 1),
+                              Text(
+                                lunarYear,
+                                style: GoogleFonts.inter(
+                                  fontSize: 8.5,
+                                  color: context.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 1),
+                              Text(
+                                widget.l10n.lunarCalendar.toLowerCase(),
+                                style: GoogleFonts.beVietnamPro(
+                                  fontSize: 7,
+                                  color: context.accent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            key: const ValueKey<String>('solar'),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                solarDay,
+                                style: GoogleFonts.beVietnamPro(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: widget.badgeColor,
+                                  height: 1.0,
+                                ),
+                              ),
+                              const SizedBox(height: 1),
+                              Text(
+                                solarYear,
+                                style: GoogleFonts.inter(
+                                  fontSize: 8.5,
+                                  color: context.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 1),
-                          Text(
-                            lunarYear,
-                            style: GoogleFonts.inter(
-                              fontSize: 9,
-                              color: context.textSecondary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 1),
-                          Text(
-                            widget.l10n.lunarCalendar.toLowerCase(),
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 7.5,
-                              color: context.accent,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      )
-                    : Column(
-                        key: const ValueKey<String>('solar'),
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            solarDay,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: widget.badgeColor,
-                              height: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            solarYear,
-                            style: GoogleFonts.inter(
-                              fontSize: 9,
-                              color: context.textSecondary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                ),
               ),
             ),
           ],

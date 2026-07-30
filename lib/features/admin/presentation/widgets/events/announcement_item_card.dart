@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
-import '../../../../../resources/app_localizations.dart';
 import '../../../../events/events.dart';
-import 'swipeable_card.dart';
 
 class AnnouncementItemCard extends StatelessWidget {
   final EventEntity event;
@@ -82,7 +80,6 @@ class AnnouncementItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final accentColor = Colors.amber.shade800;
 
     Widget cardChild = Container(
@@ -174,18 +171,6 @@ class AnnouncementItemCard extends StatelessWidget {
         ],
       ),
     );
-
-    if (canEdit) {
-      return SwipeableCard(
-        deleteLabel: l10n.deleteLabel,
-        onDelete: onDelete,
-        onTap: onTap,
-        child: GestureDetector(
-          onTap: onTap,
-          child: cardChild,
-        ),
-      );
-    }
 
     return GestureDetector(
       onTap: onTap,

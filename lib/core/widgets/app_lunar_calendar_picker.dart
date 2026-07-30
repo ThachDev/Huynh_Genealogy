@@ -84,20 +84,23 @@ class _LunarCalendarPickerDialogState
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       backgroundColor: context.surface,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: 14),
-            _buildDayLabels(context),
-            const SizedBox(height: 6),
-            _buildCalendarGrid(context),
-            const SizedBox(height: 16),
-            _buildFooter(context),
-          ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHeader(context),
+              const SizedBox(height: 14),
+              _buildDayLabels(context),
+              const SizedBox(height: 6),
+              _buildCalendarGrid(context),
+              const SizedBox(height: 16),
+              _buildFooter(context),
+            ],
+          ),
         ),
       ),
     );
@@ -356,8 +359,7 @@ class _LunarCalendarPickerDialogState
                             builder: (ctx3, idx) {
                               final locale =
                                   Localizations.localeOf(ctx3).languageCode;
-                              final monthName =
-                                  DateFormat.MMMM(locale).format(
+                              final monthName = DateFormat.MMMM(locale).format(
                                 DateTime(2024, idx + 1),
                               );
                               return Center(
@@ -386,11 +388,9 @@ class _LunarCalendarPickerDialogState
                           itemExtent: 40,
                           physics: const FixedExtentScrollPhysics(),
                           controller: FixedExtentScrollController(
-                              initialItem:
-                                  pickerYear - widget.firstDate.year),
+                              initialItem: pickerYear - widget.firstDate.year),
                           onSelectedItemChanged: (idx) => setInner(
-                              () => pickerYear =
-                                  idx + widget.firstDate.year),
+                              () => pickerYear = idx + widget.firstDate.year),
                           childDelegate: ListWheelChildBuilderDelegate(
                             childCount: widget.lastDate.year -
                                 widget.firstDate.year +
@@ -424,8 +424,7 @@ class _LunarCalendarPickerDialogState
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() =>
-                          _displayMonth =
-                              DateTime(pickerYear, pickerMonth));
+                          _displayMonth = DateTime(pickerYear, pickerMonth));
                       Navigator.pop(ctx2);
                     },
                     style: ElevatedButton.styleFrom(
@@ -437,8 +436,8 @@ class _LunarCalendarPickerDialogState
                     ),
                     child: Text(
                       l10n.confirmLabel,
-                      style: GoogleFonts.beVietnamPro(
-                          fontWeight: FontWeight.bold),
+                      style:
+                          GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

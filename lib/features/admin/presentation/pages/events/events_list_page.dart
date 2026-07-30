@@ -6,12 +6,11 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
-import '../../../../../features/auth/auth.dart';
+import '../../../../auth/auth.dart';
 import '../../../../events/events.dart';
 import '../../../admin.dart';
 import '../../widgets/events/event_filter_bar.dart';
 import '../../widgets/events/event_item_card.dart';
-import '../../widgets/events/article_item_card.dart';
 import '../../widgets/events/announcement_item_card.dart';
 
 class EventsListPage extends StatefulWidget {
@@ -30,7 +29,7 @@ class EventsListPage extends StatefulWidget {
 
 class _EventsListPageState extends State<EventsListPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _selectedType = 'all'; // all, event, article, announcement
+  String _selectedType = 'all'; // all, event, announcement
   String _selectedSort = 'newest'; // newest, oldest
 
   static const int _maxPreviewItemsPerSection = 3;
@@ -173,8 +172,9 @@ class _EventsListPageState extends State<EventsListPage> {
 
             final counts = {
               'all': allEvents.length,
-              'event': allEvents.where((e) => e.type == 'event').length,
-              'article': allEvents.where((e) => e.type == 'article').length,
+              'event': allEvents
+                  .where((e) => e.type == 'event' || e.type == 'article')
+                  .length,
               'announcement':
                   allEvents.where((e) => e.type == 'announcement').length,
             };
@@ -188,9 +188,14 @@ class _EventsListPageState extends State<EventsListPage> {
                   .toList();
             }
 
-            if (_selectedType != 'all') {
-              filteredEvents =
-                  filteredEvents.where((e) => e.type == _selectedType).toList();
+            if (_selectedType == 'event') {
+              filteredEvents = filteredEvents
+                  .where((e) => e.type == 'event' || e.type == 'article')
+                  .toList();
+            } else if (_selectedType == 'announcement') {
+              filteredEvents = filteredEvents
+                  .where((e) => e.type == 'announcement')
+                  .toList();
             }
 
             if (_selectedSort == 'newest') {
@@ -199,19 +204,15 @@ class _EventsListPageState extends State<EventsListPage> {
               filteredEvents.sort((a, b) => a.eventDate.compareTo(b.eventDate));
             }
 
-            final eventsList =
-                filteredEvents.where((e) => e.type == 'event').toList();
-            final articlesList =
-                filteredEvents.where((e) => e.type == 'article').toList();
+            final eventsList = filteredEvents
+                .where((e) => e.type == 'event' || e.type == 'article')
+                .toList();
             final announcementsList =
                 filteredEvents.where((e) => e.type == 'announcement').toList();
 
             final displayEvents = _selectedType == 'all'
                 ? eventsList.take(_maxPreviewItemsPerSection).toList()
                 : eventsList;
-            final displayArticles = _selectedType == 'all'
-                ? articlesList.take(_maxPreviewItemsPerSection).toList()
-                : articlesList;
             final displayAnnouncements = _selectedType == 'all'
                 ? announcementsList.take(_maxPreviewItemsPerSection).toList()
                 : announcementsList;
@@ -256,7 +257,7 @@ class _EventsListPageState extends State<EventsListPage> {
                               style: GoogleFonts.beVietnamPro(
                                   fontSize: 14, color: context.textPrimary),
                               decoration: InputDecoration(
-                                hintText: 'Tìm kiếm sự kiện, bài viết...',
+                                hintText: 'Tìm kiếm sự kiện, thông báo...',
                                 hintStyle: GoogleFonts.beVietnamPro(
                                     fontSize: 13.5,
                                     color: context.textSecondary
@@ -344,7 +345,7 @@ class _EventsListPageState extends State<EventsListPage> {
                   if ((_selectedType == 'all' || _selectedType == 'event') &&
                       eventsList.isNotEmpty) ...[
                     _buildSectionHeader(
-                      'SỰ KIỆN',
+                      'SỰ KIỆN GIA TỘC',
                       eventsList.length,
                       onViewAll: (_selectedType == 'all' &&
                               eventsList.length > _maxPreviewItemsPerSection)
@@ -378,45 +379,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     ),
                   ],
 
-                  // ── Group 2: TIN TỨC ──
-                  if ((_selectedType == 'all' || _selectedType == 'article') &&
-                      articlesList.isNotEmpty) ...[
-                    _buildSectionHeader(
-                      'TIN TỨC BÀI VIẾT',
-                      articlesList.length,
-                      onViewAll: (_selectedType == 'all' &&
-                              articlesList.length > _maxPreviewItemsPerSection)
-                          ? () => setState(() => _selectedType = 'article')
-                          : null,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: displayArticles.map((event) {
-                          return ArticleItemCard(
-                            event: event,
-                            canEdit: canEdit,
-                            onTap: () => _navigateToDetail(event),
-                            onDelete: () async {
-                              final eventsBloc = context.read<EventsBloc>();
-                              final confirm =
-                                  await _showConfirmDeleteDialog(event);
-                              if (confirm == true && mounted) {
-                                eventsBloc.add(
-                                  DeleteEventEvent(
-                                    id: event.id,
-                                    familyId: widget.familyId,
-                                  ),
-                                );
-                              }
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-
-                  // ── Group 3: THÔNG BÁO ──
+                  // ── Group 2: THÔNG BÁO ──
                   if ((_selectedType == 'all' ||
                           _selectedType == 'announcement') &&
                       announcementsList.isNotEmpty) ...[

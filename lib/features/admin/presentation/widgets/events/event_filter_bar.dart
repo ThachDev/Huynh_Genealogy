@@ -29,11 +29,6 @@ class EventFilterBar extends StatelessWidget {
         'icon': LucideIcons.calendar,
       },
       {
-        'key': 'article',
-        'label': 'Tin tức',
-        'icon': LucideIcons.fileText,
-      },
-      {
         'key': 'announcement',
         'label': 'Thông báo',
         'icon': LucideIcons.megaphone,

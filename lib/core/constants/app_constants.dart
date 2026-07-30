@@ -2,10 +2,9 @@ class AppConstants {
   AppConstants._();
 
   // API
-  static const String baseUrl =
-      'https://be-family-tree.thachhuynh-dev.workers.dev/api';
+  // static const String baseUrl ='https://be-family-tree.thachhuynh-dev.workers.dev/api';
   // static const String baseUrl = 'http://10.0.2.2:8787/api';
-  // static const String baseUrl = 'http://172.16.0.148:8787/api';
+  static const String baseUrl = 'http://172.16.0.148:8787/api';
 
   // Endpoints
   static const String membersEndpoint = '/members';

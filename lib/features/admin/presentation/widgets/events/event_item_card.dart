@@ -2,12 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../events/events.dart';
 import 'event_calendar_widget.dart';
-import 'swipeable_card.dart';
 
 class EventItemCard extends StatelessWidget {
   final EventEntity event;
@@ -41,16 +39,16 @@ class EventItemCard extends StatelessWidget {
     }
   }
 
-  Widget _buildStatusTag(String status) {
+  Widget _buildStatusTag(String status, BuildContext context) {
     String statusText = 'Đã kết thúc';
-    Color statusColor = Colors.grey;
+    Color statusColor = context.textSecondary.withValues(alpha: 0.7);
 
     if (status == 'active') {
       statusText = 'Đang diễn ra';
-      statusColor = AppColors.success;
+      statusColor = context.primary;
     } else if (status == 'upcoming') {
       statusText = 'Sắp diễn ra';
-      statusColor = Colors.blue;
+      statusColor = Colors.amber.shade800;
     }
 
     return Row(
@@ -150,11 +148,9 @@ class EventItemCard extends StatelessWidget {
                   height: 72,
                   child: EventCalendarWidget(
                     eventDate: event.eventDate,
-                    badgeColor: status == 'active'
-                        ? AppColors.success
-                        : (status == 'upcoming'
-                            ? Colors.blue
-                            : AppColors.error),
+                    badgeColor: status == 'upcoming'
+                        ? Colors.amber.shade800
+                        : context.primary,
                     l10n: l10n,
                   ),
                 ),
@@ -167,7 +163,7 @@ class EventItemCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          _buildStatusTag(status),
+                          _buildStatusTag(status, context),
                           const Spacer(),
                           if (event.isLunar)
                             Text(
@@ -224,18 +220,6 @@ class EventItemCard extends StatelessWidget {
         ],
       ),
     );
-
-    if (canEdit) {
-      return SwipeableCard(
-        deleteLabel: l10n.deleteLabel,
-        onDelete: onDelete,
-        onTap: onTap,
-        child: GestureDetector(
-          onTap: onTap,
-          child: cardChild,
-        ),
-      );
-    }
 
     return GestureDetector(
       onTap: onTap,

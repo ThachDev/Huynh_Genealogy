@@ -69,16 +69,10 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
           ? await dio.post(
               AppConstants.eventsEndpoint,
               data: requestData,
-              options: isLocalImage
-                  ? Options(contentType: 'multipart/form-data')
-                  : null,
             )
           : await dio.put(
               '${AppConstants.eventsEndpoint}/${event.id}',
               data: requestData,
-              options: isLocalImage
-                  ? Options(contentType: 'multipart/form-data')
-                  : null,
             );
       final responseData = _parseMapResponse(response.data);
       final rawData = responseData['data'];

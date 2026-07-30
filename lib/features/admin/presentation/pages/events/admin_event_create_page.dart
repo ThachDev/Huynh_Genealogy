@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/utils/lunar_date_helper.dart';
@@ -33,25 +32,25 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   final bool _isLunar = false;
   String _selectedDate = '';
   String _displayDate = '';
-  String _type = 'event';
+  String _type = 'event'; // 'event' or 'announcement'
   String? _localImagePath;
 
   final ImagePicker _picker = ImagePicker();
 
   static const _typeIcons = {
     'event': LucideIcons.calendar,
-    'article': LucideIcons.bookOpen,
     'announcement': LucideIcons.megaphone,
   };
 
   Map<String, String> _typeLabels(AppLocalizations l10n) => {
-        'event': l10n.eventTypeEvent,
-        'article': l10n.eventTypeArticle,
+        'event': 'Sự kiện / Bài viết',
         'announcement': l10n.eventTypeAnnouncement,
       };
 
   IconData get _typeIcon => _typeIcons[_type] ?? LucideIcons.calendar;
   bool get _showLocation => _type == 'event';
+  bool get _showBannerPicker => _type == 'event';
+  bool get _showOrganizer => _type == 'event';
 
   @override
   void initState() {
@@ -60,6 +59,15 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
     if (authState is Authenticated) {
       _organizerController.text = authState.user.fullName;
     }
+    _setInitialTodayDate();
+  }
+
+  void _setInitialTodayDate() {
+    final now = DateTime.now();
+    _selectedDate =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    _displayDate =
+        '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
   }
 
   @override
@@ -80,8 +88,10 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       final year = int.tryParse(parts[2]);
       if (day != null && month != null && year != null) {
         final parsedDate = DateTime(year, month, day);
-        final lunarStr = LunarDateHelper.getLunarDateString(parsedDate, l10n);
-        return '$_displayDate ($lunarStr)';
+        if (_type == 'event') {
+          final lunarStr = LunarDateHelper.getLunarDateString(parsedDate, l10n);
+          return '$_displayDate ($lunarStr)';
+        }
       }
     }
     return _displayDate;
@@ -122,19 +132,37 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
         }
       }
     }
-    final picked = await showLunarCalendarPicker(
-      context: context,
-      initialDate: parsedDate ?? DateTime.now(),
-      firstDate: DateTime(1800),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null) {
-      setState(() {
-        _selectedDate =
-            '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
-        _displayDate =
-            '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
-      });
+
+    if (_type == 'event') {
+      final picked = await showLunarCalendarPicker(
+        context: context,
+        initialDate: parsedDate ?? DateTime.now(),
+        firstDate: DateTime(1800),
+        lastDate: DateTime(2100),
+      );
+      if (picked != null) {
+        setState(() {
+          _selectedDate =
+              '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+          _displayDate =
+              '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
+        });
+      }
+    } else {
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: parsedDate ?? DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100),
+      );
+      if (picked != null) {
+        setState(() {
+          _selectedDate =
+              '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+          _displayDate =
+              '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
+        });
+      }
     }
   }
 
@@ -159,14 +187,15 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
             title: _titleController.text.trim(),
             description: contentText.isEmpty ? null : contentText,
             content: contentText.isEmpty ? null : contentText,
-            location: _locationController.text.trim().isEmpty
-                ? null
-                : _locationController.text.trim(),
+            location:
+                _showLocation && _locationController.text.trim().isNotEmpty
+                    ? _locationController.text.trim()
+                    : null,
             organizer: authorName,
-            imageUrl: _localImagePath,
+            imageUrl: _showBannerPicker ? _localImagePath : null,
             type: _type,
             eventDate: _selectedDate,
-            isLunar: _isLunar,
+            isLunar: _type == 'event' && _isLunar,
             familyId: widget.familyId,
           ),
         ));
@@ -177,18 +206,11 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.surface,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: context.textSecondary.withValues(alpha: 0.12),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: child,
     );
@@ -224,15 +246,19 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
 
         return Expanded(
           child: GestureDetector(
-            onTap: () => setState(() => _type = key),
+            onTap: () {
+              setState(() {
+                _type = key;
+              });
+            },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               margin: const EdgeInsets.symmetric(horizontal: 4),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? context.primary.withValues(alpha: 0.15)
-                    : context.surface,
+                    ? context.primary.withValues(alpha: 0.12)
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isSelected
@@ -275,13 +301,13 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
-        height: 150,
+        height: 140,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: context.textSecondary.withValues(alpha: 0.05),
+          color: context.textSecondary.withValues(alpha: 0.04),
           border: Border.all(
-            color: context.textSecondary.withValues(alpha: 0.2),
+            color: context.textSecondary.withValues(alpha: 0.18),
           ),
         ),
         clipBehavior: Clip.antiAlias,
@@ -350,7 +376,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                     ),
                     child: Icon(
                       LucideIcons.imagePlus,
-                      size: 26,
+                      size: 24,
                       color: context.primary,
                     ),
                   ),
@@ -381,10 +407,17 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    String dateSectionTitle = 'Thời gian & Địa điểm';
+    if (_type == 'announcement') {
+      dateSectionTitle = 'Ngày phát thông báo';
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppAppBar(
-        title: l10n.addEventTitle,
+        title: _type == 'announcement'
+            ? 'Tạo thông báo gia tộc'
+            : l10n.addEventTitle,
         automaticallyImplyLeading: true,
       ),
       body: AppBackgroundBody(
@@ -437,36 +470,57 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                   'Thông tin cơ bản',
                                   LucideIcons.fileText,
                                 ),
-                                _buildImageBannerPicker(l10n),
-                                const SizedBox(height: 16),
+                                if (_showBannerPicker) ...[
+                                  _buildImageBannerPicker(l10n),
+                                  const SizedBox(height: 16),
+                                ],
                                 AppOutlineTextField(
                                   controller: _titleController,
-                                  label: _type == 'article'
-                                      ? 'Tiêu đề bài viết *'
-                                      : (_type == 'announcement'
-                                          ? 'Tiêu đề thông báo *'
-                                          : 'Tên sự kiện *'),
-                                  hintText: _type == 'article'
-                                      ? l10n.eventTitleHintArticle
+                                  label: _type == 'announcement'
+                                      ? 'Tiêu đề thông báo'
+                                      : 'Tên sự kiện / Bài viết',
+                                  hintText: _type == 'announcement'
+                                      ? 'Nhập tiêu đề thông báo ngắn gọn...'
                                       : l10n.eventTitleHint,
                                   prefixIcon: Icon(_typeIcon, size: 18),
                                   validator: (val) {
                                     if (val == null || val.trim().isEmpty) {
-                                      return _type == 'article'
-                                          ? l10n.eventTitleRequiredArticle
+                                      return _type == 'announcement'
+                                          ? 'Vui lòng nhập tiêu đề thông báo'
                                           : l10n.eventTitleRequired;
                                     }
                                     return null;
                                   },
                                 ),
+                                if (_showOrganizer) ...[
+                                  const SizedBox(height: 14),
+                                  AppOutlineTextField(
+                                    controller: _organizerController,
+                                    label: 'Ban tổ chức / Người chủ trì',
+                                    hintText:
+                                        'Nhập tên người chủ trì hoặc ban tổ chức...',
+                                    prefixIcon:
+                                        const Icon(LucideIcons.user, size: 18),
+                                  ),
+                                ],
                                 const SizedBox(height: 14),
                                 AppOutlineTextField(
                                   controller: _contentController,
-                                  label: 'Nội dung chi tiết',
-                                  hintText:
-                                      'Nhập nội dung chi tiết bài viết, lịch trình sự kiện hoặc thông báo...',
+                                  label: _type == 'announcement'
+                                      ? 'Nội dung thông báo'
+                                      : 'Nội dung & Lịch trình',
+                                  hintText: _type == 'announcement'
+                                      ? 'Nhập nội dung chi tiết thông báo gửi đến gia tộc...'
+                                      : 'Nhập nội dung chi tiết bài viết, lịch trình sự kiện...',
                                   minLines: 4,
                                   maxLines: 10,
+                                  validator: (val) {
+                                    if (_type == 'announcement' &&
+                                        (val == null || val.trim().isEmpty)) {
+                                      return 'Vui lòng nhập nội dung thông báo';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ],
                             ),
@@ -479,7 +533,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildSectionTitle(
-                                  'Thời gian & Địa điểm',
+                                  dateSectionTitle,
                                   LucideIcons.calendarClock,
                                 ),
                                 InkWell(
@@ -489,7 +543,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 14, vertical: 14),
                                     decoration: BoxDecoration(
-                                      color: context.surface,
+                                      color: Colors.transparent,
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
                                         color: context.textSecondary
@@ -501,7 +555,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                         Icon(
                                           LucideIcons.calendarDays,
                                           size: 18,
-                                          color: context.accent,
+                                          color: context.primary,
                                         ),
                                         const SizedBox(width: 12),
                                         Expanded(
@@ -547,9 +601,9 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                     controller: _locationController,
                                     label: l10n.eventLocationLabel,
                                     hintText: l10n.eventLocationHint,
-                                    prefixIcon: const Icon(
+                                    prefixIcon: Icon(
                                       LucideIcons.mapPin,
-                                      color: AppColors.error,
+                                      color: context.primary,
                                       size: 18,
                                     ),
                                   ),
@@ -568,7 +622,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                   decoration: BoxDecoration(
-                    color: context.background,
+                    color: Colors.transparent,
                     border: Border(
                       top: BorderSide(
                         color: context.textSecondary.withValues(alpha: 0.12),

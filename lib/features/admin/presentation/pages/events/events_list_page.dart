@@ -356,24 +356,36 @@ class _EventsListPageState extends State<EventsListPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: displayEvents.map((event) {
-                          return EventItemCard(
+                          Future<void> performDelete() async {
+                            final eventsBloc = context.read<EventsBloc>();
+                            final confirm =
+                                await _showConfirmDeleteDialog(event);
+                            if (confirm == true && mounted) {
+                              eventsBloc.add(
+                                DeleteEventEvent(
+                                  id: event.id,
+                                  familyId: widget.familyId,
+                                ),
+                              );
+                            }
+                          }
+
+                          final cardWidget = EventItemCard(
                             event: event,
                             canEdit: canEdit,
                             onTap: () => _navigateToDetail(event),
-                            onDelete: () async {
-                              final eventsBloc = context.read<EventsBloc>();
-                              final confirm =
-                                  await _showConfirmDeleteDialog(event);
-                              if (confirm == true && mounted) {
-                                eventsBloc.add(
-                                  DeleteEventEvent(
-                                    id: event.id,
-                                    familyId: widget.familyId,
-                                  ),
-                                );
-                              }
-                            },
+                            onDelete: performDelete,
                           );
+
+                          if (canEdit) {
+                            return SwipeableCard(
+                              onDelete: performDelete,
+                              onTap: () => _navigateToDetail(event),
+                              deleteLabel: l10n.deleteLabel,
+                              child: cardWidget,
+                            );
+                          }
+                          return cardWidget;
                         }).toList(),
                       ),
                     ),
@@ -397,24 +409,36 @@ class _EventsListPageState extends State<EventsListPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: displayAnnouncements.map((event) {
-                          return AnnouncementItemCard(
+                          Future<void> performDelete() async {
+                            final eventsBloc = context.read<EventsBloc>();
+                            final confirm =
+                                await _showConfirmDeleteDialog(event);
+                            if (confirm == true && mounted) {
+                              eventsBloc.add(
+                                DeleteEventEvent(
+                                  id: event.id,
+                                  familyId: widget.familyId,
+                                ),
+                              );
+                            }
+                          }
+
+                          final cardWidget = AnnouncementItemCard(
                             event: event,
                             canEdit: canEdit,
                             onTap: () => _navigateToDetail(event),
-                            onDelete: () async {
-                              final eventsBloc = context.read<EventsBloc>();
-                              final confirm =
-                                  await _showConfirmDeleteDialog(event);
-                              if (confirm == true && mounted) {
-                                eventsBloc.add(
-                                  DeleteEventEvent(
-                                    id: event.id,
-                                    familyId: widget.familyId,
-                                  ),
-                                );
-                              }
-                            },
+                            onDelete: performDelete,
                           );
+
+                          if (canEdit) {
+                            return SwipeableCard(
+                              onDelete: performDelete,
+                              onTap: () => _navigateToDetail(event),
+                              deleteLabel: l10n.deleteLabel,
+                              child: cardWidget,
+                            );
+                          }
+                          return cardWidget;
                         }).toList(),
                       ),
                     ),

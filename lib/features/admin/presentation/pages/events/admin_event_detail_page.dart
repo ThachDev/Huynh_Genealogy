@@ -10,6 +10,7 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/utils/lunar_date_helper.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
+import '../../../../auth/auth.dart';
 import '../../../../events/events.dart';
 
 class AdminEventDetailPage extends StatefulWidget {
@@ -274,6 +275,44 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
             familyId: widget.familyId,
           ),
         ));
+  }
+
+  Future<void> _onDeleteEvent() async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: ctx.surface,
+        title: Text(
+          l10n.deleteEventTitle,
+          style: GoogleFonts.beVietnamPro(color: ctx.textPrimary),
+        ),
+        content: Text(
+          l10n.deleteEventConfirm(widget.event.title),
+          style: GoogleFonts.inter(color: ctx.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancelLabel),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.deleteLabel),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      context.read<EventsBloc>().add(
+            DeleteEventEvent(
+              id: widget.event.id,
+              familyId: widget.familyId,
+            ),
+          );
+    }
   }
 
   Widget _buildReaderView(AppLocalizations l10n) {
@@ -714,6 +753,11 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthBloc>().state;
+    final canEdit = authState is Authenticated &&
+        (authState.user.role == 'OWNER' ||
+            authState.user.role == 'BRANCH_ADMIN' ||
+            authState.user.role == 'EDITOR');
     final pageTitle = _isReadOnly ? l10n.eventDetailTitle : l10n.editEventTitle;
 
     return Scaffold(
@@ -722,7 +766,11 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
         title: pageTitle,
         automaticallyImplyLeading: true,
         actions: [
-          if (_isReadOnly)
+          if (_isReadOnly && canEdit) ...[
+            IconButton(
+              icon: const Icon(LucideIcons.trash2, color: Colors.red),
+              onPressed: _onDeleteEvent,
+            ),
             IconButton(
               icon: Icon(LucideIcons.edit3, color: context.accent),
               onPressed: () {
@@ -731,6 +779,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                 });
               },
             ),
+          ],
         ],
       ),
       body: BlocConsumer<EventsBloc, EventsState>(

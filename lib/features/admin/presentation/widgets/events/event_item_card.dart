@@ -39,16 +39,16 @@ class EventItemCard extends StatelessWidget {
     }
   }
 
-  Widget _buildStatusTag(String status, BuildContext context) {
+  Widget _buildStatusTag(String status, BuildContext context, {bool isOverBanner = false}) {
     String statusText = 'Đã kết thúc';
-    Color statusColor = context.textSecondary.withValues(alpha: 0.7);
+    Color statusColor = isOverBanner ? Colors.grey.shade300 : context.textSecondary.withValues(alpha: 0.7);
 
     if (status == 'active') {
       statusText = 'Đang diễn ra';
-      statusColor = context.primary;
+      statusColor = isOverBanner ? Colors.greenAccent.shade400 : context.primary;
     } else if (status == 'upcoming') {
       statusText = 'Sắp diễn ra';
-      statusColor = Colors.amber.shade800;
+      statusColor = isOverBanner ? Colors.amberAccent.shade200 : Colors.amber.shade800;
     }
 
     return Row(
@@ -68,47 +68,118 @@ class EventItemCard extends StatelessWidget {
           style: GoogleFonts.beVietnamPro(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: statusColor,
+            color: isOverBanner ? Colors.white : statusColor,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildBannerImage(BuildContext context) {
+  Widget _buildBannerImage(BuildContext context, String status) {
     final imageUrl = event.imageUrl;
     final isNetwork = imageUrl != null &&
         (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
     final isLocal =
         imageUrl != null && !isNetwork && File(imageUrl).existsSync();
 
+    Widget? imageWidget;
     if (isNetwork) {
-      return ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-        child: Image.network(
-          imageUrl,
-          height: 120,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-        ),
+      imageWidget = Image.network(
+        imageUrl,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        alignment: Alignment.center,
+        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      );
+    } else if (isLocal) {
+      imageWidget = Image.file(
+        File(imageUrl),
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        alignment: Alignment.center,
+        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
       );
     }
 
-    if (isLocal) {
-      return ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-        child: Image.file(
-          File(imageUrl),
-          height: 120,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-        ),
-      );
-    }
+    if (imageWidget == null) return const SizedBox.shrink();
 
-    return const SizedBox.shrink();
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            imageWidget,
+            // Subtle Gradient Overlay for badge contrast
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.45),
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.15),
+                    ],
+                    stops: const [0.0, 0.45, 1.0],
+                  ),
+                ),
+              ),
+            ),
+            // Top Left: Lunar Calendar Badge
+            if (event.isLunar)
+              Positioned(
+                top: 10,
+                left: 10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: context.accent.withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'LỊCH ÂM',
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ),
+            // Top Right: Status Tag Badge
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.25),
+                    width: 0.5,
+                  ),
+                ),
+                child: _buildStatusTag(status, context, isOverBanner: true),
+              ),
+            ),
+
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -136,7 +207,7 @@ class EventItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (hasImage) _buildBannerImage(context),
+          if (hasImage) _buildBannerImage(context, status),
           Padding(
             padding: const EdgeInsets.all(14),
             child: Row(
@@ -148,9 +219,7 @@ class EventItemCard extends StatelessWidget {
                   height: 72,
                   child: EventCalendarWidget(
                     eventDate: event.eventDate,
-                    badgeColor: status == 'upcoming'
-                        ? Colors.amber.shade800
-                        : context.primary,
+                    isLunarDefault: event.isLunar,
                     l10n: l10n,
                   ),
                 ),
@@ -161,22 +230,23 @@ class EventItemCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          _buildStatusTag(status, context),
-                          const Spacer(),
-                          if (event.isLunar)
-                            Text(
-                              'LỊCH ÂM',
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                                color: context.accent,
+                      if (!hasImage)
+                        Row(
+                          children: [
+                            _buildStatusTag(status, context),
+                            const Spacer(),
+                            if (event.isLunar)
+                              Text(
+                                'LỊCH ÂM',
+                                style: GoogleFonts.beVietnamPro(
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: context.accent,
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
+                          ],
+                        ),
+                      if (!hasImage) const SizedBox(height: 8),
                       Text(
                         event.title,
                         style: GoogleFonts.beVietnamPro(
@@ -227,3 +297,4 @@ class EventItemCard extends StatelessWidget {
     );
   }
 }
+

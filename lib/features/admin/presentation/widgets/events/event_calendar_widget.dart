@@ -6,13 +6,13 @@ import '../../../../../resources/app_localizations.dart';
 
 class EventCalendarWidget extends StatefulWidget {
   final String eventDate;
-  final Color badgeColor;
+  final bool isLunarDefault;
   final AppLocalizations l10n;
 
   const EventCalendarWidget({
     super.key,
     required this.eventDate,
-    required this.badgeColor,
+    this.isLunarDefault = false,
     required this.l10n,
   });
 
@@ -21,7 +21,21 @@ class EventCalendarWidget extends StatefulWidget {
 }
 
 class _EventCalendarWidgetState extends State<EventCalendarWidget> {
-  bool _showLunar = false;
+  late bool _showLunar;
+
+  @override
+  void initState() {
+    super.initState();
+    _showLunar = widget.isLunarDefault;
+  }
+
+  @override
+  void didUpdateWidget(covariant EventCalendarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isLunarDefault != widget.isLunarDefault) {
+      _showLunar = widget.isLunarDefault;
+    }
+  }
 
   String _getDay(String dateStr) {
     try {
@@ -73,6 +87,8 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
       }
     } catch (_) {}
 
+    final activeColor = _showLunar ? context.accent : context.primary;
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -84,7 +100,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
           color: context.surface,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: widget.badgeColor.withValues(alpha: 0.25),
+            color: activeColor.withValues(alpha: 0.3),
             width: 1,
           ),
           boxShadow: [
@@ -105,7 +121,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 decoration: BoxDecoration(
-                  color: _showLunar ? context.accent : widget.badgeColor,
+                  color: activeColor,
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(9),
                   ),
@@ -130,7 +146,8 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                   alignment: Alignment.center,
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 400),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
                       return FadeTransition(
                         opacity: animation,
                         child: ScaleTransition(scale: animation, child: child),
@@ -179,7 +196,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: widget.badgeColor,
+                                  color: context.primary,
                                   height: 1.0,
                                 ),
                               ),
@@ -204,3 +221,4 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
     );
   }
 }
+

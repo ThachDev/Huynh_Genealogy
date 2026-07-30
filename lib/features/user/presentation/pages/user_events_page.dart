@@ -423,7 +423,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     flex: 2,
                     child: EventCalendarWidget(
                       eventDate: event.eventDate,
-                      badgeColor: badgeColor,
+                      isLunarDefault: event.isLunar,
                       l10n: l10n,
                     ),
                   ),

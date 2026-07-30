@@ -185,7 +185,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
           event: EventEntity(
             id: 0,
             title: _titleController.text.trim(),
-            description: contentText.isEmpty ? null : contentText,
+            description: null,
             content: contentText.isEmpty ? null : contentText,
             location:
                 _showLocation && _locationController.text.trim().isNotEmpty

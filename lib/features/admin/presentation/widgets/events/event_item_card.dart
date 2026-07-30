@@ -39,16 +39,21 @@ class EventItemCard extends StatelessWidget {
     }
   }
 
-  Widget _buildStatusTag(String status, BuildContext context, {bool isOverBanner = false}) {
+  Widget _buildStatusTag(String status, BuildContext context,
+      {bool isOverBanner = false}) {
     String statusText = 'Đã kết thúc';
-    Color statusColor = isOverBanner ? Colors.grey.shade300 : context.textSecondary.withValues(alpha: 0.7);
+    Color statusColor = isOverBanner
+        ? Colors.grey.shade300
+        : context.textSecondary.withValues(alpha: 0.7);
 
     if (status == 'active') {
       statusText = 'Đang diễn ra';
-      statusColor = isOverBanner ? Colors.greenAccent.shade400 : context.primary;
+      statusColor =
+          isOverBanner ? Colors.greenAccent.shade400 : context.primary;
     } else if (status == 'upcoming') {
       statusText = 'Sắp diễn ra';
-      statusColor = isOverBanner ? Colors.amberAccent.shade200 : Colors.amber.shade800;
+      statusColor =
+          isOverBanner ? Colors.amberAccent.shade200 : Colors.amber.shade800;
     }
 
     return Row(
@@ -136,7 +141,8 @@ class EventItemCard extends StatelessWidget {
                 top: 10,
                 left: 10,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: context.accent.withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(10),
@@ -163,7 +169,8 @@ class EventItemCard extends StatelessWidget {
               top: 10,
               right: 10,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: Colors.black.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(12),
@@ -175,7 +182,6 @@ class EventItemCard extends StatelessWidget {
                 child: _buildStatusTag(status, context, isOverBanner: true),
               ),
             ),
-
           ],
         ),
       ),
@@ -258,14 +264,13 @@ class EventItemCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-
                       if (event.location != null &&
                           event.location!.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Row(
                           children: [
                             Icon(LucideIcons.mapPin,
-                                size: 13, color: context.textSecondary),
+                                size: 12, color: context.textSecondary),
                             const SizedBox(width: 5),
                             Expanded(
                               child: Text(
@@ -281,6 +286,25 @@ class EventItemCard extends StatelessWidget {
                           ],
                         ),
                       ],
+                      const SizedBox(height: 3),
+                      Row(
+                        children: [
+                          Icon(LucideIcons.user,
+                              size: 12, color: context.textSecondary),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              event.organizer ?? 'Ban Quản Trị',
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 12,
+                                color: context.textSecondary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -297,4 +321,3 @@ class EventItemCard extends StatelessWidget {
     );
   }
 }
-

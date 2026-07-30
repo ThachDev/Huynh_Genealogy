@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vnlunar/vnlunar.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
-import '../../../../../core/utils/lunar_date_helper.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../auth/auth.dart';
@@ -110,10 +110,14 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
         final month = int.parse(parts[1]);
         final day = int.parse(parts[2]);
         final dt = DateTime(year, month, day);
+        final yearShort = dt.year.toString().substring(2);
         final solarStr =
-            'Ngày ${dt.day.toString().padLeft(2, '0')} tháng ${dt.month.toString().padLeft(2, '0')}, năm ${dt.year}';
-        final lunarStr = LunarDateHelper.getLunarDateString(dt, l10n);
-        return '$solarStr ($lunarStr)';
+            '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/$yearShort';
+        final lunar = Lunar(createdFromSolar: true, date: dt);
+        final lunarDay = lunar.day.toString().padLeft(2, '0');
+        final lunarMonth = lunar.month.toString().padLeft(2, '0');
+        final leap = lunar.leapMonth == true ? ' Nhuận' : '';
+        return '$solarStr ($lunarDay/$lunarMonth$leap AL)';
       }
     } catch (_) {}
     return _displayDate;
@@ -256,9 +260,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
           event: EventEntity(
             id: widget.event.id,
             title: _titleController.text.trim(),
-            description: _descriptionController.text.trim().isEmpty
-                ? null
-                : _descriptionController.text.trim(),
+            description: null,
             content: _contentController.text.trim().isEmpty
                 ? null
                 : _contentController.text.trim(),
@@ -324,199 +326,163 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
     final isLocal =
         hasImage && !isNetwork && File(_localImagePath!).existsSync();
 
+    final mainContentText = _contentController.text.trim();
+    final descriptionText = _descriptionController.text.trim();
+    final displayBodyText =
+        mainContentText.isNotEmpty ? mainContentText : descriptionText;
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Banner image
+          // 1. Hero Banner Image framed neatly in card style
           if (hasImage)
-            Container(
-              width: double.infinity,
-              height: 220,
-              decoration: BoxDecoration(
-                color: context.surface,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Container(
+                    width: double.infinity,
+                    color: context.surface,
+                    child: isNetwork
+                        ? Image.network(
+                            _localImagePath!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                const SizedBox.shrink(),
+                          )
+                        : (isLocal
+                            ? Image.file(
+                                File(_localImagePath!),
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    const SizedBox.shrink(),
+                              )
+                            : const SizedBox.shrink()),
+                  ),
+                ),
               ),
-              child: isNetwork
-                  ? Image.network(
-                      _localImagePath!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                    )
-                  : (isLocal
-                      ? Image.file(
-                          File(_localImagePath!),
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                        )
-                      : const SizedBox.shrink()),
             ),
 
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Type & Date Tag
+                // 2. Editorial Headline Title
+                Text(
+                  _titleController.text,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: context.textPrimary,
+                    height: 1.3,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // 3. Byline: "Bởi [Author]   •   📍 [Location]"
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: context.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(_typeIcon, size: 14, color: context.primary),
-                          const SizedBox(width: 6),
-                          Text(
-                            _typeLabel(l10n).toUpperCase(),
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: context.primary,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      'Bởi ',
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 13,
+                        color: context.textSecondary.withValues(alpha: 0.7),
                       ),
                     ),
-                    if (_isLunar) ...[
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: context.accent.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(8),
+                    Text(
+                      _organizerController.text.isNotEmpty
+                          ? _organizerController.text
+                          : 'Ban Quản Trị',
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: context.textPrimary,
+                      ),
+                    ),
+                    if (_locationController.text.isNotEmpty) ...[
+                      Text(
+                        '  •  ',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: context.textSecondary.withValues(alpha: 0.5),
                         ),
+                      ),
+                      const Icon(LucideIcons.mapPin,
+                          size: 13, color: AppColors.error),
+                      const SizedBox(width: 4),
+                      Expanded(
                         child: Text(
-                          'Lịch Âm Gia Tộc',
+                          _locationController.text,
                           style: GoogleFonts.beVietnamPro(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: context.accent,
+                            fontSize: 13,
+                            color: context.textSecondary,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 10),
 
-                // Article Title
-                Text(
-                  _titleController.text,
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: context.textPrimary,
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Meta Info Box (Date, Location, Author)
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: context.surface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: context.textSecondary.withValues(alpha: 0.12),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Icon(LucideIcons.calendar,
-                              size: 15, color: context.accent),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              _formatFullDateDisplay(l10n),
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 13,
-                                color: context.textPrimary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
+                // 4. Meta Row: Type Chip / Date
+                Row(
+                  children: [
+                    Text(
+                      _typeLabel(l10n),
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: context.primary,
                       ),
-                      if (_locationController.text.isNotEmpty) ...[
-                        const Divider(height: 16),
-                        Row(
-                          children: [
-                            const Icon(LucideIcons.mapPin,
-                                size: 15, color: AppColors.error),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                _locationController.text,
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13,
-                                  color: context.textPrimary,
-                                ),
-                              ),
-                            ),
-                          ],
+                    ),
+                    Text(
+                      '  •  ',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: context.textSecondary.withValues(alpha: 0.5),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        _formatFullDateDisplay(l10n),
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 12.5,
+                          color: context.textSecondary,
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
-                      if (_organizerController.text.isNotEmpty) ...[
-                        const Divider(height: 16),
-                        Row(
-                          children: [
-                            Icon(LucideIcons.user,
-                                size: 15, color: context.primary),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                '${_type == 'article' ? 'Tác giả' : 'Ban tổ chức'}: ${_organizerController.text}',
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13,
-                                  color: context.textPrimary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ],
-                  ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
 
-                if (_descriptionController.text.isNotEmpty) ...[
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
+
+                Divider(
+                  color: context.textSecondary.withValues(alpha: 0.15),
+                  height: 1,
+                ),
+                const SizedBox(height: 20),
+
+                // Article Main Body Content
+                if (displayBodyText.isNotEmpty)
                   Text(
-                    _descriptionController.text,
+                    displayBodyText,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 14.5,
-                      fontWeight: FontWeight.w600,
-                      color: context.textSecondary,
-                      height: 1.5,
-                    ),
-                  ),
-                ],
-
-                if (_contentController.text.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  Divider(
-                    color: context.textSecondary.withValues(alpha: 0.15),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    _contentController.text,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 14,
                       color: context.textPrimary,
-                      height: 1.6,
+                      height: 1.65,
                     ),
                   ),
-                ],
+
                 const SizedBox(height: 40),
               ],
             ),
@@ -702,17 +668,8 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                   const SizedBox(height: 14),
 
                   AppOutlineTextField(
-                    controller: _descriptionController,
-                    label: 'Mô tả ngắn',
-                    hintText: 'Tóm tắt nội dung chính bài viết',
-                    maxLines: 3,
-                    prefixIcon: const Icon(LucideIcons.alignLeft, size: 18),
-                  ),
-                  const SizedBox(height: 14),
-
-                  AppOutlineTextField(
                     controller: _contentController,
-                    label: 'Nội dung chi tiết',
+                    label: 'Nội dung & Lịch trình chi tiết',
                     hintText: 'Nhập nội dung đầy đủ bài viết...',
                     maxLines: 6,
                     prefixIcon: const Icon(LucideIcons.fileText, size: 18),
@@ -761,7 +718,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
     final pageTitle = _isReadOnly ? l10n.eventDetailTitle : l10n.editEventTitle;
 
     return Scaffold(
-      backgroundColor: context.background,
+      backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: pageTitle,
         automaticallyImplyLeading: true,
@@ -782,25 +739,39 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
           ],
         ],
       ),
-      body: BlocConsumer<EventsBloc, EventsState>(
-        listener: (context, state) {
-          if (state is EventsSubmitSuccess) {
-            AppSnackBar.success(context, state.message);
-            Navigator.pop(context, true);
-          } else if (state is EventsError) {
-            AppSnackBar.error(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is EventsSubmitting) {
-            return const Center(child: AppLoading(size: 80));
-          }
+      body: AppBackgroundBody(
+        child: BlocConsumer<EventsBloc, EventsState>(
+          listener: (context, state) {
+            if (state is EventsSubmitSuccess) {
+              AppSnackBar.success(context, state.message);
+              Navigator.pop(context, true);
+            } else if (state is EventsError) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            if (state is EventsSubmitting) {
+              return const Center(child: AppLoading(size: 80));
+            }
 
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
-            child: _isReadOnly ? _buildReaderView(l10n) : _buildEditForm(l10n),
-          );
-        },
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+              layoutBuilder: (currentChild, previousChildren) => Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  ...previousChildren,
+                  if (currentChild != null) currentChild,
+                ],
+              ),
+              child:
+                  _isReadOnly ? _buildReaderView(l10n) : _buildEditForm(l10n),
+            );
+          },
+        ),
       ),
     );
   }

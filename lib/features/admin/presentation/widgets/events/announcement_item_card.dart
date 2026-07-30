@@ -37,17 +37,22 @@ class AnnouncementItemCard extends StatelessWidget {
     final isLocal =
         imageUrl != null && !isNetwork && File(imageUrl).existsSync();
 
-    Widget placeholder = SizedBox(
+    Widget placeholder = Container(
       width: 72,
       height: 72,
+      decoration: BoxDecoration(
+        color: accentColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Center(
         child: Icon(
           LucideIcons.megaphone,
-          size: 32,
+          size: 28,
           color: accentColor,
         ),
       ),
     );
+
 
     if (isNetwork) {
       return ClipRRect(

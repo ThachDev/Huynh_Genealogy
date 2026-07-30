@@ -136,6 +136,19 @@ class _EventsListPageState extends State<EventsListPage> {
     );
   }
 
+  Future<void> _deleteEvent(EventEntity event) async {
+    final eventsBloc = context.read<EventsBloc>();
+    final confirm = await _showConfirmDeleteDialog(event);
+    if (confirm == true && mounted) {
+      eventsBloc.add(
+        DeleteEventEvent(
+          id: event.id,
+          familyId: widget.familyId,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -217,235 +230,222 @@ class _EventsListPageState extends State<EventsListPage> {
                 ? announcementsList.take(_maxPreviewItemsPerSection).toList()
                 : announcementsList;
 
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+              layoutBuilder: (currentChild, previousChildren) => Stack(
+                alignment: Alignment.topCenter,
                 children: [
-                  const SizedBox(height: 8),
-
-                  // ── Section 1: Scrollable Filter Chips ──
-                  EventFilterBar(
-                    selectedType: _selectedType,
-                    onSelectType: (type) {
-                      setState(() {
-                        _selectedType = type;
-                      });
-                    },
-                    counts: counts,
-                  ),
-
-                  // ── Section 2: Search & Sort Bar ──
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.03),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: TextField(
-                              controller: _searchController,
-                              style: GoogleFonts.beVietnamPro(
-                                  fontSize: 14, color: context.textPrimary),
-                              decoration: InputDecoration(
-                                hintText: 'Tìm kiếm sự kiện, thông báo...',
-                                hintStyle: GoogleFonts.beVietnamPro(
-                                    fontSize: 13.5,
-                                    color: context.textSecondary
-                                        .withValues(alpha: 0.6)),
-                                prefixIcon: Icon(LucideIcons.search,
-                                    size: 17, color: context.textSecondary),
-                                suffixIcon: _searchController.text.isNotEmpty
-                                    ? IconButton(
-                                        icon: Icon(LucideIcons.x,
-                                            size: 16,
-                                            color: context.textSecondary),
-                                        onPressed: () {
-                                          _searchController.clear();
-                                          setState(() {});
-                                        },
-                                      )
-                                    : null,
-                                filled: true,
-                                fillColor: context.surface,
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 12),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                  borderSide: BorderSide(
-                                      color: context.textSecondary
-                                          .withValues(alpha: 0.15)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                  borderSide: BorderSide(
-                                      color: context.primary, width: 1.2),
-                                ),
-                              ),
-                              onChanged: (_) => setState(() {}),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Material(
-                          color: context.surface,
-                          borderRadius: BorderRadius.circular(14),
-                          child: InkWell(
-                            onTap: () => setState(() {
-                              _selectedSort = _selectedSort == 'newest'
-                                  ? 'oldest'
-                                  : 'newest';
-                            }),
-                            borderRadius: BorderRadius.circular(14),
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: context.textSecondary
-                                      .withValues(alpha: 0.15),
-                                ),
-                              ),
-                              child: Icon(
-                                _selectedSort == 'newest'
-                                    ? LucideIcons.arrowDownNarrowWide
-                                    : LucideIcons.arrowUpNarrowWide,
-                                size: 20,
-                                color: context.primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // Empty state when filtered output is empty
-                  if (filteredEvents.isEmpty)
-                    const AppEmptyState(
-                      message: 'Không tìm thấy thông tin phù hợp',
-                      icon: LucideIcons.fileX,
-                      iconSize: 42,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 40),
-                    ),
-
-                  // ── Group 1: SỰ KIỆN ──
-                  if ((_selectedType == 'all' || _selectedType == 'event') &&
-                      eventsList.isNotEmpty) ...[
-                    _buildSectionHeader(
-                      'SỰ KIỆN GIA TỘC',
-                      eventsList.length,
-                      onViewAll: (_selectedType == 'all' &&
-                              eventsList.length > _maxPreviewItemsPerSection)
-                          ? () => setState(() => _selectedType = 'event')
-                          : null,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: displayEvents.map((event) {
-                          Future<void> performDelete() async {
-                            final eventsBloc = context.read<EventsBloc>();
-                            final confirm =
-                                await _showConfirmDeleteDialog(event);
-                            if (confirm == true && mounted) {
-                              eventsBloc.add(
-                                DeleteEventEvent(
-                                  id: event.id,
-                                  familyId: widget.familyId,
-                                ),
-                              );
-                            }
-                          }
-
-                          final cardWidget = EventItemCard(
-                            event: event,
-                            canEdit: canEdit,
-                            onTap: () => _navigateToDetail(event),
-                            onDelete: performDelete,
-                          );
-
-                          if (canEdit) {
-                            return SwipeableCard(
-                              onDelete: performDelete,
-                              onTap: () => _navigateToDetail(event),
-                              deleteLabel: l10n.deleteLabel,
-                              child: cardWidget,
-                            );
-                          }
-                          return cardWidget;
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-
-                  // ── Group 2: THÔNG BÁO ──
-                  if ((_selectedType == 'all' ||
-                          _selectedType == 'announcement') &&
-                      announcementsList.isNotEmpty) ...[
-                    _buildSectionHeader(
-                      'THÔNG BÁO GIA TỘC',
-                      announcementsList.length,
-                      onViewAll: (_selectedType == 'all' &&
-                              announcementsList.length >
-                                  _maxPreviewItemsPerSection)
-                          ? () =>
-                              setState(() => _selectedType = 'announcement')
-                          : null,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: displayAnnouncements.map((event) {
-                          Future<void> performDelete() async {
-                            final eventsBloc = context.read<EventsBloc>();
-                            final confirm =
-                                await _showConfirmDeleteDialog(event);
-                            if (confirm == true && mounted) {
-                              eventsBloc.add(
-                                DeleteEventEvent(
-                                  id: event.id,
-                                  familyId: widget.familyId,
-                                ),
-                              );
-                            }
-                          }
-
-                          final cardWidget = AnnouncementItemCard(
-                            event: event,
-                            canEdit: canEdit,
-                            onTap: () => _navigateToDetail(event),
-                            onDelete: performDelete,
-                          );
-
-                          if (canEdit) {
-                            return SwipeableCard(
-                              onDelete: performDelete,
-                              onTap: () => _navigateToDetail(event),
-                              deleteLabel: l10n.deleteLabel,
-                              child: cardWidget,
-                            );
-                          }
-                          return cardWidget;
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-
-                  const SizedBox(height: 32),
+                  ...previousChildren,
+                  if (currentChild != null) currentChild,
                 ],
+              ),
+              child: SingleChildScrollView(
+                key: ValueKey('$_selectedType-$_selectedSort-${_searchController.text}'),
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+
+                    // ── Section 1: Scrollable Filter Chips ──
+                    EventFilterBar(
+                      selectedType: _selectedType,
+                      onSelectType: (type) {
+                        setState(() {
+                          _selectedType = type;
+                        });
+                      },
+                      counts: counts,
+                    ),
+
+                    // ── Section 2: Search & Sort Bar ──
+                    Padding(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.03),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: TextField(
+                                controller: _searchController,
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 14, color: context.textPrimary),
+                                decoration: InputDecoration(
+                                  hintText: 'Tìm kiếm sự kiện, thông báo...',
+                                  hintStyle: GoogleFonts.beVietnamPro(
+                                      fontSize: 13.5,
+                                      color: context.textSecondary
+                                          .withValues(alpha: 0.6)),
+                                  prefixIcon: Icon(LucideIcons.search,
+                                      size: 17, color: context.textSecondary),
+                                  suffixIcon: _searchController.text.isNotEmpty
+                                      ? IconButton(
+                                          icon: Icon(LucideIcons.x,
+                                              size: 16,
+                                              color: context.textSecondary),
+                                          onPressed: () {
+                                            _searchController.clear();
+                                            setState(() {});
+                                          },
+                                        )
+                                      : null,
+                                  filled: true,
+                                  fillColor: context.surface,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                    borderSide: BorderSide(
+                                        color: context.textSecondary
+                                            .withValues(alpha: 0.15)),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                    borderSide: BorderSide(
+                                        color: context.primary, width: 1.2),
+                                  ),
+                                ),
+                                onChanged: (_) => setState(() {}),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Material(
+                            color: context.surface,
+                            borderRadius: BorderRadius.circular(14),
+                            child: InkWell(
+                              onTap: () => setState(() {
+                                _selectedSort = _selectedSort == 'newest'
+                                    ? 'oldest'
+                                    : 'newest';
+                              }),
+                              borderRadius: BorderRadius.circular(14),
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: context.textSecondary
+                                        .withValues(alpha: 0.15),
+                                  ),
+                                ),
+                                child: Icon(
+                                  _selectedSort == 'newest'
+                                      ? LucideIcons.arrowDownNarrowWide
+                                      : LucideIcons.arrowUpNarrowWide,
+                                  size: 20,
+                                  color: context.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Empty state when filtered output is empty
+                    if (filteredEvents.isEmpty)
+                      const AppEmptyState(
+                        message: 'Không tìm thấy thông tin phù hợp',
+                        icon: LucideIcons.fileX,
+                        iconSize: 42,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 40),
+                      ),
+
+                    // ── Group 1: SỰ KIỆN ──
+                    if ((_selectedType == 'all' || _selectedType == 'event') &&
+                        eventsList.isNotEmpty) ...[
+                      _buildSectionHeader(
+                        'SỰ KIỆN GIA TỘC',
+                        eventsList.length,
+                        onViewAll: (_selectedType == 'all' &&
+                                eventsList.length > _maxPreviewItemsPerSection)
+                            ? () => setState(() => _selectedType = 'event')
+                            : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: displayEvents.map((event) {
+                            final cardWidget = EventItemCard(
+                              event: event,
+                              canEdit: canEdit,
+                              onTap: () => _navigateToDetail(event),
+                              onDelete: () => _deleteEvent(event),
+                            );
+                            if (canEdit) {
+                              return SwipeableCard(
+                                key: ValueKey(event.id),
+                                onDelete: () => _deleteEvent(event),
+                                onTap: () => _navigateToDetail(event),
+                                deleteLabel: l10n.deleteLabel,
+                                child: cardWidget,
+                              );
+                            }
+                            return cardWidget;
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+
+                    // ── Group 2: THÔNG BÁO ──
+                    if ((_selectedType == 'all' ||
+                            _selectedType == 'announcement') &&
+                        announcementsList.isNotEmpty) ...[
+                      _buildSectionHeader(
+                        'THÔNG BÁO GIA TỘC',
+                        announcementsList.length,
+                        onViewAll: (_selectedType == 'all' &&
+                                announcementsList.length >
+                                    _maxPreviewItemsPerSection)
+                            ? () =>
+                                setState(() => _selectedType = 'announcement')
+                            : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          children: displayAnnouncements.map((event) {
+                            final cardWidget = AnnouncementItemCard(
+                              event: event,
+                              canEdit: canEdit,
+                              onTap: () => _navigateToDetail(event),
+                              onDelete: () => _deleteEvent(event),
+                            );
+                            if (canEdit) {
+                              return SwipeableCard(
+                                key: ValueKey(event.id),
+                                onDelete: () => _deleteEvent(event),
+                                onTap: () => _navigateToDetail(event),
+                                deleteLabel: l10n.deleteLabel,
+                                child: cardWidget,
+                              );
+                            }
+                            return cardWidget;
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 32),
+                  ],
+                ),
               ),
             );
           },

@@ -322,61 +322,63 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
       ],
       child: Scaffold(
-        backgroundColor: context.surface,
-        body: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: _buildHeader(
-                  context, user, headerHeight, familyName, inviteCode),
-            ),
-            Positioned(
-              top: headerHeight + 60,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: _buildContentSection(
-                      userTreeState: userTreeState,
-                      pendingState: pendingState,
-                      members: allMembers,
-                      branches: allBranches,
-                      requests: pendingRequests,
+        backgroundColor: Colors.transparent,
+        body: AppBackgroundBody(
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: _buildHeader(
+                    context, user, headerHeight, familyName, inviteCode),
+              ),
+              Positioned(
+                top: headerHeight + 60,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: _buildContentSection(
+                        userTreeState: userTreeState,
+                        pendingState: pendingState,
+                        members: allMembers,
+                        branches: allBranches,
+                        requests: pendingRequests,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: headerHeight - 45,
-              left: 0,
-              right: 0,
-              child: QuickStatsRow(
-                showPending: !isEditor,
-                memberCount: memberCount,
-                branchCount: branchCount,
-                pendingCount: pendingCount,
-                selectedTab: _selectedTab,
-                onTabChanged: (tab) {
-                  setState(() {
-                    _selectedTab = tab;
-                    _searchController.clear();
-                    _memberLimit = 5;
-                    _branchLimit = 5;
-                    _pendingLimit = 5;
-                    if (_scrollController.hasClients) {
-                      _scrollController.jumpTo(0);
-                    }
-                    _updateFAB();
-                  });
-                },
+              Positioned(
+                top: headerHeight - 45,
+                left: 0,
+                right: 0,
+                child: QuickStatsRow(
+                  showPending: !isEditor,
+                  memberCount: memberCount,
+                  branchCount: branchCount,
+                  pendingCount: pendingCount,
+                  selectedTab: _selectedTab,
+                  onTabChanged: (tab) {
+                    setState(() {
+                      _selectedTab = tab;
+                      _searchController.clear();
+                      _memberLimit = 5;
+                      _branchLimit = 5;
+                      _pendingLimit = 5;
+                      if (_scrollController.hasClients) {
+                        _scrollController.jumpTo(0);
+                      }
+                      _updateFAB();
+                    });
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

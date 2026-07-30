@@ -363,7 +363,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SizedBox(
-          height: 115,
+          height: 124,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
@@ -665,9 +665,10 @@ class AnniversaryCard extends StatelessWidget {
 
     return TraditionalOrnamentalCard(
       width: 230,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // ── Header: icon + tên + đời ──
           Row(
@@ -698,6 +699,8 @@ class AnniversaryCard extends StatelessWidget {
                               fontSize: 12,
                               color: context.textSecondary,
                             ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ],
@@ -705,9 +708,9 @@ class AnniversaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           const Divider(height: 1, thickness: 0.5),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           // ── Footer: ngày + countdown ──
           Row(
             children: [
@@ -724,6 +727,8 @@ class AnniversaryCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: context.textPrimary,
                           ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     if (data.lunarDateLabel != null)
                       Text(
@@ -732,6 +737,8 @@ class AnniversaryCard extends StatelessWidget {
                               fontSize: 10,
                               color: context.textSecondary,
                             ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                   ],
                 ),

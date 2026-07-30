@@ -40,7 +40,9 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 Positioned.fill(
                   child: Image.asset(
-                    'assets/images/wood_dragon_top.png',
+                    context.isDarkMode
+                        ? 'assets/images/wood_dragon_top_dark.png'
+                        : 'assets/images/wood_dragon_top.png',
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) =>
                         Container(color: context.appBarBg),
@@ -107,6 +109,22 @@ class AppBackgroundBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDarkMode;
+
+    if (isDark) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background_dark.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: child,
+      );
+    }
+
     return Container(
       width: double.infinity,
       height: double.infinity,

@@ -22,12 +22,12 @@ class UserBranchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final borderColor =
-        isSelected ? context.accent : context.accent.withValues(alpha: 0.45);
-    final fillColor =
-        isSelected ? context.primary : context.surface.withValues(alpha: 0.90);
-    final textPrimary = isSelected ? Colors.white : context.textPrimary;
-    final textSecondary = isSelected ? Colors.white70 : context.textSecondary;
+    final borderColor = isSelected
+        ? context.primary
+        : context.textSecondary.withValues(alpha: 0.2);
+    final fillColor = context.surface;
+    final textPrimary = context.textPrimary;
+    final textSecondary = context.textSecondary;
 
     return GestureDetector(
       onTap: onTap,
@@ -47,7 +47,7 @@ class UserBranchCard extends StatelessWidget {
                 // Icon trơn
                 Icon(
                   LucideIcons.gitBranch,
-                  color: isSelected ? Colors.white : context.primary,
+                  color: isSelected ? context.accent : context.primary,
                   size: 26,
                 ),
                 const SizedBox(width: 12),
@@ -80,7 +80,7 @@ class UserBranchCard extends StatelessWidget {
                                   horizontal: 7, vertical: 2),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? Colors.white.withValues(alpha: 0.18)
+                                    ? context.accent.withValues(alpha: 0.20)
                                     : context.accent.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(6),
                               ),
@@ -89,9 +89,7 @@ class UserBranchCard extends StatelessWidget {
                                 style: GoogleFonts.inter(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : context.accent,
+                                  color: context.accent,
                                 ),
                               ),
                             ),

@@ -13,6 +13,7 @@ import '../../../../features/auth/auth.dart';
 import '../../../../features/family_tree/family_tree.dart';
 import '../../../events/events.dart';
 import '../../../admin/admin.dart';
+import '../widgets/user_notifications_widget.dart';
 
 class UserEventsPage extends StatefulWidget {
   final int familyId;
@@ -251,96 +252,172 @@ class _UserEventsPageState extends State<UserEventsPage> {
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');
 
-    return Scaffold(
-      appBar: AppAppBar(
-        title: l10n.eventsListTitle,
-      ),
-      body: AppBackgroundBody(
-        child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
-          builder: (context, treeState) {
-            return BlocBuilder<EventsBloc, EventsState>(
-              builder: (context, eventsState) {
-                if (eventsState is EventsLoading ||
-                    eventsState is EventsSubmitting ||
-                    treeState is FamilyTreeLoading) {
-                  return const Center(child: AppLoading(size: 80));
-                }
+    return BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
+      builder: (context, treeState) {
+        return BlocBuilder<EventsBloc, EventsState>(
+          builder: (context, eventsState) {
+            List<EventEntity> allEvents = [];
+            if (eventsState is EventsLoaded) {
+              allEvents = eventsState.events;
+            }
 
-                List<MemberEntity> members = [];
-                if (treeState is FamilyTreeLoaded) {
-                  members = treeState.members;
-                }
+            final announcements = allEvents.where((e) {
+              final t = e.type.toLowerCase();
+              return t == 'announcement' ||
+                  t == 'notification' ||
+                  t == 'thông báo';
+            }).toList();
 
-                final deathAnniversaries =
-                    _calculateDeathAnniversaries(members);
-                final birthdays = _calculateBirthdays(members);
+            final displayEvents = allEvents.where((e) {
+              final t = e.type.toLowerCase();
+              return t != 'announcement' &&
+                  t != 'notification' &&
+                  t != 'thông báo';
+            }).toList();
 
-                List<EventEntity> allEvents = [];
-                if (eventsState is EventsLoaded) {
-                  allEvents = eventsState.events;
-                }
+            final unreadAnnouncements = announcements
+                .where((e) =>
+                    !UserNotificationsPage.globalReadIds.contains(e.id.toString()))
+                .toList();
 
-                return SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // ── Section 1: Ngày Giỗ Dòng Họ ──
-                      if (deathAnniversaries.isNotEmpty &&
-                          !widget.isAdminMode) ...[
-                        AppSectionTitle(
-                          title: l10n.deathAnniversariesSectionTitle,
-                          trailing: _buildTrailingSeeAll(),
-                        ),
-                        _buildAnniversaryList(deathAnniversaries),
-                      ],
-
-                      // ── Section 2: Sinh Nhật Dòng Họ ──
-                      if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
-                        AppSectionTitle(
-                          title: l10n.birthdaysSectionTitle,
-                          trailing: _buildTrailingSeeAll(),
-                        ),
-                        _buildAnniversaryList(birthdays),
-                      ],
-
-                      // ── Section 3: Sự Kiện & Tin Tức ──
-                      AppSectionTitle(
-                        title: l10n.newsEventsSectionTitle,
-                        trailing: _buildTrailingSeeAll(),
-                      ),
-
-                      if (allEvents.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 48, horizontal: 16),
-                          child: AppEmptyState(
-                            icon: LucideIcons.calendarDays,
-                            message: l10n.noEventsMessage,
+            return Scaffold(
+              appBar: AppAppBar(
+                title: l10n.eventsListTitle,
+                actions: [
+                  IconButton(
+                    icon: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Icon(LucideIcons.bell, color: context.accent, size: 22),
+                        if (unreadAnnouncements.isNotEmpty)
+                          Positioned(
+                            top: -8,
+                            right: -6,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                '${unreadAnnouncements.length}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
-                        )
-                      else
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: allEvents.length,
-                            itemBuilder: (context, index) {
-                              final event = allEvents[index];
-                              return _buildEventCard(event, canEdit);
-                            },
+                      ],
+                    ),
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => UserNotificationsPage(
+                            familyId: widget.familyId,
+                            announcements: announcements,
+                            isAdminMode: widget.isAdminMode,
                           ),
                         ),
-                    ],
+                      );
+                      if (mounted) {
+                        setState(() {});
+                      }
+                    },
+                    tooltip: l10n.eventTypeAnnouncement,
                   ),
-                );
-              },
+                  const SizedBox(width: 8),
+                ],
+              ),
+              body: AppBackgroundBody(
+                child: Builder(
+                  builder: (context) {
+                    if (eventsState is EventsLoading ||
+                        eventsState is EventsSubmitting ||
+                        treeState is FamilyTreeLoading) {
+                      return const Center(child: AppLoading(size: 80));
+                    }
+
+                    List<MemberEntity> members = [];
+                    if (treeState is FamilyTreeLoaded) {
+                      members = treeState.members;
+                    }
+
+                    final deathAnniversaries =
+                        _calculateDeathAnniversaries(members);
+                    final birthdays = _calculateBirthdays(members);
+
+                    return SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // ── Section 1: Ngày Giỗ Dòng Họ ──
+                          if (deathAnniversaries.isNotEmpty &&
+                              !widget.isAdminMode) ...[
+                            AppSectionTitle(
+                              title: l10n.deathAnniversariesSectionTitle,
+                              trailing: _buildTrailingSeeAll(),
+                            ),
+                            _buildAnniversaryList(deathAnniversaries),
+                          ],
+
+                          // ── Section 2: Sinh Nhật Dòng Họ ──
+                          if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
+                            AppSectionTitle(
+                              title: l10n.birthdaysSectionTitle,
+                              trailing: _buildTrailingSeeAll(),
+                            ),
+                            _buildAnniversaryList(birthdays),
+                          ],
+
+                          // ── Section 3: Sự Kiện ──
+                          AppSectionTitle(
+                            title: l10n.eventsListTitle,
+                            trailing: _buildTrailingSeeAll(),
+                          ),
+
+                          if (displayEvents.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 48, horizontal: 16),
+                              child: AppEmptyState(
+                                icon: LucideIcons.calendarDays,
+                                message: l10n.noEventsMessage,
+                              ),
+                            )
+                          else
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: displayEvents.length,
+                                itemBuilder: (context, index) {
+                                  final event = displayEvents[index];
+                                  return _buildEventCard(event, canEdit);
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -385,6 +462,44 @@ class _UserEventsPageState extends State<UserEventsPage> {
     );
   }
 
+  Widget _buildDefaultBanner() {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        width: double.infinity,
+        color: context.appBarBg,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                context.isDarkMode
+                    ? 'assets/images/wood_dargon_dark.png'
+                    : 'assets/images/wood_dragon.png',
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (_, __, ___) =>
+                    Container(color: context.appBarBg),
+              ),
+            ),
+            if (!context.isDarkMode)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.35),
+                ),
+              ),
+            Center(
+              child: Icon(
+                LucideIcons.calendarDays,
+                size: 40,
+                color: context.accent.withValues(alpha: 0.8),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildEventCard(EventEntity event, bool canEdit) {
     final l10n = AppLocalizations.of(context)!;
 
@@ -408,48 +523,59 @@ class _UserEventsPageState extends State<UserEventsPage> {
     final hasImage = isNetworkImage || isLocalImage;
 
     Widget cardContent = Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 16),
       child: RepaintBoundary(
         child: Semantics(
           label: 'Sự kiện ${event.title}, Ngày: ${event.eventDate}',
           button: true,
           child: TraditionalOrnamentalCard(
-            padding: const EdgeInsets.all(16.0),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+            padding: const EdgeInsets.all(10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: EventCalendarWidget(
-                      eventDate: event.eventDate,
-                      isLunarDefault: event.isLunar,
-                      l10n: l10n,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    flex: 5,
+                  // Top Banner Image (Image 2 style: AspectRatio 16/9, full width, clear)
+                  if (hasImage)
+                    Hero(
+                      tag: 'event_image_${event.id}',
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: isNetworkImage
+                            ? Image.network(
+                                imageUrl,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.high,
+                                errorBuilder: (_, __, ___) =>
+                                    _buildDefaultBanner(),
+                              )
+                            : Image.file(
+                                File(imageUrl),
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.high,
+                                errorBuilder: (_, __, ___) =>
+                                    _buildDefaultBanner(),
+                              ),
+                      ),
+                    )
+                  else
+                    _buildDefaultBanner(),
+
+                  // Card Content
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Row 1: Tag & Date
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: Text(
-                                event.title,
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: context.textPrimary,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 3),
+                                  horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: badgeColor.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(12),
@@ -463,14 +589,14 @@ class _UserEventsPageState extends State<UserEventsPage> {
                                 children: [
                                   Icon(
                                     badgeIcon,
-                                    size: 10,
+                                    size: 11,
                                     color: badgeColor,
                                   ),
-                                  const SizedBox(width: 3),
+                                  const SizedBox(width: 4),
                                   Text(
                                     badgeLabel.toUpperCase(),
                                     style: GoogleFonts.beVietnamPro(
-                                      fontSize: 9,
+                                      fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                       color: badgeColor,
                                       letterSpacing: 0.5,
@@ -479,11 +605,43 @@ class _UserEventsPageState extends State<UserEventsPage> {
                                 ],
                               ),
                             ),
+                            Row(
+                              children: [
+                                Icon(
+                                  LucideIcons.clock,
+                                  size: 13,
+                                  color: context.textSecondary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  event.eventDate,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: context.textSecondary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 10),
+                        // Row 2: Title
+                        Text(
+                          event.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: context.textPrimary,
+                            height: 1.3,
+                          ),
+                        ),
+                        // Row 3: Description
                         if (event.description != null &&
-                            event.description!.isNotEmpty)
+                            event.description!.isNotEmpty) ...[
+                          const SizedBox(height: 6),
                           Text(
                             event.description!,
                             maxLines: 2,
@@ -494,95 +652,62 @@ class _UserEventsPageState extends State<UserEventsPage> {
                               height: 1.4,
                             ),
                           ),
-                        const SizedBox(height: 8),
-                        if (event.location != null &&
-                            event.location!.isNotEmpty) ...[
-                          Row(
-                            children: [
-                              Icon(LucideIcons.mapPin,
-                                  size: 12, color: context.textSecondary),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  event.location!,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 11,
-                                    color: context.textSecondary,
+                        ],
+                        const SizedBox(height: 12),
+                        // Row 4: Author (left) & Location (right)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (event.organizer != null &&
+                                event.organizer!.isNotEmpty)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(LucideIcons.user,
+                                      size: 13, color: context.textSecondary),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    event.organizer!,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: context.textSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                ],
+                              )
+                            else
+                              const SizedBox.shrink(),
+                            if (event.location != null &&
+                                event.location!.isNotEmpty)
+                              Flexible(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(LucideIcons.mapPin,
+                                        size: 13, color: context.textSecondary),
+                                    const SizedBox(width: 4),
+                                    Flexible(
+                                      child: Text(
+                                        event.location!,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          color: context.textSecondary,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                        ],
-                        if (event.organizer != null &&
-                            event.organizer!.isNotEmpty) ...[
-                          Row(
-                            children: [
-                              Icon(LucideIcons.user,
-                                  size: 12, color: context.textSecondary),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  event.organizer!,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 11,
-                                    color: context.textSecondary,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                  if (hasImage) ...[
-                    const SizedBox(width: 12),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Hero(
-                        tag: 'event_image_${event.id}',
-                        child: Container(
-                          width: 75,
-                          height: 75,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: context.textSecondary.withValues(alpha: 0.1),
-                              width: 1,
-                            ),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: isNetworkImage
-                              ? Image.network(
-                                  imageUrl,
-                                  width: 75,
-                                  height: 75,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Center(
-                                    child: Icon(LucideIcons.image, size: 20),
-                                  ),
-                                )
-                              : Image.file(
-                                  File(imageUrl),
-                                  width: 75,
-                                  height: 75,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Center(
-                                    child: Icon(LucideIcons.image, size: 20),
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -590,6 +715,22 @@ class _UserEventsPageState extends State<UserEventsPage> {
         ),
       ),
     );
+
+    Future<void> openDetail() async {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AdminEventDetailPage(
+            familyId: widget.familyId,
+            event: event,
+            isUserView: !widget.isAdminMode,
+          ),
+        ),
+      );
+      if (result == true && mounted) {
+        _loadData();
+      }
+    }
 
     if (canEdit) {
       return SwipeableCard(
@@ -602,25 +743,15 @@ class _UserEventsPageState extends State<UserEventsPage> {
                 );
           }
         },
-        onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => AdminEventDetailPage(
-                familyId: widget.familyId,
-                event: event,
-              ),
-            ),
-          );
-          if (result == true) {
-            _loadData();
-          }
-        },
+        onTap: openDetail,
         child: cardContent,
       );
     }
 
-    return cardContent;
+    return GestureDetector(
+      onTap: openDetail,
+      child: cardContent,
+    );
   }
 
   Future<bool?> _showConfirmDeleteDialog(EventEntity event) {

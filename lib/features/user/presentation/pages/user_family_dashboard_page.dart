@@ -20,6 +20,29 @@ class UserFamilyDashboardPage extends StatefulWidget {
 }
 
 class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  int? _selectedBranchId;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      _searchQuery = _searchController.text.trim().toLowerCase();
+    });
+  }
+
   int? _familyId() {
     final authState = context.read<AuthBloc>().state;
     return authState is Authenticated ? authState.user.familyId : null;
@@ -56,9 +79,13 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     borderRadius:
                         const BorderRadius.vertical(top: Radius.circular(24)),
                     image: DecorationImage(
-                      image: const AssetImage('assets/images/background.png'),
+                      image: AssetImage(
+                        context.isDarkMode
+                            ? 'assets/images/background_dark.png'
+                            : 'assets/images/background.png',
+                      ),
                       fit: BoxFit.cover,
-                      opacity: context.isDarkMode ? 0.06 : 0.55,
+                      opacity: context.isDarkMode ? 0.45 : 0.55,
                       alignment: Alignment.topCenter,
                     ),
                   ),
@@ -96,11 +123,54 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           ),
                         ),
                       if (state is FamilyTreeLoaded) ...[
-                        const SliverToBoxAdapter(child: SizedBox(height: 50)),
+                        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+                        // ── Tìm kiếm Thành viên ──
+                        SliverToBoxAdapter(
+                          child:
+                              _buildSearchBar(context, l10n.searchMembersHint),
+                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 8)),
 
                         // ── Branches Section ──
                         SliverToBoxAdapter(
-                          child: AppSectionTitle(title: l10n.branchTabLabel),
+                          child: AppSectionTitle(
+                            title: l10n.branchTabLabel,
+                            trailing: _selectedBranchId != null
+                                ? GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedBranchId = null;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: context.primary
+                                            .withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Bỏ lọc chi',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 11,
+                                              color: context.primary,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Icon(LucideIcons.x,
+                                              size: 12, color: context.primary),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : null,
+                          ),
                         ),
                         SliverToBoxAdapter(
                           child: ClipRect(
@@ -116,6 +186,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                   itemCount: state.branches.length,
                                   itemBuilder: (_, index) {
                                     final branch = state.branches[index];
+                                    final isSelected =
+                                        _selectedBranchId == branch.id;
                                     return SizedBox(
                                       width: MediaQuery.of(context).size.width *
                                           0.6,
@@ -128,8 +200,17 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                         ),
                                         child: UserBranchCard(
                                           branch: branch,
-                                          isSelected: false,
-                                          onTap: null,
+                                          isSelected: isSelected,
+                                          onTap: () {
+                                            setState(() {
+                                              if (_selectedBranchId ==
+                                                  branch.id) {
+                                                _selectedBranchId = null;
+                                              } else {
+                                                _selectedBranchId = branch.id;
+                                              }
+                                            });
+                                          },
                                         ),
                                       ),
                                     );
@@ -142,33 +223,58 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
                         // ── Members Grid ──
                         SliverToBoxAdapter(
-                          child: AppSectionTitle(title: l10n.memberTabLabel),
+                          child: AppSectionTitle(
+                            title: l10n.memberTabLabel,
+                          ),
                         ),
 
-                        // Hiển thị danh sách thành viên trực tiếp
-                        if (state.members.isEmpty)
-                          SliverToBoxAdapter(
-                            child: AppEmptyState(
-                              icon: LucideIcons.search,
-                              message: l10n.noMemberFound,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 40, horizontal: 16),
-                            ),
-                          )
-                        else
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final member = state.members[index];
-                                return MemberItemWidget(
-                                  member: member,
-                                  allMembers: state.members,
-                                  showMenu: false,
-                                );
-                              },
-                              childCount: state.members.length,
-                            ),
-                          ),
+                        // Hiển thị danh sách thành viên được lọc theo tìm kiếm & chi tộc
+                        Builder(
+                          builder: (context) {
+                            final filteredMembers = state.members.where((m) {
+                              if (_selectedBranchId != null &&
+                                  m.branchId != _selectedBranchId) {
+                                return false;
+                              }
+                              if (_searchQuery.isNotEmpty) {
+                                final query = _searchQuery.toLowerCase();
+                                return m.fullName
+                                        .toLowerCase()
+                                        .contains(query) ||
+                                    (m.branchName != null &&
+                                        m.branchName!
+                                            .toLowerCase()
+                                            .contains(query));
+                              }
+                              return true;
+                            }).toList();
+
+                            if (filteredMembers.isEmpty) {
+                              return SliverToBoxAdapter(
+                                child: AppEmptyState(
+                                  icon: LucideIcons.search,
+                                  message: l10n.noMemberFound,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 40, horizontal: 16),
+                                ),
+                              );
+                            }
+
+                            return SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  final member = filteredMembers[index];
+                                  return MemberItemWidget(
+                                    member: member,
+                                    allMembers: state.members,
+                                    showMenu: false,
+                                  );
+                                },
+                                childCount: filteredMembers.length,
+                              ),
+                            );
+                          },
+                        ),
                         const SliverToBoxAdapter(child: SizedBox(height: 80)),
                       ],
                     ],
@@ -178,6 +284,56 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(BuildContext context, String hintText) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 55),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: _searchController,
+        style: GoogleFonts.inter(fontSize: 13, color: context.textPrimary),
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: GoogleFonts.inter(
+            fontSize: 13,
+            color: context.textSecondary.withValues(alpha: 0.6),
+          ),
+          prefixIcon: Icon(
+            LucideIcons.search,
+            size: 18,
+            color: context.textSecondary,
+          ),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+                  icon: Icon(
+                    LucideIcons.x,
+                    size: 16,
+                    color: context.textSecondary,
+                  ),
+                  onPressed: () {
+                    _searchController.clear();
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 14,
+            horizontal: 16,
+          ),
+        ),
       ),
     );
   }
@@ -211,18 +367,20 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           // Wood Background
           Positioned.fill(
             child: Image.asset(
-              'assets/images/wood_dragon_top.png',
+              context.isDarkMode
+                  ? 'assets/images/wood_dragon_top_dark.png'
+                  : 'assets/images/wood_dragon_top.png',
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
                   Container(color: context.appBarBg),
             ),
           ),
           // Wood Overlay to darken
-          Positioned.fill(
-            child: Container(
-                color: context.resolve(
-                    Colors.black.withValues(alpha: 0.45), Colors.transparent)),
-          ),
+          if (!context.isDarkMode)
+            Positioned.fill(
+              child: Container(
+                  color: Colors.black.withValues(alpha: 0.45)),
+            ),
           // Content
           SafeArea(
             child: Padding(

@@ -394,14 +394,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/wood_dragon.png',
+              context.isDarkMode
+                  ? 'assets/images/wood_dargon_dark.png'
+                  : 'assets/images/wood_dragon.png',
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(color: context.appBarBg),
             ),
           ),
-          Positioned.fill(
-            child: Container(color: Colors.black.withValues(alpha: 0.45)),
-          ),
+          if (!context.isDarkMode)
+            Positioned.fill(
+              child: Container(color: Colors.black.withValues(alpha: 0.45)),
+            ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),

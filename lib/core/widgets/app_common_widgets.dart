@@ -449,7 +449,7 @@ class TraditionalOrnamentalCard extends StatelessWidget {
       height: height,
       child: CustomPaint(
         painter: TraditionalOrnamentalBorderPainter(
-          borderColor: borderColor ?? context.accent.withValues(alpha: 0.5),
+          borderColor: borderColor ?? context.textSecondary.withValues(alpha: 0.2),
           fillColor: fillColor ?? context.surface,
         ),
         child: Padding(

@@ -17,11 +17,13 @@ import '../../../../events/events.dart';
 class AdminEventDetailPage extends StatefulWidget {
   final int familyId;
   final EventEntity event;
+  final bool isUserView;
 
   const AdminEventDetailPage({
     super.key,
     required this.familyId,
     required this.event,
+    this.isUserView = false,
   });
 
   @override
@@ -922,7 +924,8 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final authState = context.watch<AuthBloc>().state;
-    final canEdit = authState is Authenticated &&
+    final canEdit = !widget.isUserView &&
+        authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
             authState.user.role == 'BRANCH_ADMIN' ||
             authState.user.role == 'EDITOR');

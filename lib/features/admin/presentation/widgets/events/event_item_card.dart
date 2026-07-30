@@ -93,7 +93,7 @@ class EventItemCard extends StatelessWidget {
         imageUrl,
         width: double.infinity,
         height: double.infinity,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         alignment: Alignment.center,
         errorBuilder: (_, __, ___) => const SizedBox.shrink(),
       );
@@ -102,7 +102,7 @@ class EventItemCard extends StatelessWidget {
         File(imageUrl),
         width: double.infinity,
         height: double.infinity,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         alignment: Alignment.center,
         errorBuilder: (_, __, ___) => const SizedBox.shrink(),
       );
@@ -114,75 +114,78 @@ class EventItemCard extends StatelessWidget {
       aspectRatio: 16 / 9,
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            imageWidget,
-            // Subtle Gradient Overlay for badge contrast
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.45),
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.15),
-                    ],
-                    stops: const [0.0, 0.45, 1.0],
-                  ),
-                ),
-              ),
-            ),
-            // Top Left: Lunar Calendar Badge
-            if (event.isLunar)
-              Positioned(
-                top: 10,
-                left: 10,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: ColoredBox(
+          color: context.surface,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              imageWidget,
+              // Subtle Gradient Overlay for badge contrast
+              Positioned.fill(
+                child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: context.accent.withValues(alpha: 0.95),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    'LỊCH ÂM',
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 0.5,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.3),
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.1),
+                      ],
+                      stops: const [0.0, 0.45, 1.0],
                     ),
                   ),
                 ),
               ),
-            // Top Right: Status Tag Badge
-            Positioned(
-              top: 10,
-              right: 10,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.25),
-                    width: 0.5,
+              // Top Left: Lunar Calendar Badge
+              if (event.isLunar)
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: context.accent.withValues(alpha: 0.95),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      'LỊCH ÂM',
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ),
                 ),
-                child: _buildStatusTag(status, context, isOverBanner: true),
+              // Top Right: Status Tag Badge
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.25),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: _buildStatusTag(status, context, isOverBanner: true),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

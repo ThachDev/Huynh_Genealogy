@@ -297,7 +297,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
-        height: 140,
+        height: 180,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -309,11 +309,18 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
         clipBehavior: Clip.antiAlias,
         child: _localImagePath != null && _localImagePath!.isNotEmpty
             ? Stack(
-                fit: StackFit.expand,
                 children: [
-                  isNetwork
-                      ? Image.network(_localImagePath!, fit: BoxFit.cover)
-                      : Image.file(File(_localImagePath!), fit: BoxFit.cover),
+                  Positioned.fill(
+                    child: isNetwork
+                        ? Image.network(
+                            _localImagePath!,
+                            fit: BoxFit.contain,
+                          )
+                        : Image.file(
+                            File(_localImagePath!),
+                            fit: BoxFit.contain,
+                          ),
+                  ),
                   Positioned(
                     right: 8,
                     top: 8,
@@ -547,20 +554,19 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                 borderRadius: BorderRadius.circular(16),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Container(
-                    width: double.infinity,
+                  child: ColoredBox(
                     color: context.surface,
                     child: isNetwork
                         ? Image.network(
                             _localImagePath!,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                             errorBuilder: (_, __, ___) =>
                                 const SizedBox.shrink(),
                           )
                         : (isLocal
                             ? Image.file(
                                 File(_localImagePath!),
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                                 errorBuilder: (_, __, ___) =>
                                     const SizedBox.shrink(),
                               )

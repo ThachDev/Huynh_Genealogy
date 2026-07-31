@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../../../core/theme/theme_extensions.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
@@ -44,7 +45,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         title: l10n.onboardingTitle,
         leading: (_selectedPath != null && !_isRequestSent)
             ? IconButton(
-                icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
+                icon: Icon(LucideIcons.arrowLeft, color: context.textPrimary),
                 onPressed: () {
                   setState(() {
                     _selectedPath = null;
@@ -55,7 +56,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         actions: [
           if (_selectedPath == null)
             IconButton(
-              icon: const Icon(LucideIcons.logOut, color: Colors.white),
+              icon: Icon(LucideIcons.logOut, color: context.textPrimary),
               tooltip: l10n.logoutTooltip,
               onPressed: () {
                 context.read<AuthBloc>().add(AuthLogoutRequested());
@@ -63,65 +64,69 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ),
         ],
       ),
-      body: BlocConsumer<OnboardingBloc, OnboardingState>(
-        listener: (context, state) {
-          if (state is OnboardingFailureState) {
-            AppSnackBar.error(context, state.message);
-          } else if (state is FamilyCreatedState) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (dialogCtx) => FamilyCreationSuccessDialog(
-                family: state.family,
-                onProceed: () {
-                  final updatedUser = user.copyWith(
-                    familyId: state.family.id,
-                    role: 'OWNER',
-                  );
-                  UserMainNavigationPage.adminModeNotifier.value = true;
-                  context.read<AuthBloc>().add(AuthUserUpdated(user: updatedUser));
-                },
+      body: AppBackgroundBody(
+        child: BlocConsumer<OnboardingBloc, OnboardingState>(
+          listener: (context, state) {
+            if (state is OnboardingFailureState) {
+              AppSnackBar.error(context, state.message);
+            } else if (state is FamilyCreatedState) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (dialogCtx) => FamilyCreationSuccessDialog(
+                  family: state.family,
+                  onProceed: () {
+                    final updatedUser = user.copyWith(
+                      familyId: state.family.id,
+                      role: 'OWNER',
+                    );
+                    UserMainNavigationPage.adminModeNotifier.value = true;
+                    context
+                        .read<AuthBloc>()
+                        .add(AuthUserUpdated(user: updatedUser));
+                  },
+                ),
+              );
+            } else if (state is InviteCodeVerifiedState) {
+              AppSnackBar.success(
+                context,
+                l10n.verifyInviteSuccess(state.family.name),
+              );
+            } else if (state is JoinRequestSentState) {
+              AppSnackBar.success(context, l10n.joinRequestSuccess);
+              setState(() {
+                _isRequestSent = true;
+              });
+            }
+          },
+          builder: (context, state) {
+            return SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isRequestSent)
+                    PendingApprovalWidget(user: user)
+                  else if (_selectedPath == null)
+                    PathSelectionWidget(
+                      user: user,
+                      selectedPath: _selectedPath,
+                      onPathSelected: (path) {
+                        setState(() {
+                          _selectedPath = path;
+                        });
+                      },
+                    )
+                  else if (_selectedPath == 1)
+                    CreatorOnboardingWidget(user: user)
+                  else
+                    ViewerOnboardingWidget(user: user),
+                ],
               ),
             );
-          } else if (state is InviteCodeVerifiedState) {
-            AppSnackBar.success(
-              context,
-              l10n.verifyInviteSuccess(state.family.name),
-            );
-          } else if (state is JoinRequestSentState) {
-            AppSnackBar.success(context, l10n.joinRequestSuccess);
-            setState(() {
-              _isRequestSent = true;
-            });
-          }
-        },
-        builder: (context, state) {
-          return SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (_isRequestSent)
-                  PendingApprovalWidget(user: user)
-                else if (_selectedPath == null)
-                  PathSelectionWidget(
-                    user: user,
-                    selectedPath: _selectedPath,
-                    onPathSelected: (path) {
-                      setState(() {
-                        _selectedPath = path;
-                      });
-                    },
-                  )
-                else if (_selectedPath == 1)
-                  CreatorOnboardingWidget(user: user)
-                else
-                  ViewerOnboardingWidget(user: user),
-              ],
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

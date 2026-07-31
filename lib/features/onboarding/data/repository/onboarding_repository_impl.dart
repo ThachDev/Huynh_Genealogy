@@ -52,12 +52,28 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     required int userId,
     required int familyId,
     int? memberNodeId,
+    String? fullName,
+    String? gender,
+    String? dateOfBirth,
+    String? placeOfBirth,
+    String? maritalStatus,
+    String? education,
+    String? avatarUrl,
+    String? notes,
   }) async {
     try {
       final familyUserModel = await remoteDataSource.joinFamily(
         userId: userId,
         familyId: familyId,
         memberNodeId: memberNodeId,
+        fullName: fullName,
+        gender: gender,
+        dateOfBirth: dateOfBirth,
+        placeOfBirth: placeOfBirth,
+        maritalStatus: maritalStatus,
+        education: education,
+        avatarUrl: avatarUrl,
+        notes: notes,
       );
       return Right(familyUserModel);
     } on ServerException catch (e) {

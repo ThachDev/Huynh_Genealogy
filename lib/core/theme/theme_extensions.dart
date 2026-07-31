@@ -11,6 +11,10 @@ extension AppThemeColors on BuildContext {
   Color get background => resolve(AppColors.parchment, AppColors.parchmentDark);
   Color get surface => resolve(Colors.white, AppColors.surfaceDark);
   Color get appBarBg => resolve(AppColors.crimson, AppColors.parchmentDark);
+  Color get appBarOverlay => resolve(
+        const Color.fromARGB(255, 213, 213, 213).withValues(alpha: 0.45),
+        Colors.transparent,
+      );
 
   Color get textPrimary => resolve(AppColors.textPrimary, Colors.white);
   Color get textSecondary => resolve(AppColors.textSecondary, Colors.white70);
@@ -23,7 +27,9 @@ extension AppThemeColors on BuildContext {
       resolve(AppColors.nodeDeceased, AppColors.nodeDeceasedDark);
   Color get nodeBorder => AppColors.nodeBorder;
   Color get connectionLine => resolve(AppColors.wood, AppColors.gold);
-  
-  Color get genderMale => resolve(AppColors.genderMale, AppColors.genderMaleDark);
-  Color get genderFemale => resolve(AppColors.genderFemale, AppColors.genderFemaleDark);
+
+  Color get genderMale =>
+      resolve(AppColors.genderMale, AppColors.genderMaleDark);
+  Color get genderFemale =>
+      resolve(AppColors.genderFemale, AppColors.genderFemaleDark);
 }

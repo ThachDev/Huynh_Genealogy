@@ -41,18 +41,15 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Positioned.fill(
                   child: Image.asset(
                     context.isDarkMode
-                        ? 'assets/images/wood_dragon_top_dark.png'
-                        : 'assets/images/wood_dragon_top.png',
+                        ? 'assets/images/background_appbar_dark.png'
+                        : 'assets/images/background_appbar_light.png',
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) =>
                         Container(color: context.appBarBg),
                   ),
                 ),
                 Positioned.fill(
-                  child: Container(
-                      color: context.resolve(
-                          Colors.black.withValues(alpha: 0.45),
-                          Colors.transparent)),
+                  child: Container(color: context.appBarOverlay),
                 ),
               ],
             ),
@@ -69,7 +66,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
           Text(
             title,
             style: GoogleFonts.beVietnamPro(
-              color: context.accent,
+              color: context.textPrimary,
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),

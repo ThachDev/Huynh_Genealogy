@@ -306,10 +306,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get joinFamilyCardTitle => 'Kết nối dòng tộc';
 
   @override
-  String get joinRequestDescription =>
-      'Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.';
-
-  @override
   String get joinFamilyCardDesc =>
       'Dành cho thành viên đã có mã mời từ Trưởng tộc để xem và cập nhật cây gia phả.';
 

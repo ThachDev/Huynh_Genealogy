@@ -32,7 +32,8 @@ class SelectionCard extends StatelessWidget {
           BoxShadow(
             color: isSelected
                 ? AppColors.crimson.withValues(alpha: 0.12)
-                : context.resolve(Colors.black.withValues(alpha: 0.04), Colors.transparent),
+                : context.resolve(
+                    Colors.black.withValues(alpha: 0.04), Colors.transparent),
             blurRadius: isSelected ? 20 : 12,
             offset: isSelected ? const Offset(0, 8) : const Offset(0, 4),
             spreadRadius: isSelected ? 1 : 0,
@@ -51,18 +52,11 @@ class SelectionCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: iconColor.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Image.asset(
-                    iconAssetPath,
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.contain,
-                  ),
+                Image.asset(
+                  iconAssetPath,
+                  width: 56,
+                  height: 56,
+                  fit: BoxFit.contain,
                 ),
                 const SizedBox(width: 16),
                 Expanded(

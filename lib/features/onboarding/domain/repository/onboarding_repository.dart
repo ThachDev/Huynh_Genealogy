@@ -19,6 +19,14 @@ abstract class OnboardingRepository {
     required int userId,
     required int familyId,
     int? memberNodeId,
+    String? fullName,
+    String? gender,
+    String? dateOfBirth,
+    String? placeOfBirth,
+    String? maritalStatus,
+    String? education,
+    String? avatarUrl,
+    String? notes,
   });
 
   Future<Either<Failure, List<FamilyUserEntity>>> getPendingRequests({

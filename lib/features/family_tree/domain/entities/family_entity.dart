@@ -15,6 +15,17 @@ class FamilyEntity with _$FamilyEntity {
     String? logoUrl,
   }) = _FamilyEntity;
 
-  factory FamilyEntity.fromJson(Map<String, dynamic> json) =>
-      _$FamilyEntityFromJson(json);
+  factory FamilyEntity.fromJson(Map<String, dynamic> json) {
+    final data = Map<String, dynamic>.from(json);
+    return FamilyEntity(
+      id: (data['id'] as num?)?.toInt() ?? 0,
+      name: (data['name'] as String?) ?? '',
+      inviteCode: (data['inviteCode'] ?? data['invite_code'])?.toString() ?? '',
+      creatorId:
+          (data['creatorId'] ?? data['creator_id'] as num?)?.toInt() ?? 0,
+      description: data['description']?.toString(),
+      origin: data['origin']?.toString(),
+      logoUrl: data['logoUrl']?.toString(),
+    );
+  }
 }

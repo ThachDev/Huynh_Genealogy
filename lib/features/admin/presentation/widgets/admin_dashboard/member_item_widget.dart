@@ -83,11 +83,10 @@ class MemberItemWidget extends StatelessWidget {
                             member.gender == Gender.male
                                 ? LucideIcons.user
                                 : LucideIcons.user2,
-                            color: member.gender == Gender.male
-                                ? context.genderMale
-                                : member.gender == Gender.female
-                                    ? context.genderFemale
-                                    : context.textSecondary,
+                            color: (member.generation != null &&
+                                    member.generation! < 2)
+                                ? context.textSecondary
+                                : context.textPrimary,
                             size: 24,
                           )
                         : null,
@@ -117,8 +116,8 @@ class MemberItemWidget extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(LucideIcons.gitCommit,
-                              size: 10, color: context.accent),
+                          const Icon(LucideIcons.gitCommit,
+                              size: 10, color: Colors.grey),
                           const SizedBox(width: 4),
                           Text(
                             l10n.generationBadge('${member.generation ?? "?"}'),
@@ -215,12 +214,13 @@ class MemberItemWidget extends StatelessWidget {
                           height: 38,
                           child: Row(
                             children: [
-                              const Icon(LucideIcons.edit,
-                                  color: Colors.green, size: 18),
+                              Icon(LucideIcons.edit,
+                                  color: context.textPrimary, size: 18),
                               const SizedBox(width: 8),
                               Text(l10n.editLabel,
-                                  style:
-                                      GoogleFonts.beVietnamPro(fontSize: 13)),
+                                  style: GoogleFonts.beVietnamPro(
+                                      fontSize: 13,
+                                      color: context.textPrimary)),
                             ],
                           ),
                         ),
@@ -230,12 +230,13 @@ class MemberItemWidget extends StatelessWidget {
                           height: 38,
                           child: Row(
                             children: [
-                              const Icon(LucideIcons.trash2,
-                                  color: Colors.red, size: 18),
+                              Icon(LucideIcons.trash2,
+                                  color: context.textPrimary, size: 18),
                               const SizedBox(width: 8),
                               Text(l10n.deleteLabel,
                                   style: GoogleFonts.beVietnamPro(
-                                      fontSize: 13, color: Colors.red)),
+                                      fontSize: 13,
+                                      color: context.textPrimary)),
                             ],
                           ),
                         ),

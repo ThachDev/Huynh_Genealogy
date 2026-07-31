@@ -13,6 +13,7 @@ import '../../../../core/domain/entity/family_entity.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_event.dart';
 import '../bloc/onboarding_state.dart';
+import 'new_member_registration_form.dart';
 
 class ViewerOnboardingWidget extends StatefulWidget {
   final UserEntity user;
@@ -28,15 +29,38 @@ class ViewerOnboardingWidget extends StatefulWidget {
 
 class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
   final _inviteCodeController = TextEditingController();
+  TextEditingController? _fullNameController;
+  TextEditingController? _placeOfBirthController;
+  TextEditingController? _educationController;
+  TextEditingController? _notesController;
+
   FamilyEntity? _verifiedFamily;
   List<MemberEntity> _familyMembers = [];
   MemberEntity? _selectedMember;
 
   bool _isNotOnTree = false;
+  Gender _gender = Gender.male;
+  MaritalStatus _maritalStatus = MaritalStatus.single;
+  String? _dateOfBirth;
+  String? _avatarPath;
+  String? _selectedEducationOption;
+
+  @override
+  void initState() {
+    super.initState();
+    _fullNameController = TextEditingController(text: widget.user.fullName);
+    _placeOfBirthController = TextEditingController();
+    _educationController = TextEditingController();
+    _notesController = TextEditingController();
+  }
 
   @override
   void dispose() {
     _inviteCodeController.dispose();
+    _fullNameController?.dispose();
+    _placeOfBirthController?.dispose();
+    _educationController?.dispose();
+    _notesController?.dispose();
     super.dispose();
   }
 
@@ -52,11 +76,47 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
 
   void _onJoinFamilyPressed() {
     if (_verifiedFamily != null && (_selectedMember != null || _isNotOnTree)) {
+      String? maritalStatusStr;
+      switch (_maritalStatus) {
+        case MaritalStatus.single:
+          maritalStatusStr = 'single';
+          break;
+        case MaritalStatus.married:
+          maritalStatusStr = 'married';
+          break;
+        case MaritalStatus.divorced:
+          maritalStatusStr = 'divorced';
+          break;
+        case MaritalStatus.widowed:
+          maritalStatusStr = 'widowed';
+          break;
+        case MaritalStatus.unknown:
+          maritalStatusStr = 'unknown';
+          break;
+      }
+
+      String? educationVal;
+      if (_selectedEducationOption == 'Khác') {
+        educationVal = _educationController?.text.trim();
+      } else {
+        educationVal = _selectedEducationOption;
+      }
+
       context.read<OnboardingBloc>().add(
             JoinFamilyEvent(
               familyId: _verifiedFamily!.id,
               memberNodeId: _isNotOnTree ? null : _selectedMember?.id,
               userId: widget.user.id,
+              fullName: _isNotOnTree ? _fullNameController?.text.trim() : null,
+              gender: _isNotOnTree
+                  ? (_gender == Gender.male ? 'male' : 'female')
+                  : null,
+              dateOfBirth: _isNotOnTree ? _dateOfBirth : null,
+              placeOfBirth:
+                  _isNotOnTree ? _placeOfBirthController?.text.trim() : null,
+              maritalStatus: _isNotOnTree ? maritalStatusStr : null,
+              education: _isNotOnTree ? educationVal : null,
+              notes: _isNotOnTree ? _notesController?.text.trim() : null,
             ),
           );
     }
@@ -79,7 +139,6 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 16),
           AppSectionHeader(
             title: l10n.connectFamilySectionTitle,
             description: l10n.welcomeViewerSubtitle,
@@ -95,7 +154,8 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
+                  color: context.resolve(
+                      Colors.black.withValues(alpha: 0.08), Colors.transparent),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -104,194 +164,229 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.enterInviteCodeLabel,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: context.primary,
-                    letterSpacing: 1.2,
+                // ── BƯỚC 1: NHẬP MÃ THAM GIA (Khi chưa xác thực gia tộc) ──
+                if (_verifiedFamily == null) ...[
+                  Text(
+                    l10n.enterInviteCodeLabel,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: context.textPrimary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    // Code Input Box
-                    Expanded(
-                      child: Container(
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: context.background.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: [
-                            BoxShadow(
-                              color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 12),
-                            Icon(
-                              LucideIcons.layoutGrid,
-                              color: context.primary,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: TextFormField(
-                                controller: _inviteCodeController,
-                                style: GoogleFonts.inter(
-                                  color: context.textPrimary,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: l10n.inviteCodeHintNew,
-                                  hintStyle: GoogleFonts.inter(
-                                    color: context.textSecondary
-                                        .withValues(alpha: 0.4),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      // Code Input Box
+                      Expanded(
+                        child: Container(
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: context.background.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(6),
+                            boxShadow: [
+                              BoxShadow(
+                                color: context.resolve(
+                                    Colors.black.withValues(alpha: 0.03),
+                                    Colors.transparent),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 12),
+                              Icon(
+                                LucideIcons.layoutGrid,
+                                color: context.textPrimary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _inviteCodeController,
+                                  style: GoogleFonts.inter(
+                                    color: context.textPrimary,
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1.5,
                                   ),
-                                  border: InputBorder.none,
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(vertical: 14),
+                                  decoration: InputDecoration(
+                                    hintText: l10n.inviteCodeHintNew,
+                                    hintStyle: GoogleFonts.inter(
+                                      color: context.textSecondary
+                                          .withValues(alpha: 0.4),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.5,
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 14),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    // QR Scanner Button
-                    GestureDetector(
-                      onTap: () async {
-                        final code = await QrScannerDialog.show(context);
-                        if (code != null && mounted) {
-                          setState(() {
-                            _inviteCodeController.text = code;
-                          });
-                          _onVerifyInviteCodePressed();
-                        }
-                      },
-                      child: Container(
-                        width: 52,
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: context.background.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: [
-                            BoxShadow(
-                              color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Icon(
-                            LucideIcons.qrCode,
-                            color: context.primary,
-                            size: 22,
+                            ],
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  l10n.inviteCodeDescription,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: context.textSecondary,
-                    height: 1.4,
+                      const SizedBox(width: 8),
+                      // QR Scanner Button
+                      GestureDetector(
+                        onTap: () async {
+                          final code = await QrScannerDialog.show(context);
+                          if (code != null && mounted) {
+                            setState(() {
+                              _inviteCodeController.text = code;
+                            });
+                            _onVerifyInviteCodePressed();
+                          }
+                        },
+                        child: Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: context.background.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(6),
+                            boxShadow: [
+                              BoxShadow(
+                                color: context.resolve(
+                                    Colors.black.withValues(alpha: 0.03),
+                                    Colors.transparent),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Icon(
+                              LucideIcons.scanLine,
+                              color: context.textPrimary,
+                              size: 22,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 32),
-
-                // Submit Button
-                BlocBuilder<OnboardingBloc, OnboardingState>(
-                  builder: (context, state) {
-                    return AppButton(
-                      label: l10n.confirmJoinButton,
-                      onPressed: _onVerifyInviteCodePressed,
-                      isLoading: state is OnboardingLoading,
-                      fullWidth: true,
-                      size: AppButtonSize.large,
-                    );
-                  },
-                ),
-
-                if (_verifiedFamily != null) ...[
-                  const SizedBox(height: 32),
-                  Divider(color: context.background, thickness: 1),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 12),
                   Text(
-                    l10n.familyFoundTitle(_verifiedFamily!.name.toUpperCase()),
-                    style: GoogleFonts.beVietnamPro(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: context.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.selectMemberPrompt,
+                    l10n.inviteCodeDescription,
                     style: GoogleFonts.inter(
                       fontSize: 13,
                       color: context.textSecondary,
+                      height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  _isNotOnTree
-                      ? Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: context.resolve(const Color(0xFFFDFCFB), const Color(0xFF3D2C28)),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                                color: context.resolve(const Color(0xFFEFEBE7), const Color(0xFF5A4A44)), width: 1.2),
+                  const SizedBox(height: 32),
+
+                  // Submit Button cho Bước 1
+                  BlocBuilder<OnboardingBloc, OnboardingState>(
+                    builder: (context, state) {
+                      return AppButton(
+                        label: l10n.confirmJoinButton,
+                        onPressed: _onVerifyInviteCodePressed,
+                        isLoading: state is OnboardingLoading,
+                        fullWidth: true,
+                        size: AppButtonSize.large,
+                      );
+                    },
+                  ),
+                ]
+                // ── BƯỚC 2: CHỌN / NHẬP THÔNG TIN (Khi đã tìm thấy gia tộc) ──
+                else ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l10n.familyFoundTitle(
+                              _verifiedFamily!.name.toUpperCase()),
+                          style: GoogleFonts.beVietnamPro(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: context.textPrimary,
                           ),
-                          child: Text(
-                            l10n.joinRequestDescription,
-                            textAlign: TextAlign.justify,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 13,
-                              color: context.textSecondary,
-                              height: 1.4,
-                            ),
-                          ),
-                        )
-                      : AppDropdown<MemberEntity?>(
-                          value: _selectedMember,
-                          showSearchBox: true,
-                          searchHint: l10n.searchNameHint,
-                          items: [
-                            DropdownItem<MemberEntity?>(
-                              value: null,
-                              child: Text(l10n.selectMemberHint),
-                            ),
-                            ..._familyMembers
-                                .map((m) => DropdownItem<MemberEntity?>(
-                                      value: m,
-                                      child: Text(
-                                          '${m.fullName} (Đời ${m.generation})'),
-                                    )),
-                          ],
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedMember = val;
-                            });
-                          },
                         ),
+                      ),
+                      InkWell(
+                        borderRadius: BorderRadius.circular(6),
+                        onTap: () {
+                          setState(() {
+                            _verifiedFamily = null;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(LucideIcons.refreshCw,
+                                  size: 13, color: context.textSecondary),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Đổi mã',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: context.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (!_isNotOnTree) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.selectMemberPrompt,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: context.textSecondary,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ] else
+                    const SizedBox(height: 12),
+                  if (!_isNotOnTree)
+                    AppDropdown<MemberEntity?>(
+                      value: _selectedMember,
+                      showSearchBox: true,
+                      searchHint: l10n.searchNameHint,
+                      items: [
+                        DropdownItem<MemberEntity?>(
+                          value: null,
+                          child: Text(
+                            l10n.selectMemberHint,
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ),
+                        ..._familyMembers
+                            .map((m) => DropdownItem<MemberEntity?>(
+                                  value: m,
+                                  child: Text(
+                                    '${m.fullName} (Đời ${m.generation})',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      color: context.textPrimary,
+                                    ),
+                                  ),
+                                )),
+                      ],
+                      onChanged: (val) {
+                        setState(() {
+                          _selectedMember = val;
+                        });
+                      },
+                    ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
@@ -326,7 +421,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                         },
                         child: Text(
                           l10n.notOnTreeLabel,
-                          style: GoogleFonts.beVietnamPro(
+                          style: GoogleFonts.inter(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                             color: context.textPrimary,
@@ -335,7 +430,34 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
+
+                  // ── Form đăng ký cho người chưa có tên trên cây gia phả ──
+                  if (_isNotOnTree) ...[
+                    const SizedBox(height: 20),
+                    MemberRegistrationForm(
+                      user: widget.user,
+                      fullNameController: _fullNameController!,
+                      placeOfBirthController: _placeOfBirthController!,
+                      educationController: _educationController!,
+                      notesController: _notesController!,
+                      gender: _gender,
+                      onGenderChanged: (g) => setState(() => _gender = g),
+                      maritalStatus: _maritalStatus,
+                      onMaritalStatusChanged: (m) =>
+                          setState(() => _maritalStatus = m),
+                      dateOfBirth: _dateOfBirth,
+                      onDateOfBirthChanged: (d) =>
+                          setState(() => _dateOfBirth = d),
+                      avatarPath: _avatarPath,
+                      onAvatarPathChanged: (path) =>
+                          setState(() => _avatarPath = path),
+                      selectedEducationOption: _selectedEducationOption,
+                      onEducationOptionChanged: (option) =>
+                          setState(() => _selectedEducationOption = option),
+                    ),
+                  ],
+
+                  const SizedBox(height: 28),
                   BlocBuilder<OnboardingBloc, OnboardingState>(
                     builder: (context, state) {
                       return AppButton(

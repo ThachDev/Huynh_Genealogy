@@ -67,6 +67,14 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         userId: event.userId,
         familyId: event.familyId,
         memberNodeId: event.memberNodeId,
+        fullName: event.fullName,
+        gender: event.gender,
+        dateOfBirth: event.dateOfBirth,
+        placeOfBirth: event.placeOfBirth,
+        maritalStatus: event.maritalStatus,
+        education: event.education,
+        avatarUrl: event.avatarUrl,
+        notes: event.notes,
       ),
     );
     failureOrRequest.fold(

@@ -24,7 +24,6 @@ class PathSelectionWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
         AppSectionHeader(
           title: l10n.welcomeViewerTitle(user.fullName),
           description: l10n.chooseOnboardingSubtitle,

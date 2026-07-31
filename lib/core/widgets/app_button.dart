@@ -18,6 +18,7 @@ class AppButton extends StatelessWidget {
   final Widget? suffixIcon;
   final bool isLoading;
   final bool fullWidth;
+  final Color? color;
 
   const AppButton({
     super.key,
@@ -29,6 +30,7 @@ class AppButton extends StatelessWidget {
     this.suffixIcon,
     this.isLoading = false,
     this.fullWidth = false,
+    this.color,
   });
 
   @override
@@ -110,8 +112,8 @@ class AppButton extends StatelessWidget {
         );
       case AppButtonVariant.outline:
         return OutlinedButton.styleFrom(
-          foregroundColor: context.accent,
-          side: BorderSide(color: context.accent, width: 1.5),
+          foregroundColor: color ?? context.accent,
+          side: BorderSide(color: color ?? context.accent, width: 1.5),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
       case AppButtonVariant.ghost:

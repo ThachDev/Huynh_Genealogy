@@ -16,6 +16,14 @@ class JoinFamily implements UseCase<FamilyUserEntity, JoinFamilyParams> {
       userId: params.userId,
       familyId: params.familyId,
       memberNodeId: params.memberNodeId,
+      fullName: params.fullName,
+      gender: params.gender,
+      dateOfBirth: params.dateOfBirth,
+      placeOfBirth: params.placeOfBirth,
+      maritalStatus: params.maritalStatus,
+      education: params.education,
+      avatarUrl: params.avatarUrl,
+      notes: params.notes,
     );
   }
 }
@@ -24,13 +32,41 @@ class JoinFamilyParams extends Equatable {
   final int userId;
   final int familyId;
   final int? memberNodeId;
+  final String? fullName;
+  final String? gender;
+  final String? dateOfBirth;
+  final String? placeOfBirth;
+  final String? maritalStatus;
+  final String? education;
+  final String? avatarUrl;
+  final String? notes;
 
   const JoinFamilyParams({
     required this.userId,
     required this.familyId,
     this.memberNodeId,
+    this.fullName,
+    this.gender,
+    this.dateOfBirth,
+    this.placeOfBirth,
+    this.maritalStatus,
+    this.education,
+    this.avatarUrl,
+    this.notes,
   });
 
   @override
-  List<Object?> get props => [userId, familyId, memberNodeId];
+  List<Object?> get props => [
+        userId,
+        familyId,
+        memberNodeId,
+        fullName,
+        gender,
+        dateOfBirth,
+        placeOfBirth,
+        maritalStatus,
+        education,
+        avatarUrl,
+        notes,
+      ];
 }

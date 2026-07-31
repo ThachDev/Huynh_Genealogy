@@ -467,34 +467,25 @@ class _UserEventsPageState extends State<UserEventsPage> {
       aspectRatio: 16 / 9,
       child: Container(
         width: double.infinity,
-        color: context.appBarBg,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                context.isDarkMode
-                    ? 'assets/images/wood_dargon_dark.png'
-                    : 'assets/images/wood_dragon.png',
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-                errorBuilder: (_, __, ___) =>
-                    Container(color: context.appBarBg),
-              ),
+        decoration: BoxDecoration(
+          color: context.appBarBg,
+          image: DecorationImage(
+            image: AssetImage(
+              context.isDarkMode
+                  ? 'assets/images/background_appbar_dark.png'
+                  : 'assets/images/background_appbar_light.png',
             ),
-            if (!context.isDarkMode)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withValues(alpha: 0.35),
-                ),
-              ),
-            Center(
-              child: Icon(
-                LucideIcons.calendarDays,
-                size: 40,
-                color: context.accent.withValues(alpha: 0.8),
-              ),
-            ),
-          ],
+            fit: BoxFit.cover,
+            filterQuality: FilterQuality.high,
+            onError: (_, __) {},
+          ),
+        ),
+        child: Center(
+          child: Icon(
+            LucideIcons.calendarDays,
+            size: 40,
+            color: context.accent.withValues(alpha: 0.8),
+          ),
         ),
       ),
     );

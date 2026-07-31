@@ -306,10 +306,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get joinFamilyCardTitle => 'Connect with Family';
 
   @override
-  String get joinRequestDescription =>
-      'Your join request will be sent to the Clan Leader. The Clan Leader will add you to the correct position on the family tree after approval.';
-
-  @override
   String get joinFamilyCardDesc =>
       'For members who have an invite code from the Clan Leader to view and update the family tree.';
 

@@ -389,22 +389,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return Container(
       height: height,
       width: double.infinity,
-      color: context.appBarBg,
+      decoration: BoxDecoration(
+        color: context.appBarBg,
+        image: DecorationImage(
+          image: AssetImage(
+            context.isDarkMode
+                ? 'assets/images/background_appbar_dark.png'
+                : 'assets/images/background_appbar_light.png',
+          ),
+          fit: BoxFit.cover,
+          onError: (_, __) {},
+        ),
+      ),
       child: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              context.isDarkMode
-                  ? 'assets/images/wood_dargon_dark.png'
-                  : 'assets/images/wood_dragon.png',
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(color: context.appBarBg),
-            ),
+            child: Container(color: context.appBarOverlay),
           ),
-          if (!context.isDarkMode)
-            Positioned.fill(
-              child: Container(color: Colors.black.withValues(alpha: 0.45)),
-            ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
@@ -423,7 +424,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: context.accent,
+                              color: context.textPrimary,
                               letterSpacing: 1.0,
                             ),
                           ),
@@ -632,7 +633,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               borderRadius: BorderRadius.circular(8),
             ),
             child:
-                const Icon(LucideIcons.qrCode, color: Colors.white, size: 22),
+                Icon(LucideIcons.qrCode, color: context.textPrimary, size: 22),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -644,7 +645,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.inter(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white70,
+                    color: context.textSecondary,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -654,14 +655,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: context.textPrimary,
                   ),
                 ),
               ],
             ),
           ),
           IconButton(
-            icon: const Icon(LucideIcons.copy, size: 18, color: Colors.white),
+            icon: Icon(LucideIcons.copy, size: 18, color: context.textPrimary),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: inviteCode));
               AppSnackBar.success(context, l10n.inviteCodeCopied(inviteCode));
@@ -675,6 +676,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             prefixIcon: const Icon(LucideIcons.maximize2, size: 10),
             variant: AppButtonVariant.outline,
             size: AppButtonSize.small,
+            color: context.textPrimary,
           ),
         ],
       ),
@@ -761,6 +763,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 const Icon(LucideIcons.download, size: 16),
                             variant: AppButtonVariant.outline,
                             size: AppButtonSize.small,
+                            color: ctx.textPrimary,
                           ),
                         ),
                         const SizedBox(width: 8),

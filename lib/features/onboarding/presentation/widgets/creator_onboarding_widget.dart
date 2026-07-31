@@ -53,10 +53,13 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
     }
   }
 
-  Widget _buildCorner({required bool isTop, required bool isLeft, required BuildContext context}) {
+  Widget _buildCorner(
+      {required bool isTop,
+      required bool isLeft,
+      required BuildContext context}) {
     const double lineLength = 12.0;
     const double thickness = 2.0;
-    final Color cornerColor = context.accent;
+    final Color cornerColor = context.textPrimary;
 
     return SizedBox(
       width: lineLength,
@@ -126,13 +129,10 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
         decoration: BoxDecoration(
           color: context.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: context.accent.withValues(alpha: 0.5),
-            width: 1.5,
-          ),
           boxShadow: [
             BoxShadow(
-              color: context.resolve(Colors.black.withValues(alpha: 0.15), Colors.transparent),
+              color: context.resolve(
+                  Colors.black.withValues(alpha: 0.15), Colors.transparent),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -150,7 +150,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: context.primary,
+                  color: context.textPrimary,
                 ),
               ),
             ),
@@ -161,6 +161,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                 padding: const EdgeInsets.all(20),
                 child: Text(
                   l10n.termsContent,
+                  textAlign: TextAlign.justify,
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     color: context.textPrimary,
@@ -193,7 +194,6 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 16),
           AppSectionHeader(
             title: l10n.initFamilySectionTitle,
             description: l10n.initFamilySectionDesc,
@@ -208,7 +208,8 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
+                  color: context.resolve(
+                      Colors.black.withValues(alpha: 0.08), Colors.transparent),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -217,15 +218,15 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                  Text(
-                    l10n.familyPhotoSectionLabel,
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: context.primary,
-                      letterSpacing: 1.2,
-                    ),
+                Text(
+                  l10n.familyPhotoSectionLabel,
+                  style: GoogleFonts.inter(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: context.textPrimary,
+                    letterSpacing: 1.2,
                   ),
+                ),
                 const SizedBox(height: 12),
                 GestureDetector(
                   onTap: _pickImage,
@@ -235,7 +236,8 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                         height: 140,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: context.resolve(const Color(0xFF2C1E1C), const Color(0xFF3D2C28)),
+                          color: context.resolve(
+                              const Color(0xFF2C1E1C), const Color(0xFF3D2C28)),
                           borderRadius: BorderRadius.circular(8),
                           image: _imageFile != null
                               ? DecorationImage(
@@ -243,16 +245,18 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                                   fit: BoxFit.cover,
                                 )
                               : const DecorationImage(
-                                  image:
-                                      AssetImage('assets/images/thumbnail.png'),
-                                  opacity: 0.25,
+                                  image: AssetImage(
+                                      'assets/images/background_appbar_light.png'),
+                                  opacity: 0.7,
                                   fit: BoxFit.cover,
                                 ),
                         ),
                         child: _imageFile != null
                             ? Container(
                                 decoration: BoxDecoration(
-                                  color: context.resolve(Colors.black.withValues(alpha: 0.45), Colors.white.withValues(alpha: 0.45)),
+                                  color: context.resolve(
+                                      Colors.black.withValues(alpha: 0.45),
+                                      Colors.white.withValues(alpha: 0.45)),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Column(
@@ -261,7 +265,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                                     Icon(
                                       LucideIcons.edit2,
                                       size: 32,
-                                      color: context.accent,
+                                      color: context.textPrimary,
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
@@ -269,7 +273,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                                       style: GoogleFonts.inter(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
-                                        color: context.accent,
+                                        color: context.textPrimary,
                                         letterSpacing: 1.0,
                                       ),
                                     ),
@@ -282,7 +286,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                                   Icon(
                                     LucideIcons.camera,
                                     size: 38,
-                                    color: context.accent,
+                                    color: context.textPrimary,
                                   ),
                                   const SizedBox(height: 10),
                                   Text(
@@ -290,7 +294,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                                     style: GoogleFonts.inter(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
-                                      color: context.accent,
+                                      color: context.textPrimary,
                                       letterSpacing: 1.0,
                                     ),
                                   ),
@@ -301,122 +305,51 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
                       Positioned(
                         top: 6,
                         left: 6,
-                        child: _buildCorner(isTop: true, isLeft: true, context: context),
+                        child: _buildCorner(
+                            isTop: true, isLeft: true, context: context),
                       ),
                       // Top Right Corner
                       Positioned(
                         top: 6,
                         right: 6,
-                        child: _buildCorner(isTop: true, isLeft: false, context: context),
+                        child: _buildCorner(
+                            isTop: true, isLeft: false, context: context),
                       ),
                       // Bottom Left Corner
                       Positioned(
                         bottom: 6,
                         left: 6,
-                        child: _buildCorner(isTop: false, isLeft: true, context: context),
+                        child: _buildCorner(
+                            isTop: false, isLeft: true, context: context),
                       ),
                       // Bottom Right Corner
                       Positioned(
                         bottom: 6,
                         right: 6,
-                        child: _buildCorner(isTop: false, isLeft: false, context: context),
+                        child: _buildCorner(
+                            isTop: false, isLeft: false, context: context),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
-                  Text(
-                    l10n.familyNameLabel.toUpperCase(),
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: context.primary,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.background.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextFormField(
-                      controller: _familyNameController,
-                      style: GoogleFonts.inter(
-                          color: context.textPrimary, fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: l10n.familyNameHint,
-                        hintStyle: GoogleFonts.inter(
-                          color: context.textSecondary.withValues(alpha: 0.4),
-                          fontSize: 14,
-                        ),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      focusedErrorBorder: InputBorder.none,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return l10n.familyNameRequired;
-                      }
-                      return null;
-                    },
-                  ),
+                AppTextField(
+                  label: l10n.familyNameLabel,
+                  hintText: l10n.familyNameHint,
+                  controller: _familyNameController,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return l10n.familyNameRequired;
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 20),
-                  Text(
-                    l10n.familyDescriptionLabel.toUpperCase(),
-                    style: GoogleFonts.inter(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: context.primary,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.background.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.resolve(Colors.black.withValues(alpha: 0.03), Colors.transparent),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: TextFormField(
-                      controller: _familyDescriptionController,
-                      style: GoogleFonts.inter(
-                          color: context.textPrimary, fontSize: 14),
-                      maxLines: 4,
-                      decoration: InputDecoration(
-                        hintText: l10n.familyDescriptionHint,
-                        hintStyle: GoogleFonts.inter(
-                          color: context.textSecondary.withValues(alpha: 0.4),
-                          fontSize: 14,
-                        ),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      contentPadding: const EdgeInsets.all(16),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                    ),
-                  ),
+                AppTextField(
+                  label: l10n.familyDescriptionLabel,
+                  hintText: l10n.familyDescriptionHint,
+                  controller: _familyDescriptionController,
+                  maxLines: 4,
                 ),
                 const SizedBox(height: 28),
                 BlocBuilder<OnboardingBloc, OnboardingState>(

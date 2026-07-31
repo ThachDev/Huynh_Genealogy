@@ -179,7 +179,7 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
       }
       return FileImage(File(avatarUrl));
     }
-    return const AssetImage('assets/images/wood_dragon.png');
+    return const AssetImage('assets/images/background.png');
   }
 
   @override

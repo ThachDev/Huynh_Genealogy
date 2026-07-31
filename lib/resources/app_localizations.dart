@@ -644,12 +644,6 @@ abstract class AppLocalizations {
   /// **'Kết nối dòng tộc'**
   String get joinFamilyCardTitle;
 
-  /// No description provided for @joinRequestDescription.
-  ///
-  /// In vi, this message translates to:
-  /// **'Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.'**
-  String get joinRequestDescription;
-
   /// No description provided for @joinFamilyCardDesc.
   ///
   /// In vi, this message translates to:

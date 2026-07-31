@@ -95,7 +95,7 @@ class _AdminClanInfoPageState
       }
       return FileImage(File(path));
     }
-    return const AssetImage('assets/images/wood_dragon.png');
+    return const AssetImage('assets/images/background.png');
   }
 
   void _saveClanChanges() async {

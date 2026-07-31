@@ -5,6 +5,8 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../resources/app_localizations.dart';
 
+import '../../../../../core/widgets/app_common_widgets.dart';
+
 class BranchItemWidget extends StatelessWidget {
   final BranchEntity branch;
   final int memberCount;
@@ -22,29 +24,18 @@ class BranchItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: context.textSecondary.withValues(alpha: 0.12),
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: InkWell(
-          onTap: onEdit,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: context.accent,
-                  width: 4,
-                ),
-              ),
-            ),
-            padding: const EdgeInsets.all(16),
+    return GestureDetector(
+      onTap: onEdit,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        child: CustomPaint(
+          painter: TraditionalOrnamentalBorderPainter(
+            borderColor: context.textSecondary.withValues(alpha: 0.2),
+            fillColor: context.surface,
+            leftAccentColor: context.accent,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -63,7 +54,7 @@ class BranchItemWidget extends StatelessWidget {
                         Colors.grey.shade100, const Color(0xFF2C2C2C)),
                     child: Icon(
                       LucideIcons.gitBranch,
-                      color: context.accent,
+                      color: context.textPrimary,
                       size: 24,
                     ),
                   ),
@@ -95,10 +86,10 @@ class BranchItemWidget extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
+                                const Icon(
                                   LucideIcons.users,
                                   size: 10,
-                                  color: context.accent,
+                                  color: Colors.grey,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -166,12 +157,13 @@ class BranchItemWidget extends StatelessWidget {
                       height: 38,
                       child: Row(
                         children: [
-                          const Icon(LucideIcons.edit,
-                              color: Colors.green, size: 18),
+                          Icon(LucideIcons.edit,
+                              color: context.textPrimary, size: 18),
                           const SizedBox(width: 8),
                           Text(
                             l10n.editLabel,
-                            style: GoogleFonts.beVietnamPro(fontSize: 13),
+                            style: GoogleFonts.beVietnamPro(
+                                fontSize: 13, color: context.textPrimary),
                           ),
                         ],
                       ),
@@ -182,13 +174,13 @@ class BranchItemWidget extends StatelessWidget {
                         height: 38,
                         child: Row(
                           children: [
-                            const Icon(LucideIcons.trash2,
-                                color: Colors.red, size: 18),
+                            Icon(LucideIcons.trash2,
+                                color: context.textPrimary, size: 18),
                             const SizedBox(width: 8),
                             Text(
                               l10n.deleteLabel,
                               style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13, color: Colors.red),
+                                  fontSize: 13, color: context.textPrimary),
                             ),
                           ],
                         ),

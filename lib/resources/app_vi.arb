@@ -118,7 +118,6 @@
   "createFamilyCardTitle": "Khởi tạo Gia tộc mới",
   "createFamilyCardDesc": "Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.",
   "joinFamilyCardTitle": "Kết nối dòng tộc",
-  "joinRequestDescription": "Yêu cầu gia nhập sẽ được gửi tới Trưởng tộc. Trưởng tộc sẽ thêm và xếp bạn vào đúng vị trí trên cây gia phả sau khi phê duyệt.",
   "joinFamilyCardDesc": "Dành cho thành viên đã có mã mời từ Trưởng tộc để xem và cập nhật cây gia phả.",
   "familyPhotoSectionLabel": "Ảnh Đại Diện Dòng Họ",
   "errEmailRequired": "Vui lòng nhập địa chỉ email",

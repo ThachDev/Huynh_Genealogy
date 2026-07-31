@@ -361,26 +361,23 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
     return Container(
       height: height,
-      color: context.appBarBg,
+      decoration: BoxDecoration(
+        color: context.appBarBg,
+        image: DecorationImage(
+          image: AssetImage(
+            context.isDarkMode
+                ? 'assets/images/background_appbar_dark.png'
+                : 'assets/images/background_appbar_light.png',
+          ),
+          fit: BoxFit.cover,
+          onError: (_, __) {},
+        ),
+      ),
       child: Stack(
         children: [
-          // Wood Background
           Positioned.fill(
-            child: Image.asset(
-              context.isDarkMode
-                  ? 'assets/images/wood_dragon_top_dark.png'
-                  : 'assets/images/wood_dragon_top.png',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  Container(color: context.appBarBg),
-            ),
+            child: Container(color: context.appBarOverlay),
           ),
-          // Wood Overlay to darken
-          if (!context.isDarkMode)
-            Positioned.fill(
-              child: Container(
-                  color: Colors.black.withValues(alpha: 0.45)),
-            ),
           // Content
           SafeArea(
             child: Padding(
@@ -437,7 +434,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: context.accent,
+                      color: context.textPrimary,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -449,7 +446,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      color: context.accent.withValues(alpha: 0.9),
+                      color: context.textSecondary,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -465,13 +462,13 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             ? state.members.length
                             : 0),
                         style: GoogleFonts.inter(
-                          color: Colors.white,
+                          color: context.textPrimary,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(width: 24),
-                      Container(width: 1, height: 12, color: Colors.white30),
+                      Container(width: 1, height: 12, color: context.textSecondary),
                       const SizedBox(width: 24),
                       Icon(LucideIcons.gitBranch,
                           color: context.accent, size: 14),
@@ -481,7 +478,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             ? state.branches.length
                             : 0),
                         style: GoogleFonts.inter(
-                          color: Colors.white,
+                          color: context.textPrimary,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),

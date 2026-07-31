@@ -20,6 +20,14 @@ abstract class OnboardingRemoteDataSource {
     required int userId,
     required int familyId,
     int? memberNodeId,
+    String? fullName,
+    String? gender,
+    String? dateOfBirth,
+    String? placeOfBirth,
+    String? maritalStatus,
+    String? education,
+    String? avatarUrl,
+    String? notes,
   });
 
   Future<List<FamilyUserModel>> getPendingRequests(int familyId);
@@ -139,6 +147,14 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
     required int userId,
     required int familyId,
     int? memberNodeId,
+    String? fullName,
+    String? gender,
+    String? dateOfBirth,
+    String? placeOfBirth,
+    String? maritalStatus,
+    String? education,
+    String? avatarUrl,
+    String? notes,
   }) async {
     try {
       final response = await dio.post(
@@ -147,6 +163,14 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
           'userId': userId,
           'familyId': familyId,
           'memberNodeId': memberNodeId,
+          if (fullName != null) 'fullName': fullName,
+          if (gender != null) 'gender': gender,
+          if (dateOfBirth != null) 'dateOfBirth': dateOfBirth,
+          if (placeOfBirth != null) 'placeOfBirth': placeOfBirth,
+          if (maritalStatus != null) 'maritalStatus': maritalStatus,
+          if (education != null) 'education': education,
+          if (avatarUrl != null) 'avatarUrl': avatarUrl,
+          if (notes != null) 'notes': notes,
         },
       );
       return FamilyUserModel.fromJson(response.data['data'] as Map<String, dynamic>);

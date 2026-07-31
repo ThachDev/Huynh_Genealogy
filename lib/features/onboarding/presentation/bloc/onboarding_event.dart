@@ -37,13 +37,41 @@ class JoinFamilyEvent extends OnboardingEvent {
   final int userId;
   final int familyId;
   final int? memberNodeId;
+  final String? fullName;
+  final String? gender;
+  final String? dateOfBirth;
+  final String? placeOfBirth;
+  final String? maritalStatus;
+  final String? education;
+  final String? avatarUrl;
+  final String? notes;
 
   const JoinFamilyEvent({
     required this.userId,
     required this.familyId,
     this.memberNodeId,
+    this.fullName,
+    this.gender,
+    this.dateOfBirth,
+    this.placeOfBirth,
+    this.maritalStatus,
+    this.education,
+    this.avatarUrl,
+    this.notes,
   });
 
   @override
-  List<Object?> get props => [userId, familyId, memberNodeId];
+  List<Object?> get props => [
+        userId,
+        familyId,
+        memberNodeId,
+        fullName,
+        gender,
+        dateOfBirth,
+        placeOfBirth,
+        maritalStatus,
+        education,
+        avatarUrl,
+        notes,
+      ];
 }

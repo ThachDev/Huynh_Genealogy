@@ -118,7 +118,6 @@
   "createFamilyCardTitle": "Create a new Family",
   "createFamilyCardDesc": "For Clan Leaders/Genealogists who want to build a completely new family tree.",
   "joinFamilyCardTitle": "Connect with Family",
-  "joinRequestDescription": "Your join request will be sent to the Clan Leader. The Clan Leader will add you to the correct position on the family tree after approval.",
   "joinFamilyCardDesc": "For members who have an invite code from the Clan Leader to view and update the family tree.",
   "familyPhotoSectionLabel": "Family Representative Photo",
   "errEmailRequired": "Please enter your email address",

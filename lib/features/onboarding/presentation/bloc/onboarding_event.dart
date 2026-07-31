@@ -44,6 +44,8 @@ class JoinFamilyEvent extends OnboardingEvent {
   final String? maritalStatus;
   final String? education;
   final String? avatarUrl;
+  final int? parentId;
+  final int? spouseId;
   final String? notes;
 
   const JoinFamilyEvent({
@@ -57,6 +59,8 @@ class JoinFamilyEvent extends OnboardingEvent {
     this.maritalStatus,
     this.education,
     this.avatarUrl,
+    this.parentId,
+    this.spouseId,
     this.notes,
   });
 

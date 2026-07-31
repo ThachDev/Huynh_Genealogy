@@ -27,6 +27,8 @@ abstract class OnboardingRemoteDataSource {
     String? maritalStatus,
     String? education,
     String? avatarUrl,
+    int? parentId,
+    int? spouseId,
     String? notes,
   });
 
@@ -154,6 +156,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
     String? maritalStatus,
     String? education,
     String? avatarUrl,
+    int? parentId,
+    int? spouseId,
     String? notes,
   }) async {
     try {
@@ -170,6 +174,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
           if (maritalStatus != null) 'maritalStatus': maritalStatus,
           if (education != null) 'education': education,
           if (avatarUrl != null) 'avatarUrl': avatarUrl,
+          if (parentId != null) 'parentId': parentId,
+          if (spouseId != null) 'spouseId': spouseId,
           if (notes != null) 'notes': notes,
         },
       );

@@ -9,15 +9,28 @@ import '../../../auth/auth.dart';
 
 class PendingApprovalWidget extends StatelessWidget {
   final UserEntity user;
+  final String? clanLeaderName;
+  final String? clanLeaderPhone;
 
   const PendingApprovalWidget({
     super.key,
     required this.user,
+    this.clanLeaderName,
+    this.clanLeaderPhone,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    final hasLeaderInfo =
+        clanLeaderName != null && clanLeaderName!.isNotEmpty &&
+        clanLeaderPhone != null && clanLeaderPhone!.isNotEmpty;
+
+    final message = hasLeaderInfo
+        ? l10n.pendingApprovalMessage(clanLeaderName!, clanLeaderPhone!)
+        : l10n.pendingApprovalMessageSimple;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -41,7 +54,7 @@ class PendingApprovalWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              l10n.pendingApprovalMessage,
+              message,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 14,
@@ -62,6 +75,7 @@ class PendingApprovalWidget extends StatelessWidget {
           AppButton(
             label: l10n.logoutTooltip,
             variant: AppButtonVariant.outline,
+            color: Colors.black87,
             onPressed: () {
               context.read<AuthBloc>().add(AuthLogoutRequested());
             },

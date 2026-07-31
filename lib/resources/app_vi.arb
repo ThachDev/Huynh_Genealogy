@@ -72,7 +72,18 @@
   },
   "joinRequestSuccess": "Yêu cầu tham gia đã gửi thành công!",
   "pendingApprovalTitle": "Đang Chờ Phê Duyệt",
-  "pendingApprovalMessage": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc hoặc Người quản trị dòng họ để được phê duyệt.",
+  "pendingApprovalMessage": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc {clanLeaderName} ({clanLeaderPhone}) để phê duyệt.",
+  "@pendingApprovalMessage": {
+    "placeholders": {
+      "clanLeaderName": {
+        "type": "String"
+      },
+      "clanLeaderPhone": {
+        "type": "String"
+      }
+    }
+  },
+  "pendingApprovalMessageSimple": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt để được tham gia dòng họ.",
   "checkStatusButton": "Kiểm tra trạng thái",
   "welcomeCreatorTitle": "Chào Trưởng tộc, {name}!",
   "@welcomeCreatorTitle": {
@@ -723,5 +734,18 @@
         "type": "int"
       }
     }
-  }
+  },
+  "spouseInfoLabel": "Thông tin Vợ / Chồng",
+  "parentInfoLabel": "Thông tin Cha / Mẹ",
+  "hasInTreeLabel": "Đã có",
+  "notInTreeLabel": "Chưa có",
+  "selectSpouseLabel": "Chọn Vợ / Chồng",
+  "searchSpouseHint": "Tìm tên Vợ / Chồng...",
+  "inputSpouseNameLabel": "Nhập tên Vợ / Chồng",
+  "inputSpouseNameHint": "VD: Kết hôn với bà Nguyễn Thị B...",
+  "selectParentLabel": "Chọn Cha / Mẹ",
+  "searchParentHint": "Tìm tên Cha / Mẹ...",
+  "inputParentNameLabel": "Nhập tên Cha / Mẹ",
+  "inputParentNameHint": "VD: Con ông Nguyễn Văn A, cháu ông B...",
+  "changeInviteCodeButton": "Đổi mã"
 }

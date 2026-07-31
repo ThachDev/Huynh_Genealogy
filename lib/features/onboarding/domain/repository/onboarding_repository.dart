@@ -26,6 +26,8 @@ abstract class OnboardingRepository {
     String? maritalStatus,
     String? education,
     String? avatarUrl,
+    int? parentId,
+    int? spouseId,
     String? notes,
   });
 

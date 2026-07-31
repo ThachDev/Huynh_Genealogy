@@ -497,8 +497,14 @@ abstract class AppLocalizations {
   /// No description provided for @pendingApprovalMessage.
   ///
   /// In vi, this message translates to:
-  /// **'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc hoặc Người quản trị dòng họ để được phê duyệt.'**
-  String get pendingApprovalMessage;
+  /// **'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc {clanLeaderName} ({clanLeaderPhone}) để phê duyệt.'**
+  String pendingApprovalMessage(String clanLeaderName, String clanLeaderPhone);
+
+  /// No description provided for @pendingApprovalMessageSimple.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt để được tham gia dòng họ.'**
+  String get pendingApprovalMessageSimple;
 
   /// No description provided for @checkStatusButton.
   ///
@@ -3451,6 +3457,84 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đời thứ {gen}'**
   String generationLabel(int gen);
+
+  /// No description provided for @spouseInfoLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin Vợ / Chồng'**
+  String get spouseInfoLabel;
+
+  /// No description provided for @parentInfoLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin Cha / Mẹ'**
+  String get parentInfoLabel;
+
+  /// No description provided for @hasInTreeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có'**
+  String get hasInTreeLabel;
+
+  /// No description provided for @notInTreeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có'**
+  String get notInTreeLabel;
+
+  /// No description provided for @selectSpouseLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn Vợ / Chồng'**
+  String get selectSpouseLabel;
+
+  /// No description provided for @searchSpouseHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm tên Vợ / Chồng...'**
+  String get searchSpouseHint;
+
+  /// No description provided for @inputSpouseNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên Vợ / Chồng'**
+  String get inputSpouseNameLabel;
+
+  /// No description provided for @inputSpouseNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Kết hôn với bà Nguyễn Thị B...'**
+  String get inputSpouseNameHint;
+
+  /// No description provided for @selectParentLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn Cha / Mẹ'**
+  String get selectParentLabel;
+
+  /// No description provided for @searchParentHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm tên Cha / Mẹ...'**
+  String get searchParentHint;
+
+  /// No description provided for @inputParentNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên Cha / Mẹ'**
+  String get inputParentNameLabel;
+
+  /// No description provided for @inputParentNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Con ông Nguyễn Văn A, cháu ông B...'**
+  String get inputParentNameHint;
+
+  /// No description provided for @changeInviteCodeButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi mã'**
+  String get changeInviteCodeButton;
 }
 
 class _AppLocalizationsDelegate

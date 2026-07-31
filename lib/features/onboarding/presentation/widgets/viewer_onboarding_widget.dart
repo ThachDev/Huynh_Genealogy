@@ -29,10 +29,12 @@ class ViewerOnboardingWidget extends StatefulWidget {
 
 class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
   final _inviteCodeController = TextEditingController();
-  TextEditingController? _fullNameController;
-  TextEditingController? _placeOfBirthController;
-  TextEditingController? _educationController;
-  TextEditingController? _notesController;
+  late final TextEditingController _fullNameController;
+  final _placeOfBirthController = TextEditingController();
+  final _educationController = TextEditingController();
+  final _parentNameController = TextEditingController();
+  final _spouseNameController = TextEditingController();
+  final _notesController = TextEditingController();
 
   FamilyEntity? _verifiedFamily;
   List<MemberEntity> _familyMembers = [];
@@ -44,23 +46,27 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
   String? _dateOfBirth;
   String? _avatarPath;
   String? _selectedEducationOption;
+  int? _selectedParentId;
+  int? _selectedSpouseId;
 
   @override
   void initState() {
     super.initState();
     _fullNameController = TextEditingController(text: widget.user.fullName);
-    _placeOfBirthController = TextEditingController();
-    _educationController = TextEditingController();
-    _notesController = TextEditingController();
+    if (widget.user.avatarUrl != null && widget.user.avatarUrl!.isNotEmpty) {
+      _avatarPath = widget.user.avatarUrl;
+    }
   }
 
   @override
   void dispose() {
     _inviteCodeController.dispose();
-    _fullNameController?.dispose();
-    _placeOfBirthController?.dispose();
-    _educationController?.dispose();
-    _notesController?.dispose();
+    _fullNameController.dispose();
+    _placeOfBirthController.dispose();
+    _educationController.dispose();
+    _parentNameController.dispose();
+    _spouseNameController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -97,26 +103,45 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
 
       String? educationVal;
       if (_selectedEducationOption == 'Khác') {
-        educationVal = _educationController?.text.trim();
+        educationVal = _educationController.text.trim();
       } else {
         educationVal = _selectedEducationOption;
       }
+
+      final List<String> notesParts = [];
+      if (_selectedParentId == null &&
+          _parentNameController.text.trim().isNotEmpty) {
+        notesParts.add('Cha/Mẹ: ${_parentNameController.text.trim()}');
+      }
+      if (_maritalStatus != MaritalStatus.single &&
+          _selectedSpouseId == null &&
+          _spouseNameController.text.trim().isNotEmpty) {
+        notesParts.add('Vợ/Chồng: ${_spouseNameController.text.trim()}');
+      }
+      if (_notesController.text.trim().isNotEmpty) {
+        notesParts.add(_notesController.text.trim());
+      }
+      final String? combinedNotes =
+          notesParts.isNotEmpty ? notesParts.join(' | ') : null;
 
       context.read<OnboardingBloc>().add(
             JoinFamilyEvent(
               familyId: _verifiedFamily!.id,
               memberNodeId: _isNotOnTree ? null : _selectedMember?.id,
               userId: widget.user.id,
-              fullName: _isNotOnTree ? _fullNameController?.text.trim() : null,
+              fullName: _isNotOnTree ? _fullNameController.text.trim() : null,
               gender: _isNotOnTree
                   ? (_gender == Gender.male ? 'male' : 'female')
                   : null,
               dateOfBirth: _isNotOnTree ? _dateOfBirth : null,
               placeOfBirth:
-                  _isNotOnTree ? _placeOfBirthController?.text.trim() : null,
+                  _isNotOnTree ? _placeOfBirthController.text.trim() : null,
               maritalStatus: _isNotOnTree ? maritalStatusStr : null,
               education: _isNotOnTree ? educationVal : null,
-              notes: _isNotOnTree ? _notesController?.text.trim() : null,
+              avatarUrl: _isNotOnTree ? _avatarPath : null,
+              parentId: _isNotOnTree ? _selectedParentId : null,
+              spouseId: _isNotOnTree ? _selectedSpouseId : null,
+              notes: _isNotOnTree ? combinedNotes : null,
             ),
           );
     }
@@ -325,9 +350,8 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                             children: [
                               Icon(LucideIcons.refreshCw,
                                   size: 13, color: context.textSecondary),
-                              const SizedBox(width: 4),
                               Text(
-                                'Đổi mã',
+                                l10n.changeInviteCodeButton,
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   color: context.textSecondary,
@@ -373,7 +397,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                             .map((m) => DropdownItem<MemberEntity?>(
                                   value: m,
                                   child: Text(
-                                    '${m.fullName} (Đời ${m.generation})',
+                                    '${m.fullName}${m.generation != null ? " (${l10n.generationLabel(m.generation!)})" : ""}',
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: context.textPrimary,
@@ -436,10 +460,13 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                     const SizedBox(height: 20),
                     MemberRegistrationForm(
                       user: widget.user,
-                      fullNameController: _fullNameController!,
-                      placeOfBirthController: _placeOfBirthController!,
-                      educationController: _educationController!,
-                      notesController: _notesController!,
+                      familyMembers: _familyMembers,
+                      fullNameController: _fullNameController,
+                      placeOfBirthController: _placeOfBirthController,
+                      educationController: _educationController,
+                      parentNameController: _parentNameController,
+                      spouseNameController: _spouseNameController,
+                      notesController: _notesController,
                       gender: _gender,
                       onGenderChanged: (g) => setState(() => _gender = g),
                       maritalStatus: _maritalStatus,
@@ -454,6 +481,12 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                       selectedEducationOption: _selectedEducationOption,
                       onEducationOptionChanged: (option) =>
                           setState(() => _selectedEducationOption = option),
+                      parentId: _selectedParentId,
+                      onParentIdChanged: (pid) =>
+                          setState(() => _selectedParentId = pid),
+                      spouseId: _selectedSpouseId,
+                      onSpouseIdChanged: (sid) =>
+                          setState(() => _selectedSpouseId = sid),
                     ),
                   ],
 

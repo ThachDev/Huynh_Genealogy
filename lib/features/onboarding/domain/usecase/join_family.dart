@@ -23,6 +23,8 @@ class JoinFamily implements UseCase<FamilyUserEntity, JoinFamilyParams> {
       maritalStatus: params.maritalStatus,
       education: params.education,
       avatarUrl: params.avatarUrl,
+      parentId: params.parentId,
+      spouseId: params.spouseId,
       notes: params.notes,
     );
   }
@@ -39,6 +41,8 @@ class JoinFamilyParams extends Equatable {
   final String? maritalStatus;
   final String? education;
   final String? avatarUrl;
+  final int? parentId;
+  final int? spouseId;
   final String? notes;
 
   const JoinFamilyParams({
@@ -52,6 +56,8 @@ class JoinFamilyParams extends Equatable {
     this.maritalStatus,
     this.education,
     this.avatarUrl,
+    this.parentId,
+    this.spouseId,
     this.notes,
   });
 

@@ -13,9 +13,12 @@ import '../../../../resources/app_localizations.dart';
 
 class MemberRegistrationForm extends StatefulWidget {
   final UserEntity user;
+  final List<MemberEntity> familyMembers;
   final TextEditingController fullNameController;
   final TextEditingController placeOfBirthController;
   final TextEditingController educationController;
+  final TextEditingController parentNameController;
+  final TextEditingController spouseNameController;
   final TextEditingController notesController;
   final Gender gender;
   final ValueChanged<Gender> onGenderChanged;
@@ -27,13 +30,20 @@ class MemberRegistrationForm extends StatefulWidget {
   final ValueChanged<String?> onAvatarPathChanged;
   final String? selectedEducationOption;
   final ValueChanged<String?> onEducationOptionChanged;
+  final int? parentId;
+  final ValueChanged<int?> onParentIdChanged;
+  final int? spouseId;
+  final ValueChanged<int?> onSpouseIdChanged;
 
   const MemberRegistrationForm({
     super.key,
     required this.user,
+    required this.familyMembers,
     required this.fullNameController,
     required this.placeOfBirthController,
     required this.educationController,
+    required this.parentNameController,
+    required this.spouseNameController,
     required this.notesController,
     required this.gender,
     required this.onGenderChanged,
@@ -45,15 +55,24 @@ class MemberRegistrationForm extends StatefulWidget {
     required this.onAvatarPathChanged,
     required this.selectedEducationOption,
     required this.onEducationOptionChanged,
+    required this.parentId,
+    required this.onParentIdChanged,
+    required this.spouseId,
+    required this.onSpouseIdChanged,
   });
 
   @override
-  State<MemberRegistrationForm> createState() =>
-      _MemberRegistrationFormState();
+  State<MemberRegistrationForm> createState() => _MemberRegistrationFormState();
 }
+
+enum ParentMode { fromTree, customName }
+
+enum SpouseMode { fromTree, customName }
 
 class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
   final ImagePicker _picker = ImagePicker();
+  ParentMode _parentMode = ParentMode.fromTree;
+  SpouseMode _spouseMode = SpouseMode.fromTree;
 
   final List<String> _predefinedEducation = const [
     'Tiểu học',
@@ -160,37 +179,7 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
               ),
               const SizedBox(height: 16),
 
-              // 5. Tình trạng hôn nhân
-              AppDropdown<MaritalStatus>(
-                label: l10n.maritalStatusLabel,
-                value: widget.maritalStatus,
-                items: [
-                  DropdownItem(
-                    value: MaritalStatus.single,
-                    child: Text(l10n.maritalSingle),
-                  ),
-                  DropdownItem(
-                    value: MaritalStatus.married,
-                    child: Text(l10n.maritalMarried),
-                  ),
-                  DropdownItem(
-                    value: MaritalStatus.divorced,
-                    child: Text(l10n.maritalDivorced),
-                  ),
-                  DropdownItem(
-                    value: MaritalStatus.widowed,
-                    child: Text(l10n.maritalWidowed),
-                  ),
-                ],
-                onChanged: (val) {
-                  if (val != null) {
-                    widget.onMaritalStatusChanged(val);
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // 6. Trình độ học vấn (AppDropdown)
+              // Trình độ học vấn (AppDropdown)
               AppDropdown<String?>(
                 label: l10n.educationLabel,
                 value: widget.selectedEducationOption,
@@ -229,12 +218,401 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
               ],
               const SizedBox(height: 16),
 
-              // 7. Ghi chú cho Trưởng tộc / Tiểu sử
-              AppOutlineTextField(
-                label: l10n.bioLabel,
-                hintText: l10n.bioHint,
-                controller: widget.notesController,
-                maxLines: 4,
+              // Tình trạng hôn nhân
+              AppDropdown<MaritalStatus>(
+                label: l10n.maritalStatusLabel,
+                value: widget.maritalStatus,
+                items: [
+                  DropdownItem(
+                    value: MaritalStatus.single,
+                    child: Text(l10n.maritalSingle),
+                  ),
+                  DropdownItem(
+                    value: MaritalStatus.married,
+                    child: Text(l10n.maritalMarried),
+                  ),
+                  DropdownItem(
+                    value: MaritalStatus.divorced,
+                    child: Text(l10n.maritalDivorced),
+                  ),
+                  DropdownItem(
+                    value: MaritalStatus.widowed,
+                    child: Text(l10n.maritalWidowed),
+                  ),
+                ],
+                onChanged: (val) {
+                  if (val != null) {
+                    widget.onMaritalStatusChanged(val);
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // ── THÔNG TIN VỢ / CHỒNG (CARD PHÂN ĐOẠN) ──
+              if (widget.maritalStatus != MaritalStatus.single) ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: context.resolve(
+                      const Color(0xFFF9F7F5),
+                      context.surface,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: context.isDarkMode
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : const Color(0xFFE8D4C8),
+                      width: 1,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.spouseInfoLabel,
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: context.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _spouseMode = SpouseMode.fromTree;
+                                });
+                              },
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: _spouseMode == SpouseMode.fromTree
+                                      ? context.primary.withValues(alpha: 0.12)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: _spouseMode == SpouseMode.fromTree
+                                        ? context.primary
+                                        : context.textSecondary
+                                            .withValues(alpha: 0.2),
+                                    width: _spouseMode == SpouseMode.fromTree
+                                        ? 1.5
+                                        : 1,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      _spouseMode == SpouseMode.fromTree
+                                          ? LucideIcons.checkCircle2
+                                          : LucideIcons.circle,
+                                      size: 14,
+                                      color: _spouseMode == SpouseMode.fromTree
+                                          ? context.primary
+                                          : context.textSecondary,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      l10n.hasInTreeLabel,
+                                      style: GoogleFonts.beVietnamPro(
+                                        fontSize: 12,
+                                        fontWeight:
+                                            _spouseMode == SpouseMode.fromTree
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                        color:
+                                            _spouseMode == SpouseMode.fromTree
+                                                ? context.primary
+                                                : context.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _spouseMode = SpouseMode.customName;
+                                  widget.onSpouseIdChanged(null);
+                                });
+                              },
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: _spouseMode == SpouseMode.customName
+                                      ? context.primary.withValues(alpha: 0.12)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: _spouseMode == SpouseMode.customName
+                                        ? context.primary
+                                        : context.textSecondary
+                                            .withValues(alpha: 0.2),
+                                    width: _spouseMode == SpouseMode.customName
+                                        ? 1.5
+                                        : 1,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      _spouseMode == SpouseMode.customName
+                                          ? LucideIcons.checkCircle2
+                                          : LucideIcons.circle,
+                                      size: 14,
+                                      color:
+                                          _spouseMode == SpouseMode.customName
+                                              ? context.primary
+                                              : context.textSecondary,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      l10n.notInTreeLabel,
+                                      style: GoogleFonts.beVietnamPro(
+                                        fontSize: 12,
+                                        fontWeight:
+                                            _spouseMode == SpouseMode.customName
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                        color:
+                                            _spouseMode == SpouseMode.customName
+                                                ? context.primary
+                                                : context.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      if (_spouseMode == SpouseMode.fromTree) ...[
+                        AppDropdown<int?>(
+                          label: l10n.selectSpouseLabel,
+                          value: widget.spouseId,
+                          showSearchBox: true,
+                          searchHint: l10n.searchSpouseHint,
+                          items: [
+                            DropdownItem<int?>(
+                              value: null,
+                              child: Text(l10n.noSelectionLabel),
+                            ),
+                            ...widget.familyMembers.map(
+                              (m) => DropdownItem<int?>(
+                                value: m.id,
+                                child: Text(m.fullName),
+                              ),
+                            ),
+                          ],
+                          onChanged: (val) => widget.onSpouseIdChanged(val),
+                        ),
+                      ] else ...[
+                        AppOutlineTextField(
+                          label: l10n.inputSpouseNameLabel,
+                          hintText: l10n.inputSpouseNameHint,
+                          controller: widget.spouseNameController,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              // ── THÔNG TIN CHA / MẸ (CARD PHÂN ĐOẠN) ──
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: context.resolve(
+                    const Color(0xFFF9F7F5),
+                    context.surface,
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: context.isDarkMode
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : const Color(0xFFE8D4C8),
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.parentInfoLabel,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: context.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _parentMode = ParentMode.fromTree;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: _parentMode == ParentMode.fromTree
+                                    ? context.primary.withValues(alpha: 0.12)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: _parentMode == ParentMode.fromTree
+                                      ? context.primary
+                                      : context.textSecondary
+                                          .withValues(alpha: 0.2),
+                                  width: _parentMode == ParentMode.fromTree
+                                      ? 1.5
+                                      : 1,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    _parentMode == ParentMode.fromTree
+                                        ? LucideIcons.checkCircle2
+                                        : LucideIcons.circle,
+                                    size: 14,
+                                    color: _parentMode == ParentMode.fromTree
+                                        ? context.primary
+                                        : context.textSecondary,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    l10n.hasInTreeLabel,
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 12,
+                                      fontWeight:
+                                          _parentMode == ParentMode.fromTree
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                      color: _parentMode == ParentMode.fromTree
+                                          ? context.primary
+                                          : context.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _parentMode = ParentMode.customName;
+                                widget.onParentIdChanged(null);
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: _parentMode == ParentMode.customName
+                                    ? context.primary.withValues(alpha: 0.12)
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: _parentMode == ParentMode.customName
+                                      ? context.primary
+                                      : context.textSecondary
+                                          .withValues(alpha: 0.2),
+                                  width: _parentMode == ParentMode.customName
+                                      ? 1.5
+                                      : 1,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    _parentMode == ParentMode.customName
+                                        ? LucideIcons.checkCircle2
+                                        : LucideIcons.circle,
+                                    size: 14,
+                                    color: _parentMode == ParentMode.customName
+                                        ? context.primary
+                                        : context.textSecondary,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    l10n.notInTreeLabel,
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 12,
+                                      fontWeight:
+                                          _parentMode == ParentMode.customName
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                      color:
+                                          _parentMode == ParentMode.customName
+                                              ? context.primary
+                                              : context.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    if (_parentMode == ParentMode.fromTree) ...[
+                      AppDropdown<int?>(
+                        label: l10n.selectParentLabel,
+                        value: widget.parentId,
+                        showSearchBox: true,
+                        searchHint: l10n.searchParentHint,
+                        items: [
+                          DropdownItem<int?>(
+                            value: null,
+                            child: Text(l10n.noSelectionLabel),
+                          ),
+                          ...widget.familyMembers.map(
+                            (m) => DropdownItem<int?>(
+                              value: m.id,
+                              child: Text(
+                                '${m.fullName}${m.generation != null ? " (${l10n.generationLabel(m.generation!)})" : ""}',
+                              ),
+                            ),
+                          ),
+                        ],
+                        onChanged: (val) => widget.onParentIdChanged(val),
+                      ),
+                    ] else ...[
+                      AppOutlineTextField(
+                        label: l10n.inputParentNameLabel,
+                        hintText: l10n.inputParentNameHint,
+                        controller: widget.parentNameController,
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ],
           ),

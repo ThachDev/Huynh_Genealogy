@@ -59,6 +59,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     String? maritalStatus,
     String? education,
     String? avatarUrl,
+    int? parentId,
+    int? spouseId,
     String? notes,
   }) async {
     try {
@@ -73,6 +75,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         maritalStatus: maritalStatus,
         education: education,
         avatarUrl: avatarUrl,
+        parentId: parentId,
+        spouseId: spouseId,
         notes: notes,
       );
       return Right(familyUserModel);

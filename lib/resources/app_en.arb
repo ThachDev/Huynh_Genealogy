@@ -72,7 +72,8 @@
   },
   "joinRequestSuccess": "Join request sent successfully!",
   "pendingApprovalTitle": "Pending Approval",
-  "pendingApprovalMessage": "Your request to join the family has been sent successfully. Please contact the Clan Leader to approve your account.",
+  "pendingApprovalMessage": "Your request to join the family has been sent successfully. Please wait for admin approval or contact Clan Leader {clanLeaderName} ({clanLeaderPhone}) to approve.",
+  "pendingApprovalMessageSimple": "Your request to join the family has been sent successfully. Please wait for admin approval.",
   "checkStatusButton": "Check Status",
   "welcomeCreatorTitle": "Welcome Clan Leader, {name}!",
   "@welcomeCreatorTitle": {
@@ -723,5 +724,18 @@
         "type": "int"
       }
     }
-  }
+  },
+  "spouseInfoLabel": "Spouse Information",
+  "parentInfoLabel": "Parent Information",
+  "hasInTreeLabel": "In tree",
+  "notInTreeLabel": "Not in tree",
+  "selectSpouseLabel": "Select Spouse",
+  "searchSpouseHint": "Search spouse name...",
+  "inputSpouseNameLabel": "Enter Spouse Name",
+  "inputSpouseNameHint": "E.g., Married to Ms. Nguyen...",
+  "selectParentLabel": "Select Parent",
+  "searchParentHint": "Search parent name...",
+  "inputParentNameLabel": "Enter Parent Name",
+  "inputParentNameHint": "E.g., Child of Mr. Nguyen...",
+  "changeInviteCodeButton": "Change code"
 }

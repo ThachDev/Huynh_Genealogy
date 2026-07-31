@@ -74,6 +74,8 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
         maritalStatus: event.maritalStatus,
         education: event.education,
         avatarUrl: event.avatarUrl,
+        parentId: event.parentId,
+        spouseId: event.spouseId,
         notes: event.notes,
       ),
     );

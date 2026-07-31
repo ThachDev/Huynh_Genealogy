@@ -218,8 +218,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pendingApprovalTitle => 'Pending Approval';
 
   @override
-  String get pendingApprovalMessage =>
-      'Your request to join the family has been sent successfully. Please contact the Clan Leader to approve your account.';
+  String pendingApprovalMessage(String clanLeaderName, String clanLeaderPhone) {
+    return 'Your request to join the family has been sent successfully. Please wait for admin approval or contact Clan Leader $clanLeaderName ($clanLeaderPhone) to approve.';
+  }
+
+  @override
+  String get pendingApprovalMessageSimple =>
+      'Your request to join the family has been sent successfully. Please wait for admin approval.';
 
   @override
   String get checkStatusButton => 'Check Status';
@@ -1830,4 +1835,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String generationLabel(int gen) {
     return 'Generation $gen';
   }
+
+  @override
+  String get spouseInfoLabel => 'Spouse Information';
+
+  @override
+  String get parentInfoLabel => 'Parent Information';
+
+  @override
+  String get hasInTreeLabel => 'In tree';
+
+  @override
+  String get notInTreeLabel => 'Not in tree';
+
+  @override
+  String get selectSpouseLabel => 'Select Spouse';
+
+  @override
+  String get searchSpouseHint => 'Search spouse name...';
+
+  @override
+  String get inputSpouseNameLabel => 'Enter Spouse Name';
+
+  @override
+  String get inputSpouseNameHint => 'E.g., Married to Ms. Nguyen...';
+
+  @override
+  String get selectParentLabel => 'Select Parent';
+
+  @override
+  String get searchParentHint => 'Search parent name...';
+
+  @override
+  String get inputParentNameLabel => 'Enter Parent Name';
+
+  @override
+  String get inputParentNameHint => 'E.g., Child of Mr. Nguyen...';
+
+  @override
+  String get changeInviteCodeButton => 'Change code';
 }

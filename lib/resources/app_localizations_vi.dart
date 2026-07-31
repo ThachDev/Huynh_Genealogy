@@ -218,8 +218,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pendingApprovalTitle => 'Đang Chờ Phê Duyệt';
 
   @override
-  String get pendingApprovalMessage =>
-      'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng liên hệ Trưởng tộc hoặc Người quản trị dòng họ để được phê duyệt.';
+  String pendingApprovalMessage(String clanLeaderName, String clanLeaderPhone) {
+    return 'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc $clanLeaderName ($clanLeaderPhone) để phê duyệt.';
+  }
+
+  @override
+  String get pendingApprovalMessageSimple =>
+      'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt để được tham gia dòng họ.';
 
   @override
   String get checkStatusButton => 'Kiểm tra trạng thái';
@@ -1835,4 +1840,43 @@ class AppLocalizationsVi extends AppLocalizations {
   String generationLabel(int gen) {
     return 'Đời thứ $gen';
   }
+
+  @override
+  String get spouseInfoLabel => 'Thông tin Vợ / Chồng';
+
+  @override
+  String get parentInfoLabel => 'Thông tin Cha / Mẹ';
+
+  @override
+  String get hasInTreeLabel => 'Đã có';
+
+  @override
+  String get notInTreeLabel => 'Chưa có';
+
+  @override
+  String get selectSpouseLabel => 'Chọn Vợ / Chồng';
+
+  @override
+  String get searchSpouseHint => 'Tìm tên Vợ / Chồng...';
+
+  @override
+  String get inputSpouseNameLabel => 'Nhập tên Vợ / Chồng';
+
+  @override
+  String get inputSpouseNameHint => 'VD: Kết hôn với bà Nguyễn Thị B...';
+
+  @override
+  String get selectParentLabel => 'Chọn Cha / Mẹ';
+
+  @override
+  String get searchParentHint => 'Tìm tên Cha / Mẹ...';
+
+  @override
+  String get inputParentNameLabel => 'Nhập tên Cha / Mẹ';
+
+  @override
+  String get inputParentNameHint => 'VD: Con ông Nguyễn Văn A, cháu ông B...';
+
+  @override
+  String get changeInviteCodeButton => 'Đổi mã';
 }

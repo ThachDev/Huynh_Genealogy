@@ -288,7 +288,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     icon: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        Icon(LucideIcons.bell, color: context.accent, size: 22),
+                        Icon(LucideIcons.bell,
+                            color: context.textPrimary, size: 22),
                         if (unreadAnnouncements.isNotEmpty)
                           Positioned(
                             top: -8,
@@ -422,14 +423,18 @@ class _UserEventsPageState extends State<UserEventsPage> {
   }
 
   Widget _buildTrailingSeeAll() {
-    return IconButton(
-      onPressed: () {},
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
-      icon: Icon(
-        LucideIcons.chevronRight,
-        size: 18,
-        color: context.textSecondary,
+    return InkWell(
+      onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Text(
+          AppLocalizations.of(context)!.seeMoreLabel,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: context.primary,
+          ),
+        ),
       ),
     );
   }
@@ -921,7 +926,9 @@ class CountdownBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        AppLocalizations.of(context)!.eventCountdown(days),
+        days == 0
+            ? AppLocalizations.of(context)!.todayLabel
+            : AppLocalizations.of(context)!.eventCountdown(days),
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
               fontSize: 11,
               fontWeight: FontWeight.bold,

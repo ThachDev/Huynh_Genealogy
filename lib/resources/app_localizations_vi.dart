@@ -1633,6 +1633,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get searchMemberYearHint => 'Tìm thành viên, năm sinh...';
 
   @override
+  String get seeMoreLabel => 'Xem thêm';
+
+  @override
   String get settingsTitle => 'Cài Đặt';
 
   @override

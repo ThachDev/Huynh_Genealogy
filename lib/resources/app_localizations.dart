@@ -3050,6 +3050,12 @@ abstract class AppLocalizations {
   /// **'Tìm thành viên, năm sinh...'**
   String get searchMemberYearHint;
 
+  /// No description provided for @seeMoreLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get seeMoreLabel;
+
   /// No description provided for @settingsTitle.
   ///
   /// In vi, this message translates to:

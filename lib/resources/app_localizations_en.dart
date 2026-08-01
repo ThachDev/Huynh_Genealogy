@@ -1628,6 +1628,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchMemberYearHint => 'Search member, year of birth...';
 
   @override
+  String get seeMoreLabel => 'See more';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

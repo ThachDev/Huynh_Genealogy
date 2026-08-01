@@ -1651,6 +1651,27 @@ class AppLocalizationsVi extends AppLocalizations {
   String get todayLabel => 'Hôm nay';
 
   @override
+  String get wishDialogTitle => 'Gửi Lời Chúc';
+
+  @override
+  String get wishDialogHint => 'Nhập lời chúc...';
+
+  @override
+  String get wishSendButton => 'Gửi';
+
+  @override
+  String get wishSentMessage => 'Lời chúc đã được gửi.';
+
+  @override
+  String get anniversaryDialogTitle => 'Gửi Lời Tưởng Nhớ';
+
+  @override
+  String get anniversaryDialogHint => 'Viết lời tưởng nhớ...';
+
+  @override
+  String get anniversarySentMessage => 'Lời tưởng nhớ đã được gửi.';
+
+  @override
   String get unassignedBranch => 'Chưa phân chi';
 
   @override

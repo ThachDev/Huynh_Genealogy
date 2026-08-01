@@ -3086,6 +3086,48 @@ abstract class AppLocalizations {
   /// **'Hôm nay'**
   String get todayLabel;
 
+  /// No description provided for @wishDialogTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi Lời Chúc'**
+  String get wishDialogTitle;
+
+  /// No description provided for @wishDialogHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập lời chúc...'**
+  String get wishDialogHint;
+
+  /// No description provided for @wishSendButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi'**
+  String get wishSendButton;
+
+  /// No description provided for @wishSentMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời chúc đã được gửi.'**
+  String get wishSentMessage;
+
+  /// No description provided for @anniversaryDialogTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi Lời Tưởng Nhớ'**
+  String get anniversaryDialogTitle;
+
+  /// No description provided for @anniversaryDialogHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết lời tưởng nhớ...'**
+  String get anniversaryDialogHint;
+
+  /// No description provided for @anniversarySentMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời tưởng nhớ đã được gửi.'**
+  String get anniversarySentMessage;
+
   /// No description provided for @unassignedBranch.
   ///
   /// In vi, this message translates to:

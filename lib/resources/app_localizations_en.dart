@@ -1646,6 +1646,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todayLabel => 'Today';
 
   @override
+  String get wishDialogTitle => 'Send a Wish';
+
+  @override
+  String get wishDialogHint => 'Type your wish...';
+
+  @override
+  String get wishSendButton => 'Send';
+
+  @override
+  String get wishSentMessage => 'Your wish has been sent.';
+
+  @override
+  String get anniversaryDialogTitle => 'Send a Memorial Message';
+
+  @override
+  String get anniversaryDialogHint => 'Write a remembrance...';
+
+  @override
+  String get anniversarySentMessage => 'Your memorial message has been sent.';
+
+  @override
   String get unassignedBranch => 'Unassigned branch';
 
   @override

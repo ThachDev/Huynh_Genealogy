@@ -1,0 +1,534 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+import '../../../../core/theme/theme_extensions.dart';
+import '../../../../resources/app_localizations.dart';
+
+/// Mở popup lá thư để user nhập lời chúc. Trả về nội dung đã nhập,
+/// hoặc null nếu đóng mà không gửi.
+Future<String?> showWishLetterDialog(
+  BuildContext context, {
+  required String title,
+  required String subtitle,
+  required bool isBirthday,
+}) {
+  return showDialog<String>(
+    context: context,
+    barrierColor: Colors.black54,
+    builder: (_) => WishLetterDialog(
+      title: title,
+      subtitle: subtitle,
+      isBirthday: isBirthday,
+    ),
+  );
+}
+
+class WishLetterDialog extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final bool isBirthday;
+
+  const WishLetterDialog({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.isBirthday,
+  });
+
+  @override
+  State<WishLetterDialog> createState() => _WishLetterDialogState();
+}
+
+class _WishLetterDialogState extends State<WishLetterDialog>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  /// Giai đoạn gấp lá thư + phong bì hiện ra.
+  late final Animation<double> _fold;
+
+  /// Phong bì hiện lên (0 → 1).
+  late final Animation<double> _envIn;
+
+  /// Nắp phong bì đóng lại (0 → 1).
+  late final Animation<double> _flap;
+
+  /// Giai đoạn bay đi.
+  late final Animation<double> _rise;
+  late final Animation<double> _drift;
+  late final Animation<double> _flyAngle;
+  late final Animation<double> _flyScale;
+  late final Animation<double> _flyOpacity;
+
+  final TextEditingController _message = TextEditingController();
+  bool _sending = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+
+    _fold = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.4, curve: Curves.easeInCubic),
+    );
+    _envIn = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.15, 0.5, curve: Curves.easeOut),
+    );
+    _flap = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.3, 0.6, curve: Curves.easeInOut),
+    );
+
+    final flyCurve = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.55, 1.0, curve: Curves.easeIn),
+    );
+    _rise = TweenSequence<double>([
+      // Nhún nhẹ xuống trước khi bay (anticipation)
+      TweenSequenceItem(tween: Tween(begin: 0, end: 0.02), weight: 10),
+      // Bay lên nhanh dần
+      TweenSequenceItem(tween: Tween(begin: 0.02, end: -0.9), weight: 90),
+    ]).animate(flyCurve);
+    _drift = Tween<double>(begin: 0, end: 0.16).animate(flyCurve);
+    _flyAngle = Tween<double>(begin: 0, end: 0.5).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.55, 1.0, curve: Curves.easeIn),
+      ),
+    );
+    _flyScale = Tween<double>(begin: 1, end: 0.82).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
+      ),
+    );
+    _flyOpacity = Tween<double>(begin: 1, end: 0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.8, 1.0, curve: Curves.easeIn),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _message.dispose();
+    super.dispose();
+  }
+
+  void _send() {
+    if (_sending) return;
+    FocusScope.of(context).unfocus();
+    setState(() => _sending = true);
+    _controller.forward().whenComplete(() {
+      if (mounted) Navigator.of(context).pop(_message.text);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isBirthday = widget.isBirthday;
+    final icon = isBirthday ? LucideIcons.cake : LucideIcons.flame;
+    final screenH = MediaQuery.of(context).size.height;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          final dy = screenH * _rise.value;
+          final dx = screenH * _drift.value;
+          final angle = _flyAngle.value;
+          final scale = _flyScale.value;
+          final opacity = _flyOpacity.value;
+          final envIn = _envIn.value;
+          final flap = _flap.value;
+          final fold = _fold.value;
+
+          return Transform.translate(
+            offset: Offset(dx, dy),
+            child: Transform.rotate(
+              angle: angle,
+              child: Transform.scale(
+                scale: scale,
+                child: Opacity(
+                  opacity: opacity,
+                  child: SizedBox(
+                    width: 320,
+                    height: 380,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // ── Phong bì (hiện ra sau khi bấm gửi) ──
+                        IgnorePointer(
+                          child: Opacity(
+                            opacity: envIn,
+                            child: Transform.scale(
+                              scale: 0.86 + 0.14 * envIn,
+                              child: _Envelope(flapProgress: flap),
+                            ),
+                          ),
+                        ),
+                        // ── Lá thư (nội dung lời chúc) ──
+                        AnimatedBuilder(
+                          animation: _fold,
+                          builder: (context, _) {
+                            return Opacity(
+                              opacity: 1 - fold,
+                              child: Transform.translate(
+                                offset: Offset(0, 22 * fold),
+                                child: Transform.scale(
+                                  scaleY: 1 - 0.9 * fold,
+                                  alignment: Alignment.center,
+                                  child: _LetterContent(
+                                    title: widget.title,
+                                    subtitle: widget.subtitle,
+                                    isBirthday: isBirthday,
+                                    icon: icon,
+                                    controller: _message,
+                                    sending: _sending,
+                                    onSend: _send,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Nội dung lá thư: tiêu đề, tên, ngày và ô nhập lời chúc.
+class _LetterContent extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool isBirthday;
+  final IconData icon;
+  final TextEditingController controller;
+  final bool sending;
+  final VoidCallback onSend;
+
+  const _LetterContent({
+    required this.title,
+    required this.subtitle,
+    required this.isBirthday,
+    required this.icon,
+    required this.controller,
+    required this.sending,
+    required this.onSend,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final dialogTitle =
+        isBirthday ? l10n.wishDialogTitle : l10n.anniversaryDialogTitle;
+    final dialogHint =
+        isBirthday ? l10n.wishDialogHint : l10n.anniversaryDialogHint;
+
+    return Container(
+      width: 320,
+      height: 380,
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: context.accent.withValues(alpha: 0.6),
+          width: 1.2,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header: icon + tiêu đề + nút đóng ──
+          Row(
+            children: [
+              Icon(icon, size: 18, color: context.primary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  dialogTitle,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: context.textPrimary,
+                  ),
+                ),
+              ),
+              if (!sending)
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: Icon(
+                      LucideIcons.x,
+                      size: 16,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // ── Tên + ngày ──
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: context.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: context.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          const Divider(height: 1, thickness: 0.5),
+          const SizedBox(height: 12),
+          // ── Ô nhập lời chúc ──
+          Expanded(
+            child: TextField(
+              controller: controller,
+              enabled: !sending,
+              maxLines: null,
+              expands: true,
+              textAlignVertical: TextAlignVertical.top,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: context.textPrimary,
+              ),
+              decoration: InputDecoration(
+                hintText: dialogHint,
+                hintStyle: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: context.textSecondary.withValues(alpha: 0.6),
+                ),
+                filled: true,
+                fillColor: context.background,
+                isDense: true,
+                contentPadding: const EdgeInsets.all(12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: context.accent.withValues(alpha: 0.3),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: context.accent.withValues(alpha: 0.3),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: context.accent, width: 1.2),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          // ── Nút: Hủy / Gửi ──
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: sending ? null : () => Navigator.of(context).pop(),
+                child: Text(
+                  l10n.cancelLabel,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: context.textSecondary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: sending ? null : onSend,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.primary,
+                  foregroundColor: context.textOnPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 10,
+                  ),
+                ),
+                child: Text(
+                  l10n.wishSendButton,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Hình phong bì vẽ bằng CustomPaint, có nắp đóng dần theo [flapProgress].
+class _Envelope extends StatelessWidget {
+  final double flapProgress;
+
+  const _Envelope({required this.flapProgress});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 320,
+      height: 380,
+      child: CustomPaint(
+        painter: _EnvelopePainter(
+          bodyColor: context.surface,
+          accent: context.accent,
+          primary: context.primary,
+          flapProgress: flapProgress,
+        ),
+      ),
+    );
+  }
+}
+
+class _EnvelopePainter extends CustomPainter {
+  final Color bodyColor;
+  final Color accent;
+  final Color primary;
+  final double flapProgress;
+
+  _EnvelopePainter({
+    required this.bodyColor,
+    required this.accent,
+    required this.primary,
+    required this.flapProgress,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final rrect = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      const Radius.circular(16),
+    );
+
+    // Bóng đổ
+    canvas.drawShadow(
+      Path()..addRRect(rrect),
+      Colors.black.withValues(alpha: 0.15),
+      6,
+      false,
+    );
+
+    // Thân phong bì
+    canvas.drawRRect(rrect, Paint()..color = bodyColor);
+
+    // Viền vàng
+    canvas.drawRRect(
+      rrect,
+      Paint()
+        ..color = accent.withValues(alpha: 0.7)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4,
+    );
+
+    final topLeft = Offset(w * 0.08, h * 0.08);
+    final topRight = Offset(w * 0.92, h * 0.08);
+    final bottomLeft = Offset(w * 0.08, h * 0.92);
+    final bottomRight = Offset(w * 0.92, h * 0.92);
+    final center = Offset(w * 0.5, h * 0.5);
+
+    // Đường gấp tạo hình chữ V (nửa dưới)
+    final seamPaint = Paint()
+      ..color = accent.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.6;
+
+    final leftSeam = Path()
+      ..moveTo(center.dx, center.dy)
+      ..lineTo(bottomLeft.dx, bottomLeft.dy);
+    canvas.drawPath(leftSeam, seamPaint);
+
+    final rightSeam = Path()
+      ..moveTo(center.dx, center.dy)
+      ..lineTo(bottomRight.dx, bottomRight.dy);
+    canvas.drawPath(rightSeam, seamPaint);
+
+    // Nắp phong bì: tam giác từ mép trên đóng dần xuống giữa
+    final apexY = h * 0.08 + (center.dy - h * 0.08) * flapProgress;
+    final apex = Offset(center.dx, apexY);
+
+    final flapPath = Path()
+      ..moveTo(topLeft.dx, topLeft.dy)
+      ..lineTo(apex.dx, apex.dy)
+      ..lineTo(topRight.dx, topRight.dy)
+      ..close();
+
+    if (flapProgress > 0) {
+      canvas.drawPath(
+        flapPath,
+        Paint()
+          ..color = primary.withValues(alpha: 0.05)
+          ..style = PaintingStyle.fill,
+      );
+      final flapEdge = Paint()
+        ..color = accent.withValues(alpha: 0.9)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6;
+      final edgePath = Path()
+        ..moveTo(topLeft.dx, topLeft.dy)
+        ..lineTo(apex.dx, apex.dy)
+        ..lineTo(topRight.dx, topRight.dy);
+      canvas.drawPath(edgePath, flapEdge);
+    }
+
+    // Con dấu sáp ở giữa
+    canvas.drawCircle(center, 9, Paint()..color = accent);
+    canvas.drawCircle(center, 4.5, Paint()..color = primary);
+  }
+
+  @override
+  bool shouldRepaint(covariant _EnvelopePainter oldDelegate) =>
+      oldDelegate.bodyColor != bodyColor ||
+      oldDelegate.accent != accent ||
+      oldDelegate.primary != primary ||
+      oldDelegate.flapProgress != flapProgress;
+}

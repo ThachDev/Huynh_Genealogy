@@ -2,4 +2,3 @@ arb-dir: lib/resources
 template-arb-file: app_vi.arb
 output-class: AppLocalizations
 output-dir: lib/resources
-synthetic-package: false

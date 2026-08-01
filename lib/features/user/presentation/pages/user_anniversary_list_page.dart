@@ -82,19 +82,16 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
-                    color: context.accent.withValues(alpha: 0.6),
-                    width: 1.2),
+                    color: context.accent.withValues(alpha: 0.6), width: 1.2),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
-                    color: context.accent.withValues(alpha: 0.6),
-                    width: 1.2),
+                    color: context.accent.withValues(alpha: 0.6), width: 1.2),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide:
-                    BorderSide(color: context.accent, width: 1.5),
+                borderSide: BorderSide(color: context.accent, width: 1.5),
               ),
             ),
             onChanged: (value) => setState(() => _query = value),

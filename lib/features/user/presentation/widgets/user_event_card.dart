@@ -268,8 +268,7 @@ class UserEventCard extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(LucideIcons.user,
-                                      size: 13,
-                                      color: context.textSecondary),
+                                      size: 13, color: context.textSecondary),
                                   const SizedBox(width: 4),
                                   Text(
                                     event.organizer!,
@@ -291,8 +290,7 @@ class UserEventCard extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Icon(LucideIcons.mapPin,
-                                        size: 13,
-                                        color: context.textSecondary),
+                                        size: 13, color: context.textSecondary),
                                     const SizedBox(width: 4),
                                     Flexible(
                                       child: Text(

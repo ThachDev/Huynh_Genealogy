@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 enum Gender { male, female, unknown }
+
 enum MaritalStatus { single, married, divorced, widowed, unknown }
 
 class MemberEntity extends Equatable {

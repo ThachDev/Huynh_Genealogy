@@ -158,7 +158,6 @@ class _AppDialogWidget extends StatelessWidget {
       backgroundColor: context.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: accentColor.withValues(alpha: 0.3), width: 1),
       ),
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Padding(
@@ -201,11 +200,11 @@ class _AppDialogWidget extends StatelessWidget {
               child: messageSpan != null
                   ? Text.rich(
                       messageSpan!,
-                      textAlign: showIcon ? TextAlign.center : TextAlign.left,
+                      textAlign: showIcon ? TextAlign.center : TextAlign.justify,
                     )
                   : Text(
                       message,
-                      textAlign: showIcon ? TextAlign.center : TextAlign.left,
+                      textAlign: showIcon ? TextAlign.center : TextAlign.justify,
                       style: GoogleFonts.inter(
                         fontSize: 13,
                         color: context.textSecondary,

@@ -4,7 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/member_entity.dart';
 import '../../../../../resources/app_localizations.dart';
-import '../../../../../core/widgets/app_common_widgets.dart';
+import '../../../../../core/widgets/widgets.dart';
 
 import '../../../../family_tree/presentation/pages/family_member_detail_page.dart';
 
@@ -71,25 +71,13 @@ class MemberItemWidget extends StatelessWidget {
                       width: 1.0,
                     ),
                   ),
-                  child: CircleAvatar(
+                  child: AppAvatar(
+                    avatarUrl: member.avatarUrl,
+                    fullName: member.fullName,
                     radius: 26,
+                    fontSize: 18,
                     backgroundColor: context.resolve(
                         Colors.grey.shade100, const Color(0xFF2C2C2C)),
-                    backgroundImage: member.avatarUrl != null
-                        ? NetworkImage(member.avatarUrl!)
-                        : null,
-                    child: member.avatarUrl == null
-                        ? Icon(
-                            member.gender == Gender.male
-                                ? LucideIcons.user
-                                : LucideIcons.user2,
-                            color: (member.generation != null &&
-                                    member.generation! < 2)
-                                ? context.textSecondary
-                                : context.textPrimary,
-                            size: 24,
-                          )
-                        : null,
                   ),
                 ),
                 const SizedBox(width: 14),

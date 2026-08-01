@@ -9,8 +9,12 @@ import '../../../../features/auth/auth.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../bloc/family_tree_bloc.dart';
 import '../widgets/family_member_node_widget.dart';
+import '../widgets/add_member_option_dialog.dart';
+import '../widgets/select_unlinked_member_sheet.dart';
 import 'family_member_detail_page.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
+import '../../../admin/domain/usecase/save_member.dart';
+import '../../../../core/di/injection_container.dart';
 
 const double _nodeWidth = 140.0;
 const double _hSpacing = 40.0;
@@ -539,14 +543,16 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                   _lastTreeSize = treeSize;
 
                   final authState = context.read<AuthBloc>().state;
-                  final userMemberId =
-                      authState is Authenticated ? authState.user.memberId : null;
+                  final userMemberId = authState is Authenticated
+                      ? authState.user.memberId
+                      : null;
 
                   // Auto fit or zoom to user's node on load
                   if (!_hasFitTree) {
                     _hasFitTree = true;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (userMemberId != null && positions.containsKey(userMemberId)) {
+                      if (userMemberId != null &&
+                          positions.containsKey(userMemberId)) {
                         _centerOnNode(userMemberId);
                       } else {
                         _fitTreeOverview();
@@ -618,40 +624,10 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                                   );
                                 },
                                 onAddChildTap: canEdit
-                                    ? () async {
-                                        final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => AdminMemberFormPage(
-                                              initialParentId: member.id,
-                                              initialGeneration:
-                                                  (member.generation ?? 0) + 1,
-                                              isLockedContext: true,
-                                            ),
-                                          ),
-                                        );
-                                        if (result == true && context.mounted) {
-                                          _reloadTree();
-                                        }
-                                      }
+                                    ? () => _onAddChild(member, state.members)
                                     : null,
                                 onAddSpouseTap: canEdit
-                                    ? () async {
-                                        final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => AdminMemberFormPage(
-                                              initialSpouseId: member.id,
-                                              initialGeneration:
-                                                  member.generation,
-                                              isLockedContext: true,
-                                            ),
-                                          ),
-                                        );
-                                        if (result == true && context.mounted) {
-                                          _reloadTree();
-                                        }
-                                      }
+                                    ? () => _onAddSpouse(member, state.members)
                                     : null,
                               ),
                             );
@@ -669,6 +645,175 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _onAddChild(
+      MemberEntity parentMember, List<MemberEntity> allMembers) async {
+    final candidateMembers = allMembers.where((m) {
+      if (m.id == parentMember.id) return false;
+      return m.parentId == null && m.motherId == null;
+    }).toList();
+
+    AddMemberOption? option;
+    if (candidateMembers.isNotEmpty) {
+      option = await AddMemberOptionDialog.show(
+        context,
+        title: 'Thêm Con Cho ${parentMember.fullName}',
+        availableCount: candidateMembers.length,
+      );
+      if (option == null) return;
+    } else {
+      option = AddMemberOption.createNew;
+    }
+
+    if (!mounted) return;
+
+    if (option == AddMemberOption.createNew) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AdminMemberFormPage(
+            initialParentId: parentMember.id,
+            initialGeneration: (parentMember.generation ?? 0) + 1,
+            isLockedContext: true,
+          ),
+        ),
+      );
+      if (result == true && mounted) {
+        _reloadTree();
+      }
+    } else if (option == AddMemberOption.selectExisting) {
+      final selectedMember = await SelectUnlinkedMemberSheet.show(
+        context,
+        candidateMembers: candidateMembers,
+        title: 'Chọn Thành Viên Làm Con',
+        subtitle: 'Kết nối thành viên làm con của ${parentMember.fullName}',
+      );
+      if (selectedMember == null || !mounted) return;
+
+      final confirm = await AppDialog.confirm(
+        context,
+        title: 'Xác nhận kết nối',
+        message:
+            'Bạn có chắc chắn muốn gắn thành viên "${selectedMember.fullName}" làm con của "${parentMember.fullName}"?',
+        confirmLabel: 'Xác nhận kết nối',
+        cancelLabel: 'Hủy',
+        type: AppDialogType.info,
+      );
+
+      if (confirm == true && mounted) {
+        final isMother = parentMember.gender == Gender.female;
+        final updatedMember = selectedMember.copyWith(
+          parentId: isMother ? selectedMember.parentId : parentMember.id,
+          motherId: isMother ? parentMember.id : selectedMember.motherId,
+          generation: (parentMember.generation ?? 0) + 1,
+        );
+
+        final saveMemberUsecase = sl<SaveMember>();
+        final result =
+            await saveMemberUsecase(SaveMemberParams(member: updatedMember));
+        if (!mounted) return;
+
+        result.fold(
+          (failure) {
+            AppSnackBar.error(context, failure.message);
+          },
+          (saved) {
+            AppSnackBar.success(context,
+                'Đã kết nối thành viên "${saved.fullName}" thành công!');
+            _reloadTree();
+          },
+        );
+      }
+    }
+  }
+
+  Future<void> _onAddSpouse(
+      MemberEntity spouseMember, List<MemberEntity> allMembers) async {
+    final candidateMembers = allMembers.where((m) {
+      if (m.id == spouseMember.id) return false;
+      return m.spouseId == null;
+    }).toList();
+
+    AddMemberOption? option;
+    if (candidateMembers.isNotEmpty) {
+      option = await AddMemberOptionDialog.show(
+        context,
+        title: 'Thêm Vợ / Chồng Cho ${spouseMember.fullName}',
+        availableCount: candidateMembers.length,
+      );
+      if (option == null) return;
+    } else {
+      option = AddMemberOption.createNew;
+    }
+
+    if (!mounted) return;
+
+    if (option == AddMemberOption.createNew) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AdminMemberFormPage(
+            initialSpouseId: spouseMember.id,
+            initialGeneration: spouseMember.generation,
+            isLockedContext: true,
+          ),
+        ),
+      );
+      if (result == true && mounted) {
+        _reloadTree();
+      }
+    } else if (option == AddMemberOption.selectExisting) {
+      final selectedMember = await SelectUnlinkedMemberSheet.show(
+        context,
+        candidateMembers: candidateMembers,
+        title: 'Chọn Thành Viên Làm Vợ / Chồng',
+        subtitle: 'Kết nối vợ/chồng với ${spouseMember.fullName}',
+      );
+      if (selectedMember == null || !mounted) return;
+
+      final confirm = await AppDialog.confirm(
+        context,
+        title: 'Xác nhận kết nối',
+        message:
+            'Bạn có chắc chắn muốn kết nối vợ/chồng giữa "${selectedMember.fullName}" và "${spouseMember.fullName}"?',
+        confirmLabel: 'Xác nhận kết nối',
+        cancelLabel: 'Hủy',
+        type: AppDialogType.info,
+      );
+
+      if (confirm == true && mounted) {
+        final updatedSelected = selectedMember.copyWith(
+          spouseId: spouseMember.id,
+          generation: spouseMember.generation ?? selectedMember.generation,
+          maritalStatus: MaritalStatus.married,
+        );
+
+        final saveMemberUsecase = sl<SaveMember>();
+        final result1 =
+            await saveMemberUsecase(SaveMemberParams(member: updatedSelected));
+
+        if (spouseMember.spouseId == null) {
+          final updatedSpouse = spouseMember.copyWith(
+            spouseId: selectedMember.id,
+            maritalStatus: MaritalStatus.married,
+          );
+          await saveMemberUsecase(SaveMemberParams(member: updatedSpouse));
+        }
+
+        if (!mounted) return;
+
+        result1.fold(
+          (failure) {
+            AppSnackBar.error(context, failure.message);
+          },
+          (saved) {
+            AppSnackBar.success(context, 'Đã kết nối vợ/chồng thành công!');
+            _reloadTree();
+          },
+        );
+      }
+    }
   }
 }
 

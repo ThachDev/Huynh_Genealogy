@@ -180,25 +180,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: context.isDarkMode
-              ? Colors.white.withValues(alpha: 0.08)
-              : const Color(0xFFF2ECE7),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.resolve(
-              Colors.black.withValues(alpha: 0.02),
-              Colors.transparent,
-            ),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +216,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     final title = isEdit ? l10n.editBranchTitle : l10n.addBranchTitle;
 
     return Scaffold(
-      backgroundColor: context.background,
+      backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: title,
         automaticallyImplyLeading: false,
@@ -247,7 +230,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
             ),
         ],
       ),
-      body: BlocConsumer<AdminBranchFormBloc, AdminBranchFormState>(
+      body: AppBackgroundBody(
+        child: BlocConsumer<AdminBranchFormBloc, AdminBranchFormState>(
         listener: (context, state) {
           final l10n = AppLocalizations.of(context)!;
           if (state is AdminBranchFormSuccess) {
@@ -478,19 +462,6 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
               // Sticky bottom buttons
               Container(
                 padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
-                decoration: BoxDecoration(
-                  color: context.background,
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.resolve(
-                        Colors.black.withValues(alpha: 0.06),
-                        Colors.transparent,
-                      ),
-                      blurRadius: 8,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
-                ),
                 child: AppFormActionButtons(
                   saveLabel: l10n.saveBranchLabel,
                   onSave: _submitForm,
@@ -500,6 +471,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
           );
         },
       ),
-    );
+    ),
+  );
   }
 }

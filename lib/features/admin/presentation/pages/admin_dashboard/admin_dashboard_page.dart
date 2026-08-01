@@ -20,6 +20,8 @@ import '../../../../auth/auth.dart';
 import '../../../../family_tree/family_tree.dart';
 import 'pages/admin_member_form_page.dart';
 import 'pages/admin_branch_form_page.dart';
+import '../../../../family_tree/presentation/widgets/add_member_option_dialog.dart';
+import '../../../../family_tree/presentation/widgets/select_unlinked_member_sheet.dart';
 import '../../bloc/admin_member_form/admin_member_form_bloc.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 import '../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
@@ -102,13 +104,57 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         UserMainNavigationPage.fabNotifier.value = FABConfig(
           icon: LucideIcons.userPlus,
           label: 'Thành viên +',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AdminMemberFormPage(),
-              ),
-            ).then((_) => _loadTree());
+          onTap: () async {
+            final treeState = context.read<FamilyTreeBloc>().state;
+            List<MemberEntity> unlinkedMembers = [];
+            if (treeState is FamilyTreeLoaded) {
+              unlinkedMembers = treeState.members
+                  .where((m) =>
+                      m.parentId == null &&
+                      m.motherId == null &&
+                      m.spouseId == null)
+                  .toList();
+            }
+
+            AddMemberOption? option;
+            if (unlinkedMembers.isNotEmpty) {
+              option = await AddMemberOptionDialog.show(
+                context,
+                title: 'Thêm Thành Viên',
+                availableCount: unlinkedMembers.length,
+              );
+              if (option == null) return;
+            } else {
+              option = AddMemberOption.createNew;
+            }
+
+            if (!mounted) return;
+
+            if (option == AddMemberOption.createNew) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AdminMemberFormPage(),
+                ),
+              ).then((_) => _loadTree());
+            } else if (option == AddMemberOption.selectExisting) {
+              final selected = await SelectUnlinkedMemberSheet.show(
+                context,
+                candidateMembers: unlinkedMembers,
+                title: 'Chọn Thành Viên Chưa Nối Cây',
+                subtitle: 'Chọn thành viên để mở thông tin và nối vào gia phả',
+              );
+              if (selected != null && mounted) {
+                final selectedMemberId = selected.id;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AdminMemberFormPage(memberId: selectedMemberId),
+                  ),
+                ).then((_) => _loadTree());
+              }
+            }
           },
         );
       } else if (_selectedTab == AdminDashboardTab.branches) {

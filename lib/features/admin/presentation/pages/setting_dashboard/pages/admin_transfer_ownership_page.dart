@@ -19,7 +19,7 @@ class AdminTransferOwnershipPage extends StatefulWidget {
 
 class _AdminTransferOwnershipPageState
     extends State<AdminTransferOwnershipPage> {
-  int? _selectedIndex;
+  int? _selectedUserId;
   final _searchController = TextEditingController();
 
   @override
@@ -43,59 +43,39 @@ class _AdminTransferOwnershipPageState
 
   void _confirmTransfer(int familyId, int newOwnerUserId, String newOwnerName) {
     final l10n = AppLocalizations.of(context)!;
-    showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(
-              color: AppColors.error.withValues(alpha: 0.3), width: 1),
-        ),
-        title: Row(
-          children: [
-            const Icon(LucideIcons.alertTriangle,
-                color: AppColors.error, size: 22),
-            const SizedBox(width: 10),
-            Text(l10n.warningDialogTitle,
-                style: GoogleFonts.beVietnamPro(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.warningDialogMessage,
-              style: GoogleFonts.inter(
-                  fontSize: 13, color: Colors.white70, height: 1.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.warningDialogConfirmMessage(newOwnerName),
-              style: GoogleFonts.inter(
-                  fontSize: 13, color: Colors.white60, height: 1.5),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.formCancel,
-                style: GoogleFonts.inter(
-                    color: Colors.white60, fontWeight: FontWeight.w600)),
-          ),
-          AppButton(
-            label: l10n.confirmTransferButton,
-            onPressed: () => Navigator.of(ctx).pop(true),
-            variant: AppButtonVariant.danger,
-            size: AppButtonSize.small,
-          ),
-        ],
+    final confirmText = l10n.warningDialogConfirmMessage(newOwnerName);
+    final parts = confirmText.split(newOwnerName);
+
+    final messageSpan = TextSpan(
+      style: GoogleFonts.inter(
+        fontSize: 13,
+        color: context.textSecondary,
+        height: 1.5,
       ),
+      children: [
+        TextSpan(text: '${l10n.warningDialogMessage}\n\n'),
+        if (parts.isNotEmpty) TextSpan(text: parts[0]),
+        TextSpan(
+          text: newOwnerName,
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.bold,
+            color: context.textPrimary,
+          ),
+        ),
+        if (parts.length > 1) TextSpan(text: parts[1]),
+      ],
+    );
+
+    AppDialog.confirm(
+      context,
+      title: l10n.warningDialogTitle,
+      message: '${l10n.warningDialogMessage}\n\n$confirmText',
+      messageSpan: messageSpan,
+      confirmLabel: l10n.confirmTransferButton,
+      cancelLabel: l10n.formCancel,
+      type: AppDialogType.danger,
+      confirmColor: context.primary,
+      showIcon: false,
     ).then((confirmed) {
       if (confirmed == true && mounted) {
         context.read<AdminTransferOwnershipBloc>().add(
@@ -120,7 +100,8 @@ class _AdminTransferOwnershipPageState
           listener: (context, state) {
             if (state is AdminTransferOwnershipSuccess) {
               AppSnackBar.success(context, l10n.transferSuccess);
-              Navigator.pop(context);
+              context.read<AuthBloc>().add(AuthProfileRefreshSilent());
+              Navigator.pop(context, true);
             } else if (state is AdminTransferOwnershipFailure) {
               AppSnackBar.error(context, state.message);
             }
@@ -288,73 +269,70 @@ class _AdminTransferOwnershipPageState
                                       ),
                                     ),
                                   )
-                                  : ListView.separated(
-                                      itemCount: filtered.length,
-                                      separatorBuilder: (context, index) =>
-                                          Divider(
-                                        height: 1,
-                                        thickness: 1,
-                                        color: context.accent
-                                            .withValues(alpha: 0.05),
-                                      ),
-                                      itemBuilder: (context, index) {
-                                        final candidate = filtered[index];
-
-                                        return ListTile(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 16, vertical: 8),
-                                          leading: CircleAvatar(
-                                            backgroundColor: context.appBarBg
-                                                .withValues(alpha: 0.08),
-                                            backgroundImage: candidate
-                                                        .userAvatarUrl !=
-                                                    null
-                                                ? NetworkImage(
-                                                    candidate.userAvatarUrl!)
-                                                : null,
-                                            child: candidate.userAvatarUrl ==
-                                                    null
-                                                ? Text(
-                                                    (candidate.userFullName ??
-                                                            'U')[0]
-                                                        .toUpperCase(),
-                                                    style: GoogleFonts
-                                                        .beVietnamPro(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: context.appBarBg,
-                                                    ),
-                                                  )
-                                                : null,
-                                          ),
-                                          title: Text(
-                                            candidate.userFullName ??
-                                                l10n.roleViewer,
-                                            style: GoogleFonts.beVietnamPro(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: context.textPrimary,
-                                            ),
-                                          ),
-                                          subtitle: Text(
-                                            '${AdminDashboardPage.roleLabel(candidate.role, context)} • ${candidate.userEmail ?? l10n.noEmail}',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 11,
-                                              color: context.textSecondary,
-                                            ),
-                                          ),
-                                          trailing: Icon(
-                                            _selectedIndex == index
-                                                ? Icons.radio_button_checked
-                                                : Icons.radio_button_unchecked,
-                                            color: _selectedIndex == index
-                                                ? context.primary
-                                                : context.textSecondary,
-                                          ),
-                                        );
-                                      },
+                                : ListView.separated(
+                                    itemCount: filtered.length,
+                                    separatorBuilder: (context, index) =>
+                                        Divider(
+                                      height: 1,
+                                      thickness: 1,
+                                      color: context.accent
+                                          .withValues(alpha: 0.05),
                                     ),
+                                    itemBuilder: (context, index) {
+                                      final candidate = filtered[index];
+                                      final isSelected =
+                                          _selectedUserId == candidate.userId;
+
+                                      return ListTile(
+                                        onTap: () {
+                                          setState(() {
+                                            if (_selectedUserId ==
+                                                candidate.userId) {
+                                              _selectedUserId = null;
+                                            } else {
+                                              _selectedUserId =
+                                                  candidate.userId;
+                                            }
+                                          });
+                                        },
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 8),
+                                        leading: AppAvatar(
+                                          avatarUrl: candidate.userAvatarUrl,
+                                          fullName: candidate.userFullName,
+                                          radius: 20,
+                                          fallbackInitial: 'U',
+                                          backgroundColor: context.appBarBg.withValues(alpha: 0.08),
+                                          textColor: context.appBarBg,
+                                        ),
+                                        title: Text(
+                                          candidate.userFullName ??
+                                              l10n.roleViewer,
+                                          style: GoogleFonts.beVietnamPro(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            color: context.textPrimary,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          '${AdminDashboardPage.roleLabel(candidate.role, context)} • ${candidate.userEmail ?? l10n.noEmail}',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 11,
+                                            color: context.textSecondary,
+                                          ),
+                                        ),
+                                        trailing: Icon(
+                                          isSelected
+                                              ? Icons.radio_button_checked
+                                              : Icons.radio_button_unchecked,
+                                          color: isSelected
+                                              ? context.primary
+                                              : context.textSecondary,
+                                        ),
+                                      );
+                                    },
+                                  ),
                           ),
                         ],
                       ),
@@ -363,17 +341,22 @@ class _AdminTransferOwnershipPageState
                   const SizedBox(height: 24),
                   AppButton(
                     label: l10n.proceedTransferButton,
-                    onPressed: _selectedIndex != null
+                    onPressed: _selectedUserId != null
                         ? () {
                             final authState = context.read<AuthBloc>().state;
                             if (authState is Authenticated &&
                                 authState.user.familyId != null) {
-                              final candidate = filtered[_selectedIndex!];
-                              _confirmTransfer(
-                                authState.user.familyId!,
-                                candidate.userId,
-                                candidate.userFullName ?? l10n.roleViewer,
-                              );
+                              final selectedCandidate = candidates
+                                  .where((c) => c.userId == _selectedUserId)
+                                  .firstOrNull;
+                              if (selectedCandidate != null) {
+                                _confirmTransfer(
+                                  authState.user.familyId!,
+                                  selectedCandidate.userId,
+                                  selectedCandidate.userFullName ??
+                                      l10n.roleViewer,
+                                );
+                              }
                             }
                           }
                         : null,

@@ -219,10 +219,18 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
                         : null,
                   ),
                   child: !hasAvatar
-                      ? Icon(
-                          LucideIcons.user,
-                          size: 22,
-                          color: context.primary.withValues(alpha: 0.5),
+                      ? Center(
+                          child: Text(
+                            AppAvatar.getInitialLetter(
+                              (user?.fullName as String?) ?? _nameController.text,
+                              fallback: 'U',
+                            ),
+                            style: GoogleFonts.beVietnamPro(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: context.primary,
+                            ),
+                          ),
                         )
                       : null,
                 ),

@@ -124,30 +124,14 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                     width: 1.0,
                                   ),
                                 ),
-                                child: CircleAvatar(
+                                child: AppAvatar(
+                                  avatarUrl: widget.member.avatarUrl,
+                                  fullName: widget.member.fullName,
                                   radius: 20,
+                                  fontSize: 16,
                                   backgroundColor: context.resolve(
                                       Colors.grey.shade100,
                                       const Color(0xFF2C2C2C)),
-                                  backgroundImage: widget.member.avatarUrl !=
-                                          null
-                                      ? NetworkImage(widget.member.avatarUrl!)
-                                      : null,
-                                  child: widget.member.avatarUrl == null
-                                      ? Icon(
-                                          widget.member.gender == Gender.male
-                                              ? LucideIcons.user
-                                              : LucideIcons.user2,
-                                          color: widget.member.gender ==
-                                                  Gender.male
-                                              ? context.genderMale
-                                              : widget.member.gender ==
-                                                      Gender.female
-                                                  ? context.genderFemale
-                                                  : context.textSecondary,
-                                          size: 18,
-                                        )
-                                      : null,
                                 ),
                               ),
                             ),

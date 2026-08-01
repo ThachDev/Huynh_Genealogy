@@ -244,648 +244,622 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     final title = isEdit ? l10n.editMemberTitle : l10n.addMemberTitle;
 
     return Scaffold(
-      backgroundColor: context.background,
+      backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: title,
         automaticallyImplyLeading: false,
       ),
-      body: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
-        listener: (context, state) async {
-          if (state is AdminMemberFormSuccess) {
-            if (!state.isDeleted &&
-                widget.pendingChildMemberId != null &&
-                state.member.id > 0) {
-              final childId = widget.pendingChildMemberId!;
-              final saveMemberUsecase = sl<SaveMember>();
-              final currentReadyState =
-                  context.read<AdminMemberFormBloc>().state;
-              if (currentReadyState is AdminMemberFormReady) {
-                final childMember = currentReadyState.members
-                    .where((m) => m.id == childId)
-                    .firstOrNull;
-                if (childMember != null) {
-                  await saveMemberUsecase(SaveMemberParams(
-                    member: childMember.copyWith(parentId: state.member.id),
-                  ));
+      body: AppBackgroundBody(
+        child: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
+          listener: (context, state) async {
+            if (state is AdminMemberFormSuccess) {
+              if (!state.isDeleted &&
+                  widget.pendingChildMemberId != null &&
+                  state.member.id > 0) {
+                final childId = widget.pendingChildMemberId!;
+                final saveMemberUsecase = sl<SaveMember>();
+                final currentReadyState =
+                    context.read<AdminMemberFormBloc>().state;
+                if (currentReadyState is AdminMemberFormReady) {
+                  final childMember = currentReadyState.members
+                      .where((m) => m.id == childId)
+                      .firstOrNull;
+                  if (childMember != null) {
+                    await saveMemberUsecase(SaveMemberParams(
+                      member: childMember.copyWith(parentId: state.member.id),
+                    ));
+                  }
                 }
               }
-            }
 
-            if (!state.isDeleted && widget.isOwnerSelfSetup) {
-              // Link newly created member to the OWNER's account
-              final linkUsecase = sl<LinkMemberToUser>();
-              final result = await linkUsecase(LinkMemberToUserParams(
-                userId: widget.ownerUserId ?? 0,
-                memberId: state.member.id,
-              ));
-              if (mounted) {
-                result.fold(
-                  (failure) => AppSnackBar.error(
-                      context, l10n.linkAccountError(failure.message)),
-                  (_) {
-                    // Refresh auth profile to sync new member_id
-                    context.read<AuthBloc>().add(AuthProfileRefreshSilent());
-                    AppSnackBar.success(context, l10n.linkAccountSuccess);
-                    Navigator.pop(context, true);
-                  },
-                );
-              }
-            } else {
-              if (!context.mounted) return;
-              AppSnackBar.success(
-                context,
-                state.isDeleted
-                    ? l10n.deleteMemberSuccess
-                    : l10n.saveMemberSuccess,
-              );
-              Navigator.pop(context, true);
-            }
-          } else if (state is AdminMemberFormError) {
-            AppSnackBar.error(context, state.message);
-          } else if (state is AdminMemberFormReady) {
-            final m = state.member;
-            if (m != null) {
-              _fullNameController.text = m.fullName;
-              _placeOfBirthController.text = m.placeOfBirth ?? '';
-              _generationController.text = m.generation?.toString() ?? '';
-              _notesController.text = m.notes ?? '';
-              _avatarUrlController.text = m.avatarUrl ?? '';
-              _phoneController.text = m.phone ?? '';
-              _educationController.text = m.education ?? '';
-              _occupationController.text = m.occupation ?? '';
-              if (m.education != null && m.education!.isNotEmpty) {
-                if (_predefinedEducation.contains(m.education)) {
-                  _selectedEducationOption = m.education;
-                } else {
-                  _selectedEducationOption = 'Khác';
+              if (!state.isDeleted && widget.isOwnerSelfSetup) {
+                // Link newly created member to the OWNER's account
+                final linkUsecase = sl<LinkMemberToUser>();
+                final result = await linkUsecase(LinkMemberToUserParams(
+                  userId: widget.ownerUserId ?? 0,
+                  memberId: state.member.id,
+                ));
+                if (mounted) {
+                  result.fold(
+                    (failure) => AppSnackBar.error(
+                        context, l10n.linkAccountError(failure.message)),
+                    (_) {
+                      // Refresh auth profile to sync new member_id
+                      context.read<AuthBloc>().add(AuthProfileRefreshSilent());
+                      AppSnackBar.success(context, l10n.linkAccountSuccess);
+                      Navigator.pop(context, true);
+                    },
+                  );
                 }
               } else {
-                _selectedEducationOption = null;
+                if (!context.mounted) return;
+                AppSnackBar.success(
+                  context,
+                  state.isDeleted
+                      ? l10n.deleteMemberSuccess
+                      : l10n.saveMemberSuccess,
+                );
+                Navigator.pop(context, true);
               }
-              _gender = m.gender;
-              _maritalStatus = m.maritalStatus;
-              _isAlive = m.isAlive;
-              _dateOfBirth = _formatUIDate(m.dateOfBirth);
-              _dateOfDeath = _formatUIDate(m.dateOfDeath);
-              _lunarBirthDate = m.lunarBirthDate;
-              _lunarDeathDate = m.lunarDeathDate;
-              _parentId = m.parentId;
-              _motherId = m.motherId;
-              _spouseId = m.spouseId;
-              _branchId = m.branchId;
-            } else {
-              if (_parentId != null && _motherId == null) {
-                final father =
-                    state.members.where((x) => x.id == _parentId).firstOrNull;
-                if (father != null && father.spouseId != null) {
-                  _motherId = father.spouseId;
+            } else if (state is AdminMemberFormError) {
+              AppSnackBar.error(context, state.message);
+            } else if (state is AdminMemberFormReady) {
+              final m = state.member;
+              if (m != null) {
+                _fullNameController.text = m.fullName;
+                _placeOfBirthController.text = m.placeOfBirth ?? '';
+                _generationController.text = m.generation?.toString() ?? '';
+                _notesController.text = m.notes ?? '';
+                _avatarUrlController.text = m.avatarUrl ?? '';
+                _phoneController.text = m.phone ?? '';
+                _educationController.text = m.education ?? '';
+                _occupationController.text = m.occupation ?? '';
+                if (m.education != null && m.education!.isNotEmpty) {
+                  if (_predefinedEducation.contains(m.education)) {
+                    _selectedEducationOption = m.education;
+                  } else {
+                    _selectedEducationOption = 'Khác';
+                  }
+                } else {
+                  _selectedEducationOption = null;
+                }
+                _gender = m.gender;
+                _maritalStatus = m.maritalStatus;
+                _isAlive = m.isAlive;
+                _dateOfBirth = _formatUIDate(m.dateOfBirth);
+                _dateOfDeath = _formatUIDate(m.dateOfDeath);
+                _lunarBirthDate = m.lunarBirthDate;
+                _lunarDeathDate = m.lunarDeathDate;
+                _parentId = m.parentId;
+                _motherId = m.motherId;
+                _spouseId = m.spouseId;
+                _branchId = m.branchId;
+              } else {
+                if (_parentId != null && _motherId == null) {
+                  final father =
+                      state.members.where((x) => x.id == _parentId).firstOrNull;
+                  if (father != null && father.spouseId != null) {
+                    _motherId = father.spouseId;
+                  }
                 }
               }
             }
-          }
-        },
-        builder: (context, state) {
-          if (state is AdminMemberFormInitial ||
-              state is AdminMemberFormLoading ||
-              state is AdminMemberFormSubmitting) {
-            return const Center(
-              child: AppLoading(size: 80),
-            );
-          }
-
-          if (state is AdminMemberFormReady) {
-            final isCorrectMember =
-                (widget.memberId == null && state.member == null) ||
-                    (widget.memberId != null &&
-                        state.member?.id == widget.memberId);
-            if (!isCorrectMember) {
+          },
+          builder: (context, state) {
+            if (state is AdminMemberFormInitial ||
+                state is AdminMemberFormLoading ||
+                state is AdminMemberFormSubmitting) {
               return const Center(
                 child: AppLoading(size: 80),
               );
             }
-          }
 
-          final existingMember =
-              state is AdminMemberFormReady ? state.member : null;
-          final allMembers =
-              state is AdminMemberFormReady ? state.members : <MemberEntity>[];
-          final allBranches =
-              state is AdminMemberFormReady ? state.branches : <BranchEntity>[];
+            if (state is AdminMemberFormReady) {
+              final isCorrectMember =
+                  (widget.memberId == null && state.member == null) ||
+                      (widget.memberId != null &&
+                          state.member?.id == widget.memberId);
+              if (!isCorrectMember) {
+                return const Center(
+                  child: AppLoading(size: 80),
+                );
+              }
+            }
 
-          // ── Smart filtering for dropdowns ─────────────────────────────────
-          final int? currentGeneration =
-              int.tryParse(_generationController.text.trim());
+            final existingMember =
+                state is AdminMemberFormReady ? state.member : null;
+            final allMembers = state is AdminMemberFormReady
+                ? state.members
+                : <MemberEntity>[];
+            final allBranches = state is AdminMemberFormReady
+                ? state.branches
+                : <BranchEntity>[];
 
-          // Đệ quy tìm tất cả con cháu trực hệ của một member để tránh chọn con làm cha mẹ
-          Set<int> getDescendantIds(int memberId) {
-            final descendants = <int>{};
-            void dfs(int id) {
-              for (final child in allMembers) {
-                if (child.parentId == id && !descendants.contains(child.id)) {
-                  descendants.add(child.id);
-                  dfs(child.id);
+            // ── Smart filtering for dropdowns ─────────────────────────────────
+            final int? currentGeneration =
+                int.tryParse(_generationController.text.trim());
+
+            // Đệ quy tìm tất cả con cháu trực hệ của một member để tránh chọn con làm cha mẹ
+            Set<int> getDescendantIds(int memberId) {
+              final descendants = <int>{};
+              void dfs(int id) {
+                for (final child in allMembers) {
+                  if (child.parentId == id && !descendants.contains(child.id)) {
+                    descendants.add(child.id);
+                    dfs(child.id);
+                  }
+                }
+              }
+
+              dfs(memberId);
+              return descendants;
+            }
+
+            final descendants = existingMember != null
+                ? getDescendantIds(existingMember.id)
+                : <int>{};
+
+            final ancestors = <int>{};
+            void dfsAncestors(int? parentId) {
+              if (parentId == null) return;
+              if (!ancestors.contains(parentId)) {
+                ancestors.add(parentId);
+                final parent =
+                    allMembers.where((m) => m.id == parentId).firstOrNull;
+                if (parent != null) {
+                  dfsAncestors(parent.parentId);
                 }
               }
             }
 
-            dfs(memberId);
-            return descendants;
-          }
+            if (existingMember != null) {
+              dfsAncestors(existingMember.parentId);
+            }
 
-          final descendants = existingMember != null
-              ? getDescendantIds(existingMember.id)
-              : <int>{};
-
-          final ancestors = <int>{};
-          void dfsAncestors(int? parentId) {
-            if (parentId == null) return;
-            if (!ancestors.contains(parentId)) {
-              ancestors.add(parentId);
-              final parent =
-                  allMembers.where((m) => m.id == parentId).firstOrNull;
-              if (parent != null) {
-                dfsAncestors(parent.parentId);
+            // Cha/Mẹ: Danh sách thành viên (chỉ loại trừ chính mình, vợ/chồng hiện tại và con cháu)
+            final parentOptions = allMembers.where((m) {
+              if (m.id == existingMember?.id) return false;
+              // LUÔN CHO PHÉP parent hiện tại để không bị reset ngầm khi chỉnh sửa
+              if (existingMember != null && m.id == existingMember.parentId) {
+                return true;
               }
-            }
-          }
+              if (widget.initialParentId != null &&
+                  m.id == widget.initialParentId) {
+                return true;
+              }
 
-          if (existingMember != null) {
-            dfsAncestors(existingMember.parentId);
-          }
+              // Không được chọn vợ/chồng làm cha/mẹ
+              if (_spouseId != null && m.id == _spouseId) return false;
+              // Không được chọn con cháu của chính mình làm cha/mẹ
+              if (descendants.contains(m.id)) return false;
 
-          // Cha/Mẹ: Danh sách thành viên (chỉ loại trừ chính mình, vợ/chồng hiện tại và con cháu)
-          final parentOptions = allMembers.where((m) {
-            if (m.id == existingMember?.id) return false;
-            // LUÔN CHO PHÉP parent hiện tại để không bị reset ngầm khi chỉnh sửa
-            if (existingMember != null && m.id == existingMember.parentId) {
               return true;
-            }
-            if (widget.initialParentId != null &&
-                m.id == widget.initialParentId) {
-              return true;
-            }
+            }).toList();
 
-            // Không được chọn vợ/chồng làm cha/mẹ
-            if (_spouseId != null && m.id == _spouseId) return false;
-            // Không được chọn con cháu của chính mình làm cha/mẹ
-            if (descendants.contains(m.id)) return false;
+            // Vợ/Chồng: cùng thế hệ + ngược giới tính + chưa có vợ/chồng khác
+            final spouseOptions = allMembers.where((m) {
+              if (m.id == existingMember?.id) return false;
+              // LUÔN CHO PHÉP spouse hiện tại để không bị reset ngầm khi chỉnh sửa
+              if (existingMember != null && m.id == existingMember.spouseId) {
+                return true;
+              }
+              if (widget.initialSpouseId != null &&
+                  m.id == widget.initialSpouseId) {
+                return true;
+              }
 
-            return true;
-          }).toList();
-
-          // Vợ/Chồng: cùng thế hệ + ngược giới tính + chưa có vợ/chồng khác
-          final spouseOptions = allMembers.where((m) {
-            if (m.id == existingMember?.id) return false;
-            // LUÔN CHO PHÉP spouse hiện tại để không bị reset ngầm khi chỉnh sửa
-            if (existingMember != null && m.id == existingMember.spouseId) {
-              return true;
-            }
-            if (widget.initialSpouseId != null &&
-                m.id == widget.initialSpouseId) {
-              return true;
-            }
-
-            // Không được chọn cha/mẹ làm vợ/chồng
-            if (_parentId != null && m.id == _parentId) return false;
-            // Không được cưới tổ tiên hoặc con cháu
-            if (descendants.contains(m.id) || ancestors.contains(m.id)) {
-              return false;
-            }
-            // Lọc cùng thế hệ
-            if (currentGeneration != null && m.generation != null) {
-              if (m.generation != currentGeneration) return false;
-            }
-            // Lọc ngược giới tính
-            if (_gender == Gender.male && m.gender == Gender.male) return false;
-            if (_gender == Gender.female && m.gender == Gender.female) {
-              return false;
-            }
-            // Bỏ những người đã có vợ/chồng khác
-            if (m.spouseId != null &&
-                m.spouseId != existingMember?.id &&
-                m.spouseId != _spouseId) {
-              // Cho phép Đa thê: Nếu Nữ đang chọn chồng, thì cho phép chọn Nam dù Nam đã có vợ
-              if (_gender == Gender.female && m.gender == Gender.male) {
-                // allow
-              } else {
+              // Không được chọn cha/mẹ làm vợ/chồng
+              if (_parentId != null && m.id == _parentId) return false;
+              // Không được cưới tổ tiên hoặc con cháu
+              if (descendants.contains(m.id) || ancestors.contains(m.id)) {
                 return false;
               }
-            }
-            // Không được cưới anh/chị/em ruột (chung parentId)
-            if (_parentId != null &&
-                m.parentId != null &&
-                m.parentId == _parentId) {
-              return false;
-            }
-            // Không được cưới anh/em họ trực hệ gần (con của cô dì chú bác ruột - chung ông bà)
-            if (_parentId != null) {
-              final myParent =
-                  allMembers.where((x) => x.id == _parentId).firstOrNull;
-              if (myParent != null &&
-                  myParent.parentId != null &&
-                  m.parentId != null) {
-                final spouseParent =
-                    allMembers.where((x) => x.id == m.parentId).firstOrNull;
-                if (spouseParent != null &&
-                    spouseParent.parentId == myParent.parentId) {
-                  return false; // Chung ông/bà nội ngoại
+              // Lọc cùng thế hệ
+              if (currentGeneration != null && m.generation != null) {
+                if (m.generation != currentGeneration) return false;
+              }
+              // Lọc ngược giới tính
+              if (_gender == Gender.male && m.gender == Gender.male) {
+                return false;
+              }
+              if (_gender == Gender.female && m.gender == Gender.female) {
+                return false;
+              }
+              // Bỏ những người đã có vợ/chồng khác
+              if (m.spouseId != null &&
+                  m.spouseId != existingMember?.id &&
+                  m.spouseId != _spouseId) {
+                // Cho phép Đa thê: Nếu Nữ đang chọn chồng, thì cho phép chọn Nam dù Nam đã có vợ
+                if (_gender == Gender.female && m.gender == Gender.male) {
+                  // allow
+                } else {
+                  return false;
                 }
               }
+              // Không được cưới anh/chị/em ruột (chung parentId)
+              if (_parentId != null &&
+                  m.parentId != null &&
+                  m.parentId == _parentId) {
+                return false;
+              }
+              // Không được cưới anh/em họ trực hệ gần (con của cô dì chú bác ruột - chung ông bà)
+              if (_parentId != null) {
+                final myParent =
+                    allMembers.where((x) => x.id == _parentId).firstOrNull;
+                if (myParent != null &&
+                    myParent.parentId != null &&
+                    m.parentId != null) {
+                  final spouseParent =
+                      allMembers.where((x) => x.id == m.parentId).firstOrNull;
+                  if (spouseParent != null &&
+                      spouseParent.parentId == myParent.parentId) {
+                    return false; // Chung ông/bà nội ngoại
+                  }
+                }
+              }
+              return true;
+            }).toList();
+
+            // Reset _parentId nếu người đã chọn không còn thuộc danh sách
+            final parentIds = parentOptions.map((m) => m.id).toSet();
+            if (_parentId != null && !parentIds.contains(_parentId)) {
+              WidgetsBinding.instance.addPostFrameCallback(
+                  (_) => setState(() => _parentId = null));
             }
-            return true;
-          }).toList();
+            // Reset _spouseId nếu người đã chọn không còn thuộc danh sách
+            final spouseIds = spouseOptions.map((m) => m.id).toSet();
+            if (_spouseId != null && !spouseIds.contains(_spouseId)) {
+              WidgetsBinding.instance.addPostFrameCallback(
+                  (_) => setState(() => _spouseId = null));
+            }
 
-          // Reset _parentId nếu người đã chọn không còn thuộc danh sách
-          final parentIds = parentOptions.map((m) => m.id).toSet();
-          if (_parentId != null && !parentIds.contains(_parentId)) {
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) => setState(() => _parentId = null));
-          }
-          // Reset _spouseId nếu người đã chọn không còn thuộc danh sách
-          final spouseIds = spouseOptions.map((m) => m.id).toSet();
-          if (_spouseId != null && !spouseIds.contains(_spouseId)) {
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) => setState(() => _spouseId = null));
-          }
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 20),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Stack: avatar nổi trên viền trên của card
+                          Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.topCenter,
+                            children: [
+                              // Card đẩy xuống để nhường chỗ nửa avatar (55px)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 55),
+                                child: _buildSectionCard(
+                                  context,
+                                  children: [
+                                    // Khoảng trống phần nửa dưới avatar + label
+                                    const SizedBox(height: 70),
 
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Stack: avatar nổi trên viền trên của card
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topCenter,
-                          children: [
-                            // Card đẩy xuống để nhường chỗ nửa avatar (55px)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 55),
-                              child: _buildSectionCard(
-                                context,
-                                children: [
-                                  // Khoảng trống phần nửa dưới avatar + label
-                                  const SizedBox(height: 70),
-
-                                  // Hàng 1: Họ và tên + Thế hệ
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 3,
-                                        child: _buildTextField(
-                                          controller: _fullNameController,
-                                          label: l10n.fullNameLabel,
-                                          hintText: l10n.nameHint,
-                                          validator: (val) =>
-                                              AppValidators.validateFullName(
-                                                  context, val),
+                                    // Hàng 1: Họ và tên + Thế hệ
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                          child: _buildTextField(
+                                            controller: _fullNameController,
+                                            label: l10n.fullNameLabel,
+                                            hintText: l10n.nameHint,
+                                            validator: (val) =>
+                                                AppValidators.validateFullName(
+                                                    context, val),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        flex: 2,
-                                        child: _buildGenerationField(),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          flex: 2,
+                                          child: _buildGenerationField(),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
 
-                                  // Hàng 2: Hôn nhân + Giới tính
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 3,
-                                        child: _buildDropdown<MaritalStatus>(
-                                          label: l10n.maritalStatusLabel,
-                                          value: _maritalStatus,
-                                          items: [
-                                            DropdownItem(
-                                                value: MaritalStatus.single,
-                                                child:
-                                                    Text(l10n.maritalSingle)),
-                                            DropdownItem(
-                                                value: MaritalStatus.married,
-                                                child:
-                                                    Text(l10n.maritalMarried)),
-                                            DropdownItem(
-                                                value: MaritalStatus.divorced,
-                                                child:
-                                                    Text(l10n.maritalDivorced)),
-                                            DropdownItem(
-                                                value: MaritalStatus.widowed,
-                                                child:
-                                                    Text(l10n.maritalWidowed)),
-                                            DropdownItem(
-                                                value: MaritalStatus.unknown,
-                                                child:
-                                                    Text(l10n.maritalUnknown)),
-                                          ],
-                                          onChanged: (val) {
-                                            if (val != null) {
+                                    // Hàng 2: Hôn nhân + Giới tính
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                          child: _buildDropdown<MaritalStatus>(
+                                            label: l10n.maritalStatusLabel,
+                                            value: _maritalStatus,
+                                            items: [
+                                              DropdownItem(
+                                                  value: MaritalStatus.single,
+                                                  child:
+                                                      Text(l10n.maritalSingle)),
+                                              DropdownItem(
+                                                  value: MaritalStatus.married,
+                                                  child: Text(
+                                                      l10n.maritalMarried)),
+                                              DropdownItem(
+                                                  value: MaritalStatus.divorced,
+                                                  child: Text(
+                                                      l10n.maritalDivorced)),
+                                              DropdownItem(
+                                                  value: MaritalStatus.widowed,
+                                                  child: Text(
+                                                      l10n.maritalWidowed)),
+                                              DropdownItem(
+                                                  value: MaritalStatus.unknown,
+                                                  child: Text(
+                                                      l10n.maritalUnknown)),
+                                            ],
+                                            onChanged: (val) {
+                                              if (val != null) {
+                                                setState(() {
+                                                  _maritalStatus = val;
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(width: 14),
+                                        Expanded(
+                                          flex: 2,
+                                          child: _buildDropdown<Gender>(
+                                            label: l10n.genderLabel,
+                                            value: _gender,
+                                            items: [
+                                              DropdownItem(
+                                                  value: Gender.male,
+                                                  child: Text(l10n.genderMale)),
+                                              DropdownItem(
+                                                  value: Gender.female,
+                                                  child:
+                                                      Text(l10n.genderFemale)),
+                                              DropdownItem(
+                                                  value: Gender.unknown,
+                                                  child:
+                                                      Text(l10n.genderUnknown)),
+                                            ],
+                                            onChanged: (val) {
+                                              if (val != null) {
+                                                setState(() => _gender = val);
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    // Ngày sinh + Tình trạng (cùng hàng)
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Ngày sinh – flex 3
+                                        Expanded(
+                                          flex: 3,
+                                          child: AppDatePickerField(
+                                            dateString: _dateOfBirth,
+                                            label: l10n.dobLabel,
+                                            hintText: l10n.dobHint,
+                                            onDateSelected: (date) {
+                                              final formattedDate =
+                                                  "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
                                               setState(() {
-                                                _maritalStatus = val;
+                                                _dateOfBirth = formattedDate;
+                                                _lunarBirthDate =
+                                                    LunarDateHelper
+                                                        .getLunarDateString(
+                                                            date);
                                               });
-                                            }
-                                          },
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 14),
-                                      Expanded(
-                                        flex: 2,
-                                        child: _buildDropdown<Gender>(
-                                          label: l10n.genderLabel,
-                                          value: _gender,
-                                          items: [
-                                            DropdownItem(
-                                                value: Gender.male,
-                                                child: Text(l10n.genderMale)),
-                                            DropdownItem(
-                                                value: Gender.female,
-                                                child: Text(l10n.genderFemale)),
-                                            DropdownItem(
-                                                value: Gender.unknown,
-                                                child:
-                                                    Text(l10n.genderUnknown)),
-                                          ],
-                                          onChanged: (val) {
-                                            if (val != null) {
-                                              setState(() => _gender = val);
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-
-                                  // Ngày sinh + Tình trạng (cùng hàng)
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Ngày sinh – flex 3
-                                      Expanded(
-                                        flex: 3,
-                                        child: AppDatePickerField(
-                                          dateString: _dateOfBirth,
-                                          label: l10n.dobLabel,
-                                          hintText: l10n.dobHint,
-                                          onDateSelected: (date) {
-                                            final formattedDate =
-                                                "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-                                            setState(() {
-                                              _dateOfBirth = formattedDate;
-                                              _lunarBirthDate = LunarDateHelper
-                                                  .getLunarDateString(date);
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      // Tình trạng – flex 2
-                                      Expanded(
-                                        flex: 2,
-                                        child: GestureDetector(
-                                          onTap: () => setState(
-                                              () => _isAlive = !_isAlive),
-                                          child: InputDecorator(
-                                            decoration: InputDecoration(
-                                              fillColor: context.resolve(
-                                                const Color(0xFFFCFAF8),
-                                                context.surface,
-                                              ),
-                                              filled: true,
-                                              labelText: l10n.statusLabel,
-                                              labelStyle: GoogleFonts.inter(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                                color: context.textSecondary,
-                                                letterSpacing: 0.5,
-                                              ),
-                                              floatingLabelStyle:
-                                                  GoogleFonts.inter(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                                color: context.textSecondary,
-                                                letterSpacing: 0.5,
-                                              ),
-                                              floatingLabelBehavior:
-                                                  FloatingLabelBehavior.always,
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 10),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                borderSide: BorderSide(
-                                                  color: _isAlive
-                                                      ? context.primary
-                                                      : context.textSecondary
-                                                          .withValues(
-                                                              alpha: 0.5),
-                                                  width: 1.2,
+                                        const SizedBox(width: 12),
+                                        // Tình trạng – flex 2
+                                        Expanded(
+                                          flex: 2,
+                                          child: GestureDetector(
+                                            onTap: () => setState(
+                                                () => _isAlive = !_isAlive),
+                                            child: InputDecorator(
+                                              decoration: InputDecoration(
+                                                fillColor: context.resolve(
+                                                  const Color(0xFFFCFAF8),
+                                                  context.surface,
                                                 ),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                borderSide: BorderSide(
-                                                  color: _isAlive
-                                                      ? context.primary
-                                                      : context.textSecondary
-                                                          .withValues(
-                                                              alpha: 0.5),
-                                                  width: 1.2,
+                                                filled: true,
+                                                labelText: l10n.statusLabel,
+                                                labelStyle: GoogleFonts.inter(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: context.textSecondary,
+                                                  letterSpacing: 0.5,
                                                 ),
-                                              ),
-                                            ),
-                                            child: AnimatedSwitcher(
-                                              duration: const Duration(
-                                                  milliseconds: 200),
-                                              child: Row(
-                                                key: ValueKey(_isAlive),
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    _isAlive
-                                                        ? LucideIcons.heart
-                                                        : LucideIcons
-                                                            .heartCrack,
-                                                    size: 14,
+                                                floatingLabelStyle:
+                                                    GoogleFonts.inter(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: context.textSecondary,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                                floatingLabelBehavior:
+                                                    FloatingLabelBehavior
+                                                        .always,
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 10),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  borderSide: BorderSide(
                                                     color: _isAlive
                                                         ? context.primary
                                                         : context.textSecondary
                                                             .withValues(
                                                                 alpha: 0.5),
+                                                    width: 1.2,
                                                   ),
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    _isAlive
-                                                        ? l10n.aliveLabel
-                                                        : l10n.deceasedLabel,
-                                                    style: GoogleFonts
-                                                        .beVietnamPro(
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  borderSide: BorderSide(
+                                                    color: _isAlive
+                                                        ? context.primary
+                                                        : context.textSecondary
+                                                            .withValues(
+                                                                alpha: 0.5),
+                                                    width: 1.2,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: AnimatedSwitcher(
+                                                duration: const Duration(
+                                                    milliseconds: 200),
+                                                child: Row(
+                                                  key: ValueKey(_isAlive),
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      _isAlive
+                                                          ? LucideIcons.heart
+                                                          : LucideIcons
+                                                              .heartCrack,
+                                                      size: 14,
                                                       color: _isAlive
                                                           ? context.primary
                                                           : context
                                                               .textSecondary
                                                               .withValues(
                                                                   alpha: 0.5),
-                                                      fontSize: 13,
-                                                      fontWeight:
-                                                          FontWeight.bold,
                                                     ),
-                                                  ),
-                                                ],
+                                                    const SizedBox(width: 6),
+                                                    Text(
+                                                      _isAlive
+                                                          ? l10n.aliveLabel
+                                                          : l10n.deceasedLabel,
+                                                      style: GoogleFonts
+                                                          .beVietnamPro(
+                                                        color: _isAlive
+                                                            ? context.primary
+                                                            : context
+                                                                .textSecondary
+                                                                .withValues(
+                                                                    alpha: 0.5),
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
+                                      ],
+                                    ),
+
+                                    // Nếu đã mất thì hiện ngày mất
+                                    if (!_isAlive) ...[
+                                      const SizedBox(height: 12),
+                                      AppDatePickerField(
+                                        dateString: _dateOfDeath,
+                                        label: l10n.dodLabel,
+                                        hintText: l10n.dodHint,
+                                        onDateSelected: (date) {
+                                          final formattedDate =
+                                              "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                          setState(() {
+                                            _dateOfDeath = formattedDate;
+                                            _lunarDeathDate = LunarDateHelper
+                                                .getLunarDateString(date);
+                                          });
+                                        },
                                       ),
                                     ],
-                                  ),
 
-                                  // Nếu đã mất thì hiện ngày mất
-                                  if (!_isAlive) ...[
-                                    const SizedBox(height: 12),
-                                    AppDatePickerField(
-                                      dateString: _dateOfDeath,
-                                      label: l10n.dodLabel,
-                                      hintText: l10n.dodHint,
-                                      onDateSelected: (date) {
-                                        final formattedDate =
-                                            "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+                                    const SizedBox(height: 16),
+
+                                    // Số điện thoại
+                                    _buildTextField(
+                                      controller: _phoneController,
+                                      label: l10n.phoneLabel,
+                                      hintText: l10n.phoneHint,
+                                      keyboardType: TextInputType.phone,
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    _buildTextField(
+                                      controller: _placeOfBirthController,
+                                      label: l10n.addressLabel,
+                                      hintText: l10n.addressHint,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _buildTextField(
+                                      controller: _occupationController,
+                                      label: l10n.occupationLabel,
+                                      hintText: l10n.occupationHint,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _buildDropdown<String?>(
+                                      label: l10n.educationLabel,
+                                      value: _selectedEducationOption,
+                                      items: [
+                                        DropdownItem<String?>(
+                                          value: null,
+                                          child: Text(l10n.noSelectionLabel),
+                                        ),
+                                        ..._predefinedEducation.map((edu) =>
+                                            DropdownItem<String?>(
+                                              value: edu,
+                                              child: Text(
+                                                  _getEducationText(edu, l10n)),
+                                            )),
+                                        DropdownItem<String?>(
+                                          value: 'Khác',
+                                          child: Text(l10n.otherLabel),
+                                        ),
+                                      ],
+                                      onChanged: (val) {
                                         setState(() {
-                                          _dateOfDeath = formattedDate;
-                                          _lunarDeathDate = LunarDateHelper
-                                              .getLunarDateString(date);
+                                          _selectedEducationOption = val;
+                                          if (val != 'Khác') {
+                                            _educationController.text =
+                                                val ?? '';
+                                          } else {
+                                            _educationController.clear();
+                                          }
                                         });
                                       },
                                     ),
-                                  ],
-
-                                  const SizedBox(height: 16),
-
-                                  // Số điện thoại
-                                  _buildTextField(
-                                    controller: _phoneController,
-                                    label: l10n.phoneLabel,
-                                    hintText: l10n.phoneHint,
-                                    keyboardType: TextInputType.phone,
-                                  ),
-                                  const SizedBox(height: 16),
-
-                                  _buildTextField(
-                                    controller: _placeOfBirthController,
-                                    label: l10n.addressLabel,
-                                    hintText: l10n.addressHint,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  _buildTextField(
-                                    controller: _occupationController,
-                                    label: l10n.occupationLabel,
-                                    hintText: l10n.occupationHint,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  _buildDropdown<String?>(
-                                    label: l10n.educationLabel,
-                                    value: _selectedEducationOption,
-                                    items: [
-                                      DropdownItem<String?>(
-                                        value: null,
-                                        child: Text(l10n.noSelectionLabel),
-                                      ),
-                                      ..._predefinedEducation.map((edu) =>
-                                          DropdownItem<String?>(
-                                            value: edu,
-                                            child: Text(
-                                                _getEducationText(edu, l10n)),
-                                          )),
-                                      DropdownItem<String?>(
-                                        value: 'Khác',
-                                        child: Text(l10n.otherLabel),
+                                    if (_selectedEducationOption == 'Khác') ...[
+                                      const SizedBox(height: 16),
+                                      _buildTextField(
+                                        controller: _educationController,
+                                        label: l10n.inputOtherEducationLabel,
+                                        hintText: l10n.educationHint,
                                       ),
                                     ],
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _selectedEducationOption = val;
-                                        if (val != 'Khác') {
-                                          _educationController.text = val ?? '';
-                                        } else {
-                                          _educationController.clear();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  if (_selectedEducationOption == 'Khác') ...[
-                                    const SizedBox(height: 16),
-                                    _buildTextField(
-                                      controller: _educationController,
-                                      label: l10n.inputOtherEducationLabel,
-                                      hintText: l10n.educationHint,
-                                    ),
-                                  ],
-                                  const SizedBox(height: 16),
-                                  _buildDropdown<int?>(
-                                    label: l10n.parentLabel,
-                                    value: parentIds.contains(_parentId)
-                                        ? _parentId
-                                        : null,
-                                    locked: widget.isLockedContext,
-                                    items: [
-                                      DropdownItem<int?>(
-                                          value: null,
-                                          child: Text(l10n.noSelectionLabel)),
-                                      ...parentOptions
-                                          .map((m) => DropdownItem<int?>(
-                                                value: m.id,
-                                                child: Text(
-                                                    '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
-                                              )),
-                                    ],
-                                    onChanged: (val) {
-                                      final selectedParent = val == null
-                                          ? null
-                                          : allMembers
-                                              .where((m) => m.id == val)
-                                              .firstOrNull;
-                                      setState(() {
-                                        _parentId = val;
-                                        if (selectedParent?.branchId != null) {
-                                          _branchId = selectedParent!.branchId;
-                                        }
-                                      });
-                                    },
-                                    showSearchBox: true,
-                                  ),
-                                  if (_maritalStatus == MaritalStatus.married ||
-                                      _maritalStatus ==
-                                          MaritalStatus.divorced ||
-                                      _maritalStatus ==
-                                          MaritalStatus.widowed) ...[
                                     const SizedBox(height: 16),
                                     _buildDropdown<int?>(
-                                      label: l10n.spouseLabel,
-                                      value: spouseIds.contains(_spouseId)
-                                          ? _spouseId
+                                      label: l10n.parentLabel,
+                                      value: parentIds.contains(_parentId)
+                                          ? _parentId
                                           : null,
-                                      locked: widget.isLockedContext &&
-                                          widget.initialSpouseId != null,
+                                      locked: widget.isLockedContext,
                                       items: [
                                         DropdownItem<int?>(
                                             value: null,
                                             child: Text(l10n.noSelectionLabel)),
-                                        ...spouseOptions
+                                        ...parentOptions
                                             .map((m) => DropdownItem<int?>(
                                                   value: m.id,
                                                   child: Text(
@@ -893,139 +867,172 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                 )),
                                       ],
                                       onChanged: (val) {
-                                        final selectedSpouse = val == null
+                                        final selectedParent = val == null
                                             ? null
                                             : allMembers
                                                 .where((m) => m.id == val)
                                                 .firstOrNull;
                                         setState(() {
-                                          _spouseId = val;
-                                          if (_gender == Gender.female &&
-                                              selectedSpouse?.gender ==
-                                                  Gender.male &&
-                                              selectedSpouse?.branchId !=
-                                                  null) {
+                                          _parentId = val;
+                                          if (selectedParent?.branchId !=
+                                              null) {
                                             _branchId =
-                                                selectedSpouse!.branchId;
+                                                selectedParent!.branchId;
                                           }
                                         });
                                       },
                                       showSearchBox: true,
                                     ),
+                                    if (_maritalStatus ==
+                                            MaritalStatus.married ||
+                                        _maritalStatus ==
+                                            MaritalStatus.divorced ||
+                                        _maritalStatus ==
+                                            MaritalStatus.widowed) ...[
+                                      const SizedBox(height: 16),
+                                      _buildDropdown<int?>(
+                                        label: l10n.spouseLabel,
+                                        value: spouseIds.contains(_spouseId)
+                                            ? _spouseId
+                                            : null,
+                                        locked: widget.isLockedContext &&
+                                            widget.initialSpouseId != null,
+                                        items: [
+                                          DropdownItem<int?>(
+                                              value: null,
+                                              child:
+                                                  Text(l10n.noSelectionLabel)),
+                                          ...spouseOptions
+                                              .map((m) => DropdownItem<int?>(
+                                                    value: m.id,
+                                                    child: Text(
+                                                        '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
+                                                  )),
+                                        ],
+                                        onChanged: (val) {
+                                          final selectedSpouse = val == null
+                                              ? null
+                                              : allMembers
+                                                  .where((m) => m.id == val)
+                                                  .firstOrNull;
+                                          setState(() {
+                                            _spouseId = val;
+                                            if (_gender == Gender.female &&
+                                                selectedSpouse?.gender ==
+                                                    Gender.male &&
+                                                selectedSpouse?.branchId !=
+                                                    null) {
+                                              _branchId =
+                                                  selectedSpouse!.branchId;
+                                            }
+                                          });
+                                        },
+                                        showSearchBox: true,
+                                      ),
+                                    ],
+                                    const SizedBox(height: 16),
+
+                                    Builder(builder: (context) {
+                                      // Lấy chi tộc của cha/mẹ hoặc vợ/chồng (nếu có) để hiển thị gợi ý và auto-select
+                                      final contextMemberId =
+                                          _parentId ?? _spouseId;
+                                      final contextMember =
+                                          contextMemberId == null
+                                              ? null
+                                              : allMembers
+                                                  .where((m) =>
+                                                      m.id == contextMemberId)
+                                                  .firstOrNull;
+                                      final contextBranchId =
+                                          contextMember?.branchId;
+
+                                      // Auto-select branch cho contextual add
+                                      if (widget.isLockedContext &&
+                                          _branchId == null &&
+                                          contextBranchId != null) {
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          if (mounted) {
+                                            setState(() =>
+                                                _branchId = contextBranchId);
+                                          }
+                                        });
+                                      }
+
+                                      // Sắp xếp: chi tộc của ngữ cảnh lên đầu
+                                      final sortedBranches = [...allBranches]
+                                        ..sort((a, b) {
+                                          if (a.id == contextBranchId) {
+                                            return -1;
+                                          }
+                                          if (b.id == contextBranchId) return 1;
+                                          return 0;
+                                        });
+
+                                      return _buildDropdown<int?>(
+                                        label: l10n.branchSectionLabel,
+                                        locked: widget.isLockedContext,
+                                        value: allBranches.any((b) =>
+                                                b.id ==
+                                                (_branchId ?? contextBranchId))
+                                            ? (_branchId ?? contextBranchId)
+                                            : null,
+                                        items: [
+                                          DropdownItem<int?>(
+                                              value: null,
+                                              child: Text(l10n.noBranchLabel)),
+                                          ...sortedBranches
+                                              .map((b) => DropdownItem<int?>(
+                                                    value: b.id,
+                                                    child: Text(
+                                                      b.id == contextBranchId
+                                                          ? l10n
+                                                              .parentBranchMarker(
+                                                                  b.name)
+                                                          : b.name,
+                                                    ),
+                                                  )),
+                                        ],
+                                        onChanged: (val) =>
+                                            setState(() => _branchId = val),
+                                        showSearchBox: true,
+                                      );
+                                    }),
+
+                                    const SizedBox(height: 16),
+
+                                    // Tiểu sử
+                                    _buildTextField(
+                                      controller: _notesController,
+                                      label: l10n.bioLabel,
+                                      hintText: l10n.bioHint,
+                                      maxLines: 5,
+                                    ),
                                   ],
-                                  const SizedBox(height: 16),
-
-                                  Builder(builder: (context) {
-                                    // Lấy chi tộc của cha/mẹ hoặc vợ/chồng (nếu có) để hiển thị gợi ý và auto-select
-                                    final contextMemberId =
-                                        _parentId ?? _spouseId;
-                                    final contextMember = contextMemberId ==
-                                            null
-                                        ? null
-                                        : allMembers
-                                            .where(
-                                                (m) => m.id == contextMemberId)
-                                            .firstOrNull;
-                                    final contextBranchId =
-                                        contextMember?.branchId;
-
-                                    // Auto-select branch cho contextual add
-                                    if (widget.isLockedContext &&
-                                        _branchId == null &&
-                                        contextBranchId != null) {
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback((_) {
-                                        if (mounted) {
-                                          setState(() =>
-                                              _branchId = contextBranchId);
-                                        }
-                                      });
-                                    }
-
-                                    // Sắp xếp: chi tộc của ngữ cảnh lên đầu
-                                    final sortedBranches = [...allBranches]
-                                      ..sort((a, b) {
-                                        if (a.id == contextBranchId) return -1;
-                                        if (b.id == contextBranchId) return 1;
-                                        return 0;
-                                      });
-
-                                    return _buildDropdown<int?>(
-                                      label: l10n.branchSectionLabel,
-                                      locked: widget.isLockedContext,
-                                      value: allBranches.any((b) =>
-                                              b.id ==
-                                              (_branchId ?? contextBranchId))
-                                          ? (_branchId ?? contextBranchId)
-                                          : null,
-                                      items: [
-                                        DropdownItem<int?>(
-                                            value: null,
-                                            child: Text(l10n.noBranchLabel)),
-                                        ...sortedBranches
-                                            .map((b) => DropdownItem<int?>(
-                                                  value: b.id,
-                                                  child: Text(
-                                                    b.id == contextBranchId
-                                                        ? l10n
-                                                            .parentBranchMarker(
-                                                                b.name)
-                                                        : b.name,
-                                                  ),
-                                                )),
-                                      ],
-                                      onChanged: (val) =>
-                                          setState(() => _branchId = val),
-                                      showSearchBox: true,
-                                    );
-                                  }),
-
-                                  const SizedBox(height: 16),
-
-                                  // Tiểu sử
-                                  _buildTextField(
-                                    controller: _notesController,
-                                    label: l10n.bioLabel,
-                                    hintText: l10n.bioHint,
-                                    maxLines: 5,
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
 
-                            // Avatar nổi trên viền trên của card
-                            _buildAvatarSection(context),
-                          ],
-                        ),
-                      ],
+                              // Avatar nổi trên viền trên của card
+                              _buildAvatarSection(context),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // Sticky bottom buttons
-              Container(
-                padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
-                decoration: BoxDecoration(
-                  color: context.background,
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.resolve(
-                        Colors.black.withValues(alpha: 0.06),
-                        Colors.transparent,
-                      ),
-                      blurRadius: 8,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
+                // Sticky bottom buttons
+                Container(
+                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
+                  child: AppFormActionButtons(
+                    saveLabel: l10n.formSave,
+                    onSave: () => _submitForm(existingMember),
+                  ),
                 ),
-                child: AppFormActionButtons(
-                  saveLabel: l10n.formSave,
-                  onSave: () => _submitForm(existingMember),
-                ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -1083,10 +1090,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                 width: 110,
                 height: 110,
                 decoration: BoxDecoration(
-                  color: context.resolve(
-                    const Color(0xFFEAE7E3),
-                    context.surface,
-                  ),
+                  color: Colors.transparent,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: context.resolve(
@@ -1136,25 +1140,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: context.isDarkMode
-              ? Colors.white.withValues(alpha: 0.08)
-              : const Color(0xFFF2ECE7),
-          width: 1.2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.resolve(
-              Colors.black.withValues(alpha: 0.02),
-              Colors.transparent,
-            ),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

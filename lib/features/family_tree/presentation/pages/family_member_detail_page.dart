@@ -262,19 +262,12 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                         ),
                       ],
                     ),
-                    child: CircleAvatar(
+                    child: AppAvatar(
+                      avatarUrl: widget.member.avatarUrl,
+                      fullName: widget.member.fullName,
                       radius: 45,
+                      fontSize: 32,
                       backgroundColor: context.background,
-                      backgroundImage: widget.member.avatarUrl != null
-                          ? NetworkImage(widget.member.avatarUrl!)
-                          : null,
-                      child: widget.member.avatarUrl == null
-                          ? Icon(
-                              LucideIcons.user,
-                              size: 48,
-                              color: context.primary,
-                            )
-                          : null,
                     ),
                   ),
                 ),

@@ -3452,6 +3452,18 @@ abstract class AppLocalizations {
   /// **'NGÀY SINH NHẬT DÒNG HỌ'**
   String get birthdaysSectionTitle;
 
+  /// No description provided for @noBirthdaysMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có sinh nhật nào sắp tới'**
+  String get noBirthdaysMessage;
+
+  /// No description provided for @noDeathAnniversariesMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ngày giỗ nào sắp tới'**
+  String get noDeathAnniversariesMessage;
+
   /// No description provided for @newsEventsSectionTitle.
   ///
   /// In vi, this message translates to:

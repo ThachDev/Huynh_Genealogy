@@ -1,5 +1,4 @@
 // ignore_for_file: library_private_types_in_public_api, prefer_const_constructors
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,7 +12,12 @@ import '../../../../features/auth/auth.dart';
 import '../../../../features/family_tree/family_tree.dart';
 import '../../../events/events.dart';
 import '../../../admin/admin.dart';
+import '../models/upcoming_anniversary.dart';
+import '../widgets/anniversary_card.dart';
+import '../widgets/user_event_card.dart';
 import '../widgets/user_notifications_widget.dart';
+import 'user_anniversary_list_page.dart';
+import 'user_event_list_page.dart';
 
 class UserEventsPage extends StatefulWidget {
   final int familyId;
@@ -29,24 +33,6 @@ class UserEventsPage extends StatefulWidget {
 
   @override
   State<UserEventsPage> createState() => _UserEventsPageState();
-}
-
-class _UpcomingAnniversary {
-  final MemberEntity member;
-  final String title;
-  final String solarDateLabel;
-  final String? lunarDateLabel;
-  final int daysRemaining;
-  final bool isBirthday;
-
-  _UpcomingAnniversary({
-    required this.member,
-    required this.title,
-    required this.solarDateLabel,
-    this.lunarDateLabel,
-    required this.daysRemaining,
-    required this.isBirthday,
-  });
 }
 
 class _UserEventsPageState extends State<UserEventsPage> {
@@ -121,9 +107,9 @@ class _UserEventsPageState extends State<UserEventsPage> {
     super.dispose();
   }
 
-  List<_UpcomingAnniversary> _calculateDeathAnniversaries(
+  List<UpcomingAnniversary> _calculateDeathAnniversaries(
       List<MemberEntity> members) {
-    final List<_UpcomingAnniversary> anniversaries = [];
+    final List<UpcomingAnniversary> anniversaries = [];
     final today = DateTime.now();
     final todayOnlyDate = DateTime(today.year, today.month, today.day);
 
@@ -185,7 +171,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
           final lunarLabel =
               '${lunarDay.toString().padLeft(2, '0')}/${lunarMonth.toString().padLeft(2, '0')} ÂL';
 
-          anniversaries.add(_UpcomingAnniversary(
+          anniversaries.add(UpcomingAnniversary(
             member: member,
             title: member.fullName,
             solarDateLabel: solarLabel,
@@ -201,8 +187,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
     return anniversaries;
   }
 
-  List<_UpcomingAnniversary> _calculateBirthdays(List<MemberEntity> members) {
-    final List<_UpcomingAnniversary> birthdays = [];
+  List<UpcomingAnniversary> _calculateBirthdays(List<MemberEntity> members) {
+    final List<UpcomingAnniversary> birthdays = [];
     final today = DateTime.now();
     final todayOnlyDate = DateTime(today.year, today.month, today.day);
 
@@ -226,7 +212,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
             final solarLabel =
                 '${birthDay.toString().padLeft(2, '0')}/${birthMonth.toString().padLeft(2, '0')}';
 
-            birthdays.add(_UpcomingAnniversary(
+            birthdays.add(UpcomingAnniversary(
               member: member,
               title: member.fullName,
               solarDateLabel: solarLabel,
@@ -366,7 +352,12 @@ class _UserEventsPageState extends State<UserEventsPage> {
                               !widget.isAdminMode) ...[
                             AppSectionTitle(
                               title: l10n.deathAnniversariesSectionTitle,
-                              trailing: _buildTrailingSeeAll(),
+                              trailing: _buildTrailingSeeAll(
+                                onTap: () => _openAnniversaryList(
+                                  l10n.deathAnniversariesSectionTitle,
+                                  deathAnniversaries,
+                                ),
+                              ),
                             ),
                             _buildAnniversaryList(deathAnniversaries),
                           ],
@@ -375,7 +366,13 @@ class _UserEventsPageState extends State<UserEventsPage> {
                           if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
                             AppSectionTitle(
                               title: l10n.birthdaysSectionTitle,
-                              trailing: _buildTrailingSeeAll(),
+                              trailing: _buildTrailingSeeAll(
+                                onTap: () => _openAnniversaryList(
+                                  l10n.birthdaysSectionTitle,
+                                  birthdays,
+                                  isBirthday: true,
+                                ),
+                              ),
                             ),
                             _buildAnniversaryList(birthdays),
                           ],
@@ -383,7 +380,9 @@ class _UserEventsPageState extends State<UserEventsPage> {
                           // ── Section 3: Sự Kiện ──
                           AppSectionTitle(
                             title: l10n.eventsListTitle,
-                            trailing: _buildTrailingSeeAll(),
+                            trailing: _buildTrailingSeeAll(
+                              onTap: () => _openEventList(displayEvents),
+                            ),
                           ),
 
                           if (displayEvents.isEmpty)
@@ -422,9 +421,39 @@ class _UserEventsPageState extends State<UserEventsPage> {
     );
   }
 
-  Widget _buildTrailingSeeAll() {
+  void _openAnniversaryList(
+    String title,
+    List<UpcomingAnniversary> list, {
+    bool isBirthday = false,
+  }) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => UserAnniversaryListPage(
+          title: title,
+          anniversaries: list,
+          isBirthday: isBirthday,
+        ),
+      ),
+    );
+  }
+
+  void _openEventList(List<EventEntity> events) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => UserEventListPage(
+          familyId: widget.familyId,
+          isAdminMode: widget.isAdminMode,
+          events: events,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTrailingSeeAll({VoidCallback? onTap}) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Text(
@@ -440,7 +469,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
   }
 
   /// Danh sách cuộn ngang dùng chung cho cả Ngày Giỗ và Sinh Nhật.
-  Widget _buildAnniversaryList(List<_UpcomingAnniversary> list) {
+  Widget _buildAnniversaryList(List<UpcomingAnniversary> list) {
     return ClipRect(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -467,264 +496,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
     );
   }
 
-  Widget _buildDefaultBanner() {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: context.appBarBg,
-          image: DecorationImage(
-            image: AssetImage(
-              context.isDarkMode
-                  ? 'assets/images/background_appbar_dark.png'
-                  : 'assets/images/background_appbar_light.png',
-            ),
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.high,
-            onError: (_, __) {},
-          ),
-        ),
-        child: Center(
-          child: Icon(
-            LucideIcons.calendarDays,
-            size: 40,
-            color: context.accent.withValues(alpha: 0.8),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildEventCard(EventEntity event, bool canEdit) {
     final l10n = AppLocalizations.of(context)!;
-
-    final Color badgeColor = context.primary;
-    final String badgeLabel = switch (event.type) {
-      'article' => l10n.eventTypeArticle,
-      'announcement' => l10n.eventTypeAnnouncement,
-      _ => l10n.eventTypeEvent,
-    };
-    final IconData badgeIcon = switch (event.type) {
-      'article' => LucideIcons.bookOpen,
-      'announcement' => LucideIcons.megaphone,
-      _ => LucideIcons.calendar,
-    };
-
-    final imageUrl = event.imageUrl;
-    final isNetworkImage = imageUrl != null &&
-        (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
-    final isLocalImage =
-        imageUrl != null && !isNetworkImage && File(imageUrl).existsSync();
-    final hasImage = isNetworkImage || isLocalImage;
-
-    Widget cardContent = Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: RepaintBoundary(
-        child: Semantics(
-          label: 'Sự kiện ${event.title}, Ngày: ${event.eventDate}',
-          button: true,
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.surface,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: context.textSecondary.withValues(alpha: 0.2),
-                width: 1.2,
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.all(10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Top Banner Image (Image 2 style: AspectRatio 16/9, full width, clear)
-                  if (hasImage)
-                    Hero(
-                      tag: 'event_image_${event.id}',
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: isNetworkImage
-                            ? Image.network(
-                                imageUrl,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                filterQuality: FilterQuality.high,
-                                errorBuilder: (_, __, ___) =>
-                                    _buildDefaultBanner(),
-                              )
-                            : Image.file(
-                                File(imageUrl),
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                filterQuality: FilterQuality.high,
-                                errorBuilder: (_, __, ___) =>
-                                    _buildDefaultBanner(),
-                              ),
-                      ),
-                    )
-                  else
-                    _buildDefaultBanner(),
-
-                  // Card Content
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Row 1: Tag & Date
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: badgeColor.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: badgeColor.withValues(alpha: 0.3),
-                                  width: 0.8,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    badgeIcon,
-                                    size: 11,
-                                    color: badgeColor,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    badgeLabel.toUpperCase(),
-                                    style: GoogleFonts.beVietnamPro(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: badgeColor,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  LucideIcons.clock,
-                                  size: 13,
-                                  color: context.textSecondary,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  event.eventDate,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    color: context.textSecondary,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        // Row 2: Title
-                        Text(
-                          event.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: context.textPrimary,
-                            height: 1.3,
-                          ),
-                        ),
-                        // Row 3: Description
-                        if (event.description != null &&
-                            event.description!.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          Text(
-                            event.description!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: context.textSecondary,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 12),
-                        // Row 4: Author (left) & Location (right)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (event.organizer != null &&
-                                event.organizer!.isNotEmpty)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(LucideIcons.user,
-                                      size: 13, color: context.textSecondary),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    event.organizer!,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      color: context.textSecondary,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            else
-                              const SizedBox.shrink(),
-                            if (event.location != null &&
-                                event.location!.isNotEmpty)
-                              Flexible(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Icon(LucideIcons.mapPin,
-                                        size: 13, color: context.textSecondary),
-                                    const SizedBox(width: 4),
-                                    Flexible(
-                                      child: Text(
-                                        event.location!,
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          color: context.textSecondary,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
 
     Future<void> openDetail() async {
       final result = await Navigator.push(
@@ -754,13 +527,23 @@ class _UserEventsPageState extends State<UserEventsPage> {
           }
         },
         onTap: openDetail,
-        child: cardContent,
+        child: UserEventCard(
+          familyId: widget.familyId,
+          isAdminMode: widget.isAdminMode,
+          event: event,
+          tappable: false,
+          heroTag: 'event_image_${event.id}',
+          onChanged: _loadData,
+        ),
       );
     }
 
-    return GestureDetector(
-      onTap: openDetail,
-      child: cardContent,
+    return UserEventCard(
+      familyId: widget.familyId,
+      isAdminMode: widget.isAdminMode,
+      event: event,
+      heroTag: 'event_image_${event.id}',
+      onChanged: _loadData,
     );
   }
 
@@ -786,154 +569,6 @@ class _UserEventsPageState extends State<UserEventsPage> {
                 style: const TextStyle(color: Colors.white)),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ── CUSTOM REUSABLE WIDGETS ──
-
-/// Card dùng chung cho cả Ngày Giỗ (isBirthday: false) và Sinh Nhật (isBirthday: true).
-class AnniversaryCard extends StatelessWidget {
-  final _UpcomingAnniversary data;
-
-  const AnniversaryCard({super.key, required this.data});
-
-  @override
-  Widget build(BuildContext context) {
-    final isBirthday = data.isBirthday;
-    final icon = isBirthday ? LucideIcons.cake : LucideIcons.flame;
-
-    return Container(
-      width: 230,
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: context.textSecondary.withValues(alpha: 0.2),
-          width: 1.2,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // ── Header: icon + tên + đời ──
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(icon, size: 20, color: context.primary),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.title,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: context.textPrimary,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (data.member.generation != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        AppLocalizations.of(context)!
-                            .generationLabel(data.member.generation!),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12,
-                              color: context.textSecondary,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          const Divider(height: 1, thickness: 0.5),
-          const SizedBox(height: 6),
-          // ── Footer: ngày + countdown ──
-          Row(
-            children: [
-              Icon(LucideIcons.calendar, size: 20, color: context.accent),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.solarDateLabel,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: context.textPrimary,
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (data.lunarDateLabel != null)
-                      Text(
-                        data.lunarDateLabel!,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 10,
-                              color: context.textSecondary,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                  ],
-                ),
-              ),
-              CountdownBadge(days: data.daysRemaining, isBirthday: isBirthday),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CountdownBadge extends StatelessWidget {
-  final int days;
-  final bool isBirthday;
-
-  const CountdownBadge({
-    super.key,
-    required this.days,
-    required this.isBirthday,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: context.primary,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        days == 0
-            ? AppLocalizations.of(context)!.todayLabel
-            : AppLocalizations.of(context)!.eventCountdown(days),
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: context.textOnPrimary,
-            ),
       ),
     );
   }

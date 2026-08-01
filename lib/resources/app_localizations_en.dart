@@ -1832,6 +1832,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get birthdaysSectionTitle => 'CLAN BIRTHDAYS';
 
   @override
+  String get noBirthdaysMessage => 'No upcoming birthdays';
+
+  @override
+  String get noDeathAnniversariesMessage => 'No upcoming death anniversaries';
+
+  @override
   String get newsEventsSectionTitle => 'EVENTS & NEWS';
 
   @override

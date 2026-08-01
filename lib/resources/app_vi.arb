@@ -727,6 +727,8 @@
   "eventDetailTitle": "Chi tiết sự kiện",
   "deathAnniversariesSectionTitle": "NGÀY GIỖ DÒNG HỌ",
   "birthdaysSectionTitle": "NGÀY SINH NHẬT DÒNG HỌ",
+  "noBirthdaysMessage": "Chưa có sinh nhật nào sắp tới",
+  "noDeathAnniversariesMessage": "Chưa có ngày giỗ nào sắp tới",
   "newsEventsSectionTitle": "SỰ KIỆN & TIN TỨC",
   "generationLabel": "Đời thứ {gen}",
   "@generationLabel": {

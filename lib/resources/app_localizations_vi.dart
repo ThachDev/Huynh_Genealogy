@@ -1837,6 +1837,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get birthdaysSectionTitle => 'NGÀY SINH NHẬT DÒNG HỌ';
 
   @override
+  String get noBirthdaysMessage => 'Chưa có sinh nhật nào sắp tới';
+
+  @override
+  String get noDeathAnniversariesMessage => 'Chưa có ngày giỗ nào sắp tới';
+
+  @override
   String get newsEventsSectionTitle => 'SỰ KIỆN & TIN TỨC';
 
   @override

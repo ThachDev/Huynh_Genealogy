@@ -717,6 +717,8 @@
   "eventDetailTitle": "Event Detail",
   "deathAnniversariesSectionTitle": "CLAN DEATH ANNIVERSARIES",
   "birthdaysSectionTitle": "CLAN BIRTHDAYS",
+  "noBirthdaysMessage": "No upcoming birthdays",
+  "noDeathAnniversariesMessage": "No upcoming death anniversaries",
   "newsEventsSectionTitle": "EVENTS & NEWS",
   "generationLabel": "Generation {gen}",
   "@generationLabel": {

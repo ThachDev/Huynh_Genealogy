@@ -81,7 +81,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       familyId: state.family.id,
                       role: 'OWNER',
                     );
-                    UserMainNavigationPage.adminModeNotifier.value = true;
+                    UserMainNavigationPage.setAdminMode(true);
                     context
                         .read<AuthBloc>()
                         .add(AuthUserUpdated(user: updatedUser));
@@ -102,14 +102,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
             }
           },
           builder: (context, state) {
-            final targetFamilyId = _joinedFamilyId ?? user.familyId;
+            final isPending = user.pendingStatus == 'PENDING';
+            final targetFamilyId =
+                _joinedFamilyId ?? user.familyId ?? user.pendingFamilyId;
             return SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (_isRequestSent || targetFamilyId != null)
+                  if (_isRequestSent || isPending || targetFamilyId != null)
                     PendingApprovalWidget(
                       user: user,
                       familyId: targetFamilyId,

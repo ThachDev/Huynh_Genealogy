@@ -72,7 +72,7 @@
   },
   "joinRequestSuccess": "Yêu cầu tham gia đã gửi thành công!",
   "pendingApprovalTitle": "Đang Chờ Phê Duyệt",
-  "pendingApprovalMessage": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc {clanLeaderName} ({clanLeaderPhone}) để phê duyệt.",
+  "pendingApprovalMessage": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc {clanLeaderName} - {clanLeaderPhone} để phê duyệt.",
   "@pendingApprovalMessage": {
     "placeholders": {
       "clanLeaderName": {

@@ -74,9 +74,10 @@ class _PendingApprovalWidgetState extends State<PendingApprovalWidget> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    final hasLeaderInfo =
-        _leaderName != null && _leaderName!.isNotEmpty &&
-        _leaderPhone != null && _leaderPhone!.isNotEmpty;
+    final hasLeaderInfo = _leaderName != null &&
+        _leaderName!.isNotEmpty &&
+        _leaderPhone != null &&
+        _leaderPhone!.isNotEmpty;
 
     final message = hasLeaderInfo
         ? l10n.pendingApprovalMessage(_leaderName!, _leaderPhone!)
@@ -106,15 +107,41 @@ class _PendingApprovalWidgetState extends State<PendingApprovalWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: _isLoading
                 ? const AppLoading(size: 24)
-                : Text(
-                    message,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: context.textSecondary,
-                      height: 1.5,
-                    ),
-                  ),
+                : hasLeaderInfo
+                    ? Text.rich(
+                        TextSpan(
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: context.textSecondary,
+                            height: 1.5,
+                          ),
+                          children: [
+                            const TextSpan(
+                              text:
+                                  'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ ',
+                            ),
+                            TextSpan(
+                              text: 'Trưởng tộc $_leaderName - $_leaderPhone',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: ' để phê duyệt.',
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                    : Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: context.textSecondary,
+                          height: 1.5,
+                        ),
+                      ),
           ),
           const SizedBox(height: 36),
           AppButton(

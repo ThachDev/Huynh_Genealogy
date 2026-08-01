@@ -497,7 +497,7 @@ abstract class AppLocalizations {
   /// No description provided for @pendingApprovalMessage.
   ///
   /// In vi, this message translates to:
-  /// **'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc {clanLeaderName} ({clanLeaderPhone}) để phê duyệt.'**
+  /// **'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc {clanLeaderName} - {clanLeaderPhone} để phê duyệt.'**
   String pendingApprovalMessage(String clanLeaderName, String clanLeaderPhone);
 
   /// No description provided for @pendingApprovalMessageSimple.

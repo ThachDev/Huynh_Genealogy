@@ -219,7 +219,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pendingApprovalMessage(String clanLeaderName, String clanLeaderPhone) {
-    return 'Your request to join the family has been sent successfully. Please wait for admin approval or contact Clan Leader $clanLeaderName ($clanLeaderPhone) to approve.';
+    return 'Your request to join the family has been sent successfully. Please wait for admin approval or contact Clan Leader $clanLeaderName - $clanLeaderPhone to approve.';
   }
 
   @override

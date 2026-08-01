@@ -72,7 +72,7 @@
   },
   "joinRequestSuccess": "Join request sent successfully!",
   "pendingApprovalTitle": "Pending Approval",
-  "pendingApprovalMessage": "Your request to join the family has been sent successfully. Please wait for admin approval or contact Clan Leader {clanLeaderName} ({clanLeaderPhone}) to approve.",
+  "pendingApprovalMessage": "Your request to join the family has been sent successfully. Please wait for admin approval or contact Clan Leader {clanLeaderName} - {clanLeaderPhone} to approve.",
   "pendingApprovalMessageSimple": "Your request to join the family has been sent successfully. Please wait for admin approval.",
   "checkStatusButton": "Check Status",
   "welcomeCreatorTitle": "Welcome Clan Leader, {name}!",

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../di/injection_container.dart';
 
 import '../theme/theme_extensions.dart';
 import '../../resources/app_localizations.dart';
@@ -28,8 +30,32 @@ class FABConfig {
 class UserMainNavigationPage extends StatefulWidget {
   const UserMainNavigationPage({super.key});
 
+  static const String _adminModePrefKey = 'is_admin_mode_enabled';
+
   static final ValueNotifier<bool> adminModeNotifier =
-      ValueNotifier<bool>(true);
+      ValueNotifier<bool>(_loadCachedAdminMode());
+
+  static bool _loadCachedAdminMode() {
+    try {
+      final prefs = sl<SharedPreferences>();
+      return prefs.getBool(_adminModePrefKey) ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  static void setAdminMode(bool enabled) {
+    adminModeNotifier.value = enabled;
+    if (tabIndexNotifier.value == 0) {
+      // Nếu tabIndex đang là 0, cập nhật lại để trigger listener
+      tabIndexNotifier.value = -1;
+    }
+    tabIndexNotifier.value = 0; // Chuyển về Dashboard (tab 0)
+    try {
+      final prefs = sl<SharedPreferences>();
+      prefs.setBool(_adminModePrefKey, enabled);
+    } catch (_) {}
+  }
 
   static final ValueNotifier<FABConfig?> fabNotifier =
       ValueNotifier<FABConfig?>(null);
@@ -63,7 +89,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 
   void _onTabIndexChanged() {
     final idx = UserMainNavigationPage.tabIndexNotifier.value;
-    if (mounted && idx != _currentIndex) {
+    if (mounted) {
       setState(() => _currentIndex = idx);
     }
   }
@@ -98,7 +124,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final showAdminInterface = hasAdminPrivileges && isCurrentlyAdminMode;
         final l10n = AppLocalizations.of(context)!;
 
-        final safeIndex = _currentIndex >= 4 ? 0 : _currentIndex;
+        final safeIndex = (_currentIndex < 0 || _currentIndex >= 4) ? 0 : _currentIndex;
         // Xây dựng danh sách các trang dựa trên chế độ hiển thị
         final List<_TabConfig> tabs = [];
 
@@ -232,12 +258,10 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                           label: tab.label,
                           isSelected: safeIndex == tabIndex,
                           onTap: () {
-                            setState(() {
-                              _currentIndex = tabIndex;
-                              if (tabIndex == 2 || tabIndex == 3) {
-                                UserMainNavigationPage.fabNotifier.value = null;
-                              }
-                            });
+                            UserMainNavigationPage.tabIndexNotifier.value = tabIndex;
+                            if (tabIndex == 2 || tabIndex == 3) {
+                              UserMainNavigationPage.fabNotifier.value = null;
+                            }
                           },
                           selectedColor: context.primary,
                           unselectedColor: Theme.of(context)

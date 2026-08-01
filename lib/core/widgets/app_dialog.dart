@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../resources/app_localizations.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_extensions.dart';
+import 'app_button.dart';
 import 'app_common_widgets.dart';
 
 enum AppDialogType { info, warning, danger, success }
@@ -15,9 +16,12 @@ class AppDialog {
     BuildContext context, {
     required String title,
     required String message,
+    InlineSpan? messageSpan,
     String? confirmLabel,
     String? cancelLabel,
     AppDialogType type = AppDialogType.warning,
+    bool showIcon = true,
+    Color? confirmColor,
   }) {
     final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
@@ -26,10 +30,13 @@ class AppDialog {
       builder: (_) => _AppDialogWidget(
         title: title,
         message: message,
+        messageSpan: messageSpan,
         confirmLabel: confirmLabel ?? l10n.confirmLabel,
         cancelLabel: cancelLabel ?? l10n.cancelLabel,
         type: type,
         showCancel: true,
+        showIcon: showIcon,
+        confirmColor: confirmColor,
       ),
     );
   }
@@ -122,10 +129,13 @@ class AppDialog {
 class _AppDialogWidget extends StatelessWidget {
   final String title;
   final String message;
+  final InlineSpan? messageSpan;
   final String confirmLabel;
   final String? cancelLabel;
   final AppDialogType type;
   final bool showCancel;
+  final bool showIcon;
+  final Color? confirmColor;
 
   const _AppDialogWidget({
     required this.title,
@@ -133,12 +143,15 @@ class _AppDialogWidget extends StatelessWidget {
     required this.confirmLabel,
     required this.type,
     required this.showCancel,
+    this.messageSpan,
+    this.showIcon = true,
     this.cancelLabel,
+    this.confirmColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = _accentColor();
+    final accentColor = confirmColor ?? _accentColor();
     final icon = _icon();
 
     return Dialog(
@@ -154,84 +167,77 @@ class _AppDialogWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Icon
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
+            if (showIcon) ...[
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: accentColor.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: accentColor, size: 28),
               ),
-              child: Icon(icon, color: accentColor, size: 28),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
+            ],
 
             // Title
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: context.textPrimary,
+            Align(
+              alignment: showIcon ? Alignment.center : Alignment.centerLeft,
+              child: Text(
+                title,
+                textAlign: showIcon ? TextAlign.center : TextAlign.left,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: showIcon ? context.textPrimary : accentColor,
+                ),
               ),
             ),
             const SizedBox(height: 8),
 
             // Message
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: context.textSecondary,
-                height: 1.5,
-              ),
+            Align(
+              alignment: showIcon ? Alignment.center : Alignment.centerLeft,
+              child: messageSpan != null
+                  ? Text.rich(
+                      messageSpan!,
+                      textAlign: showIcon ? TextAlign.center : TextAlign.left,
+                    )
+                  : Text(
+                      message,
+                      textAlign: showIcon ? TextAlign.center : TextAlign.left,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: context.textSecondary,
+                        height: 1.5,
+                      ),
+                    ),
             ),
             const SizedBox(height: 24),
 
             // Buttons
             if (showCancel)
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: context.textSecondary.withValues(alpha: 0.3)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      child: Text(
-                        cancelLabel ?? AppLocalizations.of(context)!.cancelLabel,
-                        style: GoogleFonts.inter(
-                          color: context.textSecondary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      cancelLabel ?? AppLocalizations.of(context)!.cancelLabel,
+                      style: GoogleFonts.inter(
+                        color: context.textSecondary,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: accentColor,
-                        foregroundColor: type == AppDialogType.warning
-                            ? Colors.black87
-                            : context.textOnPrimary,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      child: Text(
-                        confirmLabel,
-                        style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                  AppButton(
+                    label: confirmLabel,
+                    onPressed: () => Navigator.of(context).pop(true),
+                    variant: AppButtonVariant.primary,
+                    color: accentColor,
+                    size: AppButtonSize.small,
                   ),
                 ],
               )

@@ -897,129 +897,252 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, MemberEntity member) {
+  void _showDeleteConfirmation(
+      BuildContext context, MemberEntity member) async {
+    final l10n = AppLocalizations.of(context)!;
     final treeState = context.read<FamilyTreeBloc>().state;
-    final allMembers = treeState is FamilyTreeLoaded ? treeState.members : <MemberEntity>[];
+    final allMembers =
+        treeState is FamilyTreeLoaded ? treeState.members : <MemberEntity>[];
     final hasChildren = allMembers.any((m) => m.parentId == member.id);
+
+    if (!hasChildren) {
+      final confirmed = await AppDialog.confirm(
+        context,
+        title: l10n.deleteMemberTitle,
+        message: l10n.deleteMemberMessage(member.fullName),
+        confirmLabel: l10n.deleteLabel,
+        type: AppDialogType.danger,
+        showIcon: false,
+        confirmColor: context.primary,
+        messageSpan: TextSpan(
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            color: context.textSecondary,
+            height: 1.5,
+          ),
+          children: [
+            const TextSpan(text: 'Bạn có chắc chắn muốn xoá thành viên '),
+            TextSpan(
+              text: member.fullName,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const TextSpan(text: ' khỏi gia phả không?'),
+          ],
+        ),
+      );
+      if (confirmed == true && context.mounted) {
+        context
+            .read<AdminMemberFormBloc>()
+            .add(DeleteAdminMemberFormEvent(member.id));
+      }
+      return;
+    }
 
     showDialog(
       context: context,
       builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx)!;
-        if (!hasChildren) {
-          return AlertDialog(
-            backgroundColor: ctx.surface,
-            title: Text(
-              l10n.deleteMemberTitle,
-              style: GoogleFonts.beVietnamPro(
-                  fontWeight: FontWeight.bold, color: ctx.textPrimary),
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: ctx.surface,
+              borderRadius: BorderRadius.circular(20),
+              border:
+                  Border.all(color: ctx.textSecondary.withValues(alpha: 0.2)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
-            content: Text(
-              l10n.deleteMemberMessage(member.fullName),
-              style: GoogleFonts.beVietnamPro(),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(l10n.cancelLabel,
-                    style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
-              ),
-              AppButton(
-                label: l10n.deleteLabel,
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  context
-                      .read<AdminMemberFormBloc>()
-                      .add(DeleteAdminMemberFormEvent(member.id));
-                },
-                variant: AppButtonVariant.danger,
-                size: AppButtonSize.small,
-              ),
-            ],
-          );
-        }
-
-        // Trường hợp thành viên có con cháu nối tiếp
-        return AlertDialog(
-          backgroundColor: ctx.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Row(
-            children: [
-              Icon(LucideIcons.alertTriangle, color: ctx.accent, size: 22),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Xoá thành viên trung gian',
-                  style: GoogleFonts.beVietnamPro(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: ctx.textPrimary,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Top Header Title (Seamless: Xoá thành viên + member.fullName)
+                Text.rich(
+                  TextSpan(
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 17,
+                      color: ctx.textPrimary,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: 'Xoá thành viên ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      TextSpan(
+                        text: member.fullName,
+                        style: GoogleFonts.beVietnamPro(
+                          fontWeight: FontWeight.bold,
+                          color: ctx.primary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Thành viên "${member.fullName}" đang có con/cháu trong gia phả. Bạn muốn xử lý liên kết thế hệ như thế nào?',
-                style: GoogleFonts.inter(fontSize: 13, color: ctx.textPrimary, height: 1.4),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: ctx.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: ctx.primary.withValues(alpha: 0.2)),
+                const SizedBox(height: 16),
+                Text(
+                  'Thành viên này đang có con/cháu nối tiếp trong cây gia phả. Vui lòng lựa chọn phương án xử lý liên kết thế hệ:',
+                  style: GoogleFonts.inter(
+                      fontSize: 13, color: ctx.textSecondary, height: 1.4),
                 ),
-                child: Text(
-                  '💡 Đôn con lên (Khuyên dùng): Tự động nối các con của ${member.fullName} lên thế hệ trên để cây không bị đứt đoạn.',
-                  style: GoogleFonts.inter(fontSize: 11.5, color: ctx.primary),
+                const SizedBox(height: 16),
+
+                // Option 1: Đôn con lên (Recommended Option Card)
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.read<AdminMemberFormBloc>().add(
+                        DeleteAdminMemberFormEvent(member.id,
+                            reassignChildrenToParent: true));
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: ctx.primary.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: ctx.primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(LucideIcons.gitMerge,
+                              color: Colors.white, size: 18),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Đôn con lên',
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: ctx.textPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          ctx.primary.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      'Khuyên dùng',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: ctx.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Tự động nối trực tiếp các con lên thế hệ trên để cây không bị đứt đoạn.',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: ctx.textSecondary,
+                                  height: 1.3,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 10),
+
+                // Option 2: Xoá & Tách nhánh (Danger / Secondary Action)
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.read<AdminMemberFormBloc>().add(
+                        DeleteAdminMemberFormEvent(member.id,
+                            reassignChildrenToParent: false));
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.04),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(LucideIcons.gitBranch,
+                              color: Colors.redAccent, size: 18),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Xoá & Tách nhánh',
+                                style: GoogleFonts.beVietnamPro(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Các con cháu sẽ bị tách thành nhánh mồ côi (mất liên kết với thế hệ cha).',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: ctx.textSecondary,
+                                  height: 1.3,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Cancel Button (Default Text / Ghost Variant)
+                AppButton(
+                  label: l10n.cancelLabel,
+                  onPressed: () => Navigator.pop(ctx),
+                  variant: AppButtonVariant.ghost,
+                  fullWidth: true,
+                ),
+              ],
+            ),
           ),
-          actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(l10n.cancelLabel,
-                  style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                context
-                    .read<AdminMemberFormBloc>()
-                    .add(DeleteAdminMemberFormEvent(member.id, reassignChildrenToParent: false));
-              },
-              child: Text(
-                'Xoá & Tách nhánh',
-                style: GoogleFonts.beVietnamPro(color: Colors.redAccent, fontSize: 12),
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pop(ctx);
-                context
-                    .read<AdminMemberFormBloc>()
-                    .add(DeleteAdminMemberFormEvent(member.id, reassignChildrenToParent: true));
-              },
-              icon: const Icon(LucideIcons.gitMerge, size: 14),
-              label: Text(
-                'Đôn con lên',
-                style: GoogleFonts.beVietnamPro(fontSize: 12, fontWeight: FontWeight.bold),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ctx.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-            ),
-          ],
         );
       },
     );

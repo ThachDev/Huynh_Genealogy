@@ -79,7 +79,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               children: [
                 // ── Profile card ──────────────────────
                 AdminSettingsProfileCard(user: user),
-                if (user != null &&
+                if (isOwner &&
+                    user != null &&
                     (user.memberId == null || user.memberId == 0)) ...[
                   const SizedBox(height: 12),
                   Container(
@@ -278,7 +279,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       icon: LucideIcons.userCheck,
                       title: l10n.switchToMemberPage,
                       onTap: () {
-                        UserMainNavigationPage.adminModeNotifier.value = false;
+                        UserMainNavigationPage.setAdminMode(false);
                       },
                     )
                   else if (hasAdminPrivileges)
@@ -287,7 +288,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       icon: LucideIcons.shieldAlert,
                       title: l10n.switchToAdminLabel,
                       onTap: () {
-                        UserMainNavigationPage.adminModeNotifier.value = true;
+                        UserMainNavigationPage.setAdminMode(true);
                       },
                     ),
                   _buildSectionHeaderInsideCard(
@@ -341,49 +342,19 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 const SizedBox(height: 24),
                 AppButton(
                   label: l10n.logoutButton,
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        backgroundColor: ctx.surface,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        title: Text(
-                          l10n.logoutLabel,
-                          style: GoogleFonts.beVietnamPro(
-                            fontWeight: FontWeight.bold,
-                            color: context.primary,
-                          ),
-                        ),
-                        content: Text(
-                          l10n.logoutConfirmMessage,
-                          style:
-                              GoogleFonts.inter(color: context.textSecondary),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(ctx).pop(),
-                            child: Text(
-                              l10n.cancelLabel,
-                              style: GoogleFonts.inter(
-                                  color: context.textSecondary),
-                            ),
-                          ),
-                          AppButton(
-                            label: l10n.logoutButton,
-                            onPressed: () {
-                              Navigator.of(ctx).pop();
-                              context
-                                  .read<AuthBloc>()
-                                  .add(AuthLogoutRequested());
-                            },
-                            variant: AppButtonVariant.danger,
-                            size: AppButtonSize.small,
-                          ),
-                        ],
-                      ),
+                  onPressed: () async {
+                    final confirmed = await AppDialog.confirm(
+                      context,
+                      title: l10n.logoutLabel,
+                      message: l10n.logoutConfirmMessage,
+                      confirmLabel: l10n.logoutButton,
+                      type: AppDialogType.danger,
+                      showIcon: false,
+                      confirmColor: context.primary,
                     );
+                    if (confirmed == true && context.mounted) {
+                      context.read<AuthBloc>().add(AuthLogoutRequested());
+                    }
                   },
                   prefixIcon: const Icon(LucideIcons.logOut, size: 18),
                   variant: AppButtonVariant.primary,

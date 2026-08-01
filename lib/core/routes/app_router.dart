@@ -25,8 +25,9 @@ class AppRouter {
         }
 
         if (authState is Authenticated) {
+          final isPending = authState.user.pendingStatus == 'PENDING';
           final hasFamily = authState.user.familyId != null;
-          if (!hasFamily) {
+          if (!hasFamily || isPending) {
             return state.matchedLocation == '/onboarding' ? null : '/onboarding';
           }
           if (isLoggingIn || state.matchedLocation == '/' || state.matchedLocation == '/onboarding') {

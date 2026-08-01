@@ -219,7 +219,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String pendingApprovalMessage(String clanLeaderName, String clanLeaderPhone) {
-    return 'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc $clanLeaderName ($clanLeaderPhone) để phê duyệt.';
+    return 'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ Trưởng tộc $clanLeaderName - $clanLeaderPhone để phê duyệt.';
   }
 
   @override

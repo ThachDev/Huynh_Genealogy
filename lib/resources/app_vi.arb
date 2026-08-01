@@ -284,6 +284,7 @@
   "transferDesc": "Chỉ những thành viên đã kích hoạt tài khoản và có vai trò khác Trưởng tộc mới xuất hiện trong danh sách dưới đây:",
   "searchMemberHint": "Tìm thành viên...",
   "noMemberFound": "Không tìm thấy thành viên phù hợp.",
+  "noSearchResultsMessage": "Không tìm thấy kết quả phù hợp.",
   "noEligibleMembers": "Không có thành viên nào đủ điều kiện nhận chuyển nhượng.",
   "proceedTransferButton": "Tiến Hành Chuyển Nhượng",
   "warningDialogTitle": "Cảnh báo quan trọng",

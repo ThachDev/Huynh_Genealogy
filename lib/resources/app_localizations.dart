@@ -1352,6 +1352,12 @@ abstract class AppLocalizations {
   /// **'Không tìm thấy thành viên phù hợp.'**
   String get noMemberFound;
 
+  /// No description provided for @noSearchResultsMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy kết quả phù hợp.'**
+  String get noSearchResultsMessage;
+
   /// No description provided for @noEligibleMembers.
   ///
   /// In vi, this message translates to:

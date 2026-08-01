@@ -274,6 +274,7 @@
   "transferDesc": "Only members with activated accounts and a role other than Clan Leader appear in the list below:",
   "searchMemberHint": "Search member...",
   "noMemberFound": "No matching member found.",
+  "noSearchResultsMessage": "No matching results found.",
   "noEligibleMembers": "No eligible members for transfer.",
   "proceedTransferButton": "Proceed With Transfer",
   "warningDialogTitle": "Important Warning",

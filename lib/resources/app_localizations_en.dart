@@ -696,6 +696,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMemberFound => 'No matching member found.';
 
   @override
+  String get noSearchResultsMessage => 'No matching results found.';
+
+  @override
   String get noEligibleMembers => 'No eligible members for transfer.';
 
   @override

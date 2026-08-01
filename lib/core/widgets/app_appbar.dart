@@ -61,7 +61,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
                 width: 1.0,
               ),
             ),
-      iconTheme: const IconThemeData(color: Colors.white),
+      iconTheme: IconThemeData(color: context.textPrimary),
       title: titleWidget ??
           Text(
             title,

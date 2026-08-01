@@ -696,6 +696,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noMemberFound => 'Không tìm thấy thành viên phù hợp.';
 
   @override
+  String get noSearchResultsMessage => 'Không tìm thấy kết quả phù hợp.';
+
+  @override
   String get noEligibleMembers =>
       'Không có thành viên nào đủ điều kiện nhận chuyển nhượng.';
 

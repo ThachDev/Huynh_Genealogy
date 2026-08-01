@@ -23,6 +23,7 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   // Common states
   bool _isRequestSent = false;
+  int? _joinedFamilyId;
   int? _selectedPath; // null = select screen, 1 = Creator, 2 = Viewer
 
   @override
@@ -96,18 +97,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
               AppSnackBar.success(context, l10n.joinRequestSuccess);
               setState(() {
                 _isRequestSent = true;
+                _joinedFamilyId = state.request.familyId;
               });
             }
           },
           builder: (context, state) {
+            final targetFamilyId = _joinedFamilyId ?? user.familyId;
             return SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (_isRequestSent)
-                    PendingApprovalWidget(user: user)
+                  if (_isRequestSent || targetFamilyId != null)
+                    PendingApprovalWidget(
+                      user: user,
+                      familyId: targetFamilyId,
+                    )
                   else if (_selectedPath == null)
                     PathSelectionWidget(
                       user: user,

@@ -9,7 +9,7 @@ abstract class FamilyTreeRemoteDataSource {
   Future<List<MemberModel>> getMembers({int? branchId, int? familyId});
   Future<MemberModel> getMemberById(int id);
   Future<MemberModel> saveMember(MemberModel member);
-  Future<bool> deleteMember(int id);
+  Future<bool> deleteMember(int id, {bool reassignChildrenToParent = false});
 
   Future<List<BranchModel>> getBranches({int? familyId});
   Future<BranchModel> getBranchById(int id);
@@ -182,9 +182,12 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
   }
 
   @override
-  Future<bool> deleteMember(int id) async {
+  Future<bool> deleteMember(int id, {bool reassignChildrenToParent = false}) async {
     try {
-      await dio.delete('${AppConstants.membersEndpoint}/$id');
+      await dio.delete(
+        '${AppConstants.membersEndpoint}/$id',
+        queryParameters: reassignChildrenToParent ? {'reassign': true} : null,
+      );
       return true;
     } on DioException catch (e) {
       throw ServerException(

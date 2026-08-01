@@ -14,6 +14,8 @@ class UserEntity with _$UserEntity {
     @Default('VIEWER') String role,
     int? familyId,
     int? memberId,
+    int? pendingFamilyId,
+    String? pendingStatus,
   }) = _UserEntity;
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>

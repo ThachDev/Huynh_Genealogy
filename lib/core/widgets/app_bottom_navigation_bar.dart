@@ -35,8 +35,7 @@ class UserMainNavigationPage extends StatefulWidget {
       ValueNotifier<FABConfig?>(null);
 
   /// Dùng để chuyển tab từ bất kỳ đâu trong app
-  static final ValueNotifier<int> tabIndexNotifier =
-      ValueNotifier<int>(0);
+  static final ValueNotifier<int> tabIndexNotifier = ValueNotifier<int>(0);
 
   @override
   State<UserMainNavigationPage> createState() => _UserMainNavigationPageState();
@@ -49,6 +48,11 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   void initState() {
     super.initState();
     UserMainNavigationPage.tabIndexNotifier.addListener(_onTabIndexChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<AuthBloc>().add(AuthProfileRefreshSilent());
+      }
+    });
   }
 
   @override
@@ -110,8 +114,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             icon: LucideIcons.calendarDays,
             label: l10n.navEvents,
             page: EventsListPage(
-                familyId: familyId ?? 0,
-                isActive: safeIndex == 1),
+                familyId: familyId ?? 0, isActive: safeIndex == 1),
           ));
 
           tabs.add(_TabConfig(
@@ -197,7 +200,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                                         boxShadow: [
                                           BoxShadow(
                                             color: context.primary
-                                              .withValues(alpha: 0.3),
+                                                .withValues(alpha: 0.3),
                                             blurRadius: 8,
                                             offset: const Offset(0, 4),
                                           ),

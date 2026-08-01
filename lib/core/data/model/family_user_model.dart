@@ -11,12 +11,31 @@ class FamilyUserModel extends FamilyUserEntity {
     super.userFullName,
     super.userEmail,
     super.userAvatarUrl,
+    super.memberData,
   });
 
   factory FamilyUserModel.fromJson(Map<String, dynamic> json) {
-    // If the backend returns populated user info (e.g. from relations)
+    // Thông tin user (từ join với bảng users)
     final userJson = json['user'] as Map<String, dynamic>?;
-    
+
+    // Thông tin thành viên (từ join với bảng members)
+    final memberJson = json['memberData'] as Map<String, dynamic>?;
+    MemberDataEntity? memberData;
+    if (memberJson != null) {
+      memberData = MemberDataEntity(
+        fullName: memberJson['fullName'] as String?,
+        gender: memberJson['gender'] as String?,
+        dateOfBirth: memberJson['dateOfBirth'] as String?,
+        placeOfBirth: memberJson['placeOfBirth'] as String?,
+        maritalStatus: memberJson['maritalStatus'] as String?,
+        education: memberJson['education'] as String?,
+        avatarUrl: memberJson['avatarUrl'] as String?,
+        notes: memberJson['notes'] as String?,
+        parentId: memberJson['parentId'] as int?,
+        spouseId: memberJson['spouseId'] as int?,
+      );
+    }
+
     return FamilyUserModel(
       id: json['id'] as int,
       userId: json['userId'] as int,
@@ -24,9 +43,16 @@ class FamilyUserModel extends FamilyUserEntity {
       memberNodeId: json['memberNodeId'] as int?,
       role: json['role'] as String? ?? 'VIEWER',
       status: json['status'] as String? ?? 'PENDING',
-      userFullName: userJson != null ? userJson['fullName'] as String? : json['userFullName'] as String?,
-      userEmail: userJson != null ? userJson['email'] as String? : json['userEmail'] as String?,
-      userAvatarUrl: userJson != null ? userJson['avatarUrl'] as String? : json['userAvatarUrl'] as String?,
+      userFullName: userJson != null
+          ? userJson['fullName'] as String?
+          : json['userFullName'] as String?,
+      userEmail: userJson != null
+          ? userJson['email'] as String?
+          : json['userEmail'] as String?,
+      userAvatarUrl: userJson != null
+          ? userJson['avatarUrl'] as String?
+          : json['userAvatarUrl'] as String?,
+      memberData: memberData,
     );
   }
 
@@ -55,6 +81,7 @@ class FamilyUserModel extends FamilyUserEntity {
       userFullName: entity.userFullName,
       userEmail: entity.userEmail,
       userAvatarUrl: entity.userAvatarUrl,
+      memberData: entity.memberData,
     );
   }
 }

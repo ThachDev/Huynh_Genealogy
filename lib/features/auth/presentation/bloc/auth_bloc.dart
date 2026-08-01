@@ -244,9 +244,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
     final failureOrUser = await refreshProfile(NoParams());
-    failureOrUser.fold(
-      (failure) => emit(AuthError(message: failure.message)),
-      (user) => emit(Authenticated(user: user)),
+    await failureOrUser.fold(
+      (failure) async => emit(AuthError(message: failure.message)),
+      (user) async {
+        await authRepository.cacheUser(user);
+        emit(Authenticated(user: user));
+      },
     );
   }
 
@@ -255,9 +258,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final failureOrUser = await refreshProfile(NoParams());
-    failureOrUser.fold(
-      (failure) => {}, // Silently ignore failures on background sync
-      (user) => emit(Authenticated(user: user)),
+    await failureOrUser.fold(
+      (failure) async => {}, // Silently ignore failures on background sync
+      (user) async {
+        await authRepository.cacheUser(user);
+        emit(Authenticated(user: user));
+      },
     );
   }
 }

@@ -15,7 +15,8 @@ class SubmitAdminMemberFormEvent extends AdminMemberFormEvent {
 
 class DeleteAdminMemberFormEvent extends AdminMemberFormEvent {
   final int memberId;
-  DeleteAdminMemberFormEvent(this.memberId);
+  final bool reassignChildrenToParent;
+  DeleteAdminMemberFormEvent(this.memberId, {this.reassignChildrenToParent = false});
 }
 
 class ResetAdminMemberFormEvent extends AdminMemberFormEvent {}

@@ -8,7 +8,7 @@ abstract class FamilyTreeRepository {
   Future<Either<Failure, List<MemberEntity>>> getMembers({int? branchId, int? familyId});
   Future<Either<Failure, MemberEntity>> getMemberById(int id);
   Future<Either<Failure, MemberEntity>> saveMember(MemberEntity member);
-  Future<Either<Failure, bool>> deleteMember(int id);
+  Future<Either<Failure, bool>> deleteMember(int id, {bool reassignChildrenToParent = false});
 
   // ---------- Branches ----------
   Future<Either<Failure, List<BranchEntity>>> getBranches({int? familyId});

@@ -17,6 +17,7 @@ import '../../../../../../core/di/injection_container.dart';
 import '../../../../../auth/auth.dart';
 import '../../../../../onboarding/onboarding.dart';
 import '../../../bloc/admin_member_form/admin_member_form_bloc.dart';
+import '../../../../domain/usecase/save_member.dart';
 import '../../../../../../resources/app_localizations.dart';
 
 class AdminMemberFormPage extends StatefulWidget {
@@ -30,6 +31,7 @@ class AdminMemberFormPage extends StatefulWidget {
   final int? initialSpouseId;
   final int? initialGeneration;
   final bool isLockedContext;
+  final int? pendingChildMemberId;
 
   const AdminMemberFormPage({
     super.key,
@@ -43,6 +45,7 @@ class AdminMemberFormPage extends StatefulWidget {
     this.initialSpouseId,
     this.initialGeneration,
     this.isLockedContext = false,
+    this.pendingChildMemberId,
   });
 
   @override
@@ -222,7 +225,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
           ? (_educationController.text.trim().isEmpty
               ? null
               : _educationController.text.trim())
-          : (_selectedEducationOption == null || _selectedEducationOption!.isEmpty
+          : (_selectedEducationOption == null ||
+                  _selectedEducationOption!.isEmpty
               ? null
               : _selectedEducationOption),
       occupation: _occupationController.text.trim().isEmpty
@@ -248,6 +252,25 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       body: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
         listener: (context, state) async {
           if (state is AdminMemberFormSuccess) {
+            if (!state.isDeleted &&
+                widget.pendingChildMemberId != null &&
+                state.member.id > 0) {
+              final childId = widget.pendingChildMemberId!;
+              final saveMemberUsecase = sl<SaveMember>();
+              final currentReadyState =
+                  context.read<AdminMemberFormBloc>().state;
+              if (currentReadyState is AdminMemberFormReady) {
+                final childMember = currentReadyState.members
+                    .where((m) => m.id == childId)
+                    .firstOrNull;
+                if (childMember != null) {
+                  await saveMemberUsecase(SaveMemberParams(
+                    member: childMember.copyWith(parentId: state.member.id),
+                  ));
+                }
+              }
+            }
+
             if (!state.isDeleted && widget.isOwnerSelfSetup) {
               // Link newly created member to the OWNER's account
               final linkUsecase = sl<LinkMemberToUser>();
@@ -268,6 +291,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                 );
               }
             } else {
+              if (!context.mounted) return;
               AppSnackBar.success(
                 context,
                 state.isDeleted
@@ -389,14 +413,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             dfsAncestors(existingMember.parentId);
           }
 
-          DateTime? parseDate(String? dateStr) {
-            if (dateStr == null) return null;
-            return DateTime.tryParse(dateStr);
-          }
-
-          final myDob = parseDate(_formatBackendDate(_dateOfBirth));
-
-          // Cha/Mẹ: thế hệ trước (gen - 1)
+          // Cha/Mẹ: Danh sách thành viên (chỉ loại trừ chính mình, vợ/chồng hiện tại và con cháu)
           final parentOptions = allMembers.where((m) {
             if (m.id == existingMember?.id) return false;
             // LUÔN CHO PHÉP parent hiện tại để không bị reset ngầm khi chỉnh sửa
@@ -410,21 +427,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
             // Không được chọn vợ/chồng làm cha/mẹ
             if (_spouseId != null && m.id == _spouseId) return false;
-            // Không được chọn con cháu làm cha/mẹ
+            // Không được chọn con cháu của chính mình làm cha/mẹ
             if (descendants.contains(m.id)) return false;
 
-            // Ràng buộc tuổi tác: Cha mẹ phải lớn hơn con ít nhất 13 tuổi
-            if (myDob != null) {
-              final parentDob = parseDate(m.dateOfBirth);
-              if (parentDob != null) {
-                final ageGap = myDob.difference(parentDob).inDays / 365.25;
-                if (ageGap < 13) return false;
-              }
-            }
-
-            if (currentGeneration != null && m.generation != null) {
-              return m.generation == currentGeneration - 1;
-            }
             return true;
           }).toList();
 
@@ -800,10 +805,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                         value: null,
                                         child: Text(l10n.noSelectionLabel),
                                       ),
-                                      ..._predefinedEducation.map((edu) => DropdownItem<String?>(
-                                        value: edu,
-                                        child: Text(_getEducationText(edu, l10n)),
-                                      )),
+                                      ..._predefinedEducation.map((edu) =>
+                                          DropdownItem<String?>(
+                                            value: edu,
+                                            child: Text(
+                                                _getEducationText(edu, l10n)),
+                                          )),
                                       DropdownItem<String?>(
                                         value: 'Khác',
                                         child: Text(l10n.otherLabel),

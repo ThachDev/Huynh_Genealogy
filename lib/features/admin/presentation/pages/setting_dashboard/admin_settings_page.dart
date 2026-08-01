@@ -19,6 +19,7 @@ import 'pages/admin_help_center_page.dart';
 import 'pages/admin_about_us_page.dart';
 import 'pages/admin_member_roles_page.dart';
 import 'pages/admin_settings_profile_card.dart';
+import '../admin_dashboard/pages/admin_member_form_page.dart';
 
 import '../../../../../main.dart';
 
@@ -78,6 +79,85 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               children: [
                 // ── Profile card ──────────────────────
                 AdminSettingsProfileCard(user: user),
+                if (user != null &&
+                    (user.memberId == null || user.memberId == 0)) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: context.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: context.primary.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(LucideIcons.userX,
+                                color: context.primary, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                l10n.noProfileLink,
+                                style: GoogleFonts.beVietnamPro(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: context.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.noProfileLinkDesc,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: context.textSecondary,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AdminMemberFormPage(
+                                    isOwnerSelfSetup: true,
+                                    ownerUserId: user.id,
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: const Icon(LucideIcons.userPlus, size: 16),
+                            label: Text(
+                              l10n.createProfileButton,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: context.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 _buildSettingsCard(children: [
                   _buildSectionHeaderInsideCard(

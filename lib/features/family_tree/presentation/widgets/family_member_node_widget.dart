@@ -10,6 +10,7 @@ import '../../../../core/widgets/widgets.dart';
 class FamilyMemberNodeWidget extends StatefulWidget {
   final MemberEntity member;
   final bool isSelected;
+  final bool isCurrentUser;
   final VoidCallback? onTap;
   final VoidCallback? onAddChildTap;
   final VoidCallback? onAddSpouseTap;
@@ -18,6 +19,7 @@ class FamilyMemberNodeWidget extends StatefulWidget {
     super.key,
     required this.member,
     this.isSelected = false,
+    this.isCurrentUser = false,
     this.onTap,
     this.onAddChildTap,
     this.onAddSpouseTap,
@@ -104,6 +106,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                 child: Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: Stack(
+                    clipBehavior: Clip.none,
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
@@ -320,6 +323,46 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                           ),
                         ),
                       ),
+                      // CURRENT USER "TÔI" BADGE
+                      if (widget.isCurrentUser)
+                        Positioned(
+                          top: -6,
+                          right: -6,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: context.primary,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: context.primary.withValues(alpha: 0.3),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  LucideIcons.userCheck,
+                                  size: 10,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 2),
+                                Text(
+                                  'Tôi',
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

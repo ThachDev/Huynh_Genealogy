@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'family_entity.freezed.dart';
-part 'family_entity.g.dart';
 
 @freezed
 class FamilyEntity with _$FamilyEntity {
@@ -13,6 +12,8 @@ class FamilyEntity with _$FamilyEntity {
     String? description,
     String? origin,
     String? logoUrl,
+    String? creatorName,
+    String? creatorPhone,
   }) = _FamilyEntity;
 
   factory FamilyEntity.fromJson(Map<String, dynamic> json) {
@@ -26,6 +27,8 @@ class FamilyEntity with _$FamilyEntity {
       description: data['description']?.toString(),
       origin: data['origin']?.toString(),
       logoUrl: data['logoUrl']?.toString(),
+      creatorName: (data['creatorName'] ?? data['creator_name'])?.toString(),
+      creatorPhone: (data['creatorPhone'] ?? data['creator_phone'])?.toString(),
     );
   }
 }

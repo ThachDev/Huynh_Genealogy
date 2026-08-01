@@ -11,15 +11,19 @@ class DeleteMember implements UseCase<bool, DeleteMemberParams> {
 
   @override
   Future<Either<Failure, bool>> call(DeleteMemberParams params) {
-    return repository.deleteMember(params.id);
+    return repository.deleteMember(params.id, reassignChildrenToParent: params.reassignChildrenToParent);
   }
 }
 
 class DeleteMemberParams extends Equatable {
   final int id;
+  final bool reassignChildrenToParent;
 
-  const DeleteMemberParams({required this.id});
+  const DeleteMemberParams({
+    required this.id,
+    this.reassignChildrenToParent = false,
+  });
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [id, reassignChildrenToParent];
 }

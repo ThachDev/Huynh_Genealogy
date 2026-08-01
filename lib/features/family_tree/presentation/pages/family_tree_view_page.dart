@@ -153,13 +153,32 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
   }
 
   Map<int, Offset> _calculateLayout(
-    List<MemberEntity> members,
+    List<MemberEntity> rawMembers,
     List<_CoupleEdge>
         coupleEdges, // Junction edges: 1 entry = 1 cặp + tất cả con
     List<_EdgeData>
         orphanEdges, // Fallback bezier cho nodes không qua layout chính
     List<_SpouseEdge> spouseEdges,
   ) {
+    // Tách danh sách con theo cha/mẹ
+    final childrenMap = <int?, List<MemberEntity>>{};
+    for (final m in rawMembers) {
+      if (m.parentId != null) {
+        childrenMap.putIfAbsent(m.parentId, () => []).add(m);
+      }
+    }
+
+    // Lọc bỏ những member hoàn toàn cô lập: không cha mẹ, không vợ chồng, không con, không chi tộc
+    final members = rawMembers.where((m) {
+      final hasParent = m.parentId != null || m.motherId != null;
+      final hasSpouse = m.spouseId != null;
+      final hasChildren = (childrenMap[m.id] ?? []).isNotEmpty;
+      final hasBranch = m.branchId != null;
+
+      // Nếu có ít nhất 1 mối liên kết -> Giữ lại để vẽ cây
+      return hasParent || hasSpouse || hasChildren || hasBranch;
+    }).toList();
+
     final memberMap = {for (final m in members) m.id: m};
     final childrenOf = <int?, List<MemberEntity>>{};
     for (final m in members) {
@@ -344,7 +363,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     double rootX = 0;
 
     if (roots.isEmpty && members.isNotEmpty) {
-      final (positions, _) = layoutSubtree(members.first.id, minGen);
+      // Nếu không tìm thấy root nào khớp điều kiện trên nhưng danh sách không rỗng (ví dụ data cũ)
+      final firstWithLink = members.firstWhere(
+        (m) =>
+            m.generation == 1 ||
+            m.spouseId != null ||
+            (childrenOf[m.id] ?? []).isNotEmpty,
+        orElse: () => members.first,
+      );
+      final (positions, _) = layoutSubtree(firstWithLink.id, minGen);
       for (final entry in positions.entries) {
         allPositions[entry.key] = entry.value;
       }
@@ -363,14 +390,9 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       }
     }
 
+    // Chỉ tạo spouseEdges cho các cặp không qua coupleEdges (nếu có)
     for (final m in members) {
-      if (!allPositions.containsKey(m.id)) {
-        final gen = (m.generation ?? minGen) - minGen;
-        allPositions[m.id] = Offset(rootX, gen * _vSpacing);
-        rootX += _nodeWidth + _hSpacing;
-        if (m.parentId != null && allPositions.containsKey(m.parentId)) {
-          orphanEdges.add(_EdgeData(parentId: m.parentId!, childId: m.id));
-        }
+      if (allPositions.containsKey(m.id)) {
         if (m.spouseId != null && allPositions.containsKey(m.spouseId)) {
           spouseEdges.add(_SpouseEdge(
             leftMemberId: m.id < m.spouseId! ? m.id : m.spouseId!,
@@ -516,11 +538,19 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                       Size(constraints.maxWidth, constraints.maxHeight);
                   _lastTreeSize = treeSize;
 
-                  // Auto fit tree overview on load
+                  final authState = context.read<AuthBloc>().state;
+                  final userMemberId =
+                      authState is Authenticated ? authState.user.memberId : null;
+
+                  // Auto fit or zoom to user's node on load
                   if (!_hasFitTree) {
                     _hasFitTree = true;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      _fitTreeOverview();
+                      if (userMemberId != null && positions.containsKey(userMemberId)) {
+                        _centerOnNode(userMemberId);
+                      } else {
+                        _fitTreeOverview();
+                      }
                     });
                   }
 
@@ -554,7 +584,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                                 spousePaint: Paint()
                                   ..color = context.resolve(
                                       context.accent.withValues(alpha: 0.8),
-                                      Colors.grey.shade700.withValues(alpha: 0.8))
+                                      Colors.grey.shade700
+                                          .withValues(alpha: 0.8))
                                   ..strokeWidth = 2.0
                                   ..strokeCap = StrokeCap.round
                                   ..style = PaintingStyle.stroke,
@@ -572,6 +603,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                               child: FamilyMemberNodeWidget(
                                 member: member,
                                 isSelected: state.selectedMemberId == member.id,
+                                isCurrentUser: userMemberId == member.id,
                                 onTap: () {
                                   context.read<FamilyTreeBloc>().add(
                                       FamilyTreeSelectMemberEvent(member.id));

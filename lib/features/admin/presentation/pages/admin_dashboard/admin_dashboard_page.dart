@@ -898,37 +898,126 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   void _showDeleteConfirmation(BuildContext context, MemberEntity member) {
+    final treeState = context.read<FamilyTreeBloc>().state;
+    final allMembers = treeState is FamilyTreeLoaded ? treeState.members : <MemberEntity>[];
+    final hasChildren = allMembers.any((m) => m.parentId == member.id);
+
     showDialog(
       context: context,
       builder: (ctx) {
         final l10n = AppLocalizations.of(ctx)!;
+        if (!hasChildren) {
+          return AlertDialog(
+            backgroundColor: ctx.surface,
+            title: Text(
+              l10n.deleteMemberTitle,
+              style: GoogleFonts.beVietnamPro(
+                  fontWeight: FontWeight.bold, color: ctx.textPrimary),
+            ),
+            content: Text(
+              l10n.deleteMemberMessage(member.fullName),
+              style: GoogleFonts.beVietnamPro(),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(l10n.cancelLabel,
+                    style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
+              ),
+              AppButton(
+                label: l10n.deleteLabel,
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  context
+                      .read<AdminMemberFormBloc>()
+                      .add(DeleteAdminMemberFormEvent(member.id));
+                },
+                variant: AppButtonVariant.danger,
+                size: AppButtonSize.small,
+              ),
+            ],
+          );
+        }
+
+        // Trường hợp thành viên có con cháu nối tiếp
         return AlertDialog(
           backgroundColor: ctx.surface,
-          title: Text(
-            l10n.deleteMemberTitle,
-            style: GoogleFonts.beVietnamPro(
-                fontWeight: FontWeight.bold, color: ctx.textPrimary),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: [
+              Icon(LucideIcons.alertTriangle, color: ctx.accent, size: 22),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Xoá thành viên trung gian',
+                  style: GoogleFonts.beVietnamPro(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: ctx.textPrimary,
+                  ),
+                ),
+              ),
+            ],
           ),
-          content: Text(
-            l10n.deleteMemberMessage(member.fullName),
-            style: GoogleFonts.beVietnamPro(),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Thành viên "${member.fullName}" đang có con/cháu trong gia phả. Bạn muốn xử lý liên kết thế hệ như thế nào?',
+                style: GoogleFonts.inter(fontSize: 13, color: ctx.textPrimary, height: 1.4),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: ctx.primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: ctx.primary.withValues(alpha: 0.2)),
+                ),
+                child: Text(
+                  '💡 Đôn con lên (Khuyên dùng): Tự động nối các con của ${member.fullName} lên thế hệ trên để cây không bị đứt đoạn.',
+                  style: GoogleFonts.inter(fontSize: 11.5, color: ctx.primary),
+                ),
+              ),
+            ],
           ),
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
               child: Text(l10n.cancelLabel,
                   style: GoogleFonts.beVietnamPro(color: ctx.textSecondary)),
             ),
-            AppButton(
-              label: l10n.deleteLabel,
+            TextButton(
               onPressed: () {
                 Navigator.pop(ctx);
                 context
                     .read<AdminMemberFormBloc>()
-                    .add(DeleteAdminMemberFormEvent(member.id));
+                    .add(DeleteAdminMemberFormEvent(member.id, reassignChildrenToParent: false));
               },
-              variant: AppButtonVariant.danger,
-              size: AppButtonSize.small,
+              child: Text(
+                'Xoá & Tách nhánh',
+                style: GoogleFonts.beVietnamPro(color: Colors.redAccent, fontSize: 12),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(ctx);
+                context
+                    .read<AdminMemberFormBloc>()
+                    .add(DeleteAdminMemberFormEvent(member.id, reassignChildrenToParent: true));
+              },
+              icon: const Icon(LucideIcons.gitMerge, size: 14),
+              label: Text(
+                'Đôn con lên',
+                style: GoogleFonts.beVietnamPro(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ctx.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
             ),
           ],
         );

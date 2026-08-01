@@ -14,10 +14,6 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-FamilyEntity _$FamilyEntityFromJson(Map<String, dynamic> json) {
-  return _FamilyEntity.fromJson(json);
-}
-
 /// @nodoc
 mixin _$FamilyEntity {
   int get id => throw _privateConstructorUsedError;
@@ -27,9 +23,8 @@ mixin _$FamilyEntity {
   String? get description => throw _privateConstructorUsedError;
   String? get origin => throw _privateConstructorUsedError;
   String? get logoUrl => throw _privateConstructorUsedError;
-
-  /// Serializes this FamilyEntity to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  String? get creatorName => throw _privateConstructorUsedError;
+  String? get creatorPhone => throw _privateConstructorUsedError;
 
   /// Create a copy of FamilyEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -51,7 +46,9 @@ abstract class $FamilyEntityCopyWith<$Res> {
       int creatorId,
       String? description,
       String? origin,
-      String? logoUrl});
+      String? logoUrl,
+      String? creatorName,
+      String? creatorPhone});
 }
 
 /// @nodoc
@@ -76,6 +73,8 @@ class _$FamilyEntityCopyWithImpl<$Res, $Val extends FamilyEntity>
     Object? description = freezed,
     Object? origin = freezed,
     Object? logoUrl = freezed,
+    Object? creatorName = freezed,
+    Object? creatorPhone = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -106,6 +105,14 @@ class _$FamilyEntityCopyWithImpl<$Res, $Val extends FamilyEntity>
           ? _value.logoUrl
           : logoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      creatorName: freezed == creatorName
+          ? _value.creatorName
+          : creatorName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      creatorPhone: freezed == creatorPhone
+          ? _value.creatorPhone
+          : creatorPhone // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -125,7 +132,9 @@ abstract class _$$FamilyEntityImplCopyWith<$Res>
       int creatorId,
       String? description,
       String? origin,
-      String? logoUrl});
+      String? logoUrl,
+      String? creatorName,
+      String? creatorPhone});
 }
 
 /// @nodoc
@@ -148,6 +157,8 @@ class __$$FamilyEntityImplCopyWithImpl<$Res>
     Object? description = freezed,
     Object? origin = freezed,
     Object? logoUrl = freezed,
+    Object? creatorName = freezed,
+    Object? creatorPhone = freezed,
   }) {
     return _then(_$FamilyEntityImpl(
       id: null == id
@@ -178,12 +189,20 @@ class __$$FamilyEntityImplCopyWithImpl<$Res>
           ? _value.logoUrl
           : logoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      creatorName: freezed == creatorName
+          ? _value.creatorName
+          : creatorName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      creatorPhone: freezed == creatorPhone
+          ? _value.creatorPhone
+          : creatorPhone // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$FamilyEntityImpl implements _FamilyEntity {
   const _$FamilyEntityImpl(
       {required this.id,
@@ -192,10 +211,9 @@ class _$FamilyEntityImpl implements _FamilyEntity {
       required this.creatorId,
       this.description,
       this.origin,
-      this.logoUrl});
-
-  factory _$FamilyEntityImpl.fromJson(Map<String, dynamic> json) =>
-      _$$FamilyEntityImplFromJson(json);
+      this.logoUrl,
+      this.creatorName,
+      this.creatorPhone});
 
   @override
   final int id;
@@ -211,10 +229,14 @@ class _$FamilyEntityImpl implements _FamilyEntity {
   final String? origin;
   @override
   final String? logoUrl;
+  @override
+  final String? creatorName;
+  @override
+  final String? creatorPhone;
 
   @override
   String toString() {
-    return 'FamilyEntity(id: $id, name: $name, inviteCode: $inviteCode, creatorId: $creatorId, description: $description, origin: $origin, logoUrl: $logoUrl)';
+    return 'FamilyEntity(id: $id, name: $name, inviteCode: $inviteCode, creatorId: $creatorId, description: $description, origin: $origin, logoUrl: $logoUrl, creatorName: $creatorName, creatorPhone: $creatorPhone)';
   }
 
   @override
@@ -231,13 +253,16 @@ class _$FamilyEntityImpl implements _FamilyEntity {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.origin, origin) || other.origin == origin) &&
-            (identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl));
+            (identical(other.logoUrl, logoUrl) || other.logoUrl == logoUrl) &&
+            (identical(other.creatorName, creatorName) ||
+                other.creatorName == creatorName) &&
+            (identical(other.creatorPhone, creatorPhone) ||
+                other.creatorPhone == creatorPhone));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, inviteCode, creatorId,
-      description, origin, logoUrl);
+      description, origin, logoUrl, creatorName, creatorPhone);
 
   /// Create a copy of FamilyEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -246,13 +271,6 @@ class _$FamilyEntityImpl implements _FamilyEntity {
   @pragma('vm:prefer-inline')
   _$$FamilyEntityImplCopyWith<_$FamilyEntityImpl> get copyWith =>
       __$$FamilyEntityImplCopyWithImpl<_$FamilyEntityImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$FamilyEntityImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _FamilyEntity implements FamilyEntity {
@@ -263,10 +281,9 @@ abstract class _FamilyEntity implements FamilyEntity {
       required final int creatorId,
       final String? description,
       final String? origin,
-      final String? logoUrl}) = _$FamilyEntityImpl;
-
-  factory _FamilyEntity.fromJson(Map<String, dynamic> json) =
-      _$FamilyEntityImpl.fromJson;
+      final String? logoUrl,
+      final String? creatorName,
+      final String? creatorPhone}) = _$FamilyEntityImpl;
 
   @override
   int get id;
@@ -282,6 +299,10 @@ abstract class _FamilyEntity implements FamilyEntity {
   String? get origin;
   @override
   String? get logoUrl;
+  @override
+  String? get creatorName;
+  @override
+  String? get creatorPhone;
 
   /// Create a copy of FamilyEntity
   /// with the given fields replaced by the non-null parameter values.

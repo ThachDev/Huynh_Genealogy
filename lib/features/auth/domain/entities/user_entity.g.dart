@@ -16,6 +16,8 @@ _$UserEntityImpl _$$UserEntityImplFromJson(Map<String, dynamic> json) =>
       role: json['role'] as String? ?? 'VIEWER',
       familyId: (json['familyId'] as num?)?.toInt(),
       memberId: (json['memberId'] as num?)?.toInt(),
+      pendingFamilyId: (json['pendingFamilyId'] as num?)?.toInt(),
+      pendingStatus: json['pendingStatus'] as String?,
     );
 
 Map<String, dynamic> _$$UserEntityImplToJson(_$UserEntityImpl instance) =>
@@ -28,4 +30,6 @@ Map<String, dynamic> _$$UserEntityImplToJson(_$UserEntityImpl instance) =>
       'role': instance.role,
       'familyId': instance.familyId,
       'memberId': instance.memberId,
+      'pendingFamilyId': instance.pendingFamilyId,
+      'pendingStatus': instance.pendingStatus,
     };

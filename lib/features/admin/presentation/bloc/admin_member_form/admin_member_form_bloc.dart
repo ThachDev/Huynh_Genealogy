@@ -74,7 +74,10 @@ class AdminMemberFormBloc
   Future<void> _onDelete(DeleteAdminMemberFormEvent event,
       Emitter<AdminMemberFormState> emit) async {
     emit(AdminMemberFormSubmitting());
-    final result = await deleteMember(DeleteMemberParams(id: event.memberId));
+    final result = await deleteMember(DeleteMemberParams(
+      id: event.memberId,
+      reassignChildrenToParent: event.reassignChildrenToParent,
+    ));
     result.fold(
       (failure) => emit(AdminMemberFormError(failure.message)),
       (_) {

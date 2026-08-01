@@ -28,6 +28,8 @@ mixin _$UserEntity {
   String get role => throw _privateConstructorUsedError;
   int? get familyId => throw _privateConstructorUsedError;
   int? get memberId => throw _privateConstructorUsedError;
+  int? get pendingFamilyId => throw _privateConstructorUsedError;
+  String? get pendingStatus => throw _privateConstructorUsedError;
 
   /// Serializes this UserEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -53,7 +55,9 @@ abstract class $UserEntityCopyWith<$Res> {
       String? fcmToken,
       String role,
       int? familyId,
-      int? memberId});
+      int? memberId,
+      int? pendingFamilyId,
+      String? pendingStatus});
 }
 
 /// @nodoc
@@ -79,6 +83,8 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
     Object? role = null,
     Object? familyId = freezed,
     Object? memberId = freezed,
+    Object? pendingFamilyId = freezed,
+    Object? pendingStatus = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -113,6 +119,14 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
           ? _value.memberId
           : memberId // ignore: cast_nullable_to_non_nullable
               as int?,
+      pendingFamilyId: freezed == pendingFamilyId
+          ? _value.pendingFamilyId
+          : pendingFamilyId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      pendingStatus: freezed == pendingStatus
+          ? _value.pendingStatus
+          : pendingStatus // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -133,7 +147,9 @@ abstract class _$$UserEntityImplCopyWith<$Res>
       String? fcmToken,
       String role,
       int? familyId,
-      int? memberId});
+      int? memberId,
+      int? pendingFamilyId,
+      String? pendingStatus});
 }
 
 /// @nodoc
@@ -157,6 +173,8 @@ class __$$UserEntityImplCopyWithImpl<$Res>
     Object? role = null,
     Object? familyId = freezed,
     Object? memberId = freezed,
+    Object? pendingFamilyId = freezed,
+    Object? pendingStatus = freezed,
   }) {
     return _then(_$UserEntityImpl(
       id: null == id
@@ -191,6 +209,14 @@ class __$$UserEntityImplCopyWithImpl<$Res>
           ? _value.memberId
           : memberId // ignore: cast_nullable_to_non_nullable
               as int?,
+      pendingFamilyId: freezed == pendingFamilyId
+          ? _value.pendingFamilyId
+          : pendingFamilyId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      pendingStatus: freezed == pendingStatus
+          ? _value.pendingStatus
+          : pendingStatus // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -206,7 +232,9 @@ class _$UserEntityImpl implements _UserEntity {
       this.fcmToken,
       this.role = 'VIEWER',
       this.familyId,
-      this.memberId});
+      this.memberId,
+      this.pendingFamilyId,
+      this.pendingStatus});
 
   factory _$UserEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserEntityImplFromJson(json);
@@ -228,10 +256,14 @@ class _$UserEntityImpl implements _UserEntity {
   final int? familyId;
   @override
   final int? memberId;
+  @override
+  final int? pendingFamilyId;
+  @override
+  final String? pendingStatus;
 
   @override
   String toString() {
-    return 'UserEntity(id: $id, email: $email, fullName: $fullName, avatarUrl: $avatarUrl, fcmToken: $fcmToken, role: $role, familyId: $familyId, memberId: $memberId)';
+    return 'UserEntity(id: $id, email: $email, fullName: $fullName, avatarUrl: $avatarUrl, fcmToken: $fcmToken, role: $role, familyId: $familyId, memberId: $memberId, pendingFamilyId: $pendingFamilyId, pendingStatus: $pendingStatus)';
   }
 
   @override
@@ -251,13 +283,17 @@ class _$UserEntityImpl implements _UserEntity {
             (identical(other.familyId, familyId) ||
                 other.familyId == familyId) &&
             (identical(other.memberId, memberId) ||
-                other.memberId == memberId));
+                other.memberId == memberId) &&
+            (identical(other.pendingFamilyId, pendingFamilyId) ||
+                other.pendingFamilyId == pendingFamilyId) &&
+            (identical(other.pendingStatus, pendingStatus) ||
+                other.pendingStatus == pendingStatus));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, email, fullName, avatarUrl,
-      fcmToken, role, familyId, memberId);
+      fcmToken, role, familyId, memberId, pendingFamilyId, pendingStatus);
 
   /// Create a copy of UserEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -284,7 +320,9 @@ abstract class _UserEntity implements UserEntity {
       final String? fcmToken,
       final String role,
       final int? familyId,
-      final int? memberId}) = _$UserEntityImpl;
+      final int? memberId,
+      final int? pendingFamilyId,
+      final String? pendingStatus}) = _$UserEntityImpl;
 
   factory _UserEntity.fromJson(Map<String, dynamic> json) =
       _$UserEntityImpl.fromJson;
@@ -305,6 +343,10 @@ abstract class _UserEntity implements UserEntity {
   int? get familyId;
   @override
   int? get memberId;
+  @override
+  int? get pendingFamilyId;
+  @override
+  String? get pendingStatus;
 
   /// Create a copy of UserEntity
   /// with the given fields replaced by the non-null parameter values.

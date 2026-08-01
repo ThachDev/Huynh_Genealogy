@@ -54,9 +54,9 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> deleteMember(int id) async {
+  Future<Either<Failure, bool>> deleteMember(int id, {bool reassignChildrenToParent = false}) async {
     try {
-      final result = await remoteDataSource.deleteMember(id);
+      final result = await remoteDataSource.deleteMember(id, reassignChildrenToParent: reassignChildrenToParent);
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));

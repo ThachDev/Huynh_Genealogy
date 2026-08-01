@@ -1,5 +1,45 @@
 import 'package:equatable/equatable.dart';
 
+class MemberDataEntity extends Equatable {
+  final String? fullName;
+  final String? gender;
+  final String? dateOfBirth;
+  final String? placeOfBirth;
+  final String? maritalStatus;
+  final String? education;
+  final String? avatarUrl;
+  final String? notes;
+  final int? parentId;
+  final int? spouseId;
+
+  const MemberDataEntity({
+    this.fullName,
+    this.gender,
+    this.dateOfBirth,
+    this.placeOfBirth,
+    this.maritalStatus,
+    this.education,
+    this.avatarUrl,
+    this.notes,
+    this.parentId,
+    this.spouseId,
+  });
+
+  @override
+  List<Object?> get props => [
+        fullName,
+        gender,
+        dateOfBirth,
+        placeOfBirth,
+        maritalStatus,
+        education,
+        avatarUrl,
+        notes,
+        parentId,
+        spouseId,
+      ];
+}
+
 class FamilyUserEntity extends Equatable {
   final int id;
   final int userId;
@@ -7,9 +47,11 @@ class FamilyUserEntity extends Equatable {
   final int? memberNodeId;
   final String role; // 'OWNER' | 'BRANCH_ADMIN' | 'EDITOR' | 'VIEWER'
   final String status; // 'PENDING' | 'APPROVED' | 'REJECTED'
-  final String? userFullName; // Optional, populated when fetching requests for approval
+  final String? userFullName;
   final String? userEmail;
   final String? userAvatarUrl;
+  // Thông tin thành viên mà user đã điền khi gửi yêu cầu
+  final MemberDataEntity? memberData;
 
   const FamilyUserEntity({
     required this.id,
@@ -21,6 +63,7 @@ class FamilyUserEntity extends Equatable {
     this.userFullName,
     this.userEmail,
     this.userAvatarUrl,
+    this.memberData,
   });
 
   @override
@@ -34,5 +77,6 @@ class FamilyUserEntity extends Equatable {
         userFullName,
         userEmail,
         userAvatarUrl,
+        memberData,
       ];
 }

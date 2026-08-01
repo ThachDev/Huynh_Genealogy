@@ -5,30 +5,81 @@ import 'package:lottie/lottie.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../core/di/injection_container.dart';
+import '../../../../core/domain/usecase/get_family_detail.dart';
 import '../../../auth/auth.dart';
 
-class PendingApprovalWidget extends StatelessWidget {
+class PendingApprovalWidget extends StatefulWidget {
   final UserEntity user;
   final String? clanLeaderName;
   final String? clanLeaderPhone;
+  final int? familyId;
 
   const PendingApprovalWidget({
     super.key,
     required this.user,
     this.clanLeaderName,
     this.clanLeaderPhone,
+    this.familyId,
   });
+
+  @override
+  State<PendingApprovalWidget> createState() => _PendingApprovalWidgetState();
+}
+
+class _PendingApprovalWidgetState extends State<PendingApprovalWidget> {
+  String? _leaderName;
+  String? _leaderPhone;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _leaderName = widget.clanLeaderName;
+    _leaderPhone = widget.clanLeaderPhone;
+
+    if (_leaderName == null || _leaderPhone == null) {
+      _fetchLeaderInfo();
+    }
+  }
+
+  Future<void> _fetchLeaderInfo() async {
+    final targetFamilyId = widget.familyId ?? widget.user.familyId;
+    if (targetFamilyId == null || targetFamilyId == 0) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final getFamilyDetail = sl<GetFamilyDetail>();
+    final result = await getFamilyDetail(targetFamilyId);
+
+    if (mounted) {
+      result.fold(
+        (_) => null,
+        (family) {
+          setState(() {
+            _leaderName = family.creatorName;
+            _leaderPhone = family.creatorPhone;
+          });
+        },
+      );
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     final hasLeaderInfo =
-        clanLeaderName != null && clanLeaderName!.isNotEmpty &&
-        clanLeaderPhone != null && clanLeaderPhone!.isNotEmpty;
+        _leaderName != null && _leaderName!.isNotEmpty &&
+        _leaderPhone != null && _leaderPhone!.isNotEmpty;
 
     final message = hasLeaderInfo
-        ? l10n.pendingApprovalMessage(clanLeaderName!, clanLeaderPhone!)
+        ? l10n.pendingApprovalMessage(_leaderName!, _leaderPhone!)
         : l10n.pendingApprovalMessageSimple;
 
     return Center(
@@ -53,15 +104,17 @@ class PendingApprovalWidget extends StatelessWidget {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              message,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: context.textSecondary,
-                height: 1.5,
-              ),
-            ),
+            child: _isLoading
+                ? const AppLoading(size: 24)
+                : Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: context.textSecondary,
+                      height: 1.5,
+                    ),
+                  ),
           ),
           const SizedBox(height: 36),
           AppButton(

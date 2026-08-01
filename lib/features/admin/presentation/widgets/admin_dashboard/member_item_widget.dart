@@ -14,6 +14,7 @@ class MemberItemWidget extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final bool showMenu;
+  final bool useOrnamentalBorder;
 
   const MemberItemWidget({
     super.key,
@@ -22,14 +23,11 @@ class MemberItemWidget extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.showMenu = true,
+    this.useOrnamentalBorder = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final String aliveText =
-        member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
-
     final genderColor = member.gender == Gender.male
         ? context.genderMale
         : member.gender == Gender.female
@@ -50,15 +48,43 @@ class MemberItemWidget extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        child: CustomPaint(
-          painter: TraditionalOrnamentalBorderPainter(
-            borderColor: context.textSecondary.withValues(alpha: 0.2),
-            fillColor: context.surface,
-            leftAccentColor: genderColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-            child: Row(
+        child: useOrnamentalBorder
+            ? CustomPaint(
+                painter: TraditionalOrnamentalBorderPainter(
+                  borderColor: context.textSecondary.withValues(alpha: 0.2),
+                  fillColor: context.surface,
+                  leftAccentColor: genderColor,
+                ),
+                child: _buildContent(context, genderColor),
+              )
+            : DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.surface,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: context.textSecondary.withValues(alpha: 0.2),
+                    width: 1.2,
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+                child: _buildContent(context, genderColor),
+              ),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, Color genderColor) {
+    final l10n = AppLocalizations.of(context)!;
+    final String aliveText =
+        member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+      child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // ── Avatar ──
@@ -237,10 +263,7 @@ class MemberItemWidget extends StatelessWidget {
                   ),
                 ],
               ],
-            ),
-          ),
-        ),
-      ),
+              ),
     );
   }
 }

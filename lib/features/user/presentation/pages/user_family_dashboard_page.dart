@@ -268,6 +268,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                     member: member,
                                     allMembers: state.members,
                                     showMenu: false,
+                                    useOrnamentalBorder: false,
                                   );
                                 },
                                 childCount: filteredMembers.length,

@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
-import '../../../../core/widgets/app_common_widgets.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 
 class UserBranchCard extends StatelessWidget {
@@ -34,111 +33,116 @@ class UserBranchCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         margin: const EdgeInsets.symmetric(vertical: 6),
-        child: CustomPaint(
-          painter: TraditionalOrnamentalBorderPainter(
-            borderColor: borderColor,
-            fillColor: fillColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Icon trơn
-                Icon(
-                  LucideIcons.gitBranch,
-                  color: isSelected ? context.accent : context.primary,
-                  size: 26,
-                ),
-                const SizedBox(width: 12),
-                // Nội dung
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Hàng 1: Tên chi tộc + Năm (top-right)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
+        decoration: BoxDecoration(
+          color: fillColor,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: borderColor, width: 1.2),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Icon trơn
+              Icon(
+                LucideIcons.gitBranch,
+                color: isSelected ? context.accent : context.primary,
+                size: 26,
+              ),
+              const SizedBox(width: 12),
+              // Nội dung
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Hàng 1: Tên chi tộc + Năm (top-right)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            branch.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: textPrimary,
+                            ),
+                          ),
+                        ),
+                        if (branch.foundingYear != null) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? context.accent.withValues(alpha: 0.20)
+                                  : context.accent.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
                             child: Text(
-                              branch.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: textPrimary,
+                              '${branch.foundingYear}',
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: context.accent,
                               ),
                             ),
                           ),
-                          if (branch.foundingYear != null) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 7, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? context.accent.withValues(alpha: 0.20)
-                                    : context.accent.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                '${branch.foundingYear}',
-                                style: GoogleFonts.inter(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: context.accent,
-                                ),
-                              ),
-                            ),
-                          ],
                         ],
+                      ],
+                    ),
+                    // Hàng 2: Chi trưởng
+                    if (branch.founderName != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        l10n.founderFormat(branch.founderName!),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: textSecondary,
+                        ),
                       ),
-                      // Hàng 2: Chi trưởng
-                      if (branch.founderName != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          l10n.founderFormat(branch.founderName!),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
+                    ],
+                    // Hàng 3: Khu vực
+                    if (branch.region != null) ...[
+                      const SizedBox(height: 3),
+                      Row(
+                        children: [
+                          Icon(
+                            LucideIcons.mapPin,
+                            size: 12,
                             color: textSecondary,
                           ),
-                        ),
-                      ],
-                      // Hàng 3: Khu vực
-                      if (branch.region != null) ...[
-                        const SizedBox(height: 3),
-                        Row(
-                          children: [
-                            Icon(
-                              LucideIcons.mapPin,
-                              size: 12,
-                              color: textSecondary,
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                branch.region!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.inter(
-                                  fontSize: 11,
-                                  color: textSecondary,
-                                ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              branch.region!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                color: textSecondary,
                               ),
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ],
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

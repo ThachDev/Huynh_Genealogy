@@ -276,8 +276,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
             }).toList();
 
             final unreadAnnouncements = announcements
-                .where((e) =>
-                    !UserNotificationsPage.globalReadIds.contains(e.id.toString()))
+                .where((e) => !UserNotificationsPage.globalReadIds
+                    .contains(e.id.toString()))
                 .toList();
 
             return Scaffold(
@@ -519,7 +519,21 @@ class _UserEventsPageState extends State<UserEventsPage> {
         child: Semantics(
           label: 'Sự kiện ${event.title}, Ngày: ${event.eventDate}',
           button: true,
-          child: TraditionalOrnamentalCard(
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.surface,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: context.textSecondary.withValues(alpha: 0.2),
+                width: 1.2,
+              ),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                ),
+              ],
+            ),
             padding: const EdgeInsets.all(10),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
@@ -785,8 +799,22 @@ class AnniversaryCard extends StatelessWidget {
     final isBirthday = data.isBirthday;
     final icon = isBirthday ? LucideIcons.cake : LucideIcons.flame;
 
-    return TraditionalOrnamentalCard(
+    return Container(
       width: 230,
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: context.textSecondary.withValues(alpha: 0.2),
+          width: 1.2,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+          ),
+        ],
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

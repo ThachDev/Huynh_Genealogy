@@ -327,9 +327,10 @@ class _UserEventsPageState extends State<UserEventsPage> {
                 child: Builder(
                   builder: (context) {
                     if (eventsState is EventsLoading ||
+                        eventsState is EventsInitial ||
                         eventsState is EventsSubmitting ||
                         treeState is FamilyTreeLoading) {
-                      return const Center(child: AppLoading(size: 80));
+                      return const UserEventsSkeleton();
                     }
 
                     List<MemberEntity> members = [];

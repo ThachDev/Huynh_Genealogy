@@ -109,8 +109,12 @@ class _AdminTransferOwnershipPageState
           builder: (context, state) {
             if (state is AdminTransferOwnershipLoading ||
                 state is AdminTransferOwnershipInitial) {
-              return const Center(
-                child: AppLoading(size: 80),
+              return const Padding(
+                padding: EdgeInsets.all(16),
+                child: ListPageSkeleton(
+                  itemCount: 6,
+                  showBottomButton: true,
+                ),
               );
             }
 

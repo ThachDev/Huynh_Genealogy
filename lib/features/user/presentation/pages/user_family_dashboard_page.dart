@@ -93,9 +93,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     slivers: [
                       if (state is FamilyTreeLoading)
                         const SliverFillRemaining(
-                          child: Center(
-                            child: AppLoading(size: 80),
-                          ),
+                          child: UserFamilyDashboardSkeleton(),
                         ),
                       if (state is FamilyTreeError)
                         SliverFillRemaining(

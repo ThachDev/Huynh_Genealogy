@@ -161,9 +161,11 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
               }
             },
             builder: (context, state) {
-              if (state is AdminMemberRolesLoading) {
-                return const Center(
-                  child: AppLoading(size: 80),
+              if (state is AdminMemberRolesLoading ||
+                  state is AdminMemberRolesInitial) {
+                return const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: ListPageSkeleton(itemCount: 8),
                 );
               }
 

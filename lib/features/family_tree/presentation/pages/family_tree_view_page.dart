@@ -486,7 +486,10 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
           builder: (context, state) {
             if (state is FamilyTreeLoading) {
               _hasFitTree = false; // Reset to auto-fit on next load
-              return const Center(child: AppLoading(size: 80));
+              return const Padding(
+                padding: EdgeInsets.all(24),
+                child: FamilyTreeSkeleton(),
+              );
             }
 
             if (state is FamilyTreeError) {

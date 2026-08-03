@@ -248,12 +248,13 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
         },
         builder: (context, state) {
           if (state is AdminBranchFormLoading) {
-            return const Center(
-              child: AppLoading(size: 80),
-            );
+            return const FormSkeleton();
           }
 
           final userTreeState = context.watch<FamilyTreeBloc>().state;
+          if (userTreeState is FamilyTreeLoading) {
+            return const FormSkeleton();
+          }
           final members = userTreeState is FamilyTreeLoaded
               ? userTreeState.members
               : <MemberEntity>[];

@@ -3,10 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/widgets/app_appbar.dart';
-import '../../../../core/widgets/app_avatar.dart';
-import '../../../../core/widgets/app_common_widgets.dart';
-import '../../../../core/widgets/app_snackbar.dart';
+import '../../../../core/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
@@ -121,7 +118,7 @@ class _WishWallPageState extends State<WishWallPage> {
         child: Stack(
           children: [
             if (_isLoading)
-              const Center(child: CircularProgressIndicator())
+              const WishWallSkeleton()
             else if (_wishes.isEmpty)
               Center(
                 child: AppEmptyState(

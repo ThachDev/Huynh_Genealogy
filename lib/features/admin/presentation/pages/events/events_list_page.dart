@@ -174,7 +174,12 @@ class _EventsListPageState extends State<EventsListPage> {
             }
           },
           builder: (context, state) {
-            if (state is EventsLoading || state is EventsSubmitting) {
+            if (state is EventsLoading ||
+                state is EventsInitial) {
+              return const EventsListSkeleton();
+            }
+
+            if (state is EventsSubmitting) {
               return const Center(child: AppLoading(size: 80));
             }
 

@@ -349,9 +349,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             if (state is AdminMemberFormInitial ||
                 state is AdminMemberFormLoading ||
                 state is AdminMemberFormSubmitting) {
-              return const Center(
-                child: AppLoading(size: 80),
-              );
+              return const FormSkeleton();
             }
 
             if (state is AdminMemberFormReady) {
@@ -360,9 +358,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                       (widget.memberId != null &&
                           state.member?.id == widget.memberId);
               if (!isCorrectMember) {
-                return const Center(
-                  child: AppLoading(size: 80),
-                );
+                return const FormSkeleton();
               }
             }
 

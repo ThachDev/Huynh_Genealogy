@@ -81,6 +81,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   int _memberLimit = 5;
   int _branchLimit = 5;
   int _pendingLimit = 5;
+  AppLocalizations? _l10n;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _l10n = AppLocalizations.of(context);
+  }
 
   void _updateFAB() {
     final l10n = AppLocalizations.of(context)!;
@@ -196,10 +203,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   void dispose() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = _l10n;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (UserMainNavigationPage.fabNotifier.value?.label == l10n.addMemberFabLabel ||
-          UserMainNavigationPage.fabNotifier.value?.label == l10n.addBranchFabLabel) {
+      if (UserMainNavigationPage.fabNotifier.value?.label == l10n?.addMemberFabLabel ||
+          UserMainNavigationPage.fabNotifier.value?.label == l10n?.addBranchFabLabel) {
         UserMainNavigationPage.fabNotifier.value = null;
       }
     });
@@ -527,11 +534,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     switch (_selectedTab) {
       case AdminDashboardTab.members:
         if (userTreeState is FamilyTreeLoading) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(40.0),
-              child: AppLoading(size: 80),
-            ),
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: AdminDashboardSkeleton(),
           );
         }
         final filteredMembers = members
@@ -584,11 +589,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
       case AdminDashboardTab.branches:
         if (userTreeState is FamilyTreeLoading) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(40.0),
-              child: AppLoading(size: 80),
-            ),
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: AdminDashboardSkeleton(),
           );
         }
         final filteredBranches = branches
@@ -638,11 +641,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           return const SizedBox.shrink();
         }
         if (pendingState is AdminPendingRequestsLoading) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(40.0),
-              child: AppLoading(size: 80),
-            ),
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: AdminDashboardSkeleton(),
           );
         }
         return Column(

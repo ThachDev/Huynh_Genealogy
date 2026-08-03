@@ -41,20 +41,74 @@ class AppAvatar extends StatelessWidget {
     final hasAvatarUrl = avatarUrl != null && avatarUrl!.trim().isNotEmpty;
     final initialLetter = getInitialLetter(fullName, fallback: fallbackInitial);
 
+    if (!hasAvatarUrl) {
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: effectiveBgColor,
+        child: Text(
+          initialLetter,
+          style: GoogleFonts.beVietnamPro(
+            fontWeight: FontWeight.bold,
+            fontSize: effectiveFontSize,
+            color: effectiveTextColor,
+          ),
+        ),
+      );
+    }
+
     return CircleAvatar(
       radius: radius,
       backgroundColor: effectiveBgColor,
-      backgroundImage: hasAvatarUrl ? NetworkImage(avatarUrl!) : null,
-      child: !hasAvatarUrl
-          ? Text(
-              initialLetter,
-              style: GoogleFonts.beVietnamPro(
-                fontWeight: FontWeight.bold,
-                fontSize: effectiveFontSize,
-                color: effectiveTextColor,
+      child: ClipOval(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              avatarUrl!,
+              fit: BoxFit.cover,
+              // Hiển thị chữ cái đầu trong lúc tải ảnh, tránh vòng tròn trống.
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (wasSynchronouslyLoaded) return child;
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      color: effectiveBgColor,
+                      alignment: Alignment.center,
+                      child: Text(
+                        initialLetter,
+                        style: GoogleFonts.beVietnamPro(
+                          fontWeight: FontWeight.bold,
+                          fontSize: effectiveFontSize,
+                          color: effectiveTextColor,
+                        ),
+                      ),
+                    ),
+                    // Fade ảnh vào khi tải xong
+                    AnimatedOpacity(
+                      opacity: frame != null ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 250),
+                      child: child,
+                    ),
+                  ],
+                );
+              },
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: effectiveBgColor,
+                alignment: Alignment.center,
+                child: Text(
+                  initialLetter,
+                  style: GoogleFonts.beVietnamPro(
+                    fontWeight: FontWeight.bold,
+                    fontSize: effectiveFontSize,
+                    color: effectiveTextColor,
+                  ),
+                ),
               ),
-            )
-          : null,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

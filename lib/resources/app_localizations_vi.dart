@@ -1912,4 +1912,602 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get changeInviteCodeButton => 'Đổi mã';
+
+  @override
+  String get saveEventSuccess => 'Lưu sự kiện thành công';
+
+  @override
+  String get deleteEventSuccess => 'Xoá sự kiện thành công';
+
+  @override
+  String get transferOwnershipError =>
+      'Không thể chuyển nhượng quyền Trưởng tộc';
+
+  @override
+  String get roleUpdateFailed => 'Phân quyền thất bại';
+
+  @override
+  String get updateProfileSuccess => 'Cập nhật thông tin thành công';
+
+  @override
+  String get approveFailed => 'Phê duyệt thất bại';
+
+  @override
+  String get rejectFailed => 'Từ chối thất bại';
+
+  @override
+  String get dissolveClanError => 'Không thể giải tán dòng họ';
+
+  @override
+  String familyTreeLoadError(Object error) {
+    return 'Có lỗi xảy ra khi tải dữ liệu: $error';
+  }
+
+  @override
+  String get eventTypeEventArticle => 'Sự kiện / Bài viết';
+
+  @override
+  String get eventImageFormatHint => 'Định dạng JPG, PNG (Tối đa 5MB)';
+
+  @override
+  String get eventTimeLocationSection => 'Thời gian & Địa điểm';
+
+  @override
+  String get eventPublishDateLabel => 'Ngày phát thông báo';
+
+  @override
+  String get eventCreateTitle => 'Tạo thông báo gia tộc';
+
+  @override
+  String get eventTitleLabelAnnouncement => 'Tiêu đề thông báo';
+
+  @override
+  String get eventTitleLabelEventArticle => 'Tên sự kiện / Bài viết';
+
+  @override
+  String get eventTitleHintAnnouncement => 'Nhập tiêu đề thông báo ngắn gọn...';
+
+  @override
+  String get eventTitleRequiredAnnouncement =>
+      'Vui lòng nhập tiêu đề thông báo';
+
+  @override
+  String get eventOrganizerLabelFull => 'Ban tổ chức / Người chủ trì';
+
+  @override
+  String get eventOrganizerHintFull =>
+      'Nhập tên người chủ trì hoặc ban tổ chức...';
+
+  @override
+  String get eventContentLabelAnnouncement => 'Nội dung thông báo';
+
+  @override
+  String get eventContentLabelEventArticle => 'Nội dung & Lịch trình';
+
+  @override
+  String get eventContentHintAnnouncement =>
+      'Nhập nội dung chi tiết thông báo gửi đến gia tộc...';
+
+  @override
+  String get eventContentHintEventArticle =>
+      'Nhập nội dung chi tiết bài viết, lịch trình sự kiện...';
+
+  @override
+  String get eventContentRequiredAnnouncement =>
+      'Vui lòng nhập nội dung thông báo';
+
+  @override
+  String get eventSearchHint => 'Tìm kiếm sự kiện, thông báo...';
+
+  @override
+  String get eventNoResults => 'Không tìm thấy thông tin phù hợp';
+
+  @override
+  String get clanEventsSection => 'SỰ KIỆN GIA TỘC';
+
+  @override
+  String get clanAnnouncementsSection => 'THÔNG BÁO GIA TỘC';
+
+  @override
+  String get eventDiscardChangesTitle => 'Huỷ chỉnh sửa?';
+
+  @override
+  String get eventDiscardChangesMessage => 'Các thay đổi chưa lưu sẽ bị mất.';
+
+  @override
+  String get eventDiscardChangesAction => 'Huỷ chỉnh sửa';
+
+  @override
+  String get eventByAuthor => 'Bởi ';
+
+  @override
+  String get adminBoard => 'Ban Quản Trị';
+
+  @override
+  String get eventEnded => 'Đã kết thúc';
+
+  @override
+  String get eventOngoing => 'Đang diễn ra';
+
+  @override
+  String get eventUpcoming => 'Sắp diễn ra';
+
+  @override
+  String get lunarShortLabel => 'LỊCH ÂM';
+
+  @override
+  String monthLabelFormat(Object month) {
+    return 'Tháng $month';
+  }
+
+  @override
+  String lunarMonthLabelFormat(Object leap, Object month) {
+    return 'Tháng $month$leap';
+  }
+
+  @override
+  String get leapMonthInline => ' Nhuận';
+
+  @override
+  String get addMemberFabLabel => 'Thành viên +';
+
+  @override
+  String get addBranchFabLabel => 'Chi họ +';
+
+  @override
+  String get selectUnlinkedMemberTitle => 'Chọn Thành Viên Chưa Nối Cây';
+
+  @override
+  String get selectUnlinkedMemberSubtitle =>
+      'Chọn thành viên để mở thông tin và nối vào gia phả';
+
+  @override
+  String get deleteMemberConfirmStart =>
+      'Bạn có chắc chắn muốn xoá thành viên ';
+
+  @override
+  String get deleteMemberConfirmEnd => ' khỏi gia phả không?';
+
+  @override
+  String get deleteMemberTitlePrefix => 'Xoá thành viên ';
+
+  @override
+  String get deleteMemberWithDescendantsMessage =>
+      'Thành viên này đang có con/cháu nối tiếp trong cây gia phả. Vui lòng lựa chọn phương án xử lý liên kết thế hệ:';
+
+  @override
+  String get promoteChildrenOption => 'Đôn con lên';
+
+  @override
+  String get recommendedLabel => 'Khuyên dùng';
+
+  @override
+  String get promoteChildrenDesc =>
+      'Tự động nối trực tiếp các con lên thế hệ trên để cây không bị đứt đoạn.';
+
+  @override
+  String get deleteAndDetachOption => 'Xoá & Tách nhánh';
+
+  @override
+  String get deleteAndDetachDesc =>
+      'Các con cháu sẽ bị tách thành nhánh mồ côi (mất liên kết với thế hệ cha).';
+
+  @override
+  String get accountSection => 'Tài khoản';
+
+  @override
+  String get userIdLabel => 'ID người dùng';
+
+  @override
+  String get registeredRoleLabel => 'Vai trò đăng ký';
+
+  @override
+  String get statusDisplayLabel => 'Trạng thái';
+
+  @override
+  String get registeredMemberInfoLabel => 'Thông tin thành viên đăng ký';
+
+  @override
+  String get hometownLabel => 'Quê quán';
+
+  @override
+  String get maritalStatusShortLabel => 'Tình trạng HN';
+
+  @override
+  String get notesLabel => 'Ghi chú';
+
+  @override
+  String get memberFallbackName => 'thành viên';
+
+  @override
+  String get createRelativeTitle => 'Tạo người thân trên cây?';
+
+  @override
+  String createRelativeSuggestedMessage(Object suggestedName, Object userName) {
+    return 'Thành viên $userName ghi nhận thông tin người thân: \"$suggestedName\". Bạn có muốn tạo nhanh người thân này để phân nhánh cây gia phả không?';
+  }
+
+  @override
+  String createRelativeFallbackMessage(Object notes, Object userName) {
+    return 'Ghi chú đăng ký: \"$notes\". Bạn có muốn vào trang tạo thành viên mới để xếp vị trí cho $userName không?';
+  }
+
+  @override
+  String get laterAction => 'Để sau';
+
+  @override
+  String get createRelativeNowAction => 'Tạo người thân ngay';
+
+  @override
+  String get statusPending => 'Chờ duyệt';
+
+  @override
+  String get statusApproved => 'Đã duyệt';
+
+  @override
+  String get statusRejected => 'Đã từ chối';
+
+  @override
+  String get unknownShortLabel => 'Không rõ';
+
+  @override
+  String get maritalDivorcedStatus => 'Đã ly hôn';
+
+  @override
+  String get maritalWidowedShort => 'Góa';
+
+  @override
+  String get selectExistingMemberTitle => 'Chọn Thành Viên Có Sẵn';
+
+  @override
+  String get searchMemberByNameHint => 'Tìm theo tên thành viên...';
+
+  @override
+  String get noMatchingMember => 'Không tìm thấy thành viên nào phù hợp';
+
+  @override
+  String get noUnlinkedMembers => 'Không có thành viên nào chưa nối cây';
+
+  @override
+  String birthDateFormat(Object date) {
+    return 'Ngày sinh: $date';
+  }
+
+  @override
+  String get selectLabel => 'Chọn';
+
+  @override
+  String memberAccessibilityFormat(Object gender, Object name) {
+    return 'Thành viên $name, Giới tính: $gender';
+  }
+
+  @override
+  String get meLabel => 'Tôi';
+
+  @override
+  String get addMemberChooseMethodDesc =>
+      'Chọn cách thức thêm thành viên vào gia tộc';
+
+  @override
+  String get linkUnlinkedMemberLabel => 'Kết nối thành viên chưa có trên cây';
+
+  @override
+  String get createNewMemberLabel => 'Tạo thành viên mới';
+
+  @override
+  String get createNewMemberDesc => 'Nhập đầy đủ thông tin thành viên mới';
+
+  @override
+  String addChildForFormat(Object name) {
+    return 'Thêm Con Cho $name';
+  }
+
+  @override
+  String get selectChildMemberTitle => 'Chọn Thành Viên Làm Con';
+
+  @override
+  String linkAsChildFormat(Object name) {
+    return 'Kết nối thành viên làm con của $name';
+  }
+
+  @override
+  String get confirmConnectionLabel => 'Xác nhận kết nối';
+
+  @override
+  String confirmLinkChildMessage(Object childName, Object parentName) {
+    return 'Bạn có chắc chắn muốn gắn thành viên \"$childName\" làm con của \"$parentName\"?';
+  }
+
+  @override
+  String memberConnectedSuccessFormat(Object name) {
+    return 'Đã kết nối thành viên \"$name\" thành công!';
+  }
+
+  @override
+  String addSpouseForFormat(Object name) {
+    return 'Thêm Vợ / Chồng Cho $name';
+  }
+
+  @override
+  String get selectSpouseMemberTitle => 'Chọn Thành Viên Làm Vợ / Chồng';
+
+  @override
+  String linkSpouseFormat(Object name) {
+    return 'Kết nối vợ/chồng với $name';
+  }
+
+  @override
+  String confirmLinkSpouseMessage(Object memberName, Object spouseName) {
+    return 'Bạn có chắc chắn muốn kết nối vợ/chồng giữa \"$memberName\" và \"$spouseName\"?';
+  }
+
+  @override
+  String get spouseConnectedSuccess => 'Đã kết nối vợ/chồng thành công!';
+
+  @override
+  String get markAllReadSuccess => 'Đã đánh dấu đọc tất cả thông báo';
+
+  @override
+  String get markAllReadAction => 'Đọc tất cả';
+
+  @override
+  String get importantLabel => 'Quan trọng';
+
+  @override
+  String get noNotificationsMessage => 'Không có thông báo nào';
+
+  @override
+  String notificationDetailTitle(Object title) {
+    return 'Thông báo $title';
+  }
+
+  @override
+  String get markAsReadAction => 'Đánh dấu đã đọc';
+
+  @override
+  String get deleteNotificationAction => 'Xóa thông báo';
+
+  @override
+  String get wishLoginRequired =>
+      'Vui lòng chờ tải thông tin hoặc đăng nhập lại để gửi lời chúc';
+
+  @override
+  String get noWishesMessage => 'Chưa có lời chúc nào.';
+
+  @override
+  String get beFirstWisher => 'Hãy là người đầu tiên gửi lời chúc!';
+
+  @override
+  String get sendWishButton => 'Gửi lời chúc';
+
+  @override
+  String get sendRemembranceButton => 'Gửi lời tưởng nhớ';
+
+  @override
+  String get memberLabel => 'Thành viên';
+
+  @override
+  String get clearBranchFilterLabel => 'Bỏ lọc chi';
+
+  @override
+  String get pendingApprovalRequestSent =>
+      'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ ';
+
+  @override
+  String pendingApprovalLeaderFormat(Object name, Object phone) {
+    return 'Trưởng tộc $name - $phone';
+  }
+
+  @override
+  String get pendingApprovalWaitEnd => ' để phê duyệt.';
+
+  @override
+  String get errNameEmpty => 'Tên không được để trống';
+
+  @override
+  String get errGoogleSignInCanceled =>
+      'Đăng nhập Google bị huỷ bởi người dùng';
+
+  @override
+  String get errFirebaseAuth => 'Không thể xác thực với Firebase';
+
+  @override
+  String get errFirebaseToken => 'Không thể lấy Firebase ID Token';
+
+  @override
+  String get errServerAuth => 'Lỗi xác thực máy chủ';
+
+  @override
+  String get errFirebaseAuthError => 'Lỗi Firebase Auth';
+
+  @override
+  String get errServerConnection => 'Lỗi kết nối máy chủ';
+
+  @override
+  String errGenericFormat(Object error) {
+    return 'Lỗi không xác định: $error';
+  }
+
+  @override
+  String get errLoginFailed => 'Lỗi đăng nhập';
+
+  @override
+  String get errInvalidCredentials => 'Email hoặc mật khẩu không chính xác.';
+
+  @override
+  String get errAccountDisabled => 'Tài khoản đã bị vô hiệu hoá.';
+
+  @override
+  String get errEmailInvalidFormat => 'Địa chỉ email không đúng định dạng.';
+
+  @override
+  String get errInvalidCredentialsRetry =>
+      'Email hoặc mật khẩu không chính xác. Vui lòng thử lại sau vài giây.';
+
+  @override
+  String get errRegisterFirebase => 'Không thể đăng ký tài khoản với Firebase';
+
+  @override
+  String get errFirebaseTokenAfterRegister =>
+      'Không thể lấy Firebase ID Token sau đăng ký';
+
+  @override
+  String get errRegisterServer => 'Lỗi đăng ký tài khoản trên máy chủ';
+
+  @override
+  String get errFirebaseRegisterError => 'Lỗi đăng ký Firebase';
+
+  @override
+  String get errEmailAlreadyUsed =>
+      'Địa chỉ email đã được sử dụng bởi một tài khoản khác.';
+
+  @override
+  String get errPasswordTooWeak => 'Mật khẩu quá yếu.';
+
+  @override
+  String get errSendResetEmail => 'Không thể gửi email đặt lại mật khẩu';
+
+  @override
+  String get errServerGeneric => 'Lỗi máy chủ';
+
+  @override
+  String get errOtpInvalid => 'Mã OTP không đúng';
+
+  @override
+  String get errResetPasswordFailed => 'Không thể đặt lại mật khẩu';
+
+  @override
+  String get errNoFirebaseSession => 'Không tìm thấy phiên đăng nhập Firebase';
+
+  @override
+  String get errCacheCredentials => 'Lỗi ghi nhớ thông tin đăng nhập';
+
+  @override
+  String get errReadCredentials => 'Lỗi đọc thông tin đăng nhập đã lưu';
+
+  @override
+  String get errDeleteCredentials => 'Lỗi xoá thông tin đăng nhập';
+
+  @override
+  String get errSavePassword => 'Lỗi ghi nhớ mật khẩu';
+
+  @override
+  String get errDeleteStoredCredentials => 'Lỗi xoá thông tin đăng nhập đã lưu';
+
+  @override
+  String errLoginFormat(Object error) {
+    return 'Lỗi đăng nhập: $error';
+  }
+
+  @override
+  String errLogoutFormat(Object error) {
+    return 'Lỗi đăng xuất: $error';
+  }
+
+  @override
+  String errRegisterFormat(Object error) {
+    return 'Lỗi đăng ký: $error';
+  }
+
+  @override
+  String errSaveInfoFormat(Object error) {
+    return 'Lỗi lưu thông tin: $error';
+  }
+
+  @override
+  String errCacheCredentialsFormat(Object error) {
+    return 'Lỗi ghi nhớ thông tin đăng nhập: $error';
+  }
+
+  @override
+  String errSendResetEmailFormat(Object error) {
+    return 'Lỗi gửi email đặt lại mật khẩu: $error';
+  }
+
+  @override
+  String errOtpVerifyFormat(Object error) {
+    return 'Lỗi xác thực OTP: $error';
+  }
+
+  @override
+  String errResetPasswordFormat(Object error) {
+    return 'Lỗi đặt lại mật khẩu: $error';
+  }
+
+  @override
+  String errReloadProfileFormat(Object error) {
+    return 'Lỗi nạp lại thông tin người dùng: $error';
+  }
+
+  @override
+  String get errInvalidResponseData => 'Dữ liệu phản hồi không hợp lệ';
+
+  @override
+  String get errInvalidDataFormat => 'Dữ liệu trả về không đúng định dạng';
+
+  @override
+  String get errInvalidListFormat =>
+      'Dữ liệu danh sách trả về không đúng định dạng';
+
+  @override
+  String get errMemberNotFound => 'Không tìm thấy thành viên';
+
+  @override
+  String get errSaveMember => 'Lỗi lưu thành viên';
+
+  @override
+  String get errDeleteMember => 'Lỗi xoá thành viên';
+
+  @override
+  String get errBranchNotFound => 'Không tìm thấy chi/nhánh';
+
+  @override
+  String get errSaveBranch => 'Lỗi lưu chi/nhánh';
+
+  @override
+  String get errDeleteBranch => 'Lỗi xoá chi/nhánh';
+
+  @override
+  String get errCreateFamily => 'Lỗi tạo dòng họ';
+
+  @override
+  String get errVerifyInviteCode => 'Lỗi xác nhận mã mời';
+
+  @override
+  String get errSendJoinRequest => 'Lỗi gửi yêu cầu gia nhập';
+
+  @override
+  String get errLoadJoinRequest => 'Lỗi tải yêu cầu gia nhập';
+
+  @override
+  String get errApproveRequest => 'Lỗi phê duyệt yêu cầu';
+
+  @override
+  String get errRejectRequest => 'Lỗi từ chối yêu cầu';
+
+  @override
+  String get errLoadFamilyInfo => 'Lỗi tải thông tin dòng họ';
+
+  @override
+  String get errUpdateFamilyInfo => 'Lỗi cập nhật thông tin dòng họ';
+
+  @override
+  String get errLoadMemberList => 'Lỗi tải danh sách thành viên';
+
+  @override
+  String get errUpdateMemberRole => 'Lỗi phân quyền thành viên';
+
+  @override
+  String get errDeleteFamily => 'Lỗi xóa dòng họ';
+
+  @override
+  String get errLinkFamilyProfile => 'Lỗi liên kết hồ sơ gia phả';
+
+  @override
+  String get errTransferOwnership => 'Lỗi chuyển nhượng quyền Trưởng tộc';
+
+  @override
+  String eventDetailSemanticLabel(Object date, Object title) {
+    return 'Sự kiện $title, Ngày: $date';
+  }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/data/model/branch_model.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
 
@@ -39,7 +40,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
           .toList();
     } on DioException catch (e) {
       throw ServerException(
-        message: e.message ?? 'Lỗi kết nối máy chủ',
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -52,8 +53,9 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
 
   Map<String, dynamic> _parseMapResponse(dynamic data) {
     if (data is Map<String, dynamic>) return data;
-    throw const ServerException(
-      message: 'Dữ liệu trả về không đúng định dạng',
+    throw ServerException(
+      message: AppLanguage.current?.errInvalidDataFormat ??
+          'Dữ liệu trả về không đúng định dạng',
       statusCode: null,
     );
   }
@@ -61,8 +63,9 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
   Map<String, dynamic> _parseMapData(Map<String, dynamic> responseData) {
     final raw = responseData['data'];
     if (raw is Map<String, dynamic>) return raw;
-    throw const ServerException(
-      message: 'Dữ liệu trả về không đúng định dạng',
+    throw ServerException(
+      message: AppLanguage.current?.errInvalidDataFormat ??
+          'Dữ liệu trả về không đúng định dạng',
       statusCode: null,
     );
   }
@@ -70,8 +73,9 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
   List<dynamic> _parseListData(Map<String, dynamic> responseData) {
     final raw = responseData['data'];
     if (raw is List<dynamic>) return raw;
-    throw const ServerException(
-      message: 'Dữ liệu danh sách trả về không đúng định dạng',
+    throw ServerException(
+      message: AppLanguage.current?.errInvalidListFormat ??
+          'Dữ liệu danh sách trả về không đúng định dạng',
       statusCode: null,
     );
   }
@@ -84,10 +88,12 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       return MemberModel.fromJson(_parseMapData(responseData));
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        throw const NotFoundException(message: 'Không tìm thấy thành viên');
+        throw NotFoundException(
+            message: AppLanguage.current?.errMemberNotFound ??
+                'Không tìm thấy thành viên');
       }
       throw ServerException(
-        message: e.message ?? 'Lỗi kết nối máy chủ',
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -170,7 +176,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       return MemberModel.fromJson(_parseMapData(_parseMapResponse(fallbackResponse.data)));
     } on DioException catch (e) {
       throw ServerException(
-        message: e.message ?? 'Lỗi lưu thành viên',
+        message: e.message ?? AppLanguage.current?.errSaveMember ?? 'Lỗi lưu thành viên',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -191,7 +197,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       return true;
     } on DioException catch (e) {
       throw ServerException(
-        message: e.message ?? 'Lỗi xoá thành viên',
+        message: e.message ?? AppLanguage.current?.errDeleteMember ?? 'Lỗi xoá thành viên',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -217,7 +223,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
           .toList();
     } on DioException catch (e) {
       throw ServerException(
-        message: e.message ?? 'Lỗi kết nối máy chủ',
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -236,10 +242,12 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       return BranchModel.fromJson(_parseMapData(responseData));
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        throw const NotFoundException(message: 'Không tìm thấy chi/nhánh');
+        throw NotFoundException(
+            message: AppLanguage.current?.errBranchNotFound ??
+                'Không tìm thấy chi/nhánh');
       }
       throw ServerException(
-        message: e.message ?? 'Lỗi kết nối máy chủ',
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -285,7 +293,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       return BranchModel.fromJson(_parseMapData(_parseMapResponse(fallbackResponse.data)));
     } on DioException catch (e) {
       throw ServerException(
-        message: e.message ?? 'Lỗi lưu chi/nhánh',
+        message: e.message ?? AppLanguage.current?.errSaveBranch ?? 'Lỗi lưu chi/nhánh',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
@@ -303,7 +311,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       return true;
     } on DioException catch (e) {
       throw ServerException(
-        message: e.message ?? 'Lỗi xoá chi/nhánh',
+        message: e.message ?? AppLanguage.current?.errDeleteBranch ?? 'Lỗi xoá chi/nhánh',
         statusCode: e.response?.statusCode,
       );
     } catch (e) {

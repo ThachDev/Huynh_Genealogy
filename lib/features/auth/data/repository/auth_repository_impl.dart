@@ -32,7 +32,8 @@ class AuthRepositoryImpl implements AuthRepository {
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi đăng nhập: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errLoginFormat(e) ?? 'Lỗi đăng nhập: $e'));
     }
   }
 
@@ -53,7 +54,8 @@ class AuthRepositoryImpl implements AuthRepository {
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi đăng nhập: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errLoginFormat(e) ?? 'Lỗi đăng nhập: $e'));
     }
   }
 
@@ -67,7 +69,8 @@ class AuthRepositoryImpl implements AuthRepository {
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi đăng xuất: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errLogoutFormat(e) ?? 'Lỗi đăng xuất: $e'));
     }
   }
 
@@ -102,7 +105,8 @@ class AuthRepositoryImpl implements AuthRepository {
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi đăng ký: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errRegisterFormat(e) ?? 'Lỗi đăng ký: $e'));
     }
   }
 
@@ -114,7 +118,8 @@ class AuthRepositoryImpl implements AuthRepository {
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      return Left(CacheFailure(message: 'Lỗi lưu thông tin: $e'));
+      return Left(CacheFailure(
+          message: AppLanguage.current?.errSaveInfoFormat(e) ?? 'Lỗi lưu thông tin: $e'));
     }
   }
 
@@ -129,7 +134,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     } catch (e) {
-      return Left(CacheFailure(message: 'Lỗi ghi nhớ thông tin đăng nhập: $e'));
+      return Left(CacheFailure(
+          message: AppLanguage.current?.errCacheCredentialsFormat(e) ??
+              'Lỗi ghi nhớ thông tin đăng nhập: $e'));
     }
   }
 
@@ -161,7 +168,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi gửi email đặt lại mật khẩu: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errSendResetEmailFormat(e) ??
+              'Lỗi gửi email đặt lại mật khẩu: $e'));
     }
   }
 
@@ -176,7 +185,8 @@ class AuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi xác thực OTP: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errOtpVerifyFormat(e) ?? 'Lỗi xác thực OTP: $e'));
     }
   }
 
@@ -196,7 +206,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi đặt lại mật khẩu: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errResetPasswordFormat(e) ??
+              'Lỗi đặt lại mật khẩu: $e'));
     }
   }
 
@@ -209,7 +221,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     } catch (e) {
-      return Left(ServerFailure(message: 'Lỗi nạp lại thông tin người dùng: $e'));
+      return Left(ServerFailure(
+          message: AppLanguage.current?.errReloadProfileFormat(e) ??
+              'Lỗi nạp lại thông tin người dùng: $e'));
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
+import '../../../../../resources/app_localizations.dart';
 import '../../../../events/events.dart';
 
 class AnnouncementItemCard extends StatelessWidget {
@@ -85,6 +86,7 @@ class AnnouncementItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final accentColor = Colors.amber.shade800;
 
     Widget cardChild = Container(
@@ -148,7 +150,7 @@ class AnnouncementItemCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        event.organizer ?? 'Ban Quản Trị',
+                        event.organizer ?? l10n.adminBoard,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 11,
                           color: context.textSecondary,

@@ -649,6 +649,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 
   Future<void> _onAddChild(
       MemberEntity parentMember, List<MemberEntity> allMembers) async {
+    final l10n = AppLocalizations.of(context)!;
     final candidateMembers = allMembers.where((m) {
       if (m.id == parentMember.id) return false;
       return m.parentId == null && m.motherId == null;
@@ -658,7 +659,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     if (candidateMembers.isNotEmpty) {
       option = await AddMemberOptionDialog.show(
         context,
-        title: 'Thêm Con Cho ${parentMember.fullName}',
+        title: l10n.addChildForFormat(parentMember.fullName),
         availableCount: candidateMembers.length,
       );
       if (option == null) return;
@@ -686,18 +687,18 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       final selectedMember = await SelectUnlinkedMemberSheet.show(
         context,
         candidateMembers: candidateMembers,
-        title: 'Chọn Thành Viên Làm Con',
-        subtitle: 'Kết nối thành viên làm con của ${parentMember.fullName}',
+        title: l10n.selectChildMemberTitle,
+        subtitle: l10n.linkAsChildFormat(parentMember.fullName),
       );
       if (selectedMember == null || !mounted) return;
 
       final confirm = await AppDialog.confirm(
         context,
-        title: 'Xác nhận kết nối',
-        message:
-            'Bạn có chắc chắn muốn gắn thành viên "${selectedMember.fullName}" làm con của "${parentMember.fullName}"?',
-        confirmLabel: 'Xác nhận kết nối',
-        cancelLabel: 'Hủy',
+        title: l10n.confirmConnectionLabel,
+        message: l10n.confirmLinkChildMessage(
+            selectedMember.fullName, parentMember.fullName),
+        confirmLabel: l10n.confirmConnectionLabel,
+        cancelLabel: l10n.cancelLabel,
         type: AppDialogType.info,
       );
 
@@ -719,8 +720,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
             AppSnackBar.error(context, failure.message);
           },
           (saved) {
-            AppSnackBar.success(context,
-                'Đã kết nối thành viên "${saved.fullName}" thành công!');
+            AppSnackBar.success(
+                context, l10n.memberConnectedSuccessFormat(saved.fullName));
             _reloadTree();
           },
         );
@@ -730,6 +731,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 
   Future<void> _onAddSpouse(
       MemberEntity spouseMember, List<MemberEntity> allMembers) async {
+    final l10n = AppLocalizations.of(context)!;
     final candidateMembers = allMembers.where((m) {
       if (m.id == spouseMember.id) return false;
       return m.spouseId == null;
@@ -739,7 +741,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     if (candidateMembers.isNotEmpty) {
       option = await AddMemberOptionDialog.show(
         context,
-        title: 'Thêm Vợ / Chồng Cho ${spouseMember.fullName}',
+        title: l10n.addSpouseForFormat(spouseMember.fullName),
         availableCount: candidateMembers.length,
       );
       if (option == null) return;
@@ -767,18 +769,18 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       final selectedMember = await SelectUnlinkedMemberSheet.show(
         context,
         candidateMembers: candidateMembers,
-        title: 'Chọn Thành Viên Làm Vợ / Chồng',
-        subtitle: 'Kết nối vợ/chồng với ${spouseMember.fullName}',
+        title: l10n.selectSpouseMemberTitle,
+        subtitle: l10n.linkSpouseFormat(spouseMember.fullName),
       );
       if (selectedMember == null || !mounted) return;
 
       final confirm = await AppDialog.confirm(
         context,
-        title: 'Xác nhận kết nối',
-        message:
-            'Bạn có chắc chắn muốn kết nối vợ/chồng giữa "${selectedMember.fullName}" và "${spouseMember.fullName}"?',
-        confirmLabel: 'Xác nhận kết nối',
-        cancelLabel: 'Hủy',
+        title: l10n.confirmConnectionLabel,
+        message: l10n.confirmLinkSpouseMessage(
+            selectedMember.fullName, spouseMember.fullName),
+        confirmLabel: l10n.confirmConnectionLabel,
+        cancelLabel: l10n.cancelLabel,
         type: AppDialogType.info,
       );
 
@@ -808,7 +810,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
             AppSnackBar.error(context, failure.message);
           },
           (saved) {
-            AppSnackBar.success(context, 'Đã kết nối vợ/chồng thành công!');
+            AppSnackBar.success(context, l10n.spouseConnectedSuccess);
             _reloadTree();
           },
         );

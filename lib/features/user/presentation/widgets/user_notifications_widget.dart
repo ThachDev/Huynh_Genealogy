@@ -30,12 +30,13 @@ class UserNotificationsPage extends StatefulWidget {
 
 class _UserNotificationsPageState extends State<UserNotificationsPage> {
   void _markAllAsRead(List<EventEntity> items) {
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
       for (final e in items) {
         UserNotificationsPage.globalReadIds.add(e.id.toString());
       }
     });
-    AppSnackBar.success(context, 'Đã đánh dấu đọc tất cả thông báo');
+    AppSnackBar.success(context, l10n.markAllReadSuccess);
   }
 
   void _onItemTap(EventEntity item) {
@@ -91,7 +92,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Quan trọng',
+                        l10n.importantLabel,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -115,7 +116,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Đọc tất cả',
+                                l10n.markAllReadAction,
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -135,10 +136,10 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                 // ── Row 2: Notification Items List ──
                 Expanded(
                   child: displayList.isEmpty
-                      ? const Center(
+                      ? Center(
                           child: AppEmptyState(
                             icon: LucideIcons.bellOff,
-                            message: 'Không có thông báo nào',
+                            message: l10n.noNotificationsMessage,
                           ),
                         )
                       : ListView.separated(
@@ -168,6 +169,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
   /// Widget cho từng Item Thông Báo
   Widget _buildNotificationCard(
       BuildContext context, EventEntity item, bool isRead) {
+    final l10n = AppLocalizations.of(context)!;
     final String? organizer = item.organizer?.trim();
     final bool hasOrganizer = organizer != null && organizer.isNotEmpty;
     final String initialLetter =
@@ -175,7 +177,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
 
     return RepaintBoundary(
       child: Semantics(
-        label: 'Thông báo ${item.title}',
+        label: l10n.notificationDetailTitle(item.title),
         button: true,
         child: Container(
           decoration: BoxDecoration(
@@ -364,6 +366,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
   }
 
   void _showItemMenu(BuildContext context, EventEntity item) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: context.surface,
@@ -376,7 +379,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
           children: [
             ListTile(
               leading: const Icon(LucideIcons.checkCircle),
-              title: const Text('Đánh dấu đã đọc'),
+              title: Text(l10n.markAsReadAction),
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() {
@@ -386,8 +389,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
             ),
             ListTile(
               leading: const Icon(LucideIcons.trash2, color: Colors.red),
-              title: const Text('Xóa thông báo',
-                  style: TextStyle(color: Colors.red)),
+              title: Text(l10n.deleteNotificationAction,
+                  style: const TextStyle(color: Colors.red)),
               onTap: () {
                 Navigator.pop(ctx);
               },

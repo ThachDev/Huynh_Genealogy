@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecase/delete_family.dart';
+import '../../../../../core/errors/failures.dart';
 
 part 'admin_dissolve_clan_event.dart';
 part 'admin_dissolve_clan_state.dart';
@@ -23,7 +24,9 @@ class AdminDissolveClanBloc extends Bloc<AdminDissolveClanEvent, AdminDissolveCl
         if (success) {
           emit(AdminDissolveClanSuccess());
         } else {
-          emit(const AdminDissolveClanFailure(message: 'Không thể giải tán dòng họ'));
+          emit(AdminDissolveClanFailure(
+              message: AppLanguage.current?.dissolveClanError ??
+                  'Không thể giải tán dòng họ'));
         }
       },
     );

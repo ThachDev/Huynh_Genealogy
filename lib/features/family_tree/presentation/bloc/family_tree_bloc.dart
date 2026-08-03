@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import 'package:giatocviet/core/domain/entity/family_entity.dart';
+import '../../../../core/errors/failures.dart';
 import '../../domain/usecase/get_branches.dart';
 import '../../domain/usecase/get_members.dart';
 import '../../../../core/domain/usecase/get_family_detail.dart';
@@ -61,7 +62,8 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
         },
       );
     } catch (e) {
-      emit(FamilyTreeError('Có lỗi xảy ra khi tải dữ liệu: $e'));
+      emit(FamilyTreeError(AppLanguage.current?.familyTreeLoadError(e) ??
+          'Có lỗi xảy ra khi tải dữ liệu: $e'));
     }
   }
 

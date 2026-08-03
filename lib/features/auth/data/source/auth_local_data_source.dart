@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/data/model/user_model.dart';
 
 abstract class AuthLocalDataSource {
@@ -30,7 +31,9 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
         value: jsonString,
       );
     } catch (e) {
-      throw const CacheException(message: 'Lỗi ghi nhớ thông tin đăng nhập');
+      throw CacheException(
+          message:
+              AppLanguage.current?.errCacheCredentials ?? 'Lỗi ghi nhớ thông tin đăng nhập');
     }
   }
 
@@ -43,7 +46,9 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       }
       return null;
     } catch (e) {
-      throw const CacheException(message: 'Lỗi đọc thông tin đăng nhập đã lưu');
+      throw CacheException(
+          message:
+              AppLanguage.current?.errReadCredentials ?? 'Lỗi đọc thông tin đăng nhập đã lưu');
     }
   }
 
@@ -52,7 +57,8 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     try {
       await secureStorage.delete(key: AppConstants.cachedUser);
     } catch (e) {
-      throw const CacheException(message: 'Lỗi xoá thông tin đăng nhập');
+      throw CacheException(
+          message: AppLanguage.current?.errDeleteCredentials ?? 'Lỗi xoá thông tin đăng nhập');
     }
   }
 
@@ -68,7 +74,8 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
         value: encoded,
       );
     } catch (e) {
-      throw const CacheException(message: 'Lỗi ghi nhớ mật khẩu');
+      throw CacheException(
+          message: AppLanguage.current?.errSavePassword ?? 'Lỗi ghi nhớ mật khẩu');
     }
   }
 
@@ -91,7 +98,9 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     try {
       await secureStorage.delete(key: AppConstants.cachedCredentials);
     } catch (e) {
-      throw const CacheException(message: 'Lỗi xoá thông tin đăng nhập đã lưu');
+      throw CacheException(
+          message:
+              AppLanguage.current?.errDeleteStoredCredentials ?? 'Lỗi xoá thông tin đăng nhập đã lưu');
     }
   }
 }

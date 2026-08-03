@@ -59,6 +59,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final monthYearStr = _getMonthYear(widget.eventDate);
     final monthStr = monthYearStr.split('/').first;
     final monthInt = int.tryParse(monthStr) ?? monthStr;
@@ -79,9 +80,9 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
         if (year != null && month != null && day != null) {
           final solarDate = DateTime(year, month, day);
           final lunar = Lunar(createdFromSolar: true, date: solarDate);
-          final leap = lunar.leapMonth == true ? ' Nhuận' : '';
+          final leap = lunar.leapMonth == true ? l10n.leapMonthInline : '';
           lunarDay = '${lunar.day}';
-          lunarMonthLabel = 'Tháng ${lunar.month}$leap';
+          lunarMonthLabel = l10n.lunarMonthLabelFormat(leap, lunar.month);
           lunarYear = '${lunar.year}';
         }
       }
@@ -127,7 +128,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                   ),
                 ),
                 child: Text(
-                  _showLunar ? lunarMonthLabel : 'Tháng $monthInt',
+                  _showLunar ? lunarMonthLabel : l10n.monthLabelFormat(monthInt),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 9.5,

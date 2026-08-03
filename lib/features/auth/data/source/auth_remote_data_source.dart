@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/data/model/user_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -44,8 +45,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // 1. Google Sign-In
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
-        throw const ServerException(
-            message: 'Đăng nhập Google bị huỷ bởi người dùng');
+        throw ServerException(
+            message: AppLanguage.current?.errGoogleSignInCanceled ??
+                'Đăng nhập Google bị huỷ bởi người dùng');
       }
 
       final GoogleSignInAuthentication googleAuth =
@@ -62,13 +64,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final User? firebaseUser = userCredential.user;
 
       if (firebaseUser == null) {
-        throw const ServerException(message: 'Không thể xác thực với Firebase');
+        throw ServerException(
+            message: AppLanguage.current?.errFirebaseAuth ??
+                'Không thể xác thực với Firebase');
       }
 
       // 3. Get Firebase ID Token
       final String? idToken = await firebaseUser.getIdToken();
       if (idToken == null) {
-        throw const ServerException(message: 'Không thể lấy Firebase ID Token');
+        throw ServerException(message: AppLanguage.current?.errFirebaseToken ?? 'Không thể lấy Firebase ID Token');
       }
 
       // 4. Send token to backend
@@ -89,21 +93,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       } else {
         throw ServerException(
           message:
-              response.data['message']?.toString() ?? 'Lỗi xác thực máy chủ',
+              response.data['message']?.toString() ?? AppLanguage.current?.errServerAuth ?? 'Lỗi xác thực máy chủ',
           statusCode: response.statusCode,
         );
       }
     } on FirebaseAuthException catch (e) {
       throw ServerException(
-          message: e.message ?? 'Lỗi Firebase Auth', statusCode: 401);
+          message: e.message ?? AppLanguage.current?.errFirebaseAuthError ?? 'Lỗi Firebase Auth', statusCode: 401);
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+        message: _getErrorMessage(e, AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
       if (e is ServerException) rethrow;
-      throw ServerException(message: 'Lỗi không xác định: $e');
+      throw ServerException(message: AppLanguage.current?.errGenericFormat(e) ?? 'Lỗi không xác định: $e');
     }
   }
 
@@ -131,15 +135,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
         final User? firebaseUser = userCredential.user;
         if (firebaseUser == null) {
-          throw const ServerException(
-              message: 'Không thể xác thực với Firebase');
+          throw ServerException(
+              message: AppLanguage.current?.errFirebaseAuth ??
+                  'Không thể xác thực với Firebase');
         }
 
         // 2. Get Firebase ID Token
         final String? idToken = await firebaseUser.getIdToken();
         if (idToken == null) {
-          throw const ServerException(
-              message: 'Không thể lấy Firebase ID Token');
+          throw ServerException(
+              message: AppLanguage.current?.errFirebaseToken ??
+                  'Không thể lấy Firebase ID Token');
         }
 
         // 3. Send token to backend
@@ -160,7 +166,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         } else {
           throw ServerException(
             message:
-                response.data['message']?.toString() ?? 'Lỗi xác thực máy chủ',
+                response.data['message']?.toString() ?? AppLanguage.current?.errServerAuth ?? 'Lỗi xác thực máy chủ',
             statusCode: response.statusCode,
           );
         }
@@ -175,33 +181,37 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           }
         }
 
-        String msg = 'Lỗi đăng nhập';
+        String msg =
+            AppLanguage.current?.errLoginFailed ?? 'Lỗi đăng nhập';
         if (e.code == 'user-not-found' ||
             e.code == 'wrong-password' ||
             e.code == 'invalid-credential') {
-          msg = 'Email hoặc mật khẩu không chính xác.';
+          msg = AppLanguage.current?.errInvalidCredentials ??
+              'Email hoặc mật khẩu không chính xác.';
         } else if (e.code == 'user-disabled') {
-          msg = 'Tài khoản đã bị vô hiệu hoá.';
+          msg = AppLanguage.current?.errAccountDisabled ??
+              'Tài khoản đã bị vô hiệu hoá.';
         } else if (e.code == 'invalid-email') {
-          msg = 'Địa chỉ email không đúng định dạng.';
+          msg = AppLanguage.current?.errEmailInvalidFormat ??
+              'Địa chỉ email không đúng định dạng.';
         } else if (e.message != null) {
           msg = e.message!;
         }
         throw ServerException(message: msg, statusCode: 401);
       } on DioException catch (e) {
         throw ServerException(
-          message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+          message: _getErrorMessage(e, AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ'),
           statusCode: e.response?.statusCode,
         );
       } catch (e) {
         if (e is ServerException) rethrow;
-        throw ServerException(message: 'Lỗi không xác định: $e');
+        throw ServerException(message: AppLanguage.current?.errGenericFormat(e) ?? 'Lỗi không xác định: $e');
       }
     }
 
     // All retries exhausted
-    throw const ServerException(
-      message:
+    throw ServerException(
+      message: AppLanguage.current?.errInvalidCredentialsRetry ??
           'Email hoặc mật khẩu không chính xác. Vui lòng thử lại sau vài giây.',
       statusCode: 401,
     );
@@ -226,8 +236,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
         firebaseUser = userCredential.user;
         if (firebaseUser == null) {
-          throw const ServerException(
-              message: 'Không thể đăng ký tài khoản với Firebase');
+          throw ServerException(
+              message: AppLanguage.current?.errRegisterFirebase ??
+                  'Không thể đăng ký tài khoản với Firebase');
         }
 
         // 2. Update Display Name
@@ -236,8 +247,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         // 3. Get Firebase ID Token (force refresh to include the updated display name)
         final String? idToken = await firebaseUser.getIdToken(true);
         if (idToken == null) {
-          throw const ServerException(
-              message: 'Không thể lấy Firebase ID Token sau đăng ký');
+          throw ServerException(
+              message: AppLanguage.current?.errFirebaseTokenAfterRegister ??
+                  'Không thể lấy Firebase ID Token sau đăng ký');
         }
 
         // 4. Send token to backend
@@ -259,25 +271,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         } else {
           throw ServerException(
             message: response.data['message']?.toString() ??
-                'Lỗi đăng ký tài khoản trên máy chủ',
+                AppLanguage.current?.errRegisterServer ??
+                    'Lỗi đăng ký tài khoản trên máy chủ',
             statusCode: response.statusCode,
           );
         }
       } on FirebaseAuthException catch (e) {
-        String msg = 'Lỗi đăng ký Firebase';
+        String msg =
+            AppLanguage.current?.errFirebaseRegisterError ?? 'Lỗi đăng ký Firebase';
         if (e.code == 'email-already-in-use') {
-          msg = 'Địa chỉ email đã được sử dụng bởi một tài khoản khác.';
+          msg = AppLanguage.current?.errEmailAlreadyUsed ??
+              'Địa chỉ email đã được sử dụng bởi một tài khoản khác.';
         } else if (e.code == 'weak-password') {
-          msg = 'Mật khẩu quá yếu.';
+          msg = AppLanguage.current?.errPasswordTooWeak ?? 'Mật khẩu quá yếu.';
         } else if (e.code == 'invalid-email') {
-          msg = 'Địa chỉ email không đúng định dạng.';
+          msg = AppLanguage.current?.errEmailInvalidFormat ??
+              'Địa chỉ email không đúng định dạng.';
         } else if (e.message != null) {
           msg = e.message!;
         }
         throw ServerException(message: msg, statusCode: 400);
       } on DioException catch (e) {
         throw ServerException(
-          message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+          message: _getErrorMessage(e, AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ'),
           statusCode: e.response?.statusCode,
         );
       }
@@ -307,24 +323,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         }
         throw ServerException(
           message: data['message']?.toString() ??
-              'Không thể gửi email đặt lại mật khẩu',
+              AppLanguage.current?.errSendResetEmail ??
+                  'Không thể gửi email đặt lại mật khẩu',
           statusCode: response.statusCode,
         );
       } else {
         final data = response.data as Map<String, dynamic>;
         throw ServerException(
-          message: data['message']?.toString() ?? 'Lỗi máy chủ',
+          message: data['message']?.toString() ?? AppLanguage.current?.errServerGeneric ?? 'Lỗi máy chủ',
           statusCode: response.statusCode,
         );
       }
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+        message: _getErrorMessage(e, AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
       if (e is ServerException) rethrow;
-      throw ServerException(message: 'Lỗi không xác định: $e');
+      throw ServerException(message: AppLanguage.current?.errGenericFormat(e) ?? 'Lỗi không xác định: $e');
     }
   }
 
@@ -342,24 +359,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return;
         }
         throw ServerException(
-          message: data['message']?.toString() ?? 'Mã OTP không đúng',
+          message: data['message']?.toString() ?? AppLanguage.current?.errOtpInvalid ?? 'Mã OTP không đúng',
           statusCode: response.statusCode,
         );
       } else {
         final data = response.data as Map<String, dynamic>;
         throw ServerException(
-          message: data['message']?.toString() ?? 'Lỗi máy chủ',
+          message: data['message']?.toString() ?? AppLanguage.current?.errServerGeneric ?? 'Lỗi máy chủ',
           statusCode: response.statusCode,
         );
       }
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+        message: _getErrorMessage(e, AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
       if (e is ServerException) rethrow;
-      throw ServerException(message: 'Lỗi không xác định: $e');
+      throw ServerException(message: AppLanguage.current?.errGenericFormat(e) ?? 'Lỗi không xác định: $e');
     }
   }
 
@@ -385,24 +402,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           return;
         }
         throw ServerException(
-          message: data['message']?.toString() ?? 'Không thể đặt lại mật khẩu',
+          message: data['message']?.toString() ?? AppLanguage.current?.errResetPasswordFailed ??
+                  'Không thể đặt lại mật khẩu',
           statusCode: response.statusCode,
         );
       } else {
         final data = response.data as Map<String, dynamic>;
         throw ServerException(
-          message: data['message']?.toString() ?? 'Lỗi máy chủ',
+          message: data['message']?.toString() ?? AppLanguage.current?.errServerGeneric ?? 'Lỗi máy chủ',
           statusCode: response.statusCode,
         );
       }
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+        message: _getErrorMessage(e, AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
       if (e is ServerException) rethrow;
-      throw ServerException(message: 'Lỗi không xác định: $e');
+      throw ServerException(message: AppLanguage.current?.errGenericFormat(e) ?? 'Lỗi không xác định: $e');
     }
   }
 
@@ -411,11 +429,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final User? firebaseUser = firebaseAuth.currentUser;
       if (firebaseUser == null) {
-        throw const ServerException(message: 'Không tìm thấy phiên đăng nhập Firebase');
+        throw ServerException(
+            message: AppLanguage.current?.errNoFirebaseSession ??
+                'Không tìm thấy phiên đăng nhập Firebase');
       }
       final String? idToken = await firebaseUser.getIdToken(true);
       if (idToken == null) {
-        throw const ServerException(message: 'Không thể lấy Firebase ID Token');
+        throw ServerException(message: AppLanguage.current?.errFirebaseToken ?? 'Không thể lấy Firebase ID Token');
       }
 
       final response = await dio.post(
@@ -433,20 +453,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return UserModel.fromJson(userData);
       } else {
         throw ServerException(
-          message: response.data['message']?.toString() ?? 'Lỗi xác thực máy chủ',
+          message: response.data['message']?.toString() ?? AppLanguage.current?.errServerAuth ?? 'Lỗi xác thực máy chủ',
           statusCode: response.statusCode,
         );
       }
     } on FirebaseAuthException catch (e) {
-      throw ServerException(message: e.message ?? 'Lỗi Firebase Auth', statusCode: 401);
+      throw ServerException(message: e.message ?? AppLanguage.current?.errFirebaseAuthError ?? 'Lỗi Firebase Auth', statusCode: 401);
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi kết nối máy chủ'),
+        message: _getErrorMessage(e, AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ'),
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
       if (e is ServerException) rethrow;
-      throw ServerException(message: 'Lỗi không xác định: $e');
+      throw ServerException(message: AppLanguage.current?.errGenericFormat(e) ?? 'Lỗi không xác định: $e');
     }
   }
 

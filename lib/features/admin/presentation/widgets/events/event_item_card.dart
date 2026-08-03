@@ -41,17 +41,18 @@ class EventItemCard extends StatelessWidget {
 
   Widget _buildStatusTag(String status, BuildContext context,
       {bool isOverBanner = false}) {
-    String statusText = 'Đã kết thúc';
+    final l10n = AppLocalizations.of(context)!;
+    String statusText = l10n.eventEnded;
     Color statusColor = isOverBanner
         ? Colors.grey.shade300
         : context.textSecondary.withValues(alpha: 0.7);
 
     if (status == 'active') {
-      statusText = 'Đang diễn ra';
+      statusText = l10n.eventOngoing;
       statusColor =
           isOverBanner ? Colors.greenAccent.shade400 : context.primary;
     } else if (status == 'upcoming') {
-      statusText = 'Sắp diễn ra';
+      statusText = l10n.eventUpcoming;
       statusColor =
           isOverBanner ? Colors.amberAccent.shade200 : Colors.amber.shade800;
     }
@@ -81,6 +82,7 @@ class EventItemCard extends StatelessWidget {
   }
 
   Widget _buildBannerImage(BuildContext context, String status) {
+    final l10n = AppLocalizations.of(context)!;
     final imageUrl = event.imageUrl;
     final isNetwork = imageUrl != null &&
         (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
@@ -156,7 +158,7 @@ class EventItemCard extends StatelessWidget {
                       ],
                     ),
                     child: Text(
-                      'LỊCH ÂM',
+                      l10n.lunarShortLabel,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -246,7 +248,7 @@ class EventItemCard extends StatelessWidget {
                             const Spacer(),
                             if (event.isLunar)
                               Text(
-                                'LỊCH ÂM',
+                                l10n.lunarShortLabel,
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 10.5,
                                   fontWeight: FontWeight.w700,
@@ -297,7 +299,7 @@ class EventItemCard extends StatelessWidget {
                           const SizedBox(width: 5),
                           Expanded(
                             child: Text(
-                              event.organizer ?? 'Ban Quản Trị',
+                              event.organizer ?? l10n.adminBoard,
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 12,
                                 color: context.textSecondary,

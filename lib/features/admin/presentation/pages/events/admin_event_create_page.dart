@@ -43,7 +43,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   };
 
   Map<String, String> _typeLabels(AppLocalizations l10n) => {
-        'event': 'Sự kiện / Bài viết',
+        'event': l10n.eventTypeEventArticle,
         'announcement': l10n.eventTypeAnnouncement,
       };
 
@@ -391,7 +391,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Định dạng JPG, PNG (Tối đa 5MB)',
+                    l10n.eventImageFormatHint,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 11,
                       color: context.textSecondary,
@@ -407,16 +407,16 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    String dateSectionTitle = 'Thời gian & Địa điểm';
+    String dateSectionTitle = l10n.eventTimeLocationSection;
     if (_type == 'announcement') {
-      dateSectionTitle = 'Ngày phát thông báo';
+      dateSectionTitle = l10n.eventPublishDateLabel;
     }
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: _type == 'announcement'
-            ? 'Tạo thông báo gia tộc'
+            ? l10n.eventCreateTitle
             : l10n.addEventTitle,
         automaticallyImplyLeading: true,
       ),
@@ -467,7 +467,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 _buildSectionTitle(
-                                  'Thông tin cơ bản',
+                                  l10n.basicInfoSectionTitle,
                                   LucideIcons.fileText,
                                 ),
                                 if (_showBannerPicker) ...[
@@ -477,16 +477,16 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                 AppOutlineTextField(
                                   controller: _titleController,
                                   label: _type == 'announcement'
-                                      ? 'Tiêu đề thông báo'
-                                      : 'Tên sự kiện / Bài viết',
+                                      ? l10n.eventTitleLabelAnnouncement
+                                      : l10n.eventTitleLabelEventArticle,
                                   hintText: _type == 'announcement'
-                                      ? 'Nhập tiêu đề thông báo ngắn gọn...'
+                                      ? l10n.eventTitleHintAnnouncement
                                       : l10n.eventTitleHint,
                                   prefixIcon: Icon(_typeIcon, size: 18),
                                   validator: (val) {
                                     if (val == null || val.trim().isEmpty) {
                                       return _type == 'announcement'
-                                          ? 'Vui lòng nhập tiêu đề thông báo'
+                                          ? l10n.eventTitleRequiredAnnouncement
                                           : l10n.eventTitleRequired;
                                     }
                                     return null;
@@ -496,9 +496,8 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                   const SizedBox(height: 14),
                                   AppOutlineTextField(
                                     controller: _organizerController,
-                                    label: 'Ban tổ chức / Người chủ trì',
-                                    hintText:
-                                        'Nhập tên người chủ trì hoặc ban tổ chức...',
+                                    label: l10n.eventOrganizerLabelFull,
+                                    hintText: l10n.eventOrganizerHintFull,
                                     prefixIcon:
                                         const Icon(LucideIcons.user, size: 18),
                                   ),
@@ -507,17 +506,17 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                 AppOutlineTextField(
                                   controller: _contentController,
                                   label: _type == 'announcement'
-                                      ? 'Nội dung thông báo'
-                                      : 'Nội dung & Lịch trình',
+                                      ? l10n.eventContentLabelAnnouncement
+                                      : l10n.eventContentLabelEventArticle,
                                   hintText: _type == 'announcement'
-                                      ? 'Nhập nội dung chi tiết thông báo gửi đến gia tộc...'
-                                      : 'Nhập nội dung chi tiết bài viết, lịch trình sự kiện...',
+                                      ? l10n.eventContentHintAnnouncement
+                                      : l10n.eventContentHintEventArticle,
                                   minLines: 4,
                                   maxLines: 10,
                                   validator: (val) {
                                     if (_type == 'announcement' &&
                                         (val == null || val.trim().isEmpty)) {
-                                      return 'Vui lòng nhập nội dung thông báo';
+                                      return l10n.eventContentRequiredAnnouncement;
                                     }
                                     return null;
                                   },

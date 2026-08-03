@@ -3601,6 +3601,1056 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đổi mã'**
   String get changeInviteCodeButton;
+
+  /// No description provided for @saveEventSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu sự kiện thành công'**
+  String get saveEventSuccess;
+
+  /// No description provided for @deleteEventSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá sự kiện thành công'**
+  String get deleteEventSuccess;
+
+  /// No description provided for @transferOwnershipError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể chuyển nhượng quyền Trưởng tộc'**
+  String get transferOwnershipError;
+
+  /// No description provided for @roleUpdateFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phân quyền thất bại'**
+  String get roleUpdateFailed;
+
+  /// No description provided for @updateProfileSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật thông tin thành công'**
+  String get updateProfileSuccess;
+
+  /// No description provided for @approveFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phê duyệt thất bại'**
+  String get approveFailed;
+
+  /// No description provided for @rejectFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ chối thất bại'**
+  String get rejectFailed;
+
+  /// No description provided for @dissolveClanError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể giải tán dòng họ'**
+  String get dissolveClanError;
+
+  /// No description provided for @familyTreeLoadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có lỗi xảy ra khi tải dữ liệu: {error}'**
+  String familyTreeLoadError(Object error);
+
+  /// No description provided for @eventTypeEventArticle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sự kiện / Bài viết'**
+  String get eventTypeEventArticle;
+
+  /// No description provided for @eventImageFormatHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Định dạng JPG, PNG (Tối đa 5MB)'**
+  String get eventImageFormatHint;
+
+  /// No description provided for @eventTimeLocationSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian & Địa điểm'**
+  String get eventTimeLocationSection;
+
+  /// No description provided for @eventPublishDateLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày phát thông báo'**
+  String get eventPublishDateLabel;
+
+  /// No description provided for @eventCreateTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thông báo gia tộc'**
+  String get eventCreateTitle;
+
+  /// No description provided for @eventTitleLabelAnnouncement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề thông báo'**
+  String get eventTitleLabelAnnouncement;
+
+  /// No description provided for @eventTitleLabelEventArticle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên sự kiện / Bài viết'**
+  String get eventTitleLabelEventArticle;
+
+  /// No description provided for @eventTitleHintAnnouncement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tiêu đề thông báo ngắn gọn...'**
+  String get eventTitleHintAnnouncement;
+
+  /// No description provided for @eventTitleRequiredAnnouncement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập tiêu đề thông báo'**
+  String get eventTitleRequiredAnnouncement;
+
+  /// No description provided for @eventOrganizerLabelFull.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban tổ chức / Người chủ trì'**
+  String get eventOrganizerLabelFull;
+
+  /// No description provided for @eventOrganizerHintFull.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập tên người chủ trì hoặc ban tổ chức...'**
+  String get eventOrganizerHintFull;
+
+  /// No description provided for @eventContentLabelAnnouncement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung thông báo'**
+  String get eventContentLabelAnnouncement;
+
+  /// No description provided for @eventContentLabelEventArticle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung & Lịch trình'**
+  String get eventContentLabelEventArticle;
+
+  /// No description provided for @eventContentHintAnnouncement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập nội dung chi tiết thông báo gửi đến gia tộc...'**
+  String get eventContentHintAnnouncement;
+
+  /// No description provided for @eventContentHintEventArticle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập nội dung chi tiết bài viết, lịch trình sự kiện...'**
+  String get eventContentHintEventArticle;
+
+  /// No description provided for @eventContentRequiredAnnouncement.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng nhập nội dung thông báo'**
+  String get eventContentRequiredAnnouncement;
+
+  /// No description provided for @eventSearchHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm sự kiện, thông báo...'**
+  String get eventSearchHint;
+
+  /// No description provided for @eventNoResults.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy thông tin phù hợp'**
+  String get eventNoResults;
+
+  /// No description provided for @clanEventsSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'SỰ KIỆN GIA TỘC'**
+  String get clanEventsSection;
+
+  /// No description provided for @clanAnnouncementsSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'THÔNG BÁO GIA TỘC'**
+  String get clanAnnouncementsSection;
+
+  /// No description provided for @eventDiscardChangesTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ chỉnh sửa?'**
+  String get eventDiscardChangesTitle;
+
+  /// No description provided for @eventDiscardChangesMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các thay đổi chưa lưu sẽ bị mất.'**
+  String get eventDiscardChangesMessage;
+
+  /// No description provided for @eventDiscardChangesAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Huỷ chỉnh sửa'**
+  String get eventDiscardChangesAction;
+
+  /// No description provided for @eventByAuthor.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bởi '**
+  String get eventByAuthor;
+
+  /// No description provided for @adminBoard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban Quản Trị'**
+  String get adminBoard;
+
+  /// No description provided for @eventEnded.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã kết thúc'**
+  String get eventEnded;
+
+  /// No description provided for @eventOngoing.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang diễn ra'**
+  String get eventOngoing;
+
+  /// No description provided for @eventUpcoming.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp diễn ra'**
+  String get eventUpcoming;
+
+  /// No description provided for @lunarShortLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'LỊCH ÂM'**
+  String get lunarShortLabel;
+
+  /// No description provided for @monthLabelFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}'**
+  String monthLabelFormat(Object month);
+
+  /// No description provided for @lunarMonthLabelFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tháng {month}{leap}'**
+  String lunarMonthLabelFormat(Object leap, Object month);
+
+  /// No description provided for @leapMonthInline.
+  ///
+  /// In vi, this message translates to:
+  /// **' Nhuận'**
+  String get leapMonthInline;
+
+  /// No description provided for @addMemberFabLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên +'**
+  String get addMemberFabLabel;
+
+  /// No description provided for @addBranchFabLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi họ +'**
+  String get addBranchFabLabel;
+
+  /// No description provided for @selectUnlinkedMemberTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn Thành Viên Chưa Nối Cây'**
+  String get selectUnlinkedMemberTitle;
+
+  /// No description provided for @selectUnlinkedMemberSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn thành viên để mở thông tin và nối vào gia phả'**
+  String get selectUnlinkedMemberSubtitle;
+
+  /// No description provided for @deleteMemberConfirmStart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn xoá thành viên '**
+  String get deleteMemberConfirmStart;
+
+  /// No description provided for @deleteMemberConfirmEnd.
+  ///
+  /// In vi, this message translates to:
+  /// **' khỏi gia phả không?'**
+  String get deleteMemberConfirmEnd;
+
+  /// No description provided for @deleteMemberTitlePrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá thành viên '**
+  String get deleteMemberTitlePrefix;
+
+  /// No description provided for @deleteMemberWithDescendantsMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên này đang có con/cháu nối tiếp trong cây gia phả. Vui lòng lựa chọn phương án xử lý liên kết thế hệ:'**
+  String get deleteMemberWithDescendantsMessage;
+
+  /// No description provided for @promoteChildrenOption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đôn con lên'**
+  String get promoteChildrenOption;
+
+  /// No description provided for @recommendedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khuyên dùng'**
+  String get recommendedLabel;
+
+  /// No description provided for @promoteChildrenDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tự động nối trực tiếp các con lên thế hệ trên để cây không bị đứt đoạn.'**
+  String get promoteChildrenDesc;
+
+  /// No description provided for @deleteAndDetachOption.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá & Tách nhánh'**
+  String get deleteAndDetachOption;
+
+  /// No description provided for @deleteAndDetachDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Các con cháu sẽ bị tách thành nhánh mồ côi (mất liên kết với thế hệ cha).'**
+  String get deleteAndDetachDesc;
+
+  /// No description provided for @accountSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản'**
+  String get accountSection;
+
+  /// No description provided for @userIdLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'ID người dùng'**
+  String get userIdLabel;
+
+  /// No description provided for @registeredRoleLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò đăng ký'**
+  String get registeredRoleLabel;
+
+  /// No description provided for @statusDisplayLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trạng thái'**
+  String get statusDisplayLabel;
+
+  /// No description provided for @registeredMemberInfoLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin thành viên đăng ký'**
+  String get registeredMemberInfoLabel;
+
+  /// No description provided for @hometownLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quê quán'**
+  String get hometownLabel;
+
+  /// No description provided for @maritalStatusShortLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tình trạng HN'**
+  String get maritalStatusShortLabel;
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú'**
+  String get notesLabel;
+
+  /// No description provided for @memberFallbackName.
+  ///
+  /// In vi, this message translates to:
+  /// **'thành viên'**
+  String get memberFallbackName;
+
+  /// No description provided for @createRelativeTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo người thân trên cây?'**
+  String get createRelativeTitle;
+
+  /// No description provided for @createRelativeSuggestedMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên {userName} ghi nhận thông tin người thân: \"{suggestedName}\". Bạn có muốn tạo nhanh người thân này để phân nhánh cây gia phả không?'**
+  String createRelativeSuggestedMessage(Object suggestedName, Object userName);
+
+  /// No description provided for @createRelativeFallbackMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú đăng ký: \"{notes}\". Bạn có muốn vào trang tạo thành viên mới để xếp vị trí cho {userName} không?'**
+  String createRelativeFallbackMessage(Object notes, Object userName);
+
+  /// No description provided for @laterAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để sau'**
+  String get laterAction;
+
+  /// No description provided for @createRelativeNowAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo người thân ngay'**
+  String get createRelativeNowAction;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ duyệt'**
+  String get statusPending;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã duyệt'**
+  String get statusApproved;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã từ chối'**
+  String get statusRejected;
+
+  /// No description provided for @unknownShortLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không rõ'**
+  String get unknownShortLabel;
+
+  /// No description provided for @maritalDivorcedStatus.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ly hôn'**
+  String get maritalDivorcedStatus;
+
+  /// No description provided for @maritalWidowedShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Góa'**
+  String get maritalWidowedShort;
+
+  /// No description provided for @selectExistingMemberTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn Thành Viên Có Sẵn'**
+  String get selectExistingMemberTitle;
+
+  /// No description provided for @searchMemberByNameHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm theo tên thành viên...'**
+  String get searchMemberByNameHint;
+
+  /// No description provided for @noMatchingMember.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy thành viên nào phù hợp'**
+  String get noMatchingMember;
+
+  /// No description provided for @noUnlinkedMembers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có thành viên nào chưa nối cây'**
+  String get noUnlinkedMembers;
+
+  /// No description provided for @birthDateFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày sinh: {date}'**
+  String birthDateFormat(Object date);
+
+  /// No description provided for @selectLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn'**
+  String get selectLabel;
+
+  /// No description provided for @memberAccessibilityFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên {name}, Giới tính: {gender}'**
+  String memberAccessibilityFormat(Object gender, Object name);
+
+  /// No description provided for @meLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tôi'**
+  String get meLabel;
+
+  /// No description provided for @addMemberChooseMethodDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn cách thức thêm thành viên vào gia tộc'**
+  String get addMemberChooseMethodDesc;
+
+  /// No description provided for @linkUnlinkedMemberLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối thành viên chưa có trên cây'**
+  String get linkUnlinkedMemberLabel;
+
+  /// No description provided for @createNewMemberLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo thành viên mới'**
+  String get createNewMemberLabel;
+
+  /// No description provided for @createNewMemberDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập đầy đủ thông tin thành viên mới'**
+  String get createNewMemberDesc;
+
+  /// No description provided for @addChildForFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm Con Cho {name}'**
+  String addChildForFormat(Object name);
+
+  /// No description provided for @selectChildMemberTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn Thành Viên Làm Con'**
+  String get selectChildMemberTitle;
+
+  /// No description provided for @linkAsChildFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối thành viên làm con của {name}'**
+  String linkAsChildFormat(Object name);
+
+  /// No description provided for @confirmConnectionLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận kết nối'**
+  String get confirmConnectionLabel;
+
+  /// No description provided for @confirmLinkChildMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn gắn thành viên \"{childName}\" làm con của \"{parentName}\"?'**
+  String confirmLinkChildMessage(Object childName, Object parentName);
+
+  /// No description provided for @memberConnectedSuccessFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã kết nối thành viên \"{name}\" thành công!'**
+  String memberConnectedSuccessFormat(Object name);
+
+  /// No description provided for @addSpouseForFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm Vợ / Chồng Cho {name}'**
+  String addSpouseForFormat(Object name);
+
+  /// No description provided for @selectSpouseMemberTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn Thành Viên Làm Vợ / Chồng'**
+  String get selectSpouseMemberTitle;
+
+  /// No description provided for @linkSpouseFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết nối vợ/chồng với {name}'**
+  String linkSpouseFormat(Object name);
+
+  /// No description provided for @confirmLinkSpouseMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn kết nối vợ/chồng giữa \"{memberName}\" và \"{spouseName}\"?'**
+  String confirmLinkSpouseMessage(Object memberName, Object spouseName);
+
+  /// No description provided for @spouseConnectedSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã kết nối vợ/chồng thành công!'**
+  String get spouseConnectedSuccess;
+
+  /// No description provided for @markAllReadSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đánh dấu đọc tất cả thông báo'**
+  String get markAllReadSuccess;
+
+  /// No description provided for @markAllReadAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đọc tất cả'**
+  String get markAllReadAction;
+
+  /// No description provided for @importantLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quan trọng'**
+  String get importantLabel;
+
+  /// No description provided for @noNotificationsMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có thông báo nào'**
+  String get noNotificationsMessage;
+
+  /// No description provided for @notificationDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo {title}'**
+  String notificationDetailTitle(Object title);
+
+  /// No description provided for @markAsReadAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu đã đọc'**
+  String get markAsReadAction;
+
+  /// No description provided for @deleteNotificationAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa thông báo'**
+  String get deleteNotificationAction;
+
+  /// No description provided for @wishLoginRequired.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chờ tải thông tin hoặc đăng nhập lại để gửi lời chúc'**
+  String get wishLoginRequired;
+
+  /// No description provided for @noWishesMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lời chúc nào.'**
+  String get noWishesMessage;
+
+  /// No description provided for @beFirstWisher.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy là người đầu tiên gửi lời chúc!'**
+  String get beFirstWisher;
+
+  /// No description provided for @sendWishButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lời chúc'**
+  String get sendWishButton;
+
+  /// No description provided for @sendRemembranceButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lời tưởng nhớ'**
+  String get sendRemembranceButton;
+
+  /// No description provided for @memberLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên'**
+  String get memberLabel;
+
+  /// No description provided for @clearBranchFilterLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ lọc chi'**
+  String get clearBranchFilterLabel;
+
+  /// No description provided for @pendingApprovalRequestSent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ '**
+  String get pendingApprovalRequestSent;
+
+  /// No description provided for @pendingApprovalLeaderFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trưởng tộc {name} - {phone}'**
+  String pendingApprovalLeaderFormat(Object name, Object phone);
+
+  /// No description provided for @pendingApprovalWaitEnd.
+  ///
+  /// In vi, this message translates to:
+  /// **' để phê duyệt.'**
+  String get pendingApprovalWaitEnd;
+
+  /// No description provided for @errNameEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tên không được để trống'**
+  String get errNameEmpty;
+
+  /// No description provided for @errGoogleSignInCanceled.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập Google bị huỷ bởi người dùng'**
+  String get errGoogleSignInCanceled;
+
+  /// No description provided for @errFirebaseAuth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể xác thực với Firebase'**
+  String get errFirebaseAuth;
+
+  /// No description provided for @errFirebaseToken.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể lấy Firebase ID Token'**
+  String get errFirebaseToken;
+
+  /// No description provided for @errServerAuth.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xác thực máy chủ'**
+  String get errServerAuth;
+
+  /// No description provided for @errFirebaseAuthError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi Firebase Auth'**
+  String get errFirebaseAuthError;
+
+  /// No description provided for @errServerConnection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi kết nối máy chủ'**
+  String get errServerConnection;
+
+  /// No description provided for @errGenericFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi không xác định: {error}'**
+  String errGenericFormat(Object error);
+
+  /// No description provided for @errLoginFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng nhập'**
+  String get errLoginFailed;
+
+  /// No description provided for @errInvalidCredentials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email hoặc mật khẩu không chính xác.'**
+  String get errInvalidCredentials;
+
+  /// No description provided for @errAccountDisabled.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản đã bị vô hiệu hoá.'**
+  String get errAccountDisabled;
+
+  /// No description provided for @errEmailInvalidFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa chỉ email không đúng định dạng.'**
+  String get errEmailInvalidFormat;
+
+  /// No description provided for @errInvalidCredentialsRetry.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email hoặc mật khẩu không chính xác. Vui lòng thử lại sau vài giây.'**
+  String get errInvalidCredentialsRetry;
+
+  /// No description provided for @errRegisterFirebase.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể đăng ký tài khoản với Firebase'**
+  String get errRegisterFirebase;
+
+  /// No description provided for @errFirebaseTokenAfterRegister.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể lấy Firebase ID Token sau đăng ký'**
+  String get errFirebaseTokenAfterRegister;
+
+  /// No description provided for @errRegisterServer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng ký tài khoản trên máy chủ'**
+  String get errRegisterServer;
+
+  /// No description provided for @errFirebaseRegisterError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng ký Firebase'**
+  String get errFirebaseRegisterError;
+
+  /// No description provided for @errEmailAlreadyUsed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa chỉ email đã được sử dụng bởi một tài khoản khác.'**
+  String get errEmailAlreadyUsed;
+
+  /// No description provided for @errPasswordTooWeak.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mật khẩu quá yếu.'**
+  String get errPasswordTooWeak;
+
+  /// No description provided for @errSendResetEmail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể gửi email đặt lại mật khẩu'**
+  String get errSendResetEmail;
+
+  /// No description provided for @errServerGeneric.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi máy chủ'**
+  String get errServerGeneric;
+
+  /// No description provided for @errOtpInvalid.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã OTP không đúng'**
+  String get errOtpInvalid;
+
+  /// No description provided for @errResetPasswordFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể đặt lại mật khẩu'**
+  String get errResetPasswordFailed;
+
+  /// No description provided for @errNoFirebaseSession.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy phiên đăng nhập Firebase'**
+  String get errNoFirebaseSession;
+
+  /// No description provided for @errCacheCredentials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi ghi nhớ thông tin đăng nhập'**
+  String get errCacheCredentials;
+
+  /// No description provided for @errReadCredentials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đọc thông tin đăng nhập đã lưu'**
+  String get errReadCredentials;
+
+  /// No description provided for @errDeleteCredentials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xoá thông tin đăng nhập'**
+  String get errDeleteCredentials;
+
+  /// No description provided for @errSavePassword.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi ghi nhớ mật khẩu'**
+  String get errSavePassword;
+
+  /// No description provided for @errDeleteStoredCredentials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xoá thông tin đăng nhập đã lưu'**
+  String get errDeleteStoredCredentials;
+
+  /// No description provided for @errLoginFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng nhập: {error}'**
+  String errLoginFormat(Object error);
+
+  /// No description provided for @errLogoutFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng xuất: {error}'**
+  String errLogoutFormat(Object error);
+
+  /// No description provided for @errRegisterFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng ký: {error}'**
+  String errRegisterFormat(Object error);
+
+  /// No description provided for @errSaveInfoFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi lưu thông tin: {error}'**
+  String errSaveInfoFormat(Object error);
+
+  /// No description provided for @errCacheCredentialsFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi ghi nhớ thông tin đăng nhập: {error}'**
+  String errCacheCredentialsFormat(Object error);
+
+  /// No description provided for @errSendResetEmailFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi gửi email đặt lại mật khẩu: {error}'**
+  String errSendResetEmailFormat(Object error);
+
+  /// No description provided for @errOtpVerifyFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xác thực OTP: {error}'**
+  String errOtpVerifyFormat(Object error);
+
+  /// No description provided for @errResetPasswordFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đặt lại mật khẩu: {error}'**
+  String errResetPasswordFormat(Object error);
+
+  /// No description provided for @errReloadProfileFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi nạp lại thông tin người dùng: {error}'**
+  String errReloadProfileFormat(Object error);
+
+  /// No description provided for @errInvalidResponseData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu phản hồi không hợp lệ'**
+  String get errInvalidResponseData;
+
+  /// No description provided for @errInvalidDataFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu trả về không đúng định dạng'**
+  String get errInvalidDataFormat;
+
+  /// No description provided for @errInvalidListFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu danh sách trả về không đúng định dạng'**
+  String get errInvalidListFormat;
+
+  /// No description provided for @errMemberNotFound.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy thành viên'**
+  String get errMemberNotFound;
+
+  /// No description provided for @errSaveMember.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi lưu thành viên'**
+  String get errSaveMember;
+
+  /// No description provided for @errDeleteMember.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xoá thành viên'**
+  String get errDeleteMember;
+
+  /// No description provided for @errBranchNotFound.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy chi/nhánh'**
+  String get errBranchNotFound;
+
+  /// No description provided for @errSaveBranch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi lưu chi/nhánh'**
+  String get errSaveBranch;
+
+  /// No description provided for @errDeleteBranch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xoá chi/nhánh'**
+  String get errDeleteBranch;
+
+  /// No description provided for @errCreateFamily.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi tạo dòng họ'**
+  String get errCreateFamily;
+
+  /// No description provided for @errVerifyInviteCode.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xác nhận mã mời'**
+  String get errVerifyInviteCode;
+
+  /// No description provided for @errSendJoinRequest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi gửi yêu cầu gia nhập'**
+  String get errSendJoinRequest;
+
+  /// No description provided for @errLoadJoinRequest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi tải yêu cầu gia nhập'**
+  String get errLoadJoinRequest;
+
+  /// No description provided for @errApproveRequest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi phê duyệt yêu cầu'**
+  String get errApproveRequest;
+
+  /// No description provided for @errRejectRequest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi từ chối yêu cầu'**
+  String get errRejectRequest;
+
+  /// No description provided for @errLoadFamilyInfo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi tải thông tin dòng họ'**
+  String get errLoadFamilyInfo;
+
+  /// No description provided for @errUpdateFamilyInfo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi cập nhật thông tin dòng họ'**
+  String get errUpdateFamilyInfo;
+
+  /// No description provided for @errLoadMemberList.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi tải danh sách thành viên'**
+  String get errLoadMemberList;
+
+  /// No description provided for @errUpdateMemberRole.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi phân quyền thành viên'**
+  String get errUpdateMemberRole;
+
+  /// No description provided for @errDeleteFamily.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi xóa dòng họ'**
+  String get errDeleteFamily;
+
+  /// No description provided for @errLinkFamilyProfile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi liên kết hồ sơ gia phả'**
+  String get errLinkFamilyProfile;
+
+  /// No description provided for @errTransferOwnership.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi chuyển nhượng quyền Trưởng tộc'**
+  String get errTransferOwnership;
+
+  /// No description provided for @eventDetailSemanticLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sự kiện {title}, Ngày: {date}'**
+  String eventDetailSemanticLabel(Object date, Object title);
 }
 
 class _AppLocalizationsDelegate

@@ -284,7 +284,7 @@ class _EventsListPageState extends State<EventsListPage> {
                                 style: GoogleFonts.beVietnamPro(
                                     fontSize: 14, color: context.textPrimary),
                                 decoration: InputDecoration(
-                                  hintText: 'Tìm kiếm sự kiện, thông báo...',
+                                  hintText: l10n.eventSearchHint,
                                   hintStyle: GoogleFonts.beVietnamPro(
                                       fontSize: 13.5,
                                       color: context.textSecondary
@@ -360,11 +360,11 @@ class _EventsListPageState extends State<EventsListPage> {
 
                     // Empty state when filtered output is empty
                     if (filteredEvents.isEmpty)
-                      const AppEmptyState(
-                        message: 'Không tìm thấy thông tin phù hợp',
+                      AppEmptyState(
+                        message: l10n.eventNoResults,
                         icon: LucideIcons.fileX,
                         iconSize: 42,
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 40),
                       ),
 
@@ -372,7 +372,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     if ((_selectedType == 'all' || _selectedType == 'event') &&
                         eventsList.isNotEmpty) ...[
                       _buildSectionHeader(
-                        'SỰ KIỆN GIA TỘC',
+                        l10n.clanEventsSection,
                         eventsList.length,
                         onViewAll: (_selectedType == 'all' &&
                                 eventsList.length > _maxPreviewItemsPerSection)
@@ -409,7 +409,7 @@ class _EventsListPageState extends State<EventsListPage> {
                             _selectedType == 'announcement') &&
                         announcementsList.isNotEmpty) ...[
                       _buildSectionHeader(
-                        'THÔNG BÁO GIA TỘC',
+                        l10n.clanAnnouncementsSection,
                         announcementsList.length,
                         onViewAll: (_selectedType == 'all' &&
                                 announcementsList.length >
@@ -456,6 +456,7 @@ class _EventsListPageState extends State<EventsListPage> {
 
   Widget _buildSectionHeader(String title, int count,
       {VoidCallback? onViewAll}) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
       child: Row(
@@ -502,7 +503,7 @@ class _EventsListPageState extends State<EventsListPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Xem tất cả',
+                    l10n.viewAllLabel,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'dart:io';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
 import '../../../../core/data/model/family_model.dart';
 import '../../../../core/data/model/family_user_model.dart';
@@ -114,7 +115,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi tạo dòng họ'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errCreateFamily ?? 'Lỗi tạo dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -138,7 +140,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       };
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi xác nhận mã mời'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errVerifyInviteCode ?? 'Lỗi xác nhận mã mời'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -182,7 +185,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyUserModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi gửi yêu cầu gia nhập'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errSendJoinRequest ?? 'Lỗi gửi yêu cầu gia nhập'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -201,7 +205,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
           .toList();
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi tải yêu cầu gia nhập'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errLoadJoinRequest ?? 'Lỗi tải yêu cầu gia nhập'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -216,7 +221,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi phê duyệt yêu cầu'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errApproveRequest ?? 'Lỗi phê duyệt yêu cầu'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -231,7 +237,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi từ chối yêu cầu'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errRejectRequest ?? 'Lỗi từ chối yêu cầu'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -246,7 +253,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi tải thông tin dòng họ'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errLoadFamilyInfo ?? 'Lỗi tải thông tin dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -295,7 +303,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi cập nhật thông tin dòng họ'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errUpdateFamilyInfo ?? 'Lỗi cập nhật thông tin dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -314,7 +323,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
           .toList();
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi tải danh sách thành viên'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errLoadMemberList ?? 'Lỗi tải danh sách thành viên'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -335,7 +345,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi phân quyền thành viên'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errUpdateMemberRole ?? 'Lỗi phân quyền thành viên'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -350,7 +361,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi xóa dòng họ'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errDeleteFamily ?? 'Lỗi xóa dòng họ'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -369,7 +381,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi liên kết hồ sơ gia phả'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errLinkFamilyProfile ?? 'Lỗi liên kết hồ sơ gia phả'),
         statusCode: e.response?.statusCode,
       );
     }
@@ -391,7 +404,8 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
       return response.data['success'] as bool? ?? false;
     } on DioException catch (e) {
       throw ServerException(
-        message: _getErrorMessage(e, 'Lỗi chuyển nhượng quyền Trưởng tộc'),
+        message: _getErrorMessage(
+            e, AppLanguage.current?.errTransferOwnership ?? 'Lỗi chuyển nhượng quyền Trưởng tộc'),
         statusCode: e.response?.statusCode,
       );
     }

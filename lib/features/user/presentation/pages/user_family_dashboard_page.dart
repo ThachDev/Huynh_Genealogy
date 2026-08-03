@@ -155,7 +155,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                            'Bỏ lọc chi',
+                                            l10n.clearBranchFilterLabel,
                                             style: GoogleFonts.inter(
                                               fontSize: 11,
                                               color: context.primary,

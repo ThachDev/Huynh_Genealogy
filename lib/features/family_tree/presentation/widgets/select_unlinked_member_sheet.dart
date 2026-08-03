@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 
@@ -13,14 +14,14 @@ class SelectUnlinkedMemberSheet extends StatefulWidget {
   const SelectUnlinkedMemberSheet({
     super.key,
     required this.candidateMembers,
-    this.title = 'Chọn Thành Viên Có Sẵn',
+    required this.title,
     this.subtitle,
   });
 
   static Future<MemberEntity?> show(
     BuildContext context, {
     required List<MemberEntity> candidateMembers,
-    String title = 'Chọn Thành Viên Có Sẵn',
+    required String title,
     String? subtitle,
   }) {
     return showModalBottomSheet<MemberEntity>(
@@ -52,6 +53,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final cardBg = context.surface;
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
@@ -63,7 +65,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
       final query = _searchQuery.trim().toLowerCase();
       final nameMatches = m.fullName.toLowerCase().contains(query);
       final genMatches =
-          m.generation != null && 'đời ${m.generation}'.contains(query);
+          m.generation != null && l10n.generationBadge(m.generation!).contains(query);
       return nameMatches || genMatches;
     }).toList();
 
@@ -149,7 +151,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                 onChanged: (val) => setState(() => _searchQuery = val),
                 style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
                 decoration: InputDecoration(
-                  hintText: 'Tìm theo tên thành viên...',
+                  hintText: l10n.searchMemberByNameHint,
                   hintStyle:
                       GoogleFonts.inter(fontSize: 13, color: textSecondary),
                   prefixIcon:
@@ -198,8 +200,8 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                         padding: const EdgeInsets.all(20.0),
                         child: Text(
                           _searchQuery.isNotEmpty
-                              ? 'Không tìm thấy thành viên nào phù hợp'
-                              : 'Không có thành viên nào chưa nối cây',
+                              ? l10n.noMatchingMember
+                              : l10n.noUnlinkedMembers,
                           style: GoogleFonts.beVietnamPro(
                             color: textSecondary,
                             fontSize: 14,
@@ -241,7 +243,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                             subtitle: (member.dateOfBirth != null &&
                                     member.dateOfBirth!.isNotEmpty)
                                 ? Text(
-                                    'Ngày sinh: ${member.dateOfBirth}',
+                                    l10n.birthDateFormat(member.dateOfBirth!),
                                     style: GoogleFonts.inter(
                                       fontSize: 12,
                                       color: textSecondary,
@@ -260,7 +262,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                'Chọn',
+                                l10n.selectLabel,
                                 style: GoogleFonts.inter(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,

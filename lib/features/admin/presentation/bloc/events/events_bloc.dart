@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecase/delete_event.dart';
 import '../../../../../core/domain/usecase/get_events.dart';
+import '../../../../../core/errors/failures.dart';
 import '../../../domain/usecase/save_event.dart';
 import 'events_event.dart';
 import 'events_state.dart';
@@ -34,7 +35,9 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     final result = await saveEvent(SaveEventParams(event: event.event));
     result.fold(
       (failure) => emit(EventsError(message: failure.message)),
-      (savedEvent) => emit(const EventsSubmitSuccess(message: 'Lưu sự kiện thành công')),
+      (savedEvent) => emit(EventsSubmitSuccess(
+          message: AppLanguage.current?.saveEventSuccess ??
+              'Lưu sự kiện thành công')),
     );
   }
 
@@ -43,7 +46,9 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     final result = await deleteEvent(DeleteEventParams(id: event.id));
     result.fold(
       (failure) => emit(EventsError(message: failure.message)),
-      (success) => emit(const EventsSubmitSuccess(message: 'Xoá sự kiện thành công')),
+      (success) => emit(EventsSubmitSuccess(
+          message: AppLanguage.current?.deleteEventSuccess ??
+              'Xoá sự kiện thành công')),
     );
   }
 }

@@ -53,6 +53,7 @@ class _WishWallPageState extends State<WishWallPage> {
   }
 
   Future<void> _sendWish() async {
+    final l10n = AppLocalizations.of(context)!;
     final authState = context.read<AuthBloc>().state;
     UserEntity? userProfile;
 
@@ -63,8 +64,7 @@ class _WishWallPageState extends State<WishWallPage> {
     if (userProfile == null) {
       AppSnackBar.show(
         context,
-        message:
-            'Vui lòng chờ tải thông tin hoặc đăng nhập lại để gửi lời chúc',
+        message: l10n.wishLoginRequired,
         type: SnackBarType.error,
       );
       return;
@@ -123,11 +123,11 @@ class _WishWallPageState extends State<WishWallPage> {
             if (_isLoading)
               const Center(child: CircularProgressIndicator())
             else if (_wishes.isEmpty)
-              const Center(
+              Center(
                 child: AppEmptyState(
                   icon: LucideIcons.mail,
-                  message: 'Chưa có lời chúc nào.',
-                  subMessage: 'Hãy là người đầu tiên gửi lời chúc!',
+                  message: l10n.noWishesMessage,
+                  subMessage: l10n.beFirstWisher,
                 ),
               )
             else
@@ -153,7 +153,7 @@ class _WishWallPageState extends State<WishWallPage> {
         elevation: 4,
         icon: Icon(isBirthday ? LucideIcons.gift : LucideIcons.mailPlus),
         label: Text(
-          isBirthday ? 'Gửi lời chúc' : 'Gửi lời tưởng nhớ',
+          isBirthday ? l10n.sendWishButton : l10n.sendRemembranceButton,
           style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
         ),
       ),
@@ -169,6 +169,7 @@ class _WishCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -193,7 +194,7 @@ class _WishCard extends StatelessWidget {
             children: [
               AppAvatar(
                 avatarUrl: wish.senderAvatar,
-                fullName: wish.senderName ?? 'Thành viên',
+                fullName: wish.senderName ?? l10n.memberLabel,
                 radius: 18,
               ),
               const SizedBox(width: 12),
@@ -202,7 +203,7 @@ class _WishCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      wish.senderName ?? 'Thành viên',
+                      wish.senderName ?? l10n.memberLabel,
                       style: GoogleFonts.beVietnamPro(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,

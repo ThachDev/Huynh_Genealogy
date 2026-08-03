@@ -79,7 +79,7 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
     final l10n = AppLocalizations.of(context)!;
     final newName = _nameController.text.trim();
     if (newName.isEmpty) {
-      AppSnackBar.error(context, 'Tên không được để trống');
+      AppSnackBar.error(context, l10n.errNameEmpty);
       return;
     }
 

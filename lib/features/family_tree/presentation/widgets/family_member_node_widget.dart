@@ -71,12 +71,13 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
     final genderText = widget.member.gender == Gender.male
         ? 'Nam'
         : widget.member.gender == Gender.female
-            ? 'Nữ'
-            : 'Chưa rõ';
+        ? l10n.genderFemale
+        : l10n.genderUnknown;
 
     return RepaintBoundary(
       child: Semantics(
-        label: 'Thành viên ${widget.member.fullName}, Giới tính: $genderText',
+        label:
+            l10n.memberAccessibilityFormat(genderText, widget.member.fullName),
         button: true,
         selected: widget.isSelected,
         child: GestureDetector(
@@ -336,7 +337,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                 ),
                                 const SizedBox(width: 2),
                                 Text(
-                                  'Tôi',
+                                  l10n.meLabel,
                                   style: GoogleFonts.beVietnamPro(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,

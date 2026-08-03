@@ -121,7 +121,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
         final lunar = Lunar(createdFromSolar: true, date: dt);
         final lunarDay = lunar.day.toString().padLeft(2, '0');
         final lunarMonth = lunar.month.toString().padLeft(2, '0');
-        final leap = lunar.leapMonth == true ? ' Nhuận' : '';
+        final leap = lunar.leapMonth == true ? l10n.leapMonthInline : '';
         return '$solarStr ($lunarDay/$lunarMonth$leap AL)';
       }
     } catch (_) {}
@@ -395,7 +395,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Định dạng JPG, PNG (Tối đa 5MB)',
+                    l10n.eventImageFormatHint,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 11,
                       color: context.textSecondary,
@@ -430,14 +430,14 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
       builder: (ctx) => AlertDialog(
         backgroundColor: ctx.surface,
         title: Text(
-          'Huỷ chỉnh sửa?',
+          l10n.eventDiscardChangesTitle,
           style: GoogleFonts.beVietnamPro(
             fontWeight: FontWeight.bold,
             color: ctx.textPrimary,
           ),
         ),
         content: Text(
-          'Các thay đổi chưa lưu sẽ bị mất.',
+          l10n.eventDiscardChangesMessage,
           style: GoogleFonts.beVietnamPro(color: ctx.textSecondary),
         ),
         actions: [
@@ -448,7 +448,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Huỷ chỉnh sửa'),
+            child: Text(l10n.eventDiscardChangesAction),
           ),
         ],
       ),
@@ -599,7 +599,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                 Row(
                   children: [
                     Text(
-                      'Bởi ',
+                      l10n.eventByAuthor,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 13,
                         color: context.textSecondary.withValues(alpha: 0.7),
@@ -608,7 +608,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                     Text(
                       _organizerController.text.isNotEmpty
                           ? _organizerController.text
-                          : 'Ban Quản Trị',
+                          : l10n.adminBoard,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -705,8 +705,8 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
 
   Widget _buildEditForm(AppLocalizations l10n) {
     final dateSectionTitle = _type == 'announcement'
-        ? 'Ngày phát thông báo'
-        : 'Thời gian & Địa điểm';
+        ? l10n.eventPublishDateLabel
+        : l10n.eventTimeLocationSection;
 
     return Column(
       children: [
@@ -744,7 +744,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                       children: [
                         _buildSectionTitle(
                           context,
-                          'Thông tin cơ bản',
+                          l10n.basicInfoSectionTitle,
                           LucideIcons.fileText,
                         ),
                         if (_showBannerPicker) ...[
@@ -754,16 +754,16 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                         AppOutlineTextField(
                           controller: _titleController,
                           label: _type == 'announcement'
-                              ? 'Tiêu đề thông báo'
-                              : 'Tên sự kiện / Bài viết',
+                              ? l10n.eventTitleLabelAnnouncement
+                              : l10n.eventTitleLabelEventArticle,
                           hintText: _type == 'announcement'
-                              ? 'Nhập tiêu đề thông báo ngắn gọn...'
+                              ? l10n.eventTitleHintAnnouncement
                               : l10n.eventTitleHint,
                           prefixIcon: Icon(_typeIcon, size: 18),
                           validator: (val) {
                             if (val == null || val.trim().isEmpty) {
                               return _type == 'announcement'
-                                  ? 'Vui lòng nhập tiêu đề thông báo'
+                                  ? l10n.eventTitleRequiredAnnouncement
                                   : l10n.eventTitleRequired;
                             }
                             return null;
@@ -774,10 +774,9 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                           AppOutlineTextField(
                             controller: _organizerController,
                             label: _type == 'article'
-                                ? 'Tác giả'
-                                : 'Ban tổ chức / Người chủ trì',
-                            hintText:
-                                'Nhập tên người chủ trì hoặc ban tổ chức...',
+                                ? l10n.eventAuthorLabel
+                                : l10n.eventOrganizerLabelFull,
+                            hintText: l10n.eventOrganizerHintFull,
                             prefixIcon:
                                 const Icon(LucideIcons.user, size: 18),
                           ),
@@ -786,17 +785,17 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                         AppOutlineTextField(
                           controller: _contentController,
                           label: _type == 'announcement'
-                              ? 'Nội dung thông báo'
-                              : 'Nội dung & Lịch trình',
+                              ? l10n.eventContentLabelAnnouncement
+                              : l10n.eventContentLabelEventArticle,
                           hintText: _type == 'announcement'
-                              ? 'Nhập nội dung chi tiết thông báo gửi đến gia tộc...'
-                              : 'Nhập nội dung chi tiết bài viết, lịch trình sự kiện...',
+                              ? l10n.eventContentHintAnnouncement
+                              : l10n.eventContentHintEventArticle,
                           minLines: 4,
                           maxLines: 10,
                           validator: (val) {
                             if (_type == 'announcement' &&
                                 (val == null || val.trim().isEmpty)) {
-                              return 'Vui lòng nhập nội dung thông báo';
+                              return l10n.eventContentRequiredAnnouncement;
                             }
                             return null;
                           },

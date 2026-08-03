@@ -5,6 +5,7 @@ import '../../../domain/usecase/get_pending_requests.dart';
 import '../../../../../core/domain/usecase/get_family_detail.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../../../../core/domain/entity/family_entity.dart';
+import '../../../../../core/errors/failures.dart';
 
 part 'admin_pending_requests_event.dart';
 part 'admin_pending_requests_state.dart';
@@ -58,7 +59,9 @@ class AdminPendingRequestsBloc extends Bloc<AdminPendingRequestsEvent, AdminPend
         if (success) {
           emit(AdminRequestApprovedSuccess(requestId: event.requestId));
         } else {
-          emit(const AdminPendingRequestsFailure(message: 'Phê duyệt thất bại'));
+          emit(AdminPendingRequestsFailure(
+              message: AppLanguage.current?.approveFailed ??
+                  'Phê duyệt thất bại'));
         }
       },
     );
@@ -76,7 +79,9 @@ class AdminPendingRequestsBloc extends Bloc<AdminPendingRequestsEvent, AdminPend
         if (success) {
           emit(AdminRequestRejectedSuccess(requestId: event.requestId));
         } else {
-          emit(const AdminPendingRequestsFailure(message: 'Từ chối thất bại'));
+          emit(AdminPendingRequestsFailure(
+              message: AppLanguage.current?.rejectFailed ??
+                  'Từ chối thất bại'));
         }
       },
     );

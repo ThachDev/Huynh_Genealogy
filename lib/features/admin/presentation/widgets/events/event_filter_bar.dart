@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
+import '../../../../../resources/app_localizations.dart';
 
 class EventFilterBar extends StatelessWidget {
   final String selectedType;
@@ -17,20 +18,21 @@ class EventFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final filters = [
       {
         'key': 'all',
-        'label': 'Tất cả',
+        'label': l10n.allLabel,
         'icon': LucideIcons.layers,
       },
       {
         'key': 'event',
-        'label': 'Sự kiện',
+        'label': l10n.eventTypeEvent,
         'icon': LucideIcons.calendar,
       },
       {
         'key': 'announcement',
-        'label': 'Thông báo',
+        'label': l10n.eventTypeAnnouncement,
         'icon': LucideIcons.megaphone,
       },
     ];

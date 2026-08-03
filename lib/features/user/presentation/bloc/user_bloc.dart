@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecase/get_user_profile.dart';
 import '../../domain/usecase/update_user_profile.dart';
@@ -36,7 +37,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       (failure) => emit(UserErrorState(message: failure.message)),
       (updatedProfile) => emit(UserUpdateSuccessState(
         profile: updatedProfile,
-        message: 'Cập nhật thông tin thành công',
+        message: AppLanguage.current?.updateProfileSuccess ??
+            'Cập nhật thông tin thành công',
       )),
     );
   }

@@ -83,6 +83,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   int _pendingLimit = 5;
 
   void _updateFAB() {
+    final l10n = AppLocalizations.of(context)!;
     if (!widget.isActive) return;
 
     final authState = context.read<AuthBloc>().state;
@@ -103,7 +104,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       if (_selectedTab == AdminDashboardTab.members) {
         UserMainNavigationPage.fabNotifier.value = FABConfig(
           icon: LucideIcons.userPlus,
-          label: 'Thành viên +',
+          label: l10n.addMemberFabLabel,
           onTap: () async {
             final treeState = context.read<FamilyTreeBloc>().state;
             List<MemberEntity> unlinkedMembers = [];
@@ -120,7 +121,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             if (unlinkedMembers.isNotEmpty) {
               option = await AddMemberOptionDialog.show(
                 context,
-                title: 'Thêm Thành Viên',
+                title: l10n.addMemberTitle,
                 availableCount: unlinkedMembers.length,
               );
               if (option == null) return;
@@ -141,8 +142,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               final selected = await SelectUnlinkedMemberSheet.show(
                 context,
                 candidateMembers: unlinkedMembers,
-                title: 'Chọn Thành Viên Chưa Nối Cây',
-                subtitle: 'Chọn thành viên để mở thông tin và nối vào gia phả',
+                title: l10n.selectUnlinkedMemberTitle,
+                subtitle: l10n.selectUnlinkedMemberSubtitle,
               );
               if (selected != null && mounted) {
                 final selectedMemberId = selected.id;
@@ -160,7 +161,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       } else if (_selectedTab == AdminDashboardTab.branches) {
         UserMainNavigationPage.fabNotifier.value = FABConfig(
           icon: LucideIcons.gitBranch,
-          label: 'Chi họ +',
+          label: l10n.addBranchFabLabel,
           onTap: () => _openBranchForm(context),
         );
       } else {
@@ -195,9 +196,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   void dispose() {
+    final l10n = AppLocalizations.of(context)!;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (UserMainNavigationPage.fabNotifier.value?.label == 'Thành viên +' ||
-          UserMainNavigationPage.fabNotifier.value?.label == 'Chi họ +') {
+      if (UserMainNavigationPage.fabNotifier.value?.label == l10n.addMemberFabLabel ||
+          UserMainNavigationPage.fabNotifier.value?.label == l10n.addBranchFabLabel) {
         UserMainNavigationPage.fabNotifier.value = null;
       }
     });
@@ -967,12 +969,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             height: 1.5,
           ),
           children: [
-            const TextSpan(text: 'Bạn có chắc chắn muốn xoá thành viên '),
+            TextSpan(text: l10n.deleteMemberConfirmStart),
             TextSpan(
               text: member.fullName,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            const TextSpan(text: ' khỏi gia phả không?'),
+            TextSpan(text: l10n.deleteMemberConfirmEnd),
           ],
         ),
       );
@@ -1017,9 +1019,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       color: ctx.textPrimary,
                     ),
                     children: [
-                      const TextSpan(
-                        text: 'Xoá thành viên ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      TextSpan(
+                        text: l10n.deleteMemberTitlePrefix,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
                         text: member.fullName,
@@ -1033,7 +1035,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Thành viên này đang có con/cháu nối tiếp trong cây gia phả. Vui lòng lựa chọn phương án xử lý liên kết thế hệ:',
+                  l10n.deleteMemberWithDescendantsMessage,
                   style: GoogleFonts.inter(
                       fontSize: 13, color: ctx.textSecondary, height: 1.4),
                 ),
@@ -1074,7 +1076,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               Row(
                                 children: [
                                   Text(
-                                    'Đôn con lên',
+                                    l10n.promoteChildrenOption,
                                     style: GoogleFonts.beVietnamPro(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
@@ -1091,7 +1093,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
-                                      'Khuyên dùng',
+                                      l10n.recommendedLabel,
                                       style: GoogleFonts.inter(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
@@ -1103,7 +1105,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Tự động nối trực tiếp các con lên thế hệ trên để cây không bị đứt đoạn.',
+                                l10n.promoteChildrenDesc,
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   color: ctx.textSecondary,
@@ -1153,7 +1155,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Xoá & Tách nhánh',
+                                l10n.deleteAndDetachOption,
                                 style: GoogleFonts.beVietnamPro(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
@@ -1162,7 +1164,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Các con cháu sẽ bị tách thành nhánh mồ côi (mất liên kết với thế hệ cha).',
+                                l10n.deleteAndDetachDesc,
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   color: ctx.textSecondary,

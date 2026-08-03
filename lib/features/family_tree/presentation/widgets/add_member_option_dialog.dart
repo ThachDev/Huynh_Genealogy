@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 
 enum AddMemberOption {
@@ -14,13 +15,13 @@ class AddMemberOptionDialog extends StatelessWidget {
 
   const AddMemberOptionDialog({
     super.key,
-    this.title = 'Thêm Thành Viên',
+    required this.title,
     required this.availableCount,
   });
 
   static Future<AddMemberOption?> show(
     BuildContext context, {
-    String title = 'Thêm Thành Viên',
+    required String title,
     required int availableCount,
   }) {
     return showDialog<AddMemberOption>(
@@ -35,6 +36,7 @@ class AddMemberOptionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final dialogBg = context.surface;
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
@@ -71,7 +73,7 @@ class AddMemberOptionDialog extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        'Chọn cách thức thêm thành viên vào gia tộc',
+                        l10n.addMemberChooseMethodDesc,
                         style: GoogleFonts.inter(
                           fontSize: 12.5,
                           color: textSecondary,
@@ -143,7 +145,7 @@ class AddMemberOptionDialog extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Chọn thành viên có sẵn',
+                              l10n.selectExistingMemberTitle,
                               style: GoogleFonts.inter(
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.w600,
@@ -152,7 +154,7 @@ class AddMemberOptionDialog extends StatelessWidget {
                             ),
                             const SizedBox(height: 3),
                             Text(
-                              'Kết nối thành viên chưa có trên cây',
+                              l10n.linkUnlinkedMemberLabel,
                               style: GoogleFonts.inter(
                                 fontSize: 12,
                                 color: textSecondary,
@@ -211,7 +213,7 @@ class AddMemberOptionDialog extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Tạo thành viên mới',
+                              l10n.createNewMemberLabel,
                               style: GoogleFonts.inter(
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.w600,
@@ -220,7 +222,7 @@ class AddMemberOptionDialog extends StatelessWidget {
                             ),
                             const SizedBox(height: 3),
                             Text(
-                              'Nhập đầy đủ thông tin thành viên mới',
+                              l10n.createNewMemberDesc,
                               style: GoogleFonts.inter(
                                 fontSize: 12,
                                 color: textSecondary,

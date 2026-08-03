@@ -1907,4 +1907,606 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changeInviteCodeButton => 'Change code';
+
+  @override
+  String get saveEventSuccess => 'Event saved successfully';
+
+  @override
+  String get deleteEventSuccess => 'Event deleted successfully';
+
+  @override
+  String get transferOwnershipError => 'Unable to transfer clan leadership';
+
+  @override
+  String get roleUpdateFailed => 'Failed to update role';
+
+  @override
+  String get updateProfileSuccess => 'Profile updated successfully';
+
+  @override
+  String get approveFailed => 'Approval failed';
+
+  @override
+  String get rejectFailed => 'Rejection failed';
+
+  @override
+  String get dissolveClanError => 'Unable to dissolve the clan';
+
+  @override
+  String familyTreeLoadError(Object error) {
+    return 'Error loading data: $error';
+  }
+
+  @override
+  String get eventTypeEventArticle => 'Event / Article';
+
+  @override
+  String get eventImageFormatHint => 'JPG, PNG format (Max 5MB)';
+
+  @override
+  String get eventTimeLocationSection => 'Time & Location';
+
+  @override
+  String get eventPublishDateLabel => 'Publish date';
+
+  @override
+  String get eventCreateTitle => 'Create clan announcement';
+
+  @override
+  String get eventTitleLabelAnnouncement => 'Announcement title';
+
+  @override
+  String get eventTitleLabelEventArticle => 'Event / Article name';
+
+  @override
+  String get eventTitleHintAnnouncement =>
+      'Enter a short announcement title...';
+
+  @override
+  String get eventTitleRequiredAnnouncement =>
+      'Please enter announcement title';
+
+  @override
+  String get eventOrganizerLabelFull => 'Organizer / Host';
+
+  @override
+  String get eventOrganizerHintFull =>
+      'Enter host name or organizing committee...';
+
+  @override
+  String get eventContentLabelAnnouncement => 'Announcement content';
+
+  @override
+  String get eventContentLabelEventArticle => 'Content & Schedule';
+
+  @override
+  String get eventContentHintAnnouncement =>
+      'Enter detailed announcement content sent to the clan...';
+
+  @override
+  String get eventContentHintEventArticle =>
+      'Enter detailed article content and event schedule...';
+
+  @override
+  String get eventContentRequiredAnnouncement =>
+      'Please enter announcement content';
+
+  @override
+  String get eventSearchHint => 'Search events, announcements...';
+
+  @override
+  String get eventNoResults => 'No matching information found';
+
+  @override
+  String get clanEventsSection => 'CLAN EVENTS';
+
+  @override
+  String get clanAnnouncementsSection => 'CLAN ANNOUNCEMENTS';
+
+  @override
+  String get eventDiscardChangesTitle => 'Discard changes?';
+
+  @override
+  String get eventDiscardChangesMessage => 'Unsaved changes will be lost.';
+
+  @override
+  String get eventDiscardChangesAction => 'Discard changes';
+
+  @override
+  String get eventByAuthor => 'By ';
+
+  @override
+  String get adminBoard => 'Management Board';
+
+  @override
+  String get eventEnded => 'Ended';
+
+  @override
+  String get eventOngoing => 'Ongoing';
+
+  @override
+  String get eventUpcoming => 'Upcoming';
+
+  @override
+  String get lunarShortLabel => 'LUNAR';
+
+  @override
+  String monthLabelFormat(Object month) {
+    return 'Month $month';
+  }
+
+  @override
+  String lunarMonthLabelFormat(Object leap, Object month) {
+    return 'Month $month$leap';
+  }
+
+  @override
+  String get leapMonthInline => ' (leap month)';
+
+  @override
+  String get addMemberFabLabel => 'Member +';
+
+  @override
+  String get addBranchFabLabel => 'Branch +';
+
+  @override
+  String get selectUnlinkedMemberTitle => 'Select Unlinked Member';
+
+  @override
+  String get selectUnlinkedMemberSubtitle =>
+      'Select a member to view info and link to the family tree';
+
+  @override
+  String get deleteMemberConfirmStart =>
+      'Are you sure you want to delete member ';
+
+  @override
+  String get deleteMemberConfirmEnd => ' from the family tree?';
+
+  @override
+  String get deleteMemberTitlePrefix => 'Delete member ';
+
+  @override
+  String get deleteMemberWithDescendantsMessage =>
+      'This member has descendants continuing the family tree. Please choose how to handle the generation links:';
+
+  @override
+  String get promoteChildrenOption => 'Promote children';
+
+  @override
+  String get recommendedLabel => 'Recommended';
+
+  @override
+  String get promoteChildrenDesc =>
+      'Automatically link children to the previous generation so the tree is not broken.';
+
+  @override
+  String get deleteAndDetachOption => 'Delete & Detach branch';
+
+  @override
+  String get deleteAndDetachDesc =>
+      'Descendants will be detached into orphan branches (losing the link to the father\'s generation).';
+
+  @override
+  String get accountSection => 'Account';
+
+  @override
+  String get userIdLabel => 'User ID';
+
+  @override
+  String get registeredRoleLabel => 'Registered role';
+
+  @override
+  String get statusDisplayLabel => 'Status';
+
+  @override
+  String get registeredMemberInfoLabel => 'Registered member info';
+
+  @override
+  String get hometownLabel => 'Hometown';
+
+  @override
+  String get maritalStatusShortLabel => 'Marital status';
+
+  @override
+  String get notesLabel => 'Notes';
+
+  @override
+  String get memberFallbackName => 'member';
+
+  @override
+  String get createRelativeTitle => 'Create relative on the tree?';
+
+  @override
+  String createRelativeSuggestedMessage(Object suggestedName, Object userName) {
+    return 'Member $userName recorded relative information: \"$suggestedName\". Do you want to quickly create this relative to branch the family tree?';
+  }
+
+  @override
+  String createRelativeFallbackMessage(Object notes, Object userName) {
+    return 'Registration note: \"$notes\". Do you want to go to the new member creation page to place $userName?';
+  }
+
+  @override
+  String get laterAction => 'Later';
+
+  @override
+  String get createRelativeNowAction => 'Create relative now';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get unknownShortLabel => 'Unknown';
+
+  @override
+  String get maritalDivorcedStatus => 'Divorced';
+
+  @override
+  String get maritalWidowedShort => 'Widowed';
+
+  @override
+  String get selectExistingMemberTitle => 'Select Existing Member';
+
+  @override
+  String get searchMemberByNameHint => 'Search by member name...';
+
+  @override
+  String get noMatchingMember => 'No matching member found';
+
+  @override
+  String get noUnlinkedMembers => 'No unlinked members';
+
+  @override
+  String birthDateFormat(Object date) {
+    return 'Date of birth: $date';
+  }
+
+  @override
+  String get selectLabel => 'Select';
+
+  @override
+  String memberAccessibilityFormat(Object gender, Object name) {
+    return 'Member $name, Gender: $gender';
+  }
+
+  @override
+  String get meLabel => 'Me';
+
+  @override
+  String get addMemberChooseMethodDesc =>
+      'Choose how to add a member to the clan';
+
+  @override
+  String get linkUnlinkedMemberLabel => 'Link a member not yet on the tree';
+
+  @override
+  String get createNewMemberLabel => 'Create new member';
+
+  @override
+  String get createNewMemberDesc =>
+      'Enter complete information for the new member';
+
+  @override
+  String addChildForFormat(Object name) {
+    return 'Add Child for $name';
+  }
+
+  @override
+  String get selectChildMemberTitle => 'Select Member as Child';
+
+  @override
+  String linkAsChildFormat(Object name) {
+    return 'Link member as child of $name';
+  }
+
+  @override
+  String get confirmConnectionLabel => 'Confirm connection';
+
+  @override
+  String confirmLinkChildMessage(Object childName, Object parentName) {
+    return 'Are you sure you want to link member \"$childName\" as a child of \"$parentName\"?';
+  }
+
+  @override
+  String memberConnectedSuccessFormat(Object name) {
+    return 'Successfully connected member \"$name\"!';
+  }
+
+  @override
+  String addSpouseForFormat(Object name) {
+    return 'Add Wife / Husband for $name';
+  }
+
+  @override
+  String get selectSpouseMemberTitle => 'Select Member as Wife / Husband';
+
+  @override
+  String linkSpouseFormat(Object name) {
+    return 'Link spouse to $name';
+  }
+
+  @override
+  String confirmLinkSpouseMessage(Object memberName, Object spouseName) {
+    return 'Are you sure you want to link spouse between \"$memberName\" and \"$spouseName\"?';
+  }
+
+  @override
+  String get spouseConnectedSuccess => 'Successfully connected spouse!';
+
+  @override
+  String get markAllReadSuccess => 'All notifications marked as read';
+
+  @override
+  String get markAllReadAction => 'Read all';
+
+  @override
+  String get importantLabel => 'Important';
+
+  @override
+  String get noNotificationsMessage => 'No notifications';
+
+  @override
+  String notificationDetailTitle(Object title) {
+    return 'Notification $title';
+  }
+
+  @override
+  String get markAsReadAction => 'Mark as read';
+
+  @override
+  String get deleteNotificationAction => 'Delete notification';
+
+  @override
+  String get wishLoginRequired =>
+      'Please wait for your information to load or log in again to send a wish';
+
+  @override
+  String get noWishesMessage => 'No wishes yet.';
+
+  @override
+  String get beFirstWisher => 'Be the first to send a wish!';
+
+  @override
+  String get sendWishButton => 'Send wish';
+
+  @override
+  String get sendRemembranceButton => 'Send remembrance';
+
+  @override
+  String get memberLabel => 'Member';
+
+  @override
+  String get clearBranchFilterLabel => 'Clear branch filter';
+
+  @override
+  String get pendingApprovalRequestSent =>
+      'Your clan join request has been sent successfully. Please wait for admin approval or contact ';
+
+  @override
+  String pendingApprovalLeaderFormat(Object name, Object phone) {
+    return 'Clan Leader $name - $phone';
+  }
+
+  @override
+  String get pendingApprovalWaitEnd => ' to approve.';
+
+  @override
+  String get errNameEmpty => 'Name cannot be empty';
+
+  @override
+  String get errGoogleSignInCanceled =>
+      'Google sign-in was canceled by the user';
+
+  @override
+  String get errFirebaseAuth => 'Unable to authenticate with Firebase';
+
+  @override
+  String get errFirebaseToken => 'Unable to get Firebase ID Token';
+
+  @override
+  String get errServerAuth => 'Server authentication error';
+
+  @override
+  String get errFirebaseAuthError => 'Firebase Auth error';
+
+  @override
+  String get errServerConnection => 'Server connection error';
+
+  @override
+  String errGenericFormat(Object error) {
+    return 'Unknown error: $error';
+  }
+
+  @override
+  String get errLoginFailed => 'Login failed';
+
+  @override
+  String get errInvalidCredentials => 'Incorrect email or password.';
+
+  @override
+  String get errAccountDisabled => 'Account has been disabled.';
+
+  @override
+  String get errEmailInvalidFormat => 'Email address is not in a valid format.';
+
+  @override
+  String get errInvalidCredentialsRetry =>
+      'Incorrect email or password. Please try again in a few seconds.';
+
+  @override
+  String get errRegisterFirebase =>
+      'Unable to register an account with Firebase';
+
+  @override
+  String get errFirebaseTokenAfterRegister =>
+      'Unable to get Firebase ID Token after registration';
+
+  @override
+  String get errRegisterServer => 'Error registering the account on the server';
+
+  @override
+  String get errFirebaseRegisterError => 'Firebase registration error';
+
+  @override
+  String get errEmailAlreadyUsed =>
+      'Email address is already used by another account.';
+
+  @override
+  String get errPasswordTooWeak => 'Password is too weak.';
+
+  @override
+  String get errSendResetEmail => 'Unable to send password reset email';
+
+  @override
+  String get errServerGeneric => 'Server error';
+
+  @override
+  String get errOtpInvalid => 'Invalid OTP code';
+
+  @override
+  String get errResetPasswordFailed => 'Unable to reset password';
+
+  @override
+  String get errNoFirebaseSession => 'Firebase sign-in session not found';
+
+  @override
+  String get errCacheCredentials => 'Error saving login information';
+
+  @override
+  String get errReadCredentials => 'Error reading saved login information';
+
+  @override
+  String get errDeleteCredentials => 'Error deleting login information';
+
+  @override
+  String get errSavePassword => 'Error saving password';
+
+  @override
+  String get errDeleteStoredCredentials =>
+      'Error deleting saved login information';
+
+  @override
+  String errLoginFormat(Object error) {
+    return 'Login error: $error';
+  }
+
+  @override
+  String errLogoutFormat(Object error) {
+    return 'Logout error: $error';
+  }
+
+  @override
+  String errRegisterFormat(Object error) {
+    return 'Registration error: $error';
+  }
+
+  @override
+  String errSaveInfoFormat(Object error) {
+    return 'Error saving information: $error';
+  }
+
+  @override
+  String errCacheCredentialsFormat(Object error) {
+    return 'Error saving login information: $error';
+  }
+
+  @override
+  String errSendResetEmailFormat(Object error) {
+    return 'Error sending password reset email: $error';
+  }
+
+  @override
+  String errOtpVerifyFormat(Object error) {
+    return 'OTP verification error: $error';
+  }
+
+  @override
+  String errResetPasswordFormat(Object error) {
+    return 'Password reset error: $error';
+  }
+
+  @override
+  String errReloadProfileFormat(Object error) {
+    return 'Error reloading user information: $error';
+  }
+
+  @override
+  String get errInvalidResponseData => 'Invalid response data';
+
+  @override
+  String get errInvalidDataFormat =>
+      'Returned data is not in the correct format';
+
+  @override
+  String get errInvalidListFormat =>
+      'Returned list data is not in the correct format';
+
+  @override
+  String get errMemberNotFound => 'Member not found';
+
+  @override
+  String get errSaveMember => 'Error saving member';
+
+  @override
+  String get errDeleteMember => 'Error deleting member';
+
+  @override
+  String get errBranchNotFound => 'Branch not found';
+
+  @override
+  String get errSaveBranch => 'Error saving branch';
+
+  @override
+  String get errDeleteBranch => 'Error deleting branch';
+
+  @override
+  String get errCreateFamily => 'Error creating clan';
+
+  @override
+  String get errVerifyInviteCode => 'Error verifying invite code';
+
+  @override
+  String get errSendJoinRequest => 'Error sending join request';
+
+  @override
+  String get errLoadJoinRequest => 'Error loading join request';
+
+  @override
+  String get errApproveRequest => 'Error approving request';
+
+  @override
+  String get errRejectRequest => 'Error rejecting request';
+
+  @override
+  String get errLoadFamilyInfo => 'Error loading clan information';
+
+  @override
+  String get errUpdateFamilyInfo => 'Error updating clan information';
+
+  @override
+  String get errLoadMemberList => 'Error loading member list';
+
+  @override
+  String get errUpdateMemberRole => 'Error updating member role';
+
+  @override
+  String get errDeleteFamily => 'Error deleting clan';
+
+  @override
+  String get errLinkFamilyProfile => 'Error linking family profile';
+
+  @override
+  String get errTransferOwnership => 'Error transferring clan leadership';
+
+  @override
+  String eventDetailSemanticLabel(Object date, Object title) {
+    return 'Event $title, Date: $date';
+  }
 }

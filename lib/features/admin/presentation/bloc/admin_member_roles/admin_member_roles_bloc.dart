@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/family_user_entity.dart';
 import 'package:giatocviet/features/admin/domain/usecase/get_approved_members.dart';
 import 'package:giatocviet/features/admin/domain/usecase/update_member_role.dart';
+import '../../../../../core/errors/failures.dart';
 
 part 'admin_member_roles_event.dart';
 part 'admin_member_roles_state.dart';
@@ -50,7 +51,9 @@ class AdminMemberRolesBloc
           emit(AdminMemberRoleUpdatedSuccess(
               userId: event.userId, role: event.role));
         } else {
-          emit(const AdminMemberRolesFailure(message: 'Phân quyền thất bại'));
+          emit(AdminMemberRolesFailure(
+              message: AppLanguage.current?.roleUpdateFailed ??
+                  'Phân quyền thất bại'));
         }
       },
     );

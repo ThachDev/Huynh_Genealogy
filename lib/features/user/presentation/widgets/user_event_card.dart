@@ -142,7 +142,7 @@ class UserEventCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: RepaintBoundary(
         child: Semantics(
-          label: 'Sự kiện ${event.title}, Ngày: ${event.eventDate}',
+          label: l10n.eventDetailSemanticLabel(event.eventDate, event.title),
           button: true,
           child: Container(
             decoration: BoxDecoration(

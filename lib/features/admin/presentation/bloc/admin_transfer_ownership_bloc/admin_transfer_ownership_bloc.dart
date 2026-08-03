@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:giatocviet/core/domain/entity/family_user_entity.dart';
 import '../../../domain/usecase/get_approved_members.dart';
 import '../../../domain/usecase/transfer_ownership.dart';
+import '../../../../../core/errors/failures.dart';
 
 part 'admin_transfer_ownership_event.dart';
 part 'admin_transfer_ownership_state.dart';
@@ -56,8 +57,9 @@ class AdminTransferOwnershipBloc
         if (success) {
           emit(AdminTransferOwnershipSuccess());
         } else {
-          emit(const AdminTransferOwnershipFailure(
-              message: 'Không thể chuyển nhượng quyền Trưởng tộc'));
+          emit(AdminTransferOwnershipFailure(
+              message: AppLanguage.current?.transferOwnershipError ??
+                  'Không thể chuyển nhượng quyền Trưởng tộc'));
         }
       },
     );

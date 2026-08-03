@@ -116,18 +116,18 @@ class _PendingApprovalWidgetState extends State<PendingApprovalWidget> {
                             height: 1.5,
                           ),
                           children: [
-                            const TextSpan(
-                              text:
-                                  'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ ',
+                            TextSpan(
+                              text: l10n.pendingApprovalRequestSent,
                             ),
                             TextSpan(
-                              text: 'Trưởng tộc $_leaderName - $_leaderPhone',
+                              text: l10n.pendingApprovalLeaderFormat(
+                                  _leaderName!, _leaderPhone!),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const TextSpan(
-                              text: ' để phê duyệt.',
+                            TextSpan(
+                              text: l10n.pendingApprovalWaitEnd,
                             ),
                           ],
                         ),

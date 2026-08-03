@@ -267,18 +267,18 @@ class _PendingRequestDetailSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _SectionLabel(label: 'Tài khoản', context: context),
+                  _SectionLabel(label: l10n.accountSection, context: context),
                   const SizedBox(height: 8),
                   _InfoRow(
                     icon: LucideIcons.fingerprint,
-                    label: 'ID người dùng',
+                    label: l10n.userIdLabel,
                     value: '#${request.userId}',
                     context: context,
                   ),
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.shieldCheck,
-                    label: 'Vai trò đăng ký',
+                    label: l10n.registeredRoleLabel,
                     value: _roleName(request.role),
                     valueColor: _roleColor(context, request.role),
                     context: context,
@@ -286,7 +286,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.clock,
-                    label: 'Trạng thái',
+                    label: l10n.statusDisplayLabel,
                     value: _statusName(request.status),
                     valueColor: context.accent,
                     context: context,
@@ -296,13 +296,13 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                   if (request.memberData != null) ...[
                     const SizedBox(height: 20),
                     _SectionLabel(
-                        label: 'Thông tin thành viên đăng ký',
+                        label: l10n.registeredMemberInfoLabel,
                         context: context),
                     const SizedBox(height: 8),
                     if (request.memberData!.gender != null) ...[
                       _InfoRow(
                         icon: LucideIcons.users,
-                        label: 'Giới tính',
+                        label: l10n.genderLabel,
                         value: _genderName(request.memberData!.gender!),
                         context: context,
                       ),
@@ -311,7 +311,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                       const SizedBox(height: 10),
                       _InfoRow(
                         icon: LucideIcons.cake,
-                        label: 'Ngày sinh',
+                        label: l10n.dobLabel,
                         value: request.memberData!.dateOfBirth!,
                         context: context,
                       ),
@@ -321,7 +321,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                       const SizedBox(height: 10),
                       _InfoRow(
                         icon: LucideIcons.mapPin,
-                        label: 'Quê quán',
+                        label: l10n.hometownLabel,
                         value: request.memberData!.placeOfBirth!,
                         context: context,
                       ),
@@ -330,7 +330,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                       const SizedBox(height: 10),
                       _InfoRow(
                         icon: LucideIcons.heart,
-                        label: 'Tình trạng HN',
+                        label: l10n.maritalStatusShortLabel,
                         value: _maritalName(request.memberData!.maritalStatus!),
                         context: context,
                       ),
@@ -340,7 +340,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                       const SizedBox(height: 10),
                       _InfoRow(
                         icon: LucideIcons.graduationCap,
-                        label: 'Học vấn',
+                        label: l10n.educationLabel,
                         value: request.memberData!.education!,
                         context: context,
                       ),
@@ -350,7 +350,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                       const SizedBox(height: 10),
                       _InfoRow(
                         icon: LucideIcons.fileText,
-                        label: 'Ghi chú',
+                        label: l10n.notesLabel,
                         value: request.memberData!.notes!,
                         context: context,
                       ),
@@ -386,7 +386,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                         final notes = request.memberData?.notes;
                         final userName = request.memberData?.fullName ??
                             request.userFullName ??
-                            'thành viên';
+                            l10n.memberFallbackName;
 
                         context.read<AdminPendingRequestsBloc>().add(
                               ApproveAdminRequestEvent(requestId: request.id),
@@ -438,7 +438,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Tạo người thân trên cây?',
+                l10n.createRelativeTitle,
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -450,8 +450,8 @@ class _PendingRequestDetailSheet extends StatelessWidget {
         ),
         content: Text(
           suggestedName != null
-              ? 'Thành viên $userName ghi nhận thông tin người thân: "$suggestedName". Bạn có muốn tạo nhanh người thân này để phân nhánh cây gia phả không?'
-              : 'Ghi chú đăng ký: "$notes". Bạn có muốn vào trang tạo thành viên mới để xếp vị trí cho $userName không?',
+              ? l10n.createRelativeSuggestedMessage(suggestedName, userName)
+              : l10n.createRelativeFallbackMessage(notes, userName),
           style: GoogleFonts.inter(
             fontSize: 13,
             color: dialogCtx.textSecondary,
@@ -462,7 +462,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
             child: Text(
-              'Để sau',
+              l10n.laterAction,
               style: GoogleFonts.inter(
                 color: dialogCtx.textSecondary,
                 fontWeight: FontWeight.w600,
@@ -493,7 +493,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
               ),
             ),
             child: Text(
-              'Tạo người thân ngay',
+              l10n.createRelativeNowAction,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -508,13 +508,13 @@ class _PendingRequestDetailSheet extends StatelessWidget {
   String _roleName(String role) {
     switch (role.toUpperCase()) {
       case 'OWNER':
-        return 'Chủ gia tộc';
+        return l10n.roleOwner;
       case 'BRANCH_ADMIN':
-        return 'Quản lý chi tộc';
+        return l10n.roleBranchAdmin;
       case 'EDITOR':
-        return 'Biên tập viên';
+        return l10n.roleEditor;
       default:
-        return 'Thành viên';
+        return l10n.roleViewer;
     }
   }
 
@@ -532,11 +532,11 @@ class _PendingRequestDetailSheet extends StatelessWidget {
   String _statusName(String status) {
     switch (status.toUpperCase()) {
       case 'PENDING':
-        return 'Chờ duyệt';
+        return l10n.statusPending;
       case 'APPROVED':
-        return 'Đã duyệt';
+        return l10n.statusApproved;
       case 'REJECTED':
-        return 'Đã từ chối';
+        return l10n.statusRejected;
       default:
         return status;
     }
@@ -545,26 +545,26 @@ class _PendingRequestDetailSheet extends StatelessWidget {
   String _genderName(String gender) {
     switch (gender.toLowerCase()) {
       case 'male':
-        return 'Nam';
+        return l10n.genderMale;
       case 'female':
-        return 'Nữ';
+        return l10n.genderFemale;
       default:
-        return 'Không rõ';
+        return l10n.unknownShortLabel;
     }
   }
 
   String _maritalName(String status) {
     switch (status.toLowerCase()) {
       case 'single':
-        return 'Độc thân';
+        return l10n.maritalSingle;
       case 'married':
-        return 'Đã kết hôn';
+        return l10n.maritalMarried;
       case 'divorced':
-        return 'Đã ly hôn';
+        return l10n.maritalDivorcedStatus;
       case 'widowed':
-        return 'Góa';
+        return l10n.maritalWidowedShort;
       default:
-        return 'Không rõ';
+        return l10n.unknownShortLabel;
     }
   }
 }

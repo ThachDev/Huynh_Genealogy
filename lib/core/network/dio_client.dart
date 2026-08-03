@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
 import '../constants/app_constants.dart';
 
@@ -27,12 +28,33 @@ class DioClient {
     );
 
     dio.interceptors.addAll([
+      _AuthInterceptor(),
       _YellowLogInterceptor(),
       _RetryInterceptor(),
       _ErrorInterceptor(),
     ]);
 
     return dio;
+  }
+}
+
+class _AuthInterceptor extends Interceptor {
+  @override
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    try {
+      final user = firebase_auth.FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final idToken = await user.getIdToken();
+        if (idToken != null) {
+          options.headers['Authorization'] = 'Bearer $idToken';
+        }
+      }
+    } catch (_) {
+      // Không có Firebase user / lỗi lấy token: request tiếp tục không token.
+      // Server sẽ trả 401 nếu endpoint yêu cầu xác thực.
+    }
+    handler.next(options);
   }
 }
 

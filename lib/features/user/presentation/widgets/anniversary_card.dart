@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
-import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
 import '../models/upcoming_anniversary.dart';
-import 'wish_letter_dialog.dart';
+import '../pages/wish_wall_page.dart';
+import '../../data/source/wish_api_service.dart';
+import '../../../../core/di/injection_container.dart';
 
 /// Card dùng chung cho cả Ngày Giỗ (isBirthday: false) và Sinh Nhật (isBirthday: true).
 class AnniversaryCard extends StatelessWidget {
@@ -19,29 +20,15 @@ class AnniversaryCard extends StatelessWidget {
     this.onTap,
   });
 
-  String _subtitle(BuildContext context) {
-    final solar = data.solarDateLabel;
-    final lunar = data.lunarDateLabel;
-    return lunar == null ? solar : '$solar · $lunar';
-  }
-
   Future<void> _openWish(BuildContext context) async {
-    final message = await showWishLetterDialog(
-      context,
-      title: data.title,
-      subtitle: _subtitle(context),
-      isBirthday: data.isBirthday,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => WishWallPage(
+          data: data,
+          apiService: sl<WishApiService>(),
+        ),
+      ),
     );
-    if (message != null && message.trim().isNotEmpty && context.mounted) {
-      final l10n = AppLocalizations.of(context)!;
-      AppSnackBar.show(
-        context,
-        message: data.isBirthday
-            ? l10n.wishSentMessage
-            : l10n.anniversarySentMessage,
-        type: SnackBarType.success,
-      );
-    }
   }
 
   @override

@@ -5,6 +5,7 @@ import 'domain/repository/user_repository.dart';
 import 'domain/usecase/get_user_profile.dart';
 import 'domain/usecase/update_user_profile.dart';
 import 'presentation/bloc/user_bloc.dart';
+import 'data/source/wish_api_service.dart';
 
 void initUserDependencies(GetIt sl) {
   // BLoC
@@ -27,5 +28,8 @@ void initUserDependencies(GetIt sl) {
   // Data Source
   sl.registerLazySingleton<UserRemoteDataSource>(
     () => UserRemoteDataSourceImpl(dio: sl()),
+  );
+  sl.registerLazySingleton<WishApiService>(
+    () => WishApiService(dio: sl()),
   );
 }

@@ -155,7 +155,7 @@ class _PendingApprovalWidgetState extends State<PendingApprovalWidget> {
           AppButton(
             label: l10n.logoutTooltip,
             variant: AppButtonVariant.outline,
-            color: Colors.black87,
+            color: context.textPrimary,
             onPressed: () {
               context.read<AuthBloc>().add(AuthLogoutRequested());
             },

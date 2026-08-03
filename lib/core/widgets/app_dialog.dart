@@ -151,7 +151,7 @@ class _AppDialogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = confirmColor ?? _accentColor();
+    final accentColor = confirmColor ?? _accentColor(context);
     final icon = _icon();
 
     return Dialog(
@@ -247,7 +247,8 @@ class _AppDialogWidget extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: accentColor,
-                    foregroundColor: type == AppDialogType.warning
+                    foregroundColor: type == AppDialogType.warning ||
+                            (type == AppDialogType.info && !context.isDarkMode)
                         ? Colors.black87
                         : context.textOnPrimary,
                     elevation: 0,
@@ -268,7 +269,7 @@ class _AppDialogWidget extends StatelessWidget {
     );
   }
 
-  Color _accentColor() {
+  Color _accentColor(BuildContext context) {
     switch (type) {
       case AppDialogType.danger:
         return AppColors.error;
@@ -277,7 +278,7 @@ class _AppDialogWidget extends StatelessWidget {
       case AppDialogType.success:
         return AppColors.success;
       case AppDialogType.info:
-        return AppColors.nodeFemale;
+        return context.nodeFemale;
     }
   }
 

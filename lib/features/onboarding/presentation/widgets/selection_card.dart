@@ -68,7 +68,7 @@ class SelectionCard extends StatelessWidget {
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: context.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -77,7 +77,7 @@ class SelectionCard extends StatelessWidget {
                         textAlign: TextAlign.justify,
                         style: GoogleFonts.inter(
                           fontSize: 13,
-                          color: AppColors.textSecondary,
+                          color: context.textSecondary,
                           height: 1.4,
                         ),
                       ),
@@ -85,10 +85,10 @@ class SelectionCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Center(
+                Center(
                   child: Icon(
                     LucideIcons.chevronRight,
-                    color: AppColors.textSecondary,
+                    color: context.textSecondary,
                     size: 20,
                   ),
                 ),

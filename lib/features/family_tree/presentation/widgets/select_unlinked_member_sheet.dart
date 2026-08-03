@@ -57,7 +57,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
     final cardBg = context.surface;
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
-    final primaryColor = context.appBarBg;
+    final primaryColor = context.primary;
     final accentColor = context.accent;
 
     final filteredMembers = widget.candidateMembers.where((m) {

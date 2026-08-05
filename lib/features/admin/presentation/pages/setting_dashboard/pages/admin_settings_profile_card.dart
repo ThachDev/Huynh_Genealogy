@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../../../core/utils/file_size_guard.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
@@ -66,6 +67,11 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
         imageQuality: 85,
       );
       if (picked != null) {
+        if (await exceedsMaxFileSize(picked, 5)) {
+          if (!mounted) return;
+          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 5MB');
+          return;
+        }
         setState(() {
           _localAvatarPath = picked.path;
         });

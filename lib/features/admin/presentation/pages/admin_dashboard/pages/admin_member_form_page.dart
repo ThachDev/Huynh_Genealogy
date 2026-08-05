@@ -7,6 +7,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../../../core/utils/file_size_guard.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
@@ -116,6 +117,11 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
         imageQuality: 85,
       );
       if (pickedFile != null) {
+        if (await exceedsMaxFileSize(pickedFile, 5)) {
+          if (!mounted) return;
+          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 5MB');
+          return;
+        }
         // Copy file sang thư mục tạm của app để tránh bị xóa khỏi cache picker
         final tempDir = await getTemporaryDirectory();
         final fileName =

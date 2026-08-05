@@ -195,6 +195,12 @@ class ServerFailure extends Failure {
 
   @override
   String get message {
+    if (statusCode == 429) {
+      return 'Quá nhiều lần thử. Vui lòng đợi một lúc rồi thử lại.';
+    }
+    if (statusCode == 401) {
+      return 'Phiên đăng nhập đã hết hạn hoặc thông tin tài khoản không chính xác. Vui lòng đăng nhập lại.';
+    }
     final l10n = AppLanguage.current;
     final fallback = l10n != null
         ? l10n.errServer
@@ -204,6 +210,12 @@ class ServerFailure extends Failure {
 
   @override
   String getMessage(BuildContext context) {
+    if (statusCode == 429) {
+      return 'Quá nhiều lần thử. Vui lòng đợi một lúc rồi thử lại.';
+    }
+    if (statusCode == 401) {
+      return AppLocalizations.of(context)!.errAuth;
+    }
     return _sanitizeMessage(context, AppLocalizations.of(context)!.errServer);
   }
 

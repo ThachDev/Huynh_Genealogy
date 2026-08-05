@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../../core/utils/file_size_guard.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vnlunar/vnlunar.dart';
 import '../../../../../core/theme/app_theme.dart';
@@ -137,6 +138,11 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
         imageQuality: 85,
       );
       if (pickedFile != null) {
+        if (await exceedsMaxFileSize(pickedFile, 10)) {
+          if (!mounted) return;
+          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 10MB');
+          return;
+        }
         final tempDir = await getTemporaryDirectory();
         final ext = pickedFile.name.contains('.')
             ? pickedFile.name.substring(pickedFile.name.lastIndexOf('.'))

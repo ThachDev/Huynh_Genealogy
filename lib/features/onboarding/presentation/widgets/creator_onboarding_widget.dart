@@ -6,6 +6,7 @@ import '../../../../core/domain/entity/user_entity.dart';
 import '../bloc/onboarding_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../core/utils/file_size_guard.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
@@ -44,6 +45,11 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
         imageQuality: 85,
       );
       if (pickedFile != null) {
+        if (await exceedsMaxFileSize(pickedFile, 10)) {
+          if (!mounted) return;
+          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 10MB');
+          return;
+        }
         setState(() {
           _imageFile = pickedFile;
         });

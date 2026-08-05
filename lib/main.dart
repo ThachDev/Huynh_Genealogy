@@ -18,6 +18,7 @@ import 'features/onboarding/onboarding.dart';
 import 'features/events/events.dart';
 import 'features/admin/admin.dart';
 import 'features/user/user.dart';
+import 'core/network/dio_client.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,6 +74,10 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
     super.initState();
     _authBloc = di.sl<AuthBloc>()..add(AuthCheckRequested());
     _router = AppRouter.createRouter(_authBloc);
+
+    // Khi server trả 401 trên request cần xác thực (token hết hạn) -> tự đăng xuất.
+    DioClient.onSessionExpired =
+        () => _authBloc.add(AuthLogoutRequested());
   }
 
   void setLocale(Locale locale) {

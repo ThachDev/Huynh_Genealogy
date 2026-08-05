@@ -9,6 +9,10 @@ class DioClient {
 
   static Dio? _instance;
 
+  /// Gọi khi server trả 401 trên một request cần xác thực (token hết hạn).
+  /// App dùng callback này để tự đăng xuất người dùng.
+  static void Function()? onSessionExpired;
+
   static Dio get instance {
     _instance ??= _createDio();
     return _instance!;
@@ -61,7 +65,19 @@ class _AuthInterceptor extends Interceptor {
 class _ErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // Có thể thêm logic refresh token hoặc log lỗi tại đây
+    final statusCode = err.response?.statusCode;
+
+    // Token Firebase hết hạn hoặc không hợp lệ trên request cần xác thực:
+    // đăng xuất cục bộ để app tự chuyển về màn hình đăng nhập.
+    // Không xử lý /auth/login (401 ở đó là sai thông tin đăng nhập).
+    if (statusCode == 401 &&
+        !err.requestOptions.path.contains('/auth/login')) {
+      try {
+        firebase_auth.FirebaseAuth.instance.signOut();
+      } catch (_) {}
+      DioClient.onSessionExpired?.call();
+    }
+
     handler.next(err);
   }
 }

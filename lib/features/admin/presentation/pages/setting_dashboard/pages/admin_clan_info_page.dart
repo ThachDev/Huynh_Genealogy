@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../../../core/utils/file_size_guard.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
@@ -25,12 +26,10 @@ class AdminClanInfoPage extends StatefulWidget {
   });
 
   @override
-  State<AdminClanInfoPage> createState() =>
-      _AdminClanInfoPageState();
+  State<AdminClanInfoPage> createState() => _AdminClanInfoPageState();
 }
 
-class _AdminClanInfoPageState
-    extends State<AdminClanInfoPage> {
+class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isEditable = false;
@@ -73,6 +72,11 @@ class _AdminClanInfoPageState
         imageQuality: 85,
       );
       if (pickedFile != null) {
+        if (await exceedsMaxFileSize(pickedFile, 10)) {
+          if (!mounted) return;
+          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 10MB');
+          return;
+        }
         final tempDir = await getTemporaryDirectory();
         final fileName =
             'clan_avatar_${DateTime.now().millisecondsSinceEpoch}${pickedFile.name.contains('.') ? pickedFile.name.substring(pickedFile.name.lastIndexOf('.')) : '.jpg'}';

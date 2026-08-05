@@ -3,6 +3,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../core/utils/file_size_guard.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../../../core/domain/entity/user_entity.dart';
@@ -108,6 +109,11 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
         imageQuality: 85,
       );
       if (pickedFile != null) {
+        if (await exceedsMaxFileSize(pickedFile, 5)) {
+          if (!mounted) return;
+          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 5MB');
+          return;
+        }
         widget.onAvatarPathChanged(pickedFile.path);
       }
     } catch (e) {

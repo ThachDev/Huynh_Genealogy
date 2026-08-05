@@ -74,7 +74,9 @@ class AppTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: GoogleFonts.inter(
-              color: isDark ? Colors.white30 : context.textSecondary.withValues(alpha: 0.5),
+              color: isDark
+                  ? Colors.white30
+                  : context.textSecondary.withValues(alpha: 0.5),
               fontSize: 14,
             ),
             prefixIcon: prefixIcon,
@@ -82,7 +84,8 @@ class AppTextField extends StatelessWidget {
             filled: true,
             fillColor: isDark
                 ? Colors.white.withValues(alpha: 0.05)
-                : context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
+                : context.resolve(
+                    const Color(0xFFFCFAF8), AppColors.surfaceDark),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
@@ -219,8 +222,7 @@ class AppTextFieldLight extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide:
-                  BorderSide(color: context.primary, width: 1.5),
+              borderSide: BorderSide(color: context.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -281,16 +283,13 @@ class AppOutlineTextField extends StatelessWidget {
       obscureText: obscureText,
       validator: validator,
       enabled: enabled,
-      style:
-          GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
+      style: GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: GoogleFonts.beVietnamPro(
             fontSize: 13, color: context.textSecondary),
         floatingLabelStyle: GoogleFonts.beVietnamPro(
-            fontSize: 12,
-            color: context.primary,
-            fontWeight: FontWeight.bold),
+            fontSize: 12, color: context.primary, fontWeight: FontWeight.bold),
         hintText: hintText,
         hintStyle: GoogleFonts.beVietnamPro(
             fontSize: 13, color: context.textSecondary.withValues(alpha: 0.6)),

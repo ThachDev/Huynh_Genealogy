@@ -320,8 +320,8 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                 children: [
                   Positioned.fill(
                     child: isNetwork
-                        ? Image.network(
-                            _localImagePath!,
+                        ? AppNetworkImage(
+                            url: _localImagePath!,
                             fit: BoxFit.contain,
                           )
                         : Image.file(
@@ -565,11 +565,10 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                   child: ColoredBox(
                     color: context.surface,
                     child: isNetwork
-                        ? Image.network(
-                            _localImagePath!,
+                        ? AppNetworkImage(
+                            url: _localImagePath!,
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) =>
-                                const SizedBox.shrink(),
+                            errorBuilder: (_) => const SizedBox.shrink(),
                           )
                         : (isLocal
                             ? Image.file(

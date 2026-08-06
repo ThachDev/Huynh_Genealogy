@@ -6,11 +6,16 @@ import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
 import '../../domain/repository/family_tree_repository.dart';
 import '../source/family_tree_remote_data_source.dart';
+import '../source/family_tree_local_data_source.dart';
 
 class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   final FamilyTreeRemoteDataSource remoteDataSource;
+  final FamilyTreeLocalDataSource localDataSource;
 
-  FamilyTreeRepositoryImpl({required this.remoteDataSource});
+  FamilyTreeRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   // ---------- Members ----------
 
@@ -18,12 +23,35 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   Future<Either<Failure, List<MemberEntity>>> getMembers({int? branchId, int? familyId}) async {
     try {
       final models = await remoteDataSource.getMembers(branchId: branchId, familyId: familyId);
+      if (branchId == null) {
+        await localDataSource.cacheMembers(models, familyId);
+      }
       return Right(models);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return _membersFallback(e.message, branchId, familyId);
     } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+      return _membersFallback(e.message, branchId, familyId);
     }
+  }
+
+  Future<Either<Failure, List<MemberEntity>>> _membersFallback(
+    String? message,
+    int? branchId,
+    int? familyId,
+  ) async {
+    final cached = await localDataSource.getCachedMembers(familyId);
+    if (cached != null) {
+      if (branchId != null) {
+        return Right(cached.where((m) => m.branchId == branchId).toList());
+      }
+      return Right(cached);
+    }
+    return Left(NetworkFailure(message: message));
+  }
+
+  @override
+  Future<List<MemberEntity>?> getCachedMembers({int? familyId}) async {
+    return localDataSource.getCachedMembers(familyId);
   }
 
   @override
@@ -45,6 +73,7 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
     try {
       final model = MemberModel.fromEntity(member);
       final saved = await remoteDataSource.saveMember(model);
+      await localDataSource.clearAll();
       return Right(saved);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
@@ -57,6 +86,7 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   Future<Either<Failure, bool>> deleteMember(int id, {bool reassignChildrenToParent = false}) async {
     try {
       final result = await remoteDataSource.deleteMember(id, reassignChildrenToParent: reassignChildrenToParent);
+      await localDataSource.clearAll();
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
@@ -71,12 +101,29 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   Future<Either<Failure, List<BranchEntity>>> getBranches({int? familyId}) async {
     try {
       final models = await remoteDataSource.getBranches(familyId: familyId);
+      await localDataSource.cacheBranches(models, familyId);
       return Right(models);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return _branchesFallback(e.message, familyId);
     } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+      return _branchesFallback(e.message, familyId);
     }
+  }
+
+  Future<Either<Failure, List<BranchEntity>>> _branchesFallback(
+    String? message,
+    int? familyId,
+  ) async {
+    final cached = await localDataSource.getCachedBranches(familyId);
+    if (cached != null) {
+      return Right(cached);
+    }
+    return Left(NetworkFailure(message: message));
+  }
+
+  @override
+  Future<List<BranchEntity>?> getCachedBranches({int? familyId}) async {
+    return localDataSource.getCachedBranches(familyId);
   }
 
   @override
@@ -97,6 +144,7 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   Future<Either<Failure, BranchEntity>> saveBranch(BranchEntity branch) async {
     try {
       final saved = await remoteDataSource.saveBranch(branch);
+      await localDataSource.clearAll();
       return Right(saved);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
@@ -109,6 +157,7 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   Future<Either<Failure, bool>> deleteBranch(int id) async {
     try {
       final result = await remoteDataSource.deleteBranch(id);
+      await localDataSource.clearAll();
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));

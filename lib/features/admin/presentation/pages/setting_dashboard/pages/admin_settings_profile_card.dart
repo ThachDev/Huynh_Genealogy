@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../../core/utils/file_size_guard.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
@@ -181,7 +182,7 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
     }
     if (avatarUrl != null && avatarUrl.isNotEmpty) {
       if (avatarUrl.startsWith('http')) {
-        return NetworkImage(avatarUrl);
+        return CachedNetworkImageProvider(avatarUrl);
       }
       return FileImage(File(avatarUrl));
     }

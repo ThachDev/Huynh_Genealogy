@@ -15,6 +15,10 @@ abstract class AuthLocalDataSource {
   });
   Future<Map<String, String>?> getCachedCredentials();
   Future<void> clearCredentials();
+
+  Future<void> cacheToken(String token, DateTime expiry);
+  Future<({String token, DateTime expiry})?> getCachedToken();
+  Future<void> clearToken();
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
@@ -101,6 +105,50 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       throw CacheException(
           message:
               AppLanguage.current?.errDeleteStoredCredentials ?? 'Lỗi xoá thông tin đăng nhập đã lưu');
+    }
+  }
+
+  @override
+  Future<void> cacheToken(String token, DateTime expiry) async {
+    try {
+      final jsonString = json.encode({
+        'token': token,
+        'expiry': expiry.toIso8601String(),
+      });
+      await secureStorage.write(
+        key: AppConstants.cachedToken,
+        value: jsonString,
+      );
+    } catch (e) {
+      throw CacheException(
+          message:
+              AppLanguage.current?.errCacheCredentials ?? 'Lỗi lưu thông tin đăng nhập');
+    }
+  }
+
+  @override
+  Future<({String token, DateTime expiry})?> getCachedToken() async {
+    try {
+      final raw = await secureStorage.read(key: AppConstants.cachedToken);
+      if (raw == null) return null;
+      final map = json.decode(raw) as Map<String, dynamic>;
+      final token = map['token'] as String?;
+      final expiryStr = map['expiry'] as String?;
+      if (token == null || expiryStr == null) return null;
+      return (token: token, expiry: DateTime.parse(expiryStr));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> clearToken() async {
+    try {
+      await secureStorage.delete(key: AppConstants.cachedToken);
+    } catch (e) {
+      throw CacheException(
+          message:
+              AppLanguage.current?.errCacheCredentials ?? 'Lỗi xoá thông tin đăng nhập');
     }
   }
 }

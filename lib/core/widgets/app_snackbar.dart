@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_theme.dart';
 
 enum SnackBarType { success, error, info, warning }
 
@@ -28,7 +27,6 @@ class AppSnackBar {
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
-            side: BorderSide(color: colors.border, width: 1),
           ),
           content: Row(
             children: [
@@ -94,31 +92,27 @@ class AppSnackBar {
     switch (type) {
       case SnackBarType.success:
         return const _SnackBarColors(
-          background: Color(0xFF1B2E1B),
-          border: AppColors.success,
-          icon: AppColors.success,
-          text: Colors.white,
+          background: Color(0xFFE6F4E6),
+          icon: Color(0xFF2E7D32),
+          text: Color(0xFF1B5E20),
         );
       case SnackBarType.error:
         return const _SnackBarColors(
-          background: Color(0xFF2E1B1B),
-          border: AppColors.error,
-          icon: AppColors.error,
-          text: Colors.white,
+          background: Color(0xFFFDEAEA),
+          icon: Color(0xFFC62828),
+          text: Color(0xFF8E1C1C),
         );
       case SnackBarType.warning:
         return const _SnackBarColors(
-          background: Color(0xFF2E251B),
-          border: AppColors.gold,
-          icon: AppColors.gold,
-          text: Colors.white,
+          background: Color(0xFFFFF4DF),
+          icon: Color(0xFFB8860B),
+          text: Color(0xFF7A5C00),
         );
       case SnackBarType.info:
-        return _SnackBarColors(
-          background: const Color(0xFF1B1F2E),
-          border: const Color(0xFF5C6BC0).withValues(alpha: 0.5),
-          icon: const Color(0xFF5C6BC0),
-          text: Colors.white,
+        return const _SnackBarColors(
+          background: Color(0xFFE8EDF8),
+          icon: Color(0xFF3F51B5),
+          text: Color(0xFF283593),
         );
     }
   }
@@ -139,12 +133,10 @@ class AppSnackBar {
 
 class _SnackBarColors {
   final Color background;
-  final Color border;
   final Color icon;
   final Color text;
   const _SnackBarColors({
     required this.background,
-    required this.border,
     required this.icon,
     required this.text,
   });

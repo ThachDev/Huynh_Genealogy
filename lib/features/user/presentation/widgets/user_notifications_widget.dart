@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../../../core/data/repository/notification_read_store.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
@@ -29,20 +30,38 @@ class UserNotificationsPage extends StatefulWidget {
 }
 
 class _UserNotificationsPageState extends State<UserNotificationsPage> {
+  @override
+  void initState() {
+    super.initState();
+    _loadReadState();
+  }
+
+  Future<void> _loadReadState() async {
+    final ids = await NotificationReadStore.load(widget.familyId);
+    if (!mounted) return;
+    setState(() {
+      UserNotificationsPage.globalReadIds.addAll(ids);
+    });
+  }
+
+  void _persistReadState() {
+    NotificationReadStore.save(
+        widget.familyId, UserNotificationsPage.globalReadIds);
+    setState(() {});
+  }
+
   void _markAllAsRead(List<EventEntity> items) {
     final l10n = AppLocalizations.of(context)!;
-    setState(() {
-      for (final e in items) {
-        UserNotificationsPage.globalReadIds.add(e.id.toString());
-      }
-    });
+    for (final e in items) {
+      UserNotificationsPage.globalReadIds.add(e.id.toString());
+    }
+    _persistReadState();
     AppSnackBar.success(context, l10n.markAllReadSuccess);
   }
 
   void _onItemTap(EventEntity item) {
-    setState(() {
-      UserNotificationsPage.globalReadIds.add(item.id.toString());
-    });
+    UserNotificationsPage.globalReadIds.add(item.id.toString());
+    _persistReadState();
 
     Navigator.push(
       context,
@@ -382,9 +401,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
               title: Text(l10n.markAsReadAction),
               onTap: () {
                 Navigator.pop(ctx);
-                setState(() {
-                  UserNotificationsPage.globalReadIds.add(item.id.toString());
-                });
+                UserNotificationsPage.globalReadIds.add(item.id.toString());
+                _persistReadState();
               },
             ),
             ListTile(

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
+import '../../../../../core/widgets/app_network_image.dart';
 import '../../../../events/events.dart';
 
 class AnnouncementItemCard extends StatelessWidget {
@@ -58,12 +59,12 @@ class AnnouncementItemCard extends StatelessWidget {
     if (isNetwork) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Image.network(
-          imageUrl,
+        child: AppNetworkImage(
+          url: imageUrl,
           width: 72,
           height: 72,
           fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => placeholder,
+          errorBuilder: (_) => placeholder,
         ),
       );
     }

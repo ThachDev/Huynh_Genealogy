@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../../core/utils/file_size_guard.dart';
+import '../../../../../../core/data/repository/form_draft_store.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
@@ -108,6 +110,97 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
   final ImagePicker _picker = ImagePicker();
 
+  static const String _draftKey = 'member_form';
+  Timer? _draftDebounce;
+
+  void _scheduleDraftSave() {
+    if (widget.memberId != null) return;
+    _draftDebounce?.cancel();
+    _draftDebounce = Timer(const Duration(milliseconds: 700), _saveDraft);
+  }
+
+  Future<void> _saveDraft() async {
+    if (widget.memberId != null) return;
+    await FormDraftStore.save(_draftKey, {
+      'fullName': _fullNameController.text,
+      'placeOfBirth': _placeOfBirthController.text,
+      'generation': _generationController.text,
+      'notes': _notesController.text,
+      'phone': _phoneController.text,
+      'occupation': _occupationController.text,
+      'education': _educationController.text,
+      'educationOption': _selectedEducationOption ?? '',
+      'gender': _gender.name,
+      'maritalStatus': _maritalStatus.name,
+      'isAlive': _isAlive.toString(),
+      'dateOfBirth': _dateOfBirth ?? '',
+      'dateOfDeath': _dateOfDeath ?? '',
+      'lunarBirthDate': _lunarBirthDate ?? '',
+      'lunarDeathDate': _lunarDeathDate ?? '',
+      'parentId': _parentId?.toString() ?? '',
+      'motherId': _motherId?.toString() ?? '',
+      'spouseId': _spouseId?.toString() ?? '',
+      'branchId': _branchId?.toString() ?? '',
+    });
+  }
+
+  Future<void> _restoreDraft() async {
+    if (widget.memberId != null) return;
+    final draft = await FormDraftStore.load(_draftKey);
+    if (draft == null || !mounted) return;
+    setState(() {
+      _fullNameController.text = draft['fullName'] ?? _fullNameController.text;
+      _placeOfBirthController.text =
+          draft['placeOfBirth'] ?? _placeOfBirthController.text;
+      _generationController.text =
+          draft['generation'] ?? _generationController.text;
+      _notesController.text = draft['notes'] ?? _notesController.text;
+      _phoneController.text = draft['phone'] ?? _phoneController.text;
+      _occupationController.text =
+          draft['occupation'] ?? _occupationController.text;
+      _educationController.text =
+          draft['education'] ?? _educationController.text;
+      _selectedEducationOption =
+          (draft['educationOption']?.isNotEmpty ?? false)
+              ? draft['educationOption']
+              : _selectedEducationOption;
+      _gender = _genderFromName(draft['gender']) ?? _gender;
+      _maritalStatus =
+          _maritalFromName(draft['maritalStatus']) ?? _maritalStatus;
+      _isAlive = draft['isAlive'] != 'false';
+      _dateOfBirth = draft['dateOfBirth']?.isNotEmpty == true
+          ? draft['dateOfBirth']
+          : _dateOfBirth;
+      _dateOfDeath = draft['dateOfDeath']?.isNotEmpty == true
+          ? draft['dateOfDeath']
+          : _dateOfDeath;
+      _lunarBirthDate = draft['lunarBirthDate']?.isNotEmpty == true
+          ? draft['lunarBirthDate']
+          : _lunarBirthDate;
+      _lunarDeathDate = draft['lunarDeathDate']?.isNotEmpty == true
+          ? draft['lunarDeathDate']
+          : _lunarDeathDate;
+      _parentId = int.tryParse(draft['parentId'] ?? '') ?? _parentId;
+      _motherId = int.tryParse(draft['motherId'] ?? '') ?? _motherId;
+      _spouseId = int.tryParse(draft['spouseId'] ?? '') ?? _spouseId;
+      _branchId = int.tryParse(draft['branchId'] ?? '') ?? _branchId;
+    });
+  }
+
+  static Gender? _genderFromName(String? name) {
+    for (final g in Gender.values) {
+      if (g.name == name) return g;
+    }
+    return null;
+  }
+
+  static MaritalStatus? _maritalFromName(String? name) {
+    for (final m in MaritalStatus.values) {
+      if (m.name == name) return m;
+    }
+    return null;
+  }
+
   Future<void> _pickAvatar() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -169,6 +262,16 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     context.read<AdminMemberFormBloc>().add(LoadAdminMemberFormEvent(
         memberId: widget.memberId, familyId: familyId));
     _generationController.addListener(_onGenerationChanged);
+    if (widget.memberId == null) {
+      _fullNameController.addListener(_scheduleDraftSave);
+      _placeOfBirthController.addListener(_scheduleDraftSave);
+      _generationController.addListener(_scheduleDraftSave);
+      _notesController.addListener(_scheduleDraftSave);
+      _phoneController.addListener(_scheduleDraftSave);
+      _occupationController.addListener(_scheduleDraftSave);
+      _educationController.addListener(_scheduleDraftSave);
+      _restoreDraft();
+    }
   }
 
   void _onGenerationChanged() {
@@ -177,6 +280,18 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
   @override
   void dispose() {
+    _draftDebounce?.cancel();
+    _draftDebounce = null;
+    if (widget.memberId == null) {
+      _fullNameController.removeListener(_scheduleDraftSave);
+      _placeOfBirthController.removeListener(_scheduleDraftSave);
+      _generationController.removeListener(_scheduleDraftSave);
+      _notesController.removeListener(_scheduleDraftSave);
+      _phoneController.removeListener(_scheduleDraftSave);
+      _occupationController.removeListener(_scheduleDraftSave);
+      _educationController.removeListener(_scheduleDraftSave);
+      _saveDraft();
+    }
     _generationController.removeListener(_onGenerationChanged);
     _fullNameController.dispose();
     _placeOfBirthController.dispose();
@@ -259,6 +374,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
         child: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
           listener: (context, state) async {
             if (state is AdminMemberFormSuccess) {
+              if (widget.memberId == null) {
+                FormDraftStore.clear(_draftKey);
+              }
               if (!state.isDeleted &&
                   widget.pendingChildMemberId != null &&
                   state.member.id > 0) {
@@ -1051,12 +1169,12 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     if (avatarPath.isNotEmpty) {
       if (avatarPath.startsWith('http') || avatarPath.startsWith('https')) {
         avatarWidget = ClipOval(
-          child: Image.network(
-            avatarPath,
+          child: AppNetworkImage(
+            url: avatarPath,
             width: 110,
             height: 110,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Icon(
+            errorBuilder: (context) => Icon(
               LucideIcons.user,
               size: 50,
               color: context.textSecondary.withValues(alpha: 0.6),

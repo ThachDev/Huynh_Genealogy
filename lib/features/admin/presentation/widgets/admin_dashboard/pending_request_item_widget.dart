@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/family_user_entity.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
@@ -64,7 +65,7 @@ class PendingRequestItemWidget extends StatelessWidget {
                     backgroundColor: context.resolve(
                         Colors.grey.shade100, const Color(0xFF2C2C2C)),
                     backgroundImage: request.userAvatarUrl != null
-                        ? NetworkImage(request.userAvatarUrl!)
+                        ? CachedNetworkImageProvider(request.userAvatarUrl!)
                         : null,
                     child: request.userAvatarUrl == null
                         ? Icon(
@@ -210,7 +211,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                 backgroundColor: context.resolve(
                     Colors.grey.shade100, const Color(0xFF2C2C2C)),
                 backgroundImage: request.userAvatarUrl != null
-                    ? NetworkImage(request.userAvatarUrl!)
+                    ? CachedNetworkImageProvider(request.userAvatarUrl!)
                     : null,
                 child: request.userAvatarUrl == null
                     ? Icon(

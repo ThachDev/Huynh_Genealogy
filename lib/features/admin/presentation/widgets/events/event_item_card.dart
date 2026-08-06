@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
+import '../../../../../core/widgets/app_network_image.dart';
 import '../../../../events/events.dart';
 import 'event_calendar_widget.dart';
 
@@ -91,13 +92,12 @@ class EventItemCard extends StatelessWidget {
 
     Widget? imageWidget;
     if (isNetwork) {
-      imageWidget = Image.network(
-        imageUrl,
+      imageWidget = AppNetworkImage(
+        url: imageUrl,
         width: double.infinity,
         height: double.infinity,
         fit: BoxFit.contain,
-        alignment: Alignment.center,
-        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+        errorBuilder: (_) => const SizedBox.shrink(),
       );
     } else if (isLocal) {
       imageWidget = Image.file(

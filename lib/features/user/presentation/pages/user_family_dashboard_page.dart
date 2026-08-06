@@ -408,11 +408,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                             ? state.family?.logoUrl
                             : null;
                         if (familyLogo != null && familyLogo.isNotEmpty) {
-                          return Image.network(
-                            familyLogo,
+                          return AppNetworkImage(
+                            url: familyLogo,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Image.asset(
+                            errorBuilder: (context) => Image.asset(
                               'assets/images/logo.png',
                               fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) =>

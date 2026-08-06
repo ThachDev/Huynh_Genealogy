@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../resources/app_localizations.dart';
+import '../../../../core/widgets/app_network_image.dart';
 import '../../../events/events.dart';
 import '../../../admin/admin.dart';
 
@@ -114,12 +115,11 @@ class UserEventCard extends StatelessWidget {
         ? AspectRatio(
             aspectRatio: 16 / 9,
             child: isNetworkImage
-                ? Image.network(
-                    imageUrl,
+                ? AppNetworkImage(
+                    url: imageUrl,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    filterQuality: FilterQuality.high,
-                    errorBuilder: (_, __, ___) => const EventDefaultBanner(),
+                    errorBuilder: (_) => const EventDefaultBanner(),
                   )
                 : Image.file(
                     File(imageUrl),

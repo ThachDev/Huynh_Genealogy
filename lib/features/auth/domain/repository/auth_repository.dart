@@ -34,5 +34,7 @@ abstract class AuthRepository {
     required String newPassword,
   });
 
+  Future<Either<Failure, ({String token, DateTime expiry})?>> getCachedToken();
+
   Future<Either<Failure, UserEntity>> refreshProfile();
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../theme/theme_extensions.dart';
 
 /// Reusable AppAvatar widget displaying NetworkImage or last word's initial letter.
@@ -63,37 +64,24 @@ class AppAvatar extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              avatarUrl!,
+            CachedNetworkImage(
+              imageUrl: avatarUrl!,
               fit: BoxFit.cover,
               // Hiển thị chữ cái đầu trong lúc tải ảnh, tránh vòng tròn trống.
-              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                if (wasSynchronouslyLoaded) return child;
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Container(
-                      color: effectiveBgColor,
-                      alignment: Alignment.center,
-                      child: Text(
-                        initialLetter,
-                        style: GoogleFonts.beVietnamPro(
-                          fontWeight: FontWeight.bold,
-                          fontSize: effectiveFontSize,
-                          color: effectiveTextColor,
-                        ),
-                      ),
-                    ),
-                    // Fade ảnh vào khi tải xong
-                    AnimatedOpacity(
-                      opacity: frame != null ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 250),
-                      child: child,
-                    ),
-                  ],
-                );
-              },
-              errorBuilder: (context, error, stackTrace) => Container(
+              fadeInDuration: const Duration(milliseconds: 250),
+              placeholder: (context, url) => Container(
+                color: effectiveBgColor,
+                alignment: Alignment.center,
+                child: Text(
+                  initialLetter,
+                  style: GoogleFonts.beVietnamPro(
+                    fontWeight: FontWeight.bold,
+                    fontSize: effectiveFontSize,
+                    color: effectiveTextColor,
+                  ),
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
                 color: effectiveBgColor,
                 alignment: Alignment.center,
                 child: Text(

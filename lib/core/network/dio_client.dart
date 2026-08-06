@@ -13,6 +13,10 @@ class DioClient {
   /// App dùng callback này để tự đăng xuất người dùng.
   static void Function()? onSessionExpired;
 
+  /// Cung cấp token đã lưu (secure storage) dùng làm fallback khi Firebase
+  /// chưa có user tại thời điểm phát request.
+  static Future<String?> Function()? fallbackTokenProvider;
+
   static Dio get instance {
     _instance ??= _createDio();
     return _instance!;
@@ -52,6 +56,11 @@ class _AuthInterceptor extends Interceptor {
         final idToken = await user.getIdToken();
         if (idToken != null) {
           options.headers['Authorization'] = 'Bearer $idToken';
+        }
+      } else {
+        final fallbackToken = await DioClient.fallbackTokenProvider?.call();
+        if (fallbackToken != null && fallbackToken.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $fallbackToken';
         }
       }
     } catch (_) {

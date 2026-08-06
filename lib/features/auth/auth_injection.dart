@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import '../../core/network/dio_client.dart';
 import 'auth.dart';
 
 void initAuthDependencies(GetIt sl) {
@@ -63,4 +64,14 @@ void initAuthDependencies(GetIt sl) {
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(secureStorage: sl()),
   );
+
+  // Cung cấp token đã lưu làm fallback xác thực khi Firebase chưa có user.
+  DioClient.fallbackTokenProvider = () async {
+    try {
+      final cached = await sl<AuthLocalDataSource>().getCachedToken();
+      return cached?.token;
+    } catch (_) {
+      return null;
+    }
+  };
 }

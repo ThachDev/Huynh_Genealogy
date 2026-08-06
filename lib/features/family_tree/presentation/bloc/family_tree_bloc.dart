@@ -5,6 +5,8 @@ import 'package:giatocviet/core/domain/entity/family_entity.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/usecase/get_branches.dart';
 import '../../domain/usecase/get_members.dart';
+import '../../domain/usecase/get_cached_branches.dart';
+import '../../domain/usecase/get_cached_members.dart';
 import '../../../../core/domain/usecase/get_family_detail.dart';
 
 part 'family_tree_event.dart';
@@ -14,11 +16,15 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
   final GetMembers getMembers;
   final GetBranches getBranches;
   final GetFamilyDetail getFamilyDetail;
+  final GetCachedMembers getCachedMembers;
+  final GetCachedBranches getCachedBranches;
 
   FamilyTreeBloc({
     required this.getMembers,
     required this.getBranches,
     required this.getFamilyDetail,
+    required this.getCachedMembers,
+    required this.getCachedBranches,
   }) : super(FamilyTreeInitial()) {
     on<FamilyTreeLoadEvent>(_onLoadTree);
     on<FamilyTreeSelectMemberEvent>(_onSelectMember);
@@ -28,6 +34,7 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
   Future<void> _onLoadTree(
       FamilyTreeLoadEvent event, Emitter<FamilyTreeState> emit) async {
     emit(FamilyTreeLoading());
+    var hasCache = false;
 
     try {
       FamilyEntity? family;
@@ -39,6 +46,32 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
         );
       }
 
+      // SWR: hiển thị dữ liệu cache ngay nếu có, sau đó refresh từ mạng phía sau.
+      final cachedMembersResult = await getCachedMembers(
+        GetCachedMembersParams(familyId: event.familyId),
+      );
+      final cachedBranchesResult = await getCachedBranches(
+        GetCachedBranchesParams(familyId: event.familyId),
+      );
+
+      final cachedMembers = cachedMembersResult.getOrElse(() => null);
+      final cachedBranches = cachedBranchesResult.getOrElse(() => null);
+      hasCache = cachedMembers != null && cachedBranches != null;
+
+      if (hasCache) {
+        var members = cachedMembers;
+        if (event.branchId != null) {
+          members = members.where((m) => m.branchId == event.branchId).toList();
+        }
+        emit(FamilyTreeLoaded(
+          members: members,
+          branches: cachedBranches,
+          filterBranchId: event.branchId,
+          familyId: event.familyId,
+          family: family,
+        ));
+      }
+
       final membersResult = await getMembers(
         GetMembersParams(branchId: event.branchId, familyId: event.familyId),
       );
@@ -47,10 +80,14 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
       );
 
       membersResult.fold(
-        (failure) => emit(FamilyTreeError(failure.message)),
+        (failure) {
+          if (!hasCache) emit(FamilyTreeError(failure.message));
+        },
         (members) {
           branchesResult.fold(
-            (failure) => emit(FamilyTreeError(failure.message)),
+            (failure) {
+              if (!hasCache) emit(FamilyTreeError(failure.message));
+            },
             (branches) => emit(FamilyTreeLoaded(
               members: members,
               branches: branches,
@@ -62,8 +99,10 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
         },
       );
     } catch (e) {
-      emit(FamilyTreeError(AppLanguage.current?.familyTreeLoadError(e) ??
-          'Có lỗi xảy ra khi tải dữ liệu: $e'));
+      if (!hasCache) {
+        emit(FamilyTreeError(AppLanguage.current?.familyTreeLoadError(e) ??
+            'Có lỗi xảy ra khi tải dữ liệu: $e'));
+      }
     }
   }
 

@@ -4,12 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'resources/app_localizations.dart';
 import 'core/configs/firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'core/errors/failures.dart';
 import 'core/routes/app_router.dart';
+import 'core/constants/app_constants.dart';
 import 'core/di/injection_container.dart' as di;
 
 import 'features/auth/auth.dart';
@@ -72,6 +74,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
   @override
   void initState() {
     super.initState();
+    _loadPreferences();
     _authBloc = di.sl<AuthBloc>()..add(AuthCheckRequested());
     _router = AppRouter.createRouter(_authBloc);
 
@@ -80,16 +83,38 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         () => _authBloc.add(AuthLogoutRequested());
   }
 
+  void _loadPreferences() {
+    try {
+      final prefs = di.sl<SharedPreferences>();
+      final lang = prefs.getString(AppConstants.languageCodeKey);
+      if (lang == 'en') {
+        _locale = const Locale('en');
+      }
+      final theme = prefs.getString(AppConstants.themeModeKey);
+      if (theme == ThemeMode.dark.name) {
+        _themeMode = ThemeMode.dark;
+      }
+    } catch (_) {}
+  }
+
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
     });
+    try {
+      di.sl<SharedPreferences>()
+          .setString(AppConstants.languageCodeKey, locale.languageCode);
+    } catch (_) {}
   }
 
   void setThemeMode(ThemeMode themeMode) {
     setState(() {
       _themeMode = themeMode;
     });
+    try {
+      di.sl<SharedPreferences>()
+          .setString(AppConstants.themeModeKey, themeMode.name);
+    } catch (_) {}
   }
 
   @override

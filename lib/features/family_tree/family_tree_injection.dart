@@ -3,6 +3,8 @@ import 'family_tree.dart';
 import '../admin/admin.dart';
 import '../onboarding/onboarding.dart';
 import '../../core/domain/usecase/get_family_detail.dart';
+import '../../core/data/repository/logout_cache_cleaner.dart';
+import 'data/source/family_tree_local_data_source.dart';
 
 void initFamilyTreeDependencies(GetIt sl) {
   // BLoC
@@ -11,12 +13,16 @@ void initFamilyTreeDependencies(GetIt sl) {
       getMembers: sl(),
       getBranches: sl(),
       getFamilyDetail: sl(),
+      getCachedMembers: sl(),
+      getCachedBranches: sl(),
     ),
   );
 
   // Use Cases
   sl.registerLazySingleton(() => GetMembers(sl()));
   sl.registerLazySingleton(() => GetBranches(sl()));
+  sl.registerLazySingleton(() => GetCachedMembers(sl()));
+  sl.registerLazySingleton(() => GetCachedBranches(sl()));
   sl.registerLazySingleton(() => GetFamilyDetail(sl()));
   sl.registerLazySingleton(() => SaveBranch(sl()));
   sl.registerLazySingleton(() => DeleteBranch(sl()));
@@ -30,11 +36,24 @@ void initFamilyTreeDependencies(GetIt sl) {
 
   // Repository
   sl.registerLazySingleton<FamilyTreeRepository>(
-    () => FamilyTreeRepositoryImpl(remoteDataSource: sl()),
+    () => FamilyTreeRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
   );
 
   // Data Source
-  sl.registerLazySingleton<FamilyTreeRemoteDataSource>(
-    () => FamilyTreeRemoteDataSourceImpl(dio: sl()),
+  sl.registerLazySingleton<FamilyTreeLocalDataSource>(
+    () => FamilyTreeLocalDataSource(),
+  );
+
+  // Data Source
+  sl.registerLazySingleton<FamilyTreeLocalDataSource>(
+    () => FamilyTreeLocalDataSource(),
+  );
+
+  // Khi đăng xuất, xoá toàn bộ cache cây gia phả trên máy.
+  LogoutCacheCleaner.register(
+    () => sl<FamilyTreeLocalDataSource>().clearAll(),
   );
 }

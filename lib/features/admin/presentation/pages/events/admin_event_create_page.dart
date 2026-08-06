@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../core/utils/file_size_guard.dart';
+import '../../../../../core/data/repository/form_draft_store.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -38,6 +40,50 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
 
   final ImagePicker _picker = ImagePicker();
 
+  Timer? _draftDebounce;
+  late final String _draftKey;
+
+  void _scheduleDraftSave() {
+    _draftDebounce?.cancel();
+    _draftDebounce = Timer(const Duration(milliseconds: 700), _saveDraft);
+  }
+
+  Future<void> _saveDraft() async {
+    await FormDraftStore.save(_draftKey, {
+      'title': _titleController.text,
+      'content': _contentController.text,
+      'location': _locationController.text,
+      'organizer': _organizerController.text,
+      'selectedDate': _selectedDate,
+      'displayDate': _displayDate,
+      'type': _type,
+      'localImagePath': _localImagePath ?? '',
+    });
+  }
+
+  Future<void> _restoreDraft() async {
+    final draft = await FormDraftStore.load(_draftKey);
+    if (draft == null || !mounted) return;
+    setState(() {
+      _titleController.text = draft['title'] ?? _titleController.text;
+      _contentController.text = draft['content'] ?? _contentController.text;
+      _locationController.text =
+          draft['location'] ?? _locationController.text;
+      _organizerController.text =
+          draft['organizer'] ?? _organizerController.text;
+      _selectedDate = draft['selectedDate']?.isNotEmpty == true
+          ? draft['selectedDate']!
+          : _selectedDate;
+      _displayDate = draft['displayDate']?.isNotEmpty == true
+          ? draft['displayDate']!
+          : _displayDate;
+      _type = draft['type'] == 'announcement' ? 'announcement' : _type;
+      _localImagePath = draft['localImagePath']?.isNotEmpty == true
+          ? draft['localImagePath']
+          : _localImagePath;
+    });
+  }
+
   static const _typeIcons = {
     'event': LucideIcons.calendar,
     'announcement': LucideIcons.megaphone,
@@ -56,11 +102,17 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   @override
   void initState() {
     super.initState();
+    _draftKey = 'event_form_${widget.familyId}';
     final authState = context.read<AuthBloc>().state;
     if (authState is Authenticated) {
       _organizerController.text = authState.user.fullName;
     }
     _setInitialTodayDate();
+    _titleController.addListener(_scheduleDraftSave);
+    _contentController.addListener(_scheduleDraftSave);
+    _locationController.addListener(_scheduleDraftSave);
+    _organizerController.addListener(_scheduleDraftSave);
+    _restoreDraft();
   }
 
   void _setInitialTodayDate() {
@@ -73,6 +125,13 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
 
   @override
   void dispose() {
+    _draftDebounce?.cancel();
+    _draftDebounce = null;
+    _titleController.removeListener(_scheduleDraftSave);
+    _contentController.removeListener(_scheduleDraftSave);
+    _locationController.removeListener(_scheduleDraftSave);
+    _organizerController.removeListener(_scheduleDraftSave);
+    _saveDraft();
     _titleController.dispose();
     _contentController.dispose();
     _locationController.dispose();
@@ -119,6 +178,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
         final savedFile = await File(pickedFile.path).copy(
             '${tempDir.path}/event_banner_${DateTime.now().millisecondsSinceEpoch}$ext');
         setState(() => _localImagePath = savedFile.path);
+        _scheduleDraftSave();
       }
     } catch (e) {
       debugPrint('Error picking image: $e');
@@ -153,6 +213,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
           _displayDate =
               '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
         });
+        _scheduleDraftSave();
       }
     } else {
       final picked = await showDatePicker(
@@ -168,6 +229,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
           _displayDate =
               '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
         });
+        _scheduleDraftSave();
       }
     }
   }
@@ -256,6 +318,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
               setState(() {
                 _type = key;
               });
+              _scheduleDraftSave();
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
@@ -430,6 +493,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
         child: BlocConsumer<EventsBloc, EventsState>(
           listener: (context, state) {
             if (state is EventsSubmitSuccess) {
+              FormDraftStore.clear(_draftKey);
               AppSnackBar.success(context, state.message);
               Navigator.pop(context, true);
             } else if (state is EventsError) {
@@ -580,10 +644,13 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                         ),
                                         if (_displayDate.isNotEmpty)
                                           GestureDetector(
-                                            onTap: () => setState(() {
-                                              _selectedDate = '';
-                                              _displayDate = '';
-                                            }),
+                                            onTap: () {
+                                              setState(() {
+                                                _selectedDate = '';
+                                                _displayDate = '';
+                                              });
+                                              _scheduleDraftSave();
+                                            },
                                             child: Icon(
                                               LucideIcons.x,
                                               size: 16,

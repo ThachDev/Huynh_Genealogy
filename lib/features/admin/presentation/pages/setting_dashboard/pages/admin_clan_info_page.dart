@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../../core/utils/file_size_guard.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -95,7 +96,7 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
     final path = _localClanLogoPath ?? widget.family?.logoUrl;
     if (path != null && path.isNotEmpty) {
       if (path.startsWith('http://') || path.startsWith('https://')) {
-        return NetworkImage(path);
+        return CachedNetworkImageProvider(path);
       }
       return FileImage(File(path));
     }

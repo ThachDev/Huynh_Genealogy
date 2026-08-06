@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -1002,7 +1003,7 @@ class MemberSearchDelegate extends SearchDelegate<int?> {
         return ListTile(
           leading: CircleAvatar(
             backgroundImage: member.avatarUrl != null
-                ? NetworkImage(member.avatarUrl!)
+                ? CachedNetworkImageProvider(member.avatarUrl!)
                 : null,
             child: member.avatarUrl == null ? const Icon(Icons.person) : null,
           ),

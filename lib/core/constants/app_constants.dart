@@ -30,6 +30,10 @@ class AppConstants {
   static const String cachedToken = 'CACHED_TOKEN';
   static const String cachedCredentials = 'CACHED_CREDENTIALS';
 
+  // Local preferences keys
+  static const String themeModeKey = 'THEME_MODE';
+  static const String languageCodeKey = 'LANGUAGE_CODE';
+
   // Pagination
   static const int defaultPageSize = 50;
 }

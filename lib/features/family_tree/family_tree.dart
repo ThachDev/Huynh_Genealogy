@@ -9,6 +9,8 @@ export 'domain/repository/family_tree_repository.dart';
 // Domain Use Cases
 export 'domain/usecase/get_branches.dart';
 export 'domain/usecase/get_members.dart';
+export 'domain/usecase/get_cached_branches.dart';
+export 'domain/usecase/get_cached_members.dart';
 
 // Data Sources & Models
 export 'data/source/family_tree_remote_data_source.dart';

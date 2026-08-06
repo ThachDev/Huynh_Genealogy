@@ -12,6 +12,7 @@ export 'app_lunar_calendar_picker.dart';
 export 'app_custom_switch.dart';
 export 'app_appbar.dart';
 export 'app_avatar.dart';
+export 'app_network_image.dart';
 export 'app_shimmer.dart';
 export 'skeletons/admin_dashboard_skeleton.dart';
 export 'skeletons/events_list_skeleton.dart';

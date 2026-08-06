@@ -642,12 +642,12 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
       if (widget.avatarPath!.startsWith('http') ||
           widget.avatarPath!.startsWith('https')) {
         avatarWidget = ClipOval(
-          child: Image.network(
-            widget.avatarPath!,
+          child: AppNetworkImage(
+            url: widget.avatarPath!,
             width: 110,
             height: 110,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Icon(
+            errorBuilder: (context) => Icon(
               LucideIcons.user,
               size: 50,
               color: context.textSecondary.withValues(alpha: 0.6),
@@ -672,12 +672,12 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
     } else if (widget.user.avatarUrl != null &&
         widget.user.avatarUrl!.isNotEmpty) {
       avatarWidget = ClipOval(
-        child: Image.network(
-          widget.user.avatarUrl!,
+        child: AppNetworkImage(
+          url: widget.user.avatarUrl!,
           width: 110,
           height: 110,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Icon(
+          errorBuilder: (context) => Icon(
             LucideIcons.user,
             size: 50,
             color: context.textSecondary.withValues(alpha: 0.6),

@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/data/repository/logout_cache_cleaner.dart';
 import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../source/auth_local_data_source.dart';
@@ -26,6 +28,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final userModel = await remoteDataSource.loginWithGoogle();
       await localDataSource.cacheUser(userModel);
+      await _persistSessionToken();
       return Right(userModel);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
@@ -48,6 +51,7 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
       );
       await localDataSource.cacheUser(userModel);
+      await _persistSessionToken();
       return Right(userModel);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
@@ -65,6 +69,8 @@ class AuthRepositoryImpl implements AuthRepository {
       await firebaseAuth.signOut();
       await googleSignIn.signOut();
       await localDataSource.clearCache();
+      await localDataSource.clearToken();
+      await LogoutCacheCleaner.clearAll();
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -99,6 +105,7 @@ class AuthRepositoryImpl implements AuthRepository {
         role: role,
       );
       await localDataSource.cacheUser(userModel);
+      await _persistSessionToken();
       return Right(userModel);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
@@ -114,6 +121,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, void>> cacheUser(UserEntity user) async {
     try {
       await localDataSource.cacheUser(user);
+      await _persistSessionToken();
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -210,6 +218,41 @@ class AuthRepositoryImpl implements AuthRepository {
           message: AppLanguage.current?.errResetPasswordFormat(e) ??
               'Lỗi đặt lại mật khẩu: $e'));
     }
+  }
+
+  @override
+  Future<Either<Failure, ({String token, DateTime expiry})?>> getCachedToken() async {
+    try {
+      final cached = await localDataSource.getCachedToken();
+      return Right(cached);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    }
+  }
+
+  Future<void> _persistSessionToken() async {
+    try {
+      final firebaseUser = firebaseAuth.currentUser;
+      if (firebaseUser == null) return;
+      final idToken = await firebaseUser.getIdToken();
+      if (idToken == null) return;
+      await localDataSource.cacheToken(idToken, _idTokenExpiry(idToken));
+    } catch (_) {}
+  }
+
+  DateTime _idTokenExpiry(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length >= 2) {
+        final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+        final map = json.decode(payload) as Map<String, dynamic>;
+        final exp = map['exp'];
+        if (exp is int) {
+          return DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+        }
+      }
+    } catch (_) {}
+    return DateTime.now().add(const Duration(hours: 1));
   }
 
   @override

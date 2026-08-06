@@ -53,5 +53,11 @@
 		<string>Ứng dụng cần truy cập máy ảnh để chụp ảnh đại diện hoặc quét mã QR tham gia gia tộc.</string>
 		<key>NSPhotoLibraryAddUsageDescription</key>
 		<string>Ứng dụng cần quyền này để lưu mã QR vào thư viện ảnh của bạn.</string>
+		<key>NSUserNotificationUsageDescription</key>
+		<string>Ứng dụng gửi thông báo khi có sự kiện mới, lời chúc hoặc ngày giỗ/sinh nhật của dòng họ.</string>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>remote-notification</string>
+		</array>
 	</dict>
 </plist>

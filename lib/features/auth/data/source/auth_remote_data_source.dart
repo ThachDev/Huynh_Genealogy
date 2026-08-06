@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/services/notification_service.dart';
 import 'package:giatocviet/core/data/model/user_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -76,12 +77,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       // 4. Send token to backend
-      // In a real app, you can pass fcmToken if available
       final response = await dio.post(
         AppConstants.loginEndpoint,
         data: {
           'idToken': idToken,
-          'fcmToken': null, // Can be added later via notification integration
+          'fcmToken': NotificationService.instance.token,
         },
       );
 
@@ -153,7 +153,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           AppConstants.loginEndpoint,
           data: {
             'idToken': idToken,
-            'fcmToken': null,
+            'fcmToken': NotificationService.instance.token,
           },
         );
 
@@ -257,7 +257,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           AppConstants.loginEndpoint,
           data: {
             'idToken': idToken,
-            'fcmToken': null,
+            'fcmToken': NotificationService.instance.token,
             'role': role,
           },
         );
@@ -442,7 +442,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         AppConstants.loginEndpoint,
         data: {
           'idToken': idToken,
-          'fcmToken': null,
+          'fcmToken': NotificationService.instance.token,
         },
       );
 

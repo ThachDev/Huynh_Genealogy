@@ -1130,6 +1130,36 @@ abstract class AppLocalizations {
   /// **'Giao diện'**
   String get themeLabel;
 
+  /// No description provided for @notificationsSectionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo'**
+  String get notificationsSectionTitle;
+
+  /// No description provided for @notifyEventLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sự kiện mới'**
+  String get notifyEventLabel;
+
+  /// No description provided for @notifyAnnouncementLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo từ dòng họ'**
+  String get notifyAnnouncementLabel;
+
+  /// No description provided for @notifyWishLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời chúc'**
+  String get notifyWishLabel;
+
+  /// No description provided for @notifyAnniversaryLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giỗ & sinh nhật'**
+  String get notifyAnniversaryLabel;
+
   /// No description provided for @infoAndHelpSection.
   ///
   /// In vi, this message translates to:

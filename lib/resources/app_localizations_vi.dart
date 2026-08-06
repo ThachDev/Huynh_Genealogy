@@ -578,6 +578,21 @@ class AppLocalizationsVi extends AppLocalizations {
   String get themeLabel => 'Giao diện';
 
   @override
+  String get notificationsSectionTitle => 'Thông báo';
+
+  @override
+  String get notifyEventLabel => 'Sự kiện mới';
+
+  @override
+  String get notifyAnnouncementLabel => 'Thông báo từ dòng họ';
+
+  @override
+  String get notifyWishLabel => 'Lời chúc';
+
+  @override
+  String get notifyAnniversaryLabel => 'Giỗ & sinh nhật';
+
+  @override
   String get infoAndHelpSection => 'Thông Tin & Trợ Giúp';
 
   @override

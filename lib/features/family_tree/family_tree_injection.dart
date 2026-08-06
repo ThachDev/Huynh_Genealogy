@@ -43,11 +43,10 @@ void initFamilyTreeDependencies(GetIt sl) {
   );
 
   // Data Source
-  sl.registerLazySingleton<FamilyTreeLocalDataSource>(
-    () => FamilyTreeLocalDataSource(),
+  sl.registerLazySingleton<FamilyTreeRemoteDataSource>(
+    () => FamilyTreeRemoteDataSourceImpl(dio: sl()),
   );
 
-  // Data Source
   sl.registerLazySingleton<FamilyTreeLocalDataSource>(
     () => FamilyTreeLocalDataSource(),
   );

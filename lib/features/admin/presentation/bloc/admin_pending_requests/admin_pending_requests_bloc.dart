@@ -36,13 +36,22 @@ class AdminPendingRequestsBloc extends Bloc<AdminPendingRequestsEvent, AdminPend
     final failureOrRequests = await getPendingRequests(event.familyId);
     final failureOrFamily = await getFamilyDetail(event.familyId);
 
+    FamilyEntity? familyEntity;
+    failureOrFamily.fold(
+      (failure) => null,
+      (family) => familyEntity = family,
+    );
+
     failureOrRequests.fold(
-      (failure) => emit(AdminPendingRequestsFailure(message: failure.message)),
+      (failure) {
+        if (familyEntity != null) {
+          emit(AdminPendingRequestsLoaded(requests: const [], family: familyEntity));
+        } else {
+          emit(AdminPendingRequestsFailure(message: failure.message));
+        }
+      },
       (requests) {
-        failureOrFamily.fold(
-          (failure) => emit(AdminPendingRequestsLoaded(requests: requests, family: null)),
-          (family) => emit(AdminPendingRequestsLoaded(requests: requests, family: family)),
-        );
+        emit(AdminPendingRequestsLoaded(requests: requests, family: familyEntity));
       },
     );
   }

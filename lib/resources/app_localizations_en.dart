@@ -578,6 +578,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeLabel => 'Theme';
 
   @override
+  String get notificationsSectionTitle => 'Notifications';
+
+  @override
+  String get notifyEventLabel => 'New events';
+
+  @override
+  String get notifyAnnouncementLabel => 'Family announcements';
+
+  @override
+  String get notifyWishLabel => 'Wishes';
+
+  @override
+  String get notifyAnniversaryLabel => 'Anniversaries & birthdays';
+
+  @override
   String get infoAndHelpSection => 'Info & Help';
 
   @override

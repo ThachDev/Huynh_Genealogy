@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -9,9 +10,12 @@ import '../theme/theme_extensions.dart';
 import '../../resources/app_localizations.dart';
 import '../../features/auth/auth.dart';
 import '../../features/family_tree/family_tree.dart';
+import '../services/notification_service.dart';
 import '../../features/user/presentation/pages/user_family_dashboard_page.dart';
 import '../../features/user/presentation/pages/user_events_page.dart';
+import '../../features/user/presentation/widgets/user_notifications_widget.dart';
 import '../../features/admin/admin.dart';
+import '../routes/app_router.dart';
 
 class FABConfig {
   final IconData icon;
@@ -69,6 +73,7 @@ class UserMainNavigationPage extends StatefulWidget {
 
 class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   int _currentIndex = 0;
+  StreamSubscription<dynamic>? _treeSub;
 
   @override
   void initState() {
@@ -77,13 +82,65 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<AuthBloc>().add(AuthProfileRefreshSilent());
+        _setupNotifications();
       }
     });
+  }
+
+  void _setupNotifications() {
+    NotificationService.instance.onTap = _handleNotificationTap;
+    NotificationService.instance.onUserLoggedIn();
+    NotificationService.instance.handleInitialMessage();
+    _listenForAnniversaries();
+  }
+
+  void _handleNotificationTap(Map<String, String> data) {
+    if (!mounted) return;
+    final navigator = AppRouter.rootNavigatorKey.currentState;
+    final familyId = int.tryParse(data['familyId'] ?? '');
+    final type = data['type'];
+    if (type == NotifType.event && familyId != null) {
+      final eventType = data['eventType'] ?? '';
+      final isAnnouncement = eventType == 'announcement' ||
+          eventType == 'notification' ||
+          eventType == 'thông báo';
+      if (isAnnouncement) {
+        navigator?.push(
+          MaterialPageRoute<void>(
+            builder: (_) => UserNotificationsPage(familyId: familyId),
+          ),
+        );
+      }
+    }
+  }
+
+  void _listenForAnniversaries() {
+    // Lên lịch lại mỗi khi cây gia phả có dữ liệu (thông báo 8h sáng).
+    _treeSub ??= context.read<FamilyTreeBloc>().stream.listen((state) {
+      if (state is FamilyTreeLoaded) {
+        _scheduleAnniversaries(state.members);
+      }
+    });
+    final currentState = context.read<FamilyTreeBloc>().state;
+    if (currentState is FamilyTreeLoaded) {
+      _scheduleAnniversaries(currentState.members);
+    }
+  }
+
+  void _scheduleAnniversaries(List<MemberEntity> members) {
+    final authState = context.read<AuthBloc>().state;
+    final familyId =
+        authState is Authenticated ? authState.user.familyId : null;
+    if (familyId == null) return;
+    NotificationService.instance
+        .scheduleTodaysAnniversaries(familyId: familyId, members: members);
   }
 
   @override
   void dispose() {
     UserMainNavigationPage.tabIndexNotifier.removeListener(_onTabIndexChanged);
+    _treeSub?.cancel();
+    _treeSub = null;
     super.dispose();
   }
 

@@ -5,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../../../core/domain/entity/family_entity.dart';
+import '../../../../../core/data/repository/notification_settings_store.dart';
+import '../../../../../core/services/notification_service.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../auth/auth.dart';
+import '../../../../family_tree/family_tree.dart';
 import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
 import 'pages/admin_clan_info_page.dart';
@@ -33,6 +35,30 @@ class AdminSettingsPage extends StatefulWidget {
 class _AdminSettingsPageState extends State<AdminSettingsPage> {
   bool _isEn = false;
   bool _isDark = false;
+  bool _ntfEvents = true;
+  bool _ntfAnnouncements = true;
+  bool _ntfWishes = true;
+  bool _ntfAnniversaries = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationSettings();
+  }
+
+  Future<void> _loadNotificationSettings() async {
+    final events = await NotificationSettingsStore.eventEnabled();
+    final announcements = await NotificationSettingsStore.announcementEnabled();
+    final wishes = await NotificationSettingsStore.wishEnabled();
+    final anniversaries = await NotificationSettingsStore.anniversaryEnabled();
+    if (!mounted) return;
+    setState(() {
+      _ntfEvents = events;
+      _ntfAnnouncements = announcements;
+      _ntfWishes = wishes;
+      _ntfAnniversaries = anniversaries;
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -252,6 +278,57 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     ),
                   ),
                   _buildSectionHeaderInsideCard(
+                      context, l10n.notificationsSectionTitle),
+                  _buildNotificationToggle(
+                    context: context,
+                    icon: LucideIcons.calendar,
+                    title: l10n.notifyEventLabel,
+                    value: _ntfEvents,
+                    onChanged: (v) {
+                      setState(() => _ntfEvents = v);
+                      NotificationSettingsStore.setEvent(v);
+                    },
+                  ),
+                  _buildNotificationToggle(
+                    context: context,
+                    icon: LucideIcons.megaphone,
+                    title: l10n.notifyAnnouncementLabel,
+                    value: _ntfAnnouncements,
+                    onChanged: (v) {
+                      setState(() => _ntfAnnouncements = v);
+                      NotificationSettingsStore.setAnnouncement(v);
+                    },
+                  ),
+                  _buildNotificationToggle(
+                    context: context,
+                    icon: LucideIcons.heart,
+                    title: l10n.notifyWishLabel,
+                    value: _ntfWishes,
+                    onChanged: (v) {
+                      setState(() => _ntfWishes = v);
+                      NotificationSettingsStore.setWish(v);
+                    },
+                  ),
+                  _buildNotificationToggle(
+                    context: context,
+                    icon: LucideIcons.cake,
+                    title: l10n.notifyAnniversaryLabel,
+                    value: _ntfAnniversaries,
+                    onChanged: (v) {
+                      setState(() => _ntfAnniversaries = v);
+                      NotificationSettingsStore.setAnniversary(v);
+                      final treeState =
+                          context.read<FamilyTreeBloc>().state;
+                      if (treeState is FamilyTreeLoaded && family != null) {
+                        NotificationService.instance
+                            .scheduleTodaysAnniversaries(
+                          familyId: family.id,
+                          members: treeState.members,
+                        );
+                      }
+                    },
+                  ),
+                  _buildSectionHeaderInsideCard(
                     context,
                     showAdminInterface
                         ? l10n.accountAndClanSection
@@ -447,6 +524,42 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
           color: context.primary,
           letterSpacing: 1.0,
         ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationToggle({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 22, color: context.primary),
+              const SizedBox(width: 16),
+              Text(
+                title,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: context.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          Switch(
+            value: value,
+            activeThumbColor: context.primary,
+            onChanged: onChanged,
+          ),
+        ],
       ),
     );
   }

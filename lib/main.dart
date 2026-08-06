@@ -21,6 +21,7 @@ import 'features/events/events.dart';
 import 'features/admin/admin.dart';
 import 'features/user/user.dart';
 import 'core/network/dio_client.dart';
+import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,11 @@ void main() async {
   ]);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await di.init();
+
+  // Khởi tạo hệ thống thông báo (FCM token + hiển thị + điều hướng).
+  await NotificationService.instance.initialize();
+  NotificationService.instance.setupBackgroundHandler();
+
   runApp(const FamilyTreeApp());
 }
 

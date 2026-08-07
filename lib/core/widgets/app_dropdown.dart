@@ -14,6 +14,9 @@ class AppDropdown<T> extends StatefulWidget {
   final String? searchHint;
   final String? label;
   final double? buttonHeight;
+  final EdgeInsetsGeometry? itemPadding;
+  final bool showIcon;
+  final TextAlign? textAlign;
 
   const AppDropdown({
     super.key,
@@ -24,6 +27,9 @@ class AppDropdown<T> extends StatefulWidget {
     this.searchHint,
     this.label,
     this.buttonHeight,
+    this.itemPadding,
+    this.showIcon = true,
+    this.textAlign,
   });
 
   @override
@@ -44,17 +50,30 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
     return DropdownButtonFormField2<T>(
       valueListenable: ValueNotifier<T?>(widget.value),
       items: widget.items,
+      selectedItemBuilder: widget.textAlign == TextAlign.center
+          ? (context) {
+              return widget.items.map((item) {
+                return Align(
+                  alignment: Alignment.center,
+                  child: item.child,
+                );
+              }).toList();
+            }
+          : null,
       onChanged: widget.onChanged,
       isExpanded: true,
       buttonStyleData: FormFieldButtonStyleData(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: widget.itemPadding ?? const EdgeInsets.symmetric(horizontal: 16),
         height: widget.buttonHeight ?? 48,
         width: double.infinity,
       ),
       iconStyleData: IconStyleData(
-        icon: Icon(LucideIcons.chevronDown, size: 18, color: context.textSecondary),
-        openMenuIcon:
-            Icon(LucideIcons.chevronUp, size: 18, color: context.textSecondary),
+        icon: widget.showIcon
+            ? Icon(LucideIcons.chevronDown, size: 18, color: context.textSecondary)
+            : const SizedBox.shrink(),
+        openMenuIcon: widget.showIcon
+            ? Icon(LucideIcons.chevronUp, size: 18, color: context.textSecondary)
+            : const SizedBox.shrink(),
       ),
       dropdownStyleData: DropdownStyleData(
         maxHeight: 250,
@@ -161,7 +180,10 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: context.primary, width: 1.2),
+          borderSide: BorderSide(
+            color: context.textSecondary.withValues(alpha: 0.2),
+            width: 1.2,
+          ),
         ),
       ),
     );

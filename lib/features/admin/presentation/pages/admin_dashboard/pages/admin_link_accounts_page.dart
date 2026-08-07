@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,8 +13,6 @@ import 'package:giatocviet/features/admin/presentation/bloc/member_account_links
 import 'package:giatocviet/features/admin/presentation/widgets/link_account_email_sheet.dart';
 
 /// Màn hình "Quản lý Tài khoản & Liên kết".
-/// - `memberId == null`: hiển thị toàn bộ cây (danh sách nút) để gán/gỡ email.
-/// - `memberId != null`: chỉ quản lý một nút cụ thể (lời mời tại nút trên cây).
 class AdminLinkAccountsPage extends StatefulWidget {
   final int? memberId;
   final String? memberName;
@@ -24,8 +23,11 @@ class AdminLinkAccountsPage extends StatefulWidget {
   State<AdminLinkAccountsPage> createState() => _AdminLinkAccountsPageState();
 }
 
+enum LinkStatusFilter { all, linked, unlinked }
+
 class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
   final _searchController = TextEditingController();
+  LinkStatusFilter _statusFilter = LinkStatusFilter.all;
 
   @override
   void initState() {
@@ -158,6 +160,13 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
                 visibleItems =
                     items.where((e) => e.memberId == widget.memberId).toList();
               }
+
+              if (_statusFilter == LinkStatusFilter.linked) {
+                visibleItems = visibleItems.where((e) => e.isLinked).toList();
+              } else if (_statusFilter == LinkStatusFilter.unlinked) {
+                visibleItems = visibleItems.where((e) => !e.isLinked).toList();
+              }
+
               final query = _searchController.text.trim().toLowerCase();
               if (query.isNotEmpty) {
                 visibleItems = visibleItems
@@ -187,29 +196,99 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: l10n.searchMemberHint,
-                        hintStyle: GoogleFonts.inter(fontSize: 13),
-                        prefixIcon: Icon(LucideIcons.search,
-                            size: 18, color: context.textSecondary),
-                        isDense: true,
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                              color: context.accent.withValues(alpha: 0.2)),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: l10n.searchMemberHint,
+                              hintStyle: GoogleFonts.inter(fontSize: 13),
+                              prefixIcon: Icon(LucideIcons.search,
+                                  size: 18, color: context.textSecondary),
+                              isDense: true,
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: context.textSecondary
+                                      .withValues(alpha: 0.2),
+                                  width: 1.2,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: context.textSecondary
+                                      .withValues(alpha: 0.2),
+                                  width: 1.2,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: context.accent,
+                                  width: 1.2,
+                                ),
+                              ),
+                            ),
+                            onChanged: (_) => setState(() {}),
+                          ),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                              color: context.accent.withValues(alpha: 0.2)),
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 105,
+                          child: AppDropdown<LinkStatusFilter>(
+                            value: _statusFilter,
+                            buttonHeight: 42,
+                            showIcon: false,
+                            textAlign: TextAlign.center,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 8),
+                            items: [
+                              DropdownItem(
+                                value: LinkStatusFilter.all,
+                                child: Center(
+                                  child: Text(
+                                    'Tất cả',
+                                    style:
+                                        GoogleFonts.beVietnamPro(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                              DropdownItem(
+                                value: LinkStatusFilter.linked,
+                                child: Center(
+                                  child: Text(
+                                    l10n.linkedLabel,
+                                    style:
+                                        GoogleFonts.beVietnamPro(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                              DropdownItem(
+                                value: LinkStatusFilter.unlinked,
+                                child: Center(
+                                  child: Text(
+                                    l10n.notLinkedLabel,
+                                    style:
+                                        GoogleFonts.beVietnamPro(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                            onChanged: (val) {
+                              if (val != null) {
+                                setState(() {
+                                  _statusFilter = val;
+                                });
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                      onChanged: (_) => setState(() {}),
+                      ],
                     ),
                   ),
                   Expanded(

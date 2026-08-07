@@ -22,6 +22,7 @@ import 'pages/admin_about_us_page.dart';
 import 'pages/admin_member_roles_page.dart';
 import 'pages/admin_settings_profile_card.dart';
 import '../admin_dashboard/pages/admin_member_form_page.dart';
+import '../admin_dashboard/pages/admin_link_accounts_page.dart';
 
 import '../../../../../main.dart';
 
@@ -352,6 +353,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         context, l10n.advancedAdminSection),
                     _buildSettingsTile(
                       context: context,
+                      icon: LucideIcons.link2,
+                      title: l10n.linkAccountsLabel,
+                      destination: const AdminLinkAccountsPage(),
+                    ),
+                    _buildSettingsTile(
+                      context: context,
                       icon: LucideIcons.users,
                       title: l10n.memberRolesLabel,
                       destination: const AdminMemberRolesPage(),
@@ -416,6 +423,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     required BuildContext context,
     required IconData icon,
     required String title,
+    String? subtitle,
     String? trailingText,
     Widget? destination,
     VoidCallback? onTap,
@@ -444,13 +452,30 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text(
-                    title,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: titleColor ?? context.textPrimary,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: titleColor ?? context.textPrimary,
+                        ),
+                      ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
                 if (trailingText != null) ...[

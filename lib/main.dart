@@ -85,8 +85,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
     _router = AppRouter.createRouter(_authBloc);
 
     // Khi server trả 401 trên request cần xác thực (token hết hạn) -> tự đăng xuất.
-    DioClient.onSessionExpired =
-        () => _authBloc.add(AuthLogoutRequested());
+    DioClient.onSessionExpired = () => _authBloc.add(AuthLogoutRequested());
   }
 
   void _loadPreferences() {
@@ -108,7 +107,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
       _locale = locale;
     });
     try {
-      di.sl<SharedPreferences>()
+      di
+          .sl<SharedPreferences>()
           .setString(AppConstants.languageCodeKey, locale.languageCode);
     } catch (_) {}
   }
@@ -118,7 +118,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
       _themeMode = themeMode;
     });
     try {
-      di.sl<SharedPreferences>()
+      di
+          .sl<SharedPreferences>()
           .setString(AppConstants.themeModeKey, themeMode.name);
     } catch (_) {}
   }
@@ -142,6 +143,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
             create: (_) => di.sl<AdminDissolveClanBloc>()),
         BlocProvider<AdminTransferOwnershipBloc>(
             create: (_) => di.sl<AdminTransferOwnershipBloc>()),
+        BlocProvider<MemberAccountLinksBloc>(
+            create: (_) => di.sl<MemberAccountLinksBloc>()),
         BlocProvider<EventsBloc>(create: (_) => di.sl<EventsBloc>()),
         BlocProvider<UserBloc>(create: (_) => di.sl<UserBloc>()),
       ],

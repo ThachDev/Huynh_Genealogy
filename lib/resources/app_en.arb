@@ -928,5 +928,22 @@
   "errDeleteFamily": "Error deleting clan",
   "errLinkFamilyProfile": "Error linking family profile",
   "errTransferOwnership": "Error transferring clan leadership",
-  "eventDetailSemanticLabel": "Event {title}, Date: {date}"
+  "eventDetailSemanticLabel": "Event {title}, Date: {date}",
+  "linkAccountsTitle": "Account & Link Management",
+  "linkAccountsNodeTitle": "Link Account",
+  "linkAccountsLabel": "Link accounts",
+  "linkAccountEmailDesc": "Enter the member's email. If the email already has an account it will be linked immediately; otherwise the system sends an email invite and auto-links once they register.",
+  "linkInviteButton": "Link / Invite",
+  "changeEmailButton": "Change email",
+  "linkButton": "Link",
+  "unlinkButton": "Unlink",
+  "linkedLabel": "Linked",
+  "invitePendingLabel": "Pending signup",
+  "notLinkedLabel": "Not linked",
+  "invitePendingDesc": "Invitation sent to {email}. The account will be linked automatically after the member registers.",
+  "linkSuccess": "Account {email} linked successfully.",
+  "inviteSentSuccess": "Invitation sent to {email}.",
+  "unlinkSuccess": "Account unlinked.",
+  "confirmUnlinkTitle": "Confirm Unlink",
+  "confirmUnlinkMessage": "Are you sure you want to unlink the account of member {name}?"
 }

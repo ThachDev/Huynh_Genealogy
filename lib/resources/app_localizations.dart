@@ -4681,6 +4681,108 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Sự kiện {title}, Ngày: {date}'**
   String eventDetailSemanticLabel(Object date, Object title);
+
+  /// No description provided for @linkAccountsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quản Lý Tài Khoản & Liên Kết'**
+  String get linkAccountsTitle;
+
+  /// No description provided for @linkAccountsNodeTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên Kết Tài Khoản'**
+  String get linkAccountsNodeTitle;
+
+  /// No description provided for @linkAccountsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên kết tài khoản'**
+  String get linkAccountsLabel;
+
+  /// No description provided for @linkAccountEmailDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập email của thành viên. Nếu email đã có tài khoản sẽ liên kết ngay; ngược lại hệ thống sẽ gửi email mời và tự động liên kết khi họ đăng ký.'**
+  String get linkAccountEmailDesc;
+
+  /// No description provided for @linkInviteButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên kết / Mời'**
+  String get linkInviteButton;
+
+  /// No description provided for @changeEmailButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi email'**
+  String get changeEmailButton;
+
+  /// No description provided for @linkButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên Kết'**
+  String get linkButton;
+
+  /// No description provided for @unlinkButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gỡ liên kết'**
+  String get unlinkButton;
+
+  /// No description provided for @linkedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã liên kết'**
+  String get linkedLabel;
+
+  /// No description provided for @invitePendingLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chờ đăng ký'**
+  String get invitePendingLabel;
+
+  /// No description provided for @notLinkedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa liên kết'**
+  String get notLinkedLabel;
+
+  /// No description provided for @invitePendingDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi lời mời tới {email}. Tài khoản sẽ tự liên kết sau khi thành viên đăng ký.'**
+  String invitePendingDesc(Object email);
+
+  /// No description provided for @linkSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã liên kết tài khoản {email} thành công.'**
+  String linkSuccess(Object email);
+
+  /// No description provided for @inviteSentSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi lời mời gia nhập tới {email}.'**
+  String inviteSentSuccess(Object email);
+
+  /// No description provided for @unlinkSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gỡ liên kết tài khoản.'**
+  String get unlinkSuccess;
+
+  /// No description provided for @confirmUnlinkTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác Nhận Gỡ Liên Kết'**
+  String get confirmUnlinkTitle;
+
+  /// No description provided for @confirmUnlinkMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?'**
+  String confirmUnlinkMessage(Object name);
 }
 
 class _AppLocalizationsDelegate

@@ -2524,4 +2524,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String eventDetailSemanticLabel(Object date, Object title) {
     return 'Event $title, Date: $date';
   }
+
+  @override
+  String get linkAccountsTitle => 'Account & Link Management';
+
+  @override
+  String get linkAccountsNodeTitle => 'Link Account';
+
+  @override
+  String get linkAccountsLabel => 'Link accounts';
+
+  @override
+  String get linkAccountEmailDesc =>
+      'Enter the member\'s email. If the email already has an account it will be linked immediately; otherwise the system sends an email invite and auto-links once they register.';
+
+  @override
+  String get linkInviteButton => 'Link / Invite';
+
+  @override
+  String get changeEmailButton => 'Change email';
+
+  @override
+  String get linkButton => 'Link';
+
+  @override
+  String get unlinkButton => 'Unlink';
+
+  @override
+  String get linkedLabel => 'Linked';
+
+  @override
+  String get invitePendingLabel => 'Pending signup';
+
+  @override
+  String get notLinkedLabel => 'Not linked';
+
+  @override
+  String invitePendingDesc(Object email) {
+    return 'Invitation sent to $email. The account will be linked automatically after the member registers.';
+  }
+
+  @override
+  String linkSuccess(Object email) {
+    return 'Account $email linked successfully.';
+  }
+
+  @override
+  String inviteSentSuccess(Object email) {
+    return 'Invitation sent to $email.';
+  }
+
+  @override
+  String get unlinkSuccess => 'Account unlinked.';
+
+  @override
+  String get confirmUnlinkTitle => 'Confirm Unlink';
+
+  @override
+  String confirmUnlinkMessage(Object name) {
+    return 'Are you sure you want to unlink the account of member $name?';
+  }
 }

@@ -938,5 +938,22 @@
   "errDeleteFamily": "Lỗi xóa dòng họ",
   "errLinkFamilyProfile": "Lỗi liên kết hồ sơ gia phả",
   "errTransferOwnership": "Lỗi chuyển nhượng quyền Trưởng tộc",
-  "eventDetailSemanticLabel": "Sự kiện {title}, Ngày: {date}"
+  "eventDetailSemanticLabel": "Sự kiện {title}, Ngày: {date}",
+  "linkAccountsTitle": "Quản Lý Tài Khoản & Liên Kết",
+  "linkAccountsNodeTitle": "Liên Kết Tài Khoản",
+  "linkAccountsLabel": "Liên kết tài khoản",
+  "linkAccountEmailDesc": "Nhập email của thành viên. Nếu email đã có tài khoản sẽ liên kết ngay; ngược lại hệ thống sẽ gửi email mời và tự động liên kết khi họ đăng ký.",
+  "linkInviteButton": "Liên kết / Mời",
+  "changeEmailButton": "Đổi email",
+  "linkButton": "Liên Kết",
+  "unlinkButton": "Gỡ liên kết",
+  "linkedLabel": "Đã liên kết",
+  "invitePendingLabel": "Chờ đăng ký",
+  "notLinkedLabel": "Chưa liên kết",
+  "invitePendingDesc": "Đã gửi lời mời tới {email}. Tài khoản sẽ tự liên kết sau khi thành viên đăng ký.",
+  "linkSuccess": "Đã liên kết tài khoản {email} thành công.",
+  "inviteSentSuccess": "Đã gửi lời mời gia nhập tới {email}.",
+  "unlinkSuccess": "Đã gỡ liên kết tài khoản.",
+  "confirmUnlinkTitle": "Xác Nhận Gỡ Liên Kết",
+  "confirmUnlinkMessage": "Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?"
 }

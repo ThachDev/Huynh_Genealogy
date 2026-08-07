@@ -8,6 +8,7 @@ import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../../features/auth/auth.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
+import '../../../admin/presentation/pages/admin_dashboard/pages/admin_link_accounts_page.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
@@ -76,6 +77,21 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
         transparent: false,
         actions: canEdit
             ? [
+                IconButton(
+                  icon: const Icon(LucideIcons.link2, color: Colors.white),
+                  tooltip: l10n.linkAccountsLabel,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AdminLinkAccountsPage(
+                          memberId: widget.member.id,
+                          memberName: widget.member.fullName,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 IconButton(
                   icon: const Icon(LucideIcons.edit3, color: Colors.white),
                   onPressed: () async {

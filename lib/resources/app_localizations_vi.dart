@@ -2525,4 +2525,64 @@ class AppLocalizationsVi extends AppLocalizations {
   String eventDetailSemanticLabel(Object date, Object title) {
     return 'Sự kiện $title, Ngày: $date';
   }
+
+  @override
+  String get linkAccountsTitle => 'Quản Lý Tài Khoản & Liên Kết';
+
+  @override
+  String get linkAccountsNodeTitle => 'Liên Kết Tài Khoản';
+
+  @override
+  String get linkAccountsLabel => 'Liên kết tài khoản';
+
+  @override
+  String get linkAccountEmailDesc =>
+      'Nhập email của thành viên. Nếu email đã có tài khoản sẽ liên kết ngay; ngược lại hệ thống sẽ gửi email mời và tự động liên kết khi họ đăng ký.';
+
+  @override
+  String get linkInviteButton => 'Liên kết / Mời';
+
+  @override
+  String get changeEmailButton => 'Đổi email';
+
+  @override
+  String get linkButton => 'Liên Kết';
+
+  @override
+  String get unlinkButton => 'Gỡ liên kết';
+
+  @override
+  String get linkedLabel => 'Đã liên kết';
+
+  @override
+  String get invitePendingLabel => 'Chờ đăng ký';
+
+  @override
+  String get notLinkedLabel => 'Chưa liên kết';
+
+  @override
+  String invitePendingDesc(Object email) {
+    return 'Đã gửi lời mời tới $email. Tài khoản sẽ tự liên kết sau khi thành viên đăng ký.';
+  }
+
+  @override
+  String linkSuccess(Object email) {
+    return 'Đã liên kết tài khoản $email thành công.';
+  }
+
+  @override
+  String inviteSentSuccess(Object email) {
+    return 'Đã gửi lời mời gia nhập tới $email.';
+  }
+
+  @override
+  String get unlinkSuccess => 'Đã gỡ liên kết tài khoản.';
+
+  @override
+  String get confirmUnlinkTitle => 'Xác Nhận Gỡ Liên Kết';
+
+  @override
+  String confirmUnlinkMessage(Object name) {
+    return 'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên $name?';
+  }
 }

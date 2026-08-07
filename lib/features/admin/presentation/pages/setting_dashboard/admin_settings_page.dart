@@ -279,54 +279,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   ),
                   _buildSectionHeaderInsideCard(
                       context, l10n.notificationsSectionTitle),
-                  _buildNotificationToggle(
+                  _buildSettingsTile(
                     context: context,
-                    icon: LucideIcons.calendar,
-                    title: l10n.notifyEventLabel,
-                    value: _ntfEvents,
-                    onChanged: (v) {
-                      setState(() => _ntfEvents = v);
-                      NotificationSettingsStore.setEvent(v);
-                    },
-                  ),
-                  _buildNotificationToggle(
-                    context: context,
-                    icon: LucideIcons.megaphone,
-                    title: l10n.notifyAnnouncementLabel,
-                    value: _ntfAnnouncements,
-                    onChanged: (v) {
-                      setState(() => _ntfAnnouncements = v);
-                      NotificationSettingsStore.setAnnouncement(v);
-                    },
-                  ),
-                  _buildNotificationToggle(
-                    context: context,
-                    icon: LucideIcons.heart,
-                    title: l10n.notifyWishLabel,
-                    value: _ntfWishes,
-                    onChanged: (v) {
-                      setState(() => _ntfWishes = v);
-                      NotificationSettingsStore.setWish(v);
-                    },
-                  ),
-                  _buildNotificationToggle(
-                    context: context,
-                    icon: LucideIcons.cake,
-                    title: l10n.notifyAnniversaryLabel,
-                    value: _ntfAnniversaries,
-                    onChanged: (v) {
-                      setState(() => _ntfAnniversaries = v);
-                      NotificationSettingsStore.setAnniversary(v);
-                      final treeState =
-                          context.read<FamilyTreeBloc>().state;
-                      if (treeState is FamilyTreeLoaded && family != null) {
-                        NotificationService.instance
-                            .scheduleTodaysAnniversaries(
-                          familyId: family.id,
-                          members: treeState.members,
-                        );
-                      }
-                    },
+                    icon: LucideIcons.bell,
+                    title: l10n.notificationsSectionTitle,
+                    trailingText: _getNotificationSummaryText(),
+                    onTap: () => _showNotificationSettingsBottomSheet(
+                        context, family, l10n),
                   ),
                   _buildSectionHeaderInsideCard(
                     context,
@@ -430,6 +389,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       confirmColor: context.primary,
                     );
                     if (confirmed == true && context.mounted) {
+                      UserMainNavigationPage.tabIndexNotifier.value = 0;
                       context.read<AuthBloc>().add(AuthLogoutRequested());
                     }
                   },
@@ -456,6 +416,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     required BuildContext context,
     required IconData icon,
     required String title,
+    String? trailingText,
     Widget? destination,
     VoidCallback? onTap,
     Color? titleColor,
@@ -492,6 +453,17 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     ),
                   ),
                 ),
+                if (trailingText != null) ...[
+                  Text(
+                    trailingText,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                ],
                 Icon(
                   LucideIcons.chevronRight,
                   size: 16,
@@ -528,31 +500,166 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     );
   }
 
-  Widget _buildNotificationToggle({
+  String _getNotificationSummaryText() {
+    int count = 0;
+    if (_ntfEvents) count++;
+    if (_ntfAnnouncements) count++;
+    if (_ntfWishes) count++;
+    if (_ntfAnniversaries) count++;
+    if (count == 0) return 'Đã tắt';
+    return 'Đang bật ($count/4)';
+  }
+
+  void _showNotificationSettingsBottomSheet(
+    BuildContext context,
+    FamilyEntity? family,
+    AppLocalizations l10n,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              decoration: BoxDecoration(
+                color: context.surface,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+                border: Border.all(
+                  color: context.primary.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: context.textSecondary.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildBottomSheetNotificationItem(
+                    context: context,
+                    icon: LucideIcons.calendar,
+                    title: l10n.notifyEventLabel,
+                    subtitle: 'Cập nhật lịch sự kiện và họp mặt dòng tộc',
+                    value: _ntfEvents,
+                    onChanged: (v) {
+                      setState(() => _ntfEvents = v);
+                      setModalState(() {});
+                      NotificationSettingsStore.setEvent(v);
+                    },
+                  ),
+                  _buildBottomSheetNotificationItem(
+                    context: context,
+                    icon: LucideIcons.megaphone,
+                    title: l10n.notifyAnnouncementLabel,
+                    subtitle:
+                        'Nhận tin tức và thông cáo quan trọng từ Ban Quản Trị',
+                    value: _ntfAnnouncements,
+                    onChanged: (v) {
+                      setState(() => _ntfAnnouncements = v);
+                      setModalState(() {});
+                      NotificationSettingsStore.setAnnouncement(v);
+                    },
+                  ),
+                  _buildBottomSheetNotificationItem(
+                    context: context,
+                    icon: LucideIcons.heart,
+                    title: l10n.notifyWishLabel,
+                    subtitle:
+                        'Thông báo khi nhận được lời chúc từ các thành viên',
+                    value: _ntfWishes,
+                    onChanged: (v) {
+                      setState(() => _ntfWishes = v);
+                      setModalState(() {});
+                      NotificationSettingsStore.setWish(v);
+                    },
+                  ),
+                  _buildBottomSheetNotificationItem(
+                    context: context,
+                    icon: LucideIcons.cake,
+                    title: l10n.notifyAnniversaryLabel,
+                    subtitle:
+                        'Thông báo nhắc lịch giỗ chạp và sinh nhật thành viên',
+                    value: _ntfAnniversaries,
+                    onChanged: (v) {
+                      setState(() => _ntfAnniversaries = v);
+                      setModalState(() {});
+                      NotificationSettingsStore.setAnniversary(v);
+                      final treeState = context.read<FamilyTreeBloc>().state;
+                      if (treeState is FamilyTreeLoaded && family != null) {
+                        NotificationService.instance
+                            .scheduleTodaysAnniversaries(
+                          familyId: family.id,
+                          members: treeState.members,
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildBottomSheetNotificationItem({
     required BuildContext context,
     required IconData icon,
     required String title,
+    required String subtitle,
     required bool value,
     required ValueChanged<bool> onChanged,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(icon, size: 22, color: context.primary),
-              const SizedBox(width: 16),
-              Text(
-                title,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: context.textPrimary,
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: context.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, size: 20, color: context.primary),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: context.textPrimary,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: context.textSecondary,
+                  ),
+                ),
+              ],
+            ),
           ),
           Switch(
             value: value,

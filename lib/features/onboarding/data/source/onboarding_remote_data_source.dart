@@ -204,6 +204,9 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
           .map((json) => FamilyUserModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        return [];
+      }
       throw ServerException(
         message: _getErrorMessage(
             e, AppLanguage.current?.errLoadJoinRequest ?? 'Lỗi tải yêu cầu gia nhập'),

@@ -258,9 +258,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
-  void _loadPendingRequests() {
+void _loadPendingRequests() {
     final familyId = _familyId();
-    if (familyId != null) {
+    final authState = context.read<AuthBloc>().state;
+    final role = authState is Authenticated ? authState.user.role.toUpperCase() : 'VIEWER';
+    // Mọi vai trò admin đều cần dữ liệu gia tộc (tên + mã mời), không chỉ Owner.
+    final canSeeFamily = role == 'OWNER' ||
+        role == 'CREATOR' ||
+        role == 'BRANCH_ADMIN' ||
+        role == 'EDITOR';
+    if (familyId != null && canSeeFamily) {
       context.read<AdminPendingRequestsBloc>().add(
             LoadAdminPendingRequestsEvent(familyId: familyId),
           );

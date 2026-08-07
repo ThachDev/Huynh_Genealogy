@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/data/repository/notification_read_store.dart';
+import '../../../../core/data/repository/notification_read_controller.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
@@ -14,9 +14,6 @@ class UserNotificationsPage extends StatefulWidget {
   final int familyId;
   final List<EventEntity> announcements;
   final bool isAdminMode;
-
-  /// Bộ lưu vết các thông báo đã đọc duy trì xuyên suốt ứng dụng.
-  static final Set<String> globalReadIds = {};
 
   const UserNotificationsPage({
     super.key,
@@ -37,31 +34,19 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
   }
 
   Future<void> _loadReadState() async {
-    final ids = await NotificationReadStore.load(widget.familyId);
-    if (!mounted) return;
-    setState(() {
-      UserNotificationsPage.globalReadIds.addAll(ids);
-    });
-  }
-
-  void _persistReadState() {
-    NotificationReadStore.save(
-        widget.familyId, UserNotificationsPage.globalReadIds);
-    setState(() {});
+    await NotificationReadController.instance.ensureLoaded(widget.familyId);
   }
 
   void _markAllAsRead(List<EventEntity> items) {
     final l10n = AppLocalizations.of(context)!;
-    for (final e in items) {
-      UserNotificationsPage.globalReadIds.add(e.id.toString());
-    }
-    _persistReadState();
+    NotificationReadController.instance.markAllRead(
+      items.map((e) => e.id.toString()).toList(),
+    );
     AppSnackBar.success(context, l10n.markAllReadSuccess);
   }
 
   void _onItemTap(EventEntity item) {
-    UserNotificationsPage.globalReadIds.add(item.id.toString());
-    _persistReadState();
+    NotificationReadController.instance.markRead(item.id.toString());
 
     Navigator.push(
       context,
@@ -79,8 +64,10 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return BlocBuilder<EventsBloc, EventsState>(
-      builder: (context, eventsState) {
+    return ListenableBuilder(
+      listenable: NotificationReadController.instance,
+      builder: (context, _) => BlocBuilder<EventsBloc, EventsState>(
+        builder: (context, eventsState) {
         List<EventEntity> allEvents = widget.announcements;
         if (allEvents.isEmpty && eventsState is EventsLoaded) {
           allEvents = eventsState.events.where((e) {
@@ -170,8 +157,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                               const SizedBox(height: 8),
                           itemBuilder: (context, index) {
                             final item = displayList[index];
-                            final isRead = UserNotificationsPage.globalReadIds
-                                .contains(item.id.toString());
+                            final isRead = NotificationReadController.instance
+                                .isRead(item.id.toString());
                             return _buildNotificationCard(
                                 context, item, isRead);
                           },
@@ -181,7 +168,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
             ),
           ),
         );
-      },
+        },
+      ),
     );
   }
 
@@ -401,8 +389,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
               title: Text(l10n.markAsReadAction),
               onTap: () {
                 Navigator.pop(ctx);
-                UserNotificationsPage.globalReadIds.add(item.id.toString());
-                _persistReadState();
+                NotificationReadController.instance
+                    .markRead(item.id.toString());
               },
             ),
             ListTile(

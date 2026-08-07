@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:vnlunar/vnlunar.dart';
 
+import '../../../../core/data/repository/notification_read_controller.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
@@ -40,9 +41,15 @@ class _UserEventsPageState extends State<UserEventsPage> {
   void initState() {
     super.initState();
     _loadData();
+    _loadReadState();
     if (widget.isActive) {
       _updateFAB();
     }
+  }
+
+  Future<void> _loadReadState() async {
+    await NotificationReadController.instance.ensureLoaded(widget.familyId);
+    if (mounted) setState(() {});
   }
 
   @override
@@ -262,8 +269,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
             }).toList();
 
             final unreadAnnouncements = announcements
-                .where((e) => !UserNotificationsPage.globalReadIds
-                    .contains(e.id.toString()))
+                .where((e) => !NotificationReadController.instance
+                    .isRead(e.id.toString()))
                 .toList();
 
             return Scaffold(

@@ -78,6 +78,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
   @override
   void initState() {
     super.initState();
+    _currentIndex = 0;
+    UserMainNavigationPage.tabIndexNotifier.value = 0;
     UserMainNavigationPage.tabIndexNotifier.addListener(_onTabIndexChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -181,7 +183,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final showAdminInterface = hasAdminPrivileges && isCurrentlyAdminMode;
         final l10n = AppLocalizations.of(context)!;
 
-        final safeIndex = (_currentIndex < 0 || _currentIndex >= 4) ? 0 : _currentIndex;
+        final safeIndex =
+            (_currentIndex < 0 || _currentIndex >= 4) ? 0 : _currentIndex;
         // Xây dựng danh sách các trang dựa trên chế độ hiển thị
         final List<_TabConfig> tabs = [];
 
@@ -315,7 +318,14 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
                           label: tab.label,
                           isSelected: safeIndex == tabIndex,
                           onTap: () {
-                            UserMainNavigationPage.tabIndexNotifier.value = tabIndex;
+                            if (UserMainNavigationPage.tabIndexNotifier.value ==
+                                    tabIndex &&
+                                _currentIndex != tabIndex) {
+                              setState(() => _currentIndex = tabIndex);
+                            } else {
+                              UserMainNavigationPage.tabIndexNotifier.value =
+                                  tabIndex;
+                            }
                             if (tabIndex == 2 || tabIndex == 3) {
                               UserMainNavigationPage.fabNotifier.value = null;
                             }

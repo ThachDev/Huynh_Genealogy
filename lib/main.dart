@@ -145,10 +145,8 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
             create: (_) => di.sl<AdminTransferOwnershipBloc>()),
         BlocProvider<MemberAccountLinksBloc>(
             create: (_) => di.sl<MemberAccountLinksBloc>()),
-        BlocProvider<MemberTrashBloc>(
-            create: (_) => di.sl<MemberTrashBloc>()),
-        BlocProvider<AuditLogsBloc>(
-            create: (_) => di.sl<AuditLogsBloc>()),
+        BlocProvider<MemberTrashBloc>(create: (_) => di.sl<MemberTrashBloc>()),
+        BlocProvider<AuditLogsBloc>(create: (_) => di.sl<AuditLogsBloc>()),
         BlocProvider<EventsBloc>(create: (_) => di.sl<EventsBloc>()),
         BlocProvider<UserBloc>(create: (_) => di.sl<UserBloc>()),
       ],

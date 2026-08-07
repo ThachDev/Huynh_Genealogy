@@ -38,8 +38,8 @@ class MemberItemWidget extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (_) => FamilyMemberDetailPage(
+          SereneFadeSlidePageRoute(
+            page: FamilyMemberDetailPage(
               member: member,
               allMembers: allMembers,
             ),

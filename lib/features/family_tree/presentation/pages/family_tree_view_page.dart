@@ -534,6 +534,14 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
               }
               final treeSize = Size(maxX, maxY);
 
+              final generationLevels = <int, double>{};
+              for (final m in state.members) {
+                final pos = positions[m.id];
+                if (pos != null && m.generation != null) {
+                  generationLevels.putIfAbsent(m.generation!, () => pos.dy);
+                }
+              }
+
               return LayoutBuilder(
                 builder: (context, constraints) {
                   if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
@@ -584,7 +592,11 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                                 orphanEdges: orphanEdges,
                                 spouseEdges: spouseEdges,
                                 positions: positions,
+                                generationLevels: generationLevels,
                                 nodeHeight: _nodeHeight,
+                                accentColor: context.accent,
+                                surfaceColor: context.surface,
+                                textColor: context.textPrimary,
                                 linePaint: Paint()
                                   ..color = context.resolve(
                                       context.accent, Colors.grey.shade700)
@@ -619,8 +631,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
                                       FamilyTreeSelectMemberEvent(member.id));
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (_) => FamilyMemberDetailPage(
+                                    SereneFadeSlidePageRoute(
+                                      page: FamilyMemberDetailPage(
                                         member: member,
                                         allMembers: state.members,
                                       ),
@@ -676,8 +688,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     if (option == AddMemberOption.createNew) {
       final result = await Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => AdminMemberFormPage(
+        SereneFadeSlidePageRoute(
+          page: AdminMemberFormPage(
             initialParentId: parentMember.id,
             initialGeneration: (parentMember.generation ?? 0) + 1,
             isLockedContext: true,
@@ -758,8 +770,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     if (option == AddMemberOption.createNew) {
       final result = await Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => AdminMemberFormPage(
+        SereneFadeSlidePageRoute(
+          page: AdminMemberFormPage(
             initialSpouseId: spouseMember.id,
             initialGeneration: spouseMember.generation,
             isLockedContext: true,
@@ -828,22 +840,106 @@ class _TreeEdgePainter extends CustomPainter {
   final List<_EdgeData> orphanEdges;
   final List<_SpouseEdge> spouseEdges;
   final Map<int, Offset> positions;
+  final Map<int, double> generationLevels;
   final Paint linePaint;
   final Paint spousePaint;
   final double nodeHeight;
+  final Color accentColor;
+  final Color surfaceColor;
+  final Color textColor;
 
   _TreeEdgePainter({
     required this.coupleEdges,
     required this.orphanEdges,
     required this.spouseEdges,
     required this.positions,
+    required this.generationLevels,
     required this.linePaint,
     required this.spousePaint,
     required this.nodeHeight,
+    required this.accentColor,
+    required this.surfaceColor,
+    required this.textColor,
   });
+
+  static String _toRoman(int gen) {
+    const map = {1000: 'M', 900: 'CM', 500: 'D', 400: 'CD', 100: 'C', 90: 'XC', 50: 'L', 40: 'XL', 10: 'X', 9: 'IX', 5: 'V', 4: 'IV', 1: 'I'};
+    var res = '';
+    var n = gen;
+    for (final e in map.entries) {
+      while (n >= e.key) {
+        res += e.value;
+        n -= e.key;
+      }
+    }
+    return res.isEmpty ? '$gen' : res;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
+    // ── 0. Generation Guide Lines & Badges ──────────────────────────────
+    final guidePaint = Paint()
+      ..color = accentColor.withValues(alpha: 0.18)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    final sortedGens = generationLevels.keys.toList()..sort();
+    for (final gen in sortedGens) {
+      final y = generationLevels[gen]!;
+
+      // Đường kẻ ngang nét mờ phân biệt tầng thế hệ
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        guidePaint,
+      );
+
+      // Thẻ Đánh Dấu Thế Hệ (Badge: ĐỜI I, ĐỜI II...) ở mép trái canvas
+      final badgeText = 'ĐỜI ${_toRoman(gen)}';
+      final textStyle = GoogleFonts.beVietnamPro(
+        fontSize: 11,
+        fontWeight: FontWeight.bold,
+        color: accentColor,
+        letterSpacing: 0.8,
+      );
+
+      final tp = TextPainter(
+        text: TextSpan(text: badgeText, style: textStyle),
+        textDirection: TextDirection.ltr,
+      )..layout();
+
+      const paddingH = 10.0;
+      const paddingV = 4.0;
+      final badgeWidth = tp.width + paddingH * 2;
+      final badgeHeight = tp.height + paddingV * 2;
+      final badgeRect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(
+          12.0,
+          y - badgeHeight / 2,
+          badgeWidth,
+          badgeHeight,
+        ),
+        const Radius.circular(12),
+      );
+
+      // Background pill cho thế hệ badge
+      final bgPaint = Paint()
+        ..color = surfaceColor
+        ..style = PaintingStyle.fill;
+      final borderPaint = Paint()
+        ..color = accentColor.withValues(alpha: 0.4)
+        ..strokeWidth = 1.2
+        ..style = PaintingStyle.stroke;
+
+      canvas.drawRRect(badgeRect, bgPaint);
+      canvas.drawRRect(badgeRect, borderPaint);
+
+      tp.paint(
+        canvas,
+        Offset(12.0 + paddingH, y - tp.height / 2),
+      );
+    }
+
     // ── Couple edges — T-bar junction style ──────────────────────────────
     for (final ce in coupleEdges) {
       final primary = positions[ce.primaryId];
@@ -953,7 +1049,8 @@ class _TreeEdgePainter extends CustomPainter {
     return oldDelegate.coupleEdges != coupleEdges ||
         oldDelegate.orphanEdges != orphanEdges ||
         oldDelegate.spouseEdges != spouseEdges ||
-        oldDelegate.positions != positions;
+        oldDelegate.positions != positions ||
+        oldDelegate.generationLevels != generationLevels;
   }
 }
 

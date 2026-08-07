@@ -70,8 +70,8 @@ class _EventsListPageState extends State<EventsListPage> {
           onTap: () async {
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => AdminEventCreatePage(familyId: widget.familyId),
+              SereneFadeSlidePageRoute(
+                page: AdminEventCreatePage(familyId: widget.familyId),
               ),
             );
             if (result == true) {
@@ -101,8 +101,8 @@ class _EventsListPageState extends State<EventsListPage> {
   Future<void> _navigateToDetail(EventEntity event) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AdminEventDetailPage(
+      SereneFadeSlidePageRoute(
+        page: AdminEventDetailPage(
           familyId: widget.familyId,
           event: event,
         ),

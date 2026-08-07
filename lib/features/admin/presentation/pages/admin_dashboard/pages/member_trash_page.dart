@@ -9,6 +9,7 @@ import 'package:giatocviet/features/auth/auth.dart';
 import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 import 'package:giatocviet/features/family_tree/presentation/bloc/family_tree_bloc.dart';
 import 'package:giatocviet/features/admin/presentation/bloc/member_trash/member_trash_bloc.dart';
+import 'package:giatocviet/features/admin/presentation/bloc/member_account_links/member_account_links_bloc.dart';
 
 /// Màn hình "Thùng rác": danh sách thành viên đã xóa (soft delete) để khôi phục.
 class MemberTrashPage extends StatefulWidget {
@@ -37,13 +38,17 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
 
   void _reload() {
     if (_familyId != null) {
-      context.read<MemberTrashBloc>().add(LoadMemberTrashEvent(familyId: _familyId));
+      context
+          .read<MemberTrashBloc>()
+          .add(LoadMemberTrashEvent(familyId: _familyId));
     }
   }
 
   void _reloadFamilyTree() {
     if (_familyId != null) {
-      context.read<FamilyTreeBloc>().add(FamilyTreeLoadEvent(familyId: _familyId!));
+      context
+          .read<FamilyTreeBloc>()
+          .add(FamilyTreeLoadEvent(familyId: _familyId!));
     }
   }
 
@@ -98,6 +103,11 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
                 );
                 _reload();
                 _reloadFamilyTree();
+                if (_familyId != null) {
+                  context
+                      .read<MemberAccountLinksBloc>()
+                      .add(LoadMemberAccountLinksEvent(familyId: _familyId!));
+                }
               } else if (state is TrashPurgedState) {
                 AppSnackBar.success(
                   context,
@@ -121,8 +131,9 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
                   onRetry: _reload,
                 );
               }
-              final members =
-                  state is MemberTrashLoaded ? state.members : const <MemberEntity>[];
+              final members = state is MemberTrashLoaded
+                  ? state.members
+                  : const <MemberEntity>[];
               if (members.isEmpty) {
                 return AppEmptyState(
                   icon: LucideIcons.trash,
@@ -168,86 +179,89 @@ class _TrashItem extends StatelessWidget {
             ? context.genderFemale
             : Colors.grey;
 
-    return CustomPaint(
-      painter: TraditionalOrnamentalBorderPainter(
-        borderColor: context.textSecondary.withValues(alpha: 0.2),
-        fillColor: context.surface,
-        leftAccentColor: genderColor,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: context.textSecondary.withValues(alpha: 0.15),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
         child: Row(
           children: [
-            AppAvatar(
-              avatarUrl: member.avatarUrl,
-              fullName: member.fullName,
-              radius: 26,
-              fontSize: 18,
-              backgroundColor:
-                  context.resolve(Colors.grey.shade100, const Color(0xFF2C2C2C)),
-            ),
-            const SizedBox(width: 14),
+            // Accent màu giới tính bên trái
+            Container(width: 4, color: genderColor),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    member.fullName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.beVietnamPro(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: context.textPrimary,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+                child: Row(
+                  children: [
+                    AppAvatar(
+                      avatarUrl: member.avatarUrl,
+                      fullName: member.fullName,
+                      radius: 24,
+                      fontSize: 16,
+                      backgroundColor: context.resolve(
+                          Colors.grey.shade100, const Color(0xFF2C2C2C)),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(
-                        LucideIcons.user,
-                        size: 12,
-                        color: genderColor,
-                      ),
-                      const SizedBox(width: 4),
-                      Flexible(
-                        child: Text(
-                          l10n.trashDeletedAt(_formatDate(member.deletedAt)),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            color: context.textSecondary,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            member.fullName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.beVietnamPro(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: context.textPrimary,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(LucideIcons.clock,
+                                  size: 11, color: context.textSecondary),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  l10n.trashDeletedAt(
+                                      _formatDate(member.deletedAt)),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 11,
+                                    color: context.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(width: 8),
+                    AppButton(
+                      label: l10n.trashRestoreButton,
+                      variant: AppButtonVariant.outline,
+                      size: AppButtonSize.small,
+                      onPressed: onRestore,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  l10n.trashStatusDeleted,
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: context.textSecondary.withValues(alpha: 0.6),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                AppButton(
-                  label: l10n.trashRestoreButton,
-                  variant: AppButtonVariant.outline,
-                  size: AppButtonSize.small,
-                  prefixIcon: const Icon(LucideIcons.rotateCcw, size: 14),
-                  onPressed: onRestore,
-                ),
-              ],
             ),
           ],
         ),

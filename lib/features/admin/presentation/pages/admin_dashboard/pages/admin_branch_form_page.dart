@@ -344,9 +344,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                     final result =
                                                         await Navigator.push(
                                                       context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const AdminMemberFormPage(),
+                                                      SereneFadeSlidePageRoute(
+                                                        page: const AdminMemberFormPage(),
                                                       ),
                                                     );
                                                     if (result == true) {

@@ -50,8 +50,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AdminEventDetailPage(
+      SereneFadeSlidePageRoute(
+        page: AdminEventDetailPage(
           familyId: widget.familyId,
           event: item,
           isUserView: true,

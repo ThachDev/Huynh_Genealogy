@@ -6,6 +6,7 @@ import '../models/upcoming_anniversary.dart';
 import '../pages/wish_wall_page.dart';
 import '../../data/source/wish_api_service.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/widgets/widgets.dart';
 
 /// Card dùng chung cho cả Ngày Giỗ (isBirthday: false) và Sinh Nhật (isBirthday: true).
 class AnniversaryCard extends StatelessWidget {
@@ -22,8 +23,8 @@ class AnniversaryCard extends StatelessWidget {
 
   Future<void> _openWish(BuildContext context) async {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => WishWallPage(
+      SereneFadeSlidePageRoute(
+        page: WishWallPage(
           data: data,
           apiService: sl<WishApiService>(),
         ),

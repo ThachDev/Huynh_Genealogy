@@ -112,8 +112,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
           onTap: () async {
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => AdminEventCreatePage(familyId: widget.familyId),
+              SereneFadeSlidePageRoute(
+                page: AdminEventCreatePage(familyId: widget.familyId),
               ),
             );
             if (result == true) {
@@ -328,8 +328,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     onPressed: () async {
                       await Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => UserNotificationsPage(
+                        SereneFadeSlidePageRoute(
+                          page: UserNotificationsPage(
                             familyId: widget.familyId,
                             announcements: announcements,
                             isAdminMode: widget.isAdminMode,
@@ -454,8 +454,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
   }) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => UserAnniversaryListPage(
+      SereneFadeSlidePageRoute(
+        page: UserAnniversaryListPage(
           title: title,
           anniversaries: list,
           isBirthday: isBirthday,
@@ -467,8 +467,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
   void _openEventList(List<EventEntity> events) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => UserEventListPage(
+      SereneFadeSlidePageRoute(
+        page: UserEventListPage(
           familyId: widget.familyId,
           isAdminMode: widget.isAdminMode,
           events: events,
@@ -528,8 +528,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
     Future<void> openDetail() async {
       final result = await Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => AdminEventDetailPage(
+        SereneFadeSlidePageRoute(
+          page: AdminEventDetailPage(
             familyId: widget.familyId,
             event: event,
             isUserView: !widget.isAdminMode,

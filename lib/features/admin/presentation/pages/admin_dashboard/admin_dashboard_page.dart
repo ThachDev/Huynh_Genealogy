@@ -141,8 +141,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             if (option == AddMemberOption.createNew) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const AdminMemberFormPage(),
+                SereneFadeSlidePageRoute(
+                  page: const AdminMemberFormPage(),
                 ),
               ).then((_) => _loadTree());
             } else if (option == AddMemberOption.selectExisting) {
@@ -156,9 +156,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 final selectedMemberId = selected.id;
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AdminMemberFormPage(memberId: selectedMemberId),
+                  SereneFadeSlidePageRoute(
+                    page: AdminMemberFormPage(memberId: selectedMemberId),
                   ),
                 ).then((_) => _loadTree());
               }
@@ -205,8 +204,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   void dispose() {
     final l10n = _l10n;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (UserMainNavigationPage.fabNotifier.value?.label == l10n?.addMemberFabLabel ||
-          UserMainNavigationPage.fabNotifier.value?.label == l10n?.addBranchFabLabel) {
+      if (UserMainNavigationPage.fabNotifier.value?.label ==
+              l10n?.addMemberFabLabel ||
+          UserMainNavigationPage.fabNotifier.value?.label ==
+              l10n?.addBranchFabLabel) {
         UserMainNavigationPage.fabNotifier.value = null;
       }
     });
@@ -258,10 +259,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
-void _loadPendingRequests() {
+  void _loadPendingRequests() {
     final familyId = _familyId();
     final authState = context.read<AuthBloc>().state;
-    final role = authState is Authenticated ? authState.user.role.toUpperCase() : 'VIEWER';
+    final role = authState is Authenticated
+        ? authState.user.role.toUpperCase()
+        : 'VIEWER';
     // Mọi vai trò admin đều cần dữ liệu gia tộc (tên + mã mời), không chỉ Owner.
     final canSeeFamily = role == 'OWNER' ||
         role == 'CREATOR' ||
@@ -393,7 +396,8 @@ void _loadPendingRequests() {
                 left: 0,
                 right: 0,
                 child: _buildHeader(
-                    context, user, headerHeight, familyName, inviteCode),
+                    context, user, headerHeight, familyName, inviteCode,
+                    userTreeState: userTreeState, pendingState: pendingState),
               ),
               Positioned(
                 top: headerHeight + 60,
@@ -447,7 +451,9 @@ void _loadPendingRequests() {
   }
 
   Widget _buildHeader(BuildContext context, UserEntity? user, double height,
-      String familyName, String inviteCode) {
+      String familyName, String inviteCode,
+      {required FamilyTreeState userTreeState,
+      required AdminPendingRequestsState pendingState}) {
     return Container(
       height: height,
       width: double.infinity,
@@ -478,20 +484,23 @@ void _loadPendingRequests() {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            familyName.toUpperCase(),
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: context.textPrimary,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                        ],
+                      Flexible(
+                        child: userTreeState is FamilyTreeLoading &&
+                                pendingState is AdminPendingRequestsLoading
+                            ? const AppShimmer(
+                                child: SkeletonBox(height: 26, borderRadius: 6),
+                              )
+                            : Text(
+                                familyName.toUpperCase(),
+                                style: GoogleFonts.beVietnamPro(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: context.textPrimary,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
                       ),
+                      const SizedBox(width: 12),
                       if (user != null)
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -515,7 +524,9 @@ void _loadPendingRequests() {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  _buildInviteCodeCard(context, inviteCode),
+                  _buildInviteCodeCard(context, inviteCode,
+                      isLoading: userTreeState is FamilyTreeLoading &&
+                          pendingState is AdminPendingRequestsLoading),
                 ],
               ),
             ),
@@ -578,9 +589,8 @@ void _loadPendingRequests() {
                       onEdit: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                AdminMemberFormPage(memberId: member.id),
+                          SereneFadeSlidePageRoute(
+                            page: AdminMemberFormPage(memberId: member.id),
                           ),
                         );
                       },
@@ -676,8 +686,17 @@ void _loadPendingRequests() {
     }
   }
 
-  Widget _buildInviteCodeCard(BuildContext context, String inviteCode) {
+  Widget _buildInviteCodeCard(BuildContext context, String inviteCode,
+      {bool isLoading = false}) {
     final l10n = AppLocalizations.of(context)!;
+    if (isLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: AppShimmer(
+          child: SkeletonBox(height: 48, borderRadius: 12),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
@@ -1207,8 +1226,8 @@ void _loadPendingRequests() {
   void _openBranchForm(BuildContext context, {BranchEntity? branch}) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AdminBranchFormPage(branch: branch),
+      SereneFadeSlidePageRoute(
+        page: AdminBranchFormPage(branch: branch),
       ),
     );
     if (result == true && context.mounted) {

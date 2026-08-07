@@ -477,8 +477,8 @@ class _PendingRequestDetailSheet extends StatelessWidget {
               if (activeCtx != null) {
                 Navigator.push(
                   activeCtx,
-                  MaterialPageRoute(
-                    builder: (_) => AdminMemberFormPage(
+                  SereneFadeSlidePageRoute(
+                    page: AdminMemberFormPage(
                       initialFullName: suggestedName,
                       pendingChildMemberId: request.memberNodeId,
                     ),

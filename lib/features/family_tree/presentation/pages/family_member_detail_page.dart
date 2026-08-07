@@ -83,8 +83,8 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => AdminLinkAccountsPage(
+                      SereneFadeSlidePageRoute(
+                        page: AdminLinkAccountsPage(
                           memberId: widget.member.id,
                           memberName: widget.member.fullName,
                         ),
@@ -97,8 +97,8 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                   onPressed: () async {
                     final result = await Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => AdminMemberFormPage(
+                      SereneFadeSlidePageRoute(
+                        page: AdminMemberFormPage(
                           memberId: widget.member.id,
                         ),
                       ),

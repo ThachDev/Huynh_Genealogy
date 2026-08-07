@@ -403,66 +403,85 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Brand Logo / Avatar (Căn giữa - To hơn & Nét hơn)
-                  Container(
-                    width: 72,
-                    height: 72,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: context.accent, width: 2.0),
-                      borderRadius: BorderRadius.circular(16),
-                      color: context.background.withValues(alpha: 0.25),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                  // Brand Logo / Avatar
+                  if (state is FamilyTreeLoading)
+                    AppShimmer(
+                      child: Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: context.textSecondary.withValues(alpha: 0.12),
                         ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: () {
-                        final familyLogo = (state is FamilyTreeLoaded)
-                            ? state.family?.logoUrl
-                            : null;
-                        if (familyLogo != null && familyLogo.isNotEmpty) {
-                          return AppNetworkImage(
-                            url: familyLogo,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context) => Image.asset(
-                              'assets/images/logo.png',
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(LucideIcons.gitBranch,
-                                      color: context.accent, size: 36),
-                            ),
+                      ),
+                    )
+                  else
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: context.accent, width: 2.0),
+                        borderRadius: BorderRadius.circular(16),
+                        color: context.background.withValues(alpha: 0.25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: () {
+                          final familyLogo = (state is FamilyTreeLoaded)
+                              ? state.family?.logoUrl
+                              : null;
+                          if (familyLogo != null && familyLogo.isNotEmpty) {
+                            return AppNetworkImage(
+                              url: familyLogo,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context) => Image.asset(
+                                'assets/images/logo.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(LucideIcons.gitBranch,
+                                        color: context.accent, size: 36),
+                              ),
+                            );
+                          }
+                          return Image.asset(
+                            'assets/images/logo.png',
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                                LucideIcons.gitBranch,
+                                color: context.accent,
+                                size: 36),
                           );
-                        }
-                        return Image.asset(
-                          'assets/images/logo.png',
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                              LucideIcons.gitBranch,
-                              color: context.accent,
-                              size: 36),
-                        );
-                      }(),
+                        }(),
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 10),
-                  // Tên Gia Phả (Căn giữa)
-                  Text(
-                    familyName,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: context.textPrimary,
-                      letterSpacing: 0.5,
+                  // Tên Gia Phả
+                  if (state is FamilyTreeLoading)
+                    const Center(
+                      child: AppShimmer(
+                        child: SkeletonBox(width: 180, height: 24, borderRadius: 6),
+                      ),
+                    )
+                  else
+                    Text(
+                      familyName,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: context.textPrimary,
+                        letterSpacing: 0.5,
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 5),
-                  // Motto (Căn giữa)
+                  // Motto
                   Text(
                     l10n.spiritualMotto,
                     textAlign: TextAlign.center,
@@ -475,39 +494,46 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   ),
                   const SizedBox(height: 10),
                   // Stats Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(LucideIcons.users, color: context.accent, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        l10n.memberCountBadge(state is FamilyTreeLoaded
-                            ? state.members.length
-                            : 0),
-                        style: GoogleFonts.inter(
-                          color: context.textPrimary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  if (state is FamilyTreeLoading)
+                    const Center(
+                      child: AppShimmer(
+                        child: SkeletonBox(width: 220, height: 18, borderRadius: 4),
                       ),
-                      const SizedBox(width: 20),
-                      Container(width: 1, height: 14, color: context.textSecondary.withValues(alpha: 0.5)),
-                      const SizedBox(width: 20),
-                      Icon(LucideIcons.gitBranch,
-                          color: context.accent, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        l10n.branchCountLabel(state is FamilyTreeLoaded
-                            ? state.branches.length
-                            : 0),
-                        style: GoogleFonts.inter(
-                          color: context.textPrimary,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(LucideIcons.users, color: context.accent, size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          l10n.memberCountBadge(state is FamilyTreeLoaded
+                              ? state.members.length
+                              : 0),
+                          style: GoogleFonts.inter(
+                            color: context.textPrimary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                        const SizedBox(width: 20),
+                        Container(width: 1, height: 14, color: context.textSecondary.withValues(alpha: 0.5)),
+                        const SizedBox(width: 20),
+                        Icon(LucideIcons.gitBranch,
+                            color: context.accent, size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          l10n.branchCountLabel(state is FamilyTreeLoaded
+                              ? state.branches.length
+                              : 0),
+                          style: GoogleFonts.inter(
+                            color: context.textPrimary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),

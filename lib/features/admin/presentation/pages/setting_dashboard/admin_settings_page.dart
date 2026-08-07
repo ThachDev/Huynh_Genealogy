@@ -158,8 +158,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (_) => AdminMemberFormPage(
+                                SereneFadeSlidePageRoute(
+                                  page: AdminMemberFormPage(
                                     isOwnerSelfSetup: true,
                                     ownerUserId: user.id,
                                   ),
@@ -236,6 +236,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       ],
                     ),
                   ),
+                  Divider(
+                    height: 1,
+                    thickness: 0.5,
+                    indent: 54,
+                    endIndent: 16,
+                    color: context.textSecondary.withValues(alpha: 0.15),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
@@ -279,6 +286,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         ),
                       ],
                     ),
+                  ),
+                  Divider(
+                    height: 1,
+                    thickness: 0.5,
+                    indent: 54,
+                    endIndent: 16,
+                    color: context.textSecondary.withValues(alpha: 0.15),
                   ),
                   _buildSectionHeaderInsideCard(
                       context, l10n.notificationsSectionTitle),

@@ -16,6 +16,7 @@ import '../../features/user/presentation/pages/user_events_page.dart';
 import '../../features/user/presentation/widgets/user_notifications_widget.dart';
 import '../../features/admin/admin.dart';
 import '../routes/app_router.dart';
+import 'app_route_transitions.dart';
 
 class FABConfig {
   final IconData icon;
@@ -83,6 +84,15 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
     UserMainNavigationPage.tabIndexNotifier.addListener(_onTabIndexChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        final authState = context.read<AuthBloc>().state;
+        if (authState is Authenticated) {
+          final role = authState.user.role;
+          final hasAdminPriv = _isAdminRole(role);
+          // Nếu user có quyền admin, luôn đặt Admin Dashboard làm mặc định khi vào app
+          if (hasAdminPriv) {
+            UserMainNavigationPage.adminModeNotifier.value = true;
+          }
+        }
         context.read<AuthBloc>().add(AuthProfileRefreshSilent());
         _setupNotifications();
       }
@@ -108,8 +118,8 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
           eventType == 'thông báo';
       if (isAnnouncement) {
         navigator?.push(
-          MaterialPageRoute<void>(
-            builder: (_) => UserNotificationsPage(familyId: familyId),
+          SereneFadeSlidePageRoute(
+            page: UserNotificationsPage(familyId: familyId),
           ),
         );
       }

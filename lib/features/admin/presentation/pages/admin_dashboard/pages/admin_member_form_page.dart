@@ -278,6 +278,32 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     setState(() {});
   }
 
+  /// Tự động điền thế hệ khi chọn cha/mẹ.
+  /// generation = cha.generation + 1
+  void _autoFillGenerationFromParent(List<MemberEntity> allMembers, int? parentId) {
+    if (parentId == null) return;
+    // Không ghi đè nếu đang ở chế độ isLockedContext (đã được truyền sẵn)
+    if (widget.isLockedContext && widget.initialGeneration != null) return;
+    final parent = allMembers.where((m) => m.id == parentId).firstOrNull;
+    if (parent?.generation != null) {
+      final suggested = parent!.generation! + 1;
+      if (_generationController.text.isEmpty ||
+          int.tryParse(_generationController.text) != suggested) {
+        _generationController.text = suggested.toString();
+      }
+    }
+  }
+
+  /// Trả về thế hệ lớn nhất hiện có trong gia phả.
+  int? _maxExistingGeneration(List<MemberEntity> allMembers) {
+    final gens = allMembers
+        .where((m) => m.generation != null)
+        .map((m) => m.generation!)
+        .toList();
+    if (gens.isEmpty) return null;
+    return gens.reduce((a, b) => a > b ? a : b);
+  }
+
   @override
   void dispose() {
     _draftDebounce?.cancel();
@@ -304,8 +330,21 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     super.dispose();
   }
 
-  void _submitForm(MemberEntity? existingMember) {
+  void _submitForm(MemberEntity? existingMember, List<MemberEntity> allMembers) {
     if (!_formKey.currentState!.validate()) return;
+
+    // Kiểm tra thế hệ không vượt quá maxGeneration + 1
+    final inputGen = int.tryParse(_generationController.text.trim());
+    if (inputGen != null && widget.memberId == null) {
+      final maxGen = _maxExistingGeneration(allMembers);
+      if (maxGen != null && inputGen > maxGen + 1) {
+        AppSnackBar.error(
+          context,
+          'Thế hệ không thể vượt quá thế hệ hiện tại + 1 (tối đa: ${maxGen + 1})',
+        );
+        return;
+      }
+    }
 
     final authState = context.read<AuthBloc>().state;
     final familyId =
@@ -1000,6 +1039,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                 selectedParent!.branchId;
                                           }
                                         });
+                                        // Tự động điền thế hệ = cha.generation + 1
+                                        _autoFillGenerationFromParent(
+                                            allMembers, val);
                                       },
                                       showSearchBox: true,
                                     ),
@@ -1146,7 +1188,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                   padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                   child: AppFormActionButtons(
                     saveLabel: l10n.formSave,
-                    onSave: () => _submitForm(existingMember),
+                    onSave: () => _submitForm(existingMember, allMembers),
                   ),
                 ),
               ],

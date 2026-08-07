@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../../core/widgets/app_network_image.dart';
 import '../../../events/events.dart';
 import '../../../admin/admin.dart';
+import '../../../../core/widgets/widgets.dart';
 
 /// Banner mặc định khi sự kiện không có ảnh.
 class EventDefaultBanner extends StatelessWidget {
@@ -75,8 +75,8 @@ class UserEventCard extends StatelessWidget {
   Future<void> _openDetail(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AdminEventDetailPage(
+      SereneFadeSlidePageRoute(
+        page: AdminEventDetailPage(
           familyId: familyId,
           event: event,
           isUserView: !isAdminMode,

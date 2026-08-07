@@ -37,13 +37,38 @@ class UserEventsPage extends StatefulWidget {
 }
 
 class _UserEventsPageState extends State<UserEventsPage> {
+  final ScrollController _scrollController = ScrollController();
+  int _eventLimit = 5;
+
   @override
   void initState() {
     super.initState();
     _loadData();
     _loadReadState();
+    _scrollController.addListener(_onScroll);
     if (widget.isActive) {
       _updateFAB();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (UserMainNavigationPage.fabNotifier.value?.label == 'event_add_fab') {
+        UserMainNavigationPage.fabNotifier.value = null;
+      }
+    });
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      setState(() {
+        _eventLimit += 5;
+      });
     }
   }
 
@@ -102,16 +127,6 @@ class _UserEventsPageState extends State<UserEventsPage> {
         UserMainNavigationPage.fabNotifier.value = null;
       });
     }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (UserMainNavigationPage.fabNotifier.value?.label == 'event_add_fab') {
-        UserMainNavigationPage.fabNotifier.value = null;
-      }
-    });
-    super.dispose();
   }
 
   List<UpcomingAnniversary> _calculateDeathAnniversaries(
@@ -350,6 +365,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     final birthdays = _calculateBirthdays(members);
 
                     return SingleChildScrollView(
+                      controller: _scrollController,
                       physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Column(
@@ -409,7 +425,9 @@ class _UserEventsPageState extends State<UserEventsPage> {
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: displayEvents.length,
+                                itemCount: displayEvents.length > _eventLimit
+                                    ? _eventLimit
+                                    : displayEvents.length,
                                 itemBuilder: (context, index) {
                                   final event = displayEvents[index];
                                   return _buildEventCard(event, canEdit);

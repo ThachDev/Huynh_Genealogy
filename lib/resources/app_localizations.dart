@@ -4793,14 +4793,8 @@ abstract class AppLocalizations {
   /// No description provided for @trashEmpty.
   ///
   /// In vi, this message translates to:
-  /// **'Thùng rác trống. Thành viên bị xóa sẽ được lưu tạm thời tại đây trong 30 ngày.'**
+  /// **'Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.'**
   String get trashEmpty;
-
-  /// No description provided for @trashAutoCleanNote.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thành viên trong thùng rác quá 30 ngày sẽ bị xóa vĩnh viễn.'**
-  String get trashAutoCleanNote;
 
   /// No description provided for @trashStatusDeleted.
   ///

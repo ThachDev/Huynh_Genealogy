@@ -2591,11 +2591,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get trashEmpty =>
-      'Thùng rác trống. Thành viên bị xóa sẽ được lưu tạm thời tại đây trong 30 ngày.';
-
-  @override
-  String get trashAutoCleanNote =>
-      'Thành viên trong thùng rác quá 30 ngày sẽ bị xóa vĩnh viễn.';
+      'Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.';
 
   @override
   String get trashStatusDeleted => 'Đã xóa';

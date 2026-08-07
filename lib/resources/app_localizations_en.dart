@@ -2590,10 +2590,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trashEmpty =>
-      'Trash is empty. Deleted members are temporarily stored here for 30 days.';
-
-  @override
-  String get trashAutoCleanNote =>
       'Members in the trash for more than 30 days will be permanently deleted.';
 
   @override

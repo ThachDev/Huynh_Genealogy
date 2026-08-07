@@ -948,8 +948,7 @@
   "confirmUnlinkMessage": "Are you sure you want to unlink the account of member {name}?",
 
   "trashTitle": "Trash",
-  "trashEmpty": "Trash is empty. Deleted members are temporarily stored here for 30 days.",
-  "trashAutoCleanNote": "Members in the trash for more than 30 days will be permanently deleted.",
+  "trashEmpty": "Members in the trash for more than 30 days will be permanently deleted.",
   "trashStatusDeleted": "Deleted",
   "trashDeletedAt": "Deleted: {time}",
   "trashRestoreButton": "Restore",

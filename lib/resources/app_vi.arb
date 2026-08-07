@@ -958,8 +958,7 @@
   "confirmUnlinkMessage": "Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?",
 
   "trashTitle": "Thùng rác",
-  "trashEmpty": "Thùng rác trống. Thành viên bị xóa sẽ được lưu tạm thời tại đây trong 30 ngày.",
-  "trashAutoCleanNote": "Thành viên trong thùng rác quá 30 ngày sẽ bị xóa vĩnh viễn.",
+  "trashEmpty": "Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.",
   "trashStatusDeleted": "Đã xóa",
   "trashDeletedAt": "Đã xóa: {time}",
   "trashRestoreButton": "Khôi phục",

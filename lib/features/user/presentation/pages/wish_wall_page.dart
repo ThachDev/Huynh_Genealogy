@@ -30,11 +30,30 @@ class WishWallPage extends StatefulWidget {
 class _WishWallPageState extends State<WishWallPage> {
   bool _isLoading = true;
   List<WishMessage> _wishes = [];
+  final ScrollController _scrollController = ScrollController();
+  int _wishLimit = 5;
 
   @override
   void initState() {
     super.initState();
     _loadWishes();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      setState(() {
+        _wishLimit += 5;
+      });
+    }
   }
 
   Future<void> _loadWishes() async {
@@ -129,8 +148,11 @@ class _WishWallPageState extends State<WishWallPage> {
               )
             else
               ListView.separated(
+                controller: _scrollController,
                 padding: const EdgeInsets.all(16).copyWith(bottom: 100),
-                itemCount: _wishes.length,
+                itemCount: _wishes.length > _wishLimit
+                    ? _wishLimit
+                    : _wishes.length,
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 16),
                 itemBuilder: (context, index) {

@@ -7,6 +7,7 @@ import 'package:giatocviet/core/widgets/widgets.dart';
 import 'package:giatocviet/resources/app_localizations.dart';
 import 'package:giatocviet/features/auth/auth.dart';
 import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
+import 'package:giatocviet/features/family_tree/presentation/bloc/family_tree_bloc.dart';
 import 'package:giatocviet/features/admin/presentation/bloc/member_trash/member_trash_bloc.dart';
 
 /// Màn hình "Thùng rác": danh sách thành viên đã xóa (soft delete) để khôi phục.
@@ -37,6 +38,12 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
   void _reload() {
     if (_familyId != null) {
       context.read<MemberTrashBloc>().add(LoadMemberTrashEvent(familyId: _familyId));
+    }
+  }
+
+  void _reloadFamilyTree() {
+    if (_familyId != null) {
+      context.read<FamilyTreeBloc>().add(FamilyTreeLoadEvent(familyId: _familyId!));
     }
   }
 
@@ -90,6 +97,7 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
                   l10n.trashRestoreSuccess(state.member.fullName),
                 );
                 _reload();
+                _reloadFamilyTree();
               } else if (state is TrashPurgedState) {
                 AppSnackBar.success(
                   context,
@@ -119,7 +127,6 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
                 return AppEmptyState(
                   icon: LucideIcons.trash,
                   message: l10n.trashEmpty,
-                  subMessage: l10n.trashAutoCleanNote,
                 );
               }
               return RefreshIndicator(

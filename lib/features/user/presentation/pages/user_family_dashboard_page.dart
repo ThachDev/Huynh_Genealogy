@@ -23,24 +23,39 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   int? _selectedBranchId;
+  final ScrollController _scrollController = ScrollController();
+  int _memberLimit = 5;
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text.trim().toLowerCase();
+      _memberLimit = 5;
     });
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      setState(() {
+        _memberLimit += 5;
+      });
+    }
   }
 
   int? _familyId() {
@@ -90,6 +105,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     ),
                   ),
                   child: CustomScrollView(
+                    controller: _scrollController,
                     slivers: [
                       if (state is FamilyTreeLoading)
                         const SliverFillRemaining(
@@ -269,7 +285,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                     useOrnamentalBorder: false,
                                   );
                                 },
-                                childCount: filteredMembers.length,
+                                childCount: filteredMembers.length > _memberLimit
+                                    ? _memberLimit
+                                    : filteredMembers.length,
                               ),
                             );
                           },

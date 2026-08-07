@@ -1,5 +1,6 @@
 // Domain Entities
 export 'domain/entities/member_entity.dart';
+export 'domain/entities/audit_log_entity.dart';
 export 'domain/entities/branch_entity.dart';
 export 'domain/entities/family_entity.dart';
 

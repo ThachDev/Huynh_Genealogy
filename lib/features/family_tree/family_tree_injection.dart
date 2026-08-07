@@ -33,6 +33,10 @@ void initFamilyTreeDependencies(GetIt sl) {
   sl.registerLazySingleton(() => LinkMemberToUser(sl()));
   sl.registerLazySingleton(() => DeleteFamily(sl()));
   sl.registerLazySingleton(() => TransferOwnership(sl()));
+  sl.registerLazySingleton(() => GetTrashedMembers(sl()));
+  sl.registerLazySingleton(() => RestoreMember(sl()));
+  sl.registerLazySingleton(() => PurgeTrash(sl()));
+  sl.registerLazySingleton(() => GetAuditLogs(sl()));
 
   // Repository
   sl.registerLazySingleton<FamilyTreeRepository>(

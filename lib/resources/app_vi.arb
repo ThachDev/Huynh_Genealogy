@@ -955,5 +955,82 @@
   "inviteSentSuccess": "Đã gửi lời mời gia nhập tới {email}.",
   "unlinkSuccess": "Đã gỡ liên kết tài khoản.",
   "confirmUnlinkTitle": "Xác Nhận Gỡ Liên Kết",
-  "confirmUnlinkMessage": "Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?"
+  "confirmUnlinkMessage": "Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?",
+
+  "trashTitle": "Thùng rác",
+  "trashEmpty": "Thùng rác trống. Thành viên bị xóa sẽ được lưu tạm thời tại đây trong 30 ngày.",
+  "trashAutoCleanNote": "Thành viên trong thùng rác quá 30 ngày sẽ bị xóa vĩnh viễn.",
+  "trashStatusDeleted": "Đã xóa",
+  "trashDeletedAt": "Đã xóa: {time}",
+  "trashRestoreButton": "Khôi phục",
+  "trashPurgeButton": "Dọn sạch",
+  "trashRestoreTitle": "Khôi Phục Thành Viên",
+  "trashRestoreMessage": "Bạn có chắc muốn khôi phục thành viên \"{name}\" vào sơ đồ?",
+  "trashRestoreSuccess": "Đã khôi phục thành viên {name}.",
+  "trashPurgeTitle": "Xóa Vĩnh Viễn",
+  "trashPurgeMessage": "Xóa vĩnh viễn toàn bộ thành viên trong thùng rác quá 30 ngày? Hành động này không thể hoàn tác.",
+  "trashPurgeSuccess": "Đã xóa vĩnh viễn {count} thành viên.",
+
+  "auditLogsTitle": "Nhật ký biên soạn",
+  "auditLogsEmpty": "Chưa có hoạt động biên soạn nào.",
+  "auditActionCreate": "{actor} đã thêm một thành viên mới",
+  "auditActionUpdate": "{actor} đã chỉnh sửa thành viên",
+  "auditActionDelete": "{actor} đã đưa thành viên vào thùng rác",
+  "auditActionRestore": "{actor} đã khôi phục thành viên",
+  "auditActionPurge": "{actor} đã dọn dẹp thùng rác",
+  "auditActionGeneric": "{actor} · {action}",
+  "auditUnknownActor": "Không xác định",
+  "auditChangedFields": "{name} · sửa: {fields}",
+
+  "@trashDeletedAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "@trashRestoreMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "@trashRestoreSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "@trashPurgeSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "@auditActionCreate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionUpdate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionDelete": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionRestore": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionPurge": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionGeneric": {
+    "placeholders": {
+      "actor": { "type": "String" },
+      "action": { "type": "String" }
+    }
+  }
 }

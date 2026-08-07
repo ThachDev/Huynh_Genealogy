@@ -24,6 +24,7 @@ class MemberModel extends MemberEntity {
     super.phone,
     super.education,
     super.occupation,
+    super.deletedAt,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
@@ -50,6 +51,7 @@ class MemberModel extends MemberEntity {
       phone: json['phone'] as String?,
       education: json['education'] as String?,
       occupation: json['occupation'] as String?,
+      deletedAt: json['deletedAt'] as String?,
     );
   }
 
@@ -76,6 +78,7 @@ class MemberModel extends MemberEntity {
       'phone': phone,
       'education': education,
       'occupation': occupation,
+      'deletedAt': deletedAt,
     };
   }
 
@@ -103,6 +106,7 @@ class MemberModel extends MemberEntity {
       phone: entity.phone,
       education: entity.education,
       occupation: entity.occupation,
+      deletedAt: entity.deletedAt,
     );
   }
 

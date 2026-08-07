@@ -3,6 +3,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import 'package:giatocviet/core/domain/entity/audit_log_entity.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
 import '../../domain/repository/family_tree_repository.dart';
 import '../source/family_tree_remote_data_source.dart';
@@ -88,6 +89,56 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       final result = await remoteDataSource.deleteMember(id, reassignChildrenToParent: reassignChildrenToParent);
       await localDataSource.clearAll();
       return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<MemberEntity>>> getTrashedMembers({int? familyId, int? branchId}) async {
+    try {
+      final models = await remoteDataSource.getTrashedMembers(familyId: familyId, branchId: branchId);
+      return Right(models);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, MemberEntity>> restoreMember(int id) async {
+    try {
+      final model = await remoteDataSource.restoreMember(id);
+      await localDataSource.clearAll();
+      return Right(model);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> purgeTrash({int days = 30}) async {
+    try {
+      final count = await remoteDataSource.purgeTrash(days: days);
+      await localDataSource.clearAll();
+      return Right(count);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<AuditLogEntity>>> getAuditLogs({int? familyId, int? limit}) async {
+    try {
+      final models = await remoteDataSource.getAuditLogs(familyId: familyId, limit: limit);
+      return Right(models);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     } on NetworkException catch (e) {

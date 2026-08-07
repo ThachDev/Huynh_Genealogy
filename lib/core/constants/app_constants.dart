@@ -22,6 +22,7 @@ class AppConstants {
       '/families/transfer-ownership';
   static const String eventsEndpoint = '/events';
   static const String authEndpoint = '/auth';
+  static const String auditLogsEndpoint = '/families/audit-logs';
 
   // Storage keys
   static const String cachedMembers = 'CACHED_MEMBERS';

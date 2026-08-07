@@ -12,6 +12,10 @@ export 'domain/usecase/get_approved_members.dart';
 export 'domain/usecase/update_member_role.dart';
 export 'domain/usecase/delete_family.dart';
 export 'domain/usecase/transfer_ownership.dart';
+export 'domain/usecase/get_trashed_members.dart';
+export 'domain/usecase/restore_member.dart';
+export 'domain/usecase/purge_trash.dart';
+export 'domain/usecase/get_audit_logs.dart';
 
 // Presentation Blocs
 export 'presentation/bloc/admin_member_form/admin_member_form_bloc.dart';
@@ -21,11 +25,15 @@ export 'presentation/bloc/admin_member_roles/admin_member_roles_bloc.dart';
 export 'presentation/bloc/admin_dissolve_clan_bloc/admin_dissolve_clan_bloc.dart';
 export 'presentation/bloc/admin_transfer_ownership_bloc/admin_transfer_ownership_bloc.dart';
 export 'presentation/bloc/member_account_links/member_account_links_bloc.dart';
+export 'presentation/bloc/member_trash/member_trash_bloc.dart';
+export 'presentation/bloc/audit_logs/audit_logs_bloc.dart';
 
 // Presentation Pages
 export 'presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 export 'presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 export 'presentation/pages/admin_dashboard/pages/admin_link_accounts_page.dart';
+export 'presentation/pages/admin_dashboard/pages/member_trash_page.dart';
+export 'presentation/pages/admin_dashboard/pages/audit_logs_page.dart';
 export 'presentation/pages/setting_dashboard/pages/admin_member_roles_page.dart';
 export 'presentation/pages/setting_dashboard/admin_settings_page.dart';
 

@@ -5,12 +5,17 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/data/model/branch_model.dart';
 import 'package:giatocviet/core/data/model/member_model.dart';
+import 'package:giatocviet/core/data/model/audit_log_model.dart';
 
 abstract class FamilyTreeRemoteDataSource {
   Future<List<MemberModel>> getMembers({int? branchId, int? familyId});
   Future<MemberModel> getMemberById(int id);
   Future<MemberModel> saveMember(MemberModel member);
   Future<bool> deleteMember(int id, {bool reassignChildrenToParent = false});
+  Future<List<MemberModel>> getTrashedMembers({int? familyId, int? branchId});
+  Future<MemberModel> restoreMember(int id);
+  Future<int> purgeTrash({int days = 30});
+  Future<List<AuditLogModel>> getAuditLogs({int? familyId, int? limit});
 
   Future<List<BranchModel>> getBranches({int? familyId});
   Future<BranchModel> getBranchById(int id);
@@ -205,6 +210,95 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         message: e.toString(),
         statusCode: null,
       );
+    }
+  }
+
+  @override
+  Future<List<MemberModel>> getTrashedMembers({int? familyId, int? branchId}) async {
+    try {
+      final Map<String, dynamic> queryParams = {};
+      if (familyId != null) queryParams['familyId'] = familyId;
+      if (branchId != null) queryParams['branchId'] = branchId;
+      final response = await dio.get(
+        '${AppConstants.membersEndpoint}/trash',
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+      );
+      final responseData = _parseMapResponse(response.data);
+      final data = _parseListData(responseData);
+      return data
+          .map((json) => MemberModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString(), statusCode: null);
+    }
+  }
+
+  @override
+  Future<MemberModel> restoreMember(int id) async {
+    try {
+      final response = await dio.post('${AppConstants.membersEndpoint}/$id/restore');
+      final responseData = _parseMapResponse(response.data);
+      return MemberModel.fromJson(_parseMapData(responseData));
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString(), statusCode: null);
+    }
+  }
+
+  @override
+  Future<int> purgeTrash({int days = 30}) async {
+    try {
+      final response = await dio.post(
+        '${AppConstants.membersEndpoint}/trash/purge',
+        queryParameters: {'days': days},
+      );
+      final responseData = _parseMapResponse(response.data);
+      final data = responseData['data'];
+      if (data is Map<String, dynamic>) {
+        return data['purged'] as int? ?? 0;
+      }
+      return 0;
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString(), statusCode: null);
+    }
+  }
+
+  @override
+  Future<List<AuditLogModel>> getAuditLogs({int? familyId, int? limit}) async {
+    try {
+      final Map<String, dynamic> queryParams = {};
+      if (familyId != null) queryParams['familyId'] = familyId;
+      if (limit != null) queryParams['limit'] = limit;
+      final response = await dio.get(
+        AppConstants.auditLogsEndpoint,
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+      );
+      final responseData = _parseMapResponse(response.data);
+      final data = _parseListData(responseData);
+      return data
+          .map((json) => AuditLogModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ?? AppLanguage.current?.errServerConnection ?? 'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString(), statusCode: null);
     }
   }
 

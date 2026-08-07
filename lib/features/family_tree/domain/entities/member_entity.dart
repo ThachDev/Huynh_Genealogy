@@ -27,6 +27,7 @@ class MemberEntity extends Equatable {
   final String? phone;
   final String? education;
   final String? occupation;
+  final String? deletedAt;
 
   const MemberEntity({
     required this.id,
@@ -51,6 +52,7 @@ class MemberEntity extends Equatable {
     this.phone,
     this.education,
     this.occupation,
+    this.deletedAt,
   });
 
   @override
@@ -77,6 +79,7 @@ class MemberEntity extends Equatable {
         phone,
         education,
         occupation,
+        deletedAt,
       ];
 
   MemberEntity copyWith({
@@ -102,6 +105,7 @@ class MemberEntity extends Equatable {
     String? phone,
     String? education,
     String? occupation,
+    String? deletedAt,
   }) {
     return MemberEntity(
       id: id ?? this.id,
@@ -126,6 +130,7 @@ class MemberEntity extends Equatable {
       phone: phone ?? this.phone,
       education: education ?? this.education,
       occupation: occupation ?? this.occupation,
+      deletedAt: deletedAt ?? this.deletedAt,
     );
   }
 }

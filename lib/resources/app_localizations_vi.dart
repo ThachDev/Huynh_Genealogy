@@ -2585,4 +2585,98 @@ class AppLocalizationsVi extends AppLocalizations {
   String confirmUnlinkMessage(Object name) {
     return 'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên $name?';
   }
+
+  @override
+  String get trashTitle => 'Thùng rác';
+
+  @override
+  String get trashEmpty =>
+      'Thùng rác trống. Thành viên bị xóa sẽ được lưu tạm thời tại đây trong 30 ngày.';
+
+  @override
+  String get trashAutoCleanNote =>
+      'Thành viên trong thùng rác quá 30 ngày sẽ bị xóa vĩnh viễn.';
+
+  @override
+  String get trashStatusDeleted => 'Đã xóa';
+
+  @override
+  String trashDeletedAt(String time) {
+    return 'Đã xóa: $time';
+  }
+
+  @override
+  String get trashRestoreButton => 'Khôi phục';
+
+  @override
+  String get trashPurgeButton => 'Dọn sạch';
+
+  @override
+  String get trashRestoreTitle => 'Khôi Phục Thành Viên';
+
+  @override
+  String trashRestoreMessage(String name) {
+    return 'Bạn có chắc muốn khôi phục thành viên \"$name\" vào sơ đồ?';
+  }
+
+  @override
+  String trashRestoreSuccess(String name) {
+    return 'Đã khôi phục thành viên $name.';
+  }
+
+  @override
+  String get trashPurgeTitle => 'Xóa Vĩnh Viễn';
+
+  @override
+  String get trashPurgeMessage =>
+      'Xóa vĩnh viễn toàn bộ thành viên trong thùng rác quá 30 ngày? Hành động này không thể hoàn tác.';
+
+  @override
+  String trashPurgeSuccess(int count) {
+    return 'Đã xóa vĩnh viễn $count thành viên.';
+  }
+
+  @override
+  String get auditLogsTitle => 'Nhật ký biên soạn';
+
+  @override
+  String get auditLogsEmpty => 'Chưa có hoạt động biên soạn nào.';
+
+  @override
+  String auditActionCreate(String actor) {
+    return '$actor đã thêm một thành viên mới';
+  }
+
+  @override
+  String auditActionUpdate(String actor) {
+    return '$actor đã chỉnh sửa thành viên';
+  }
+
+  @override
+  String auditActionDelete(String actor) {
+    return '$actor đã đưa thành viên vào thùng rác';
+  }
+
+  @override
+  String auditActionRestore(String actor) {
+    return '$actor đã khôi phục thành viên';
+  }
+
+  @override
+  String auditActionPurge(String actor) {
+    return '$actor đã dọn dẹp thùng rác';
+  }
+
+  @override
+  String auditActionGeneric(String actor, String action) {
+    return '$actor · $action';
+  }
+
+  @override
+  String get auditUnknownActor => 'Không xác định';
+
+  @override
+  String auditChangedFields(Object fields, Object name) {
+    return '$name · sửa: $fields';
+  }
 }

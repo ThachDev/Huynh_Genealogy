@@ -2584,4 +2584,98 @@ class AppLocalizationsEn extends AppLocalizations {
   String confirmUnlinkMessage(Object name) {
     return 'Are you sure you want to unlink the account of member $name?';
   }
+
+  @override
+  String get trashTitle => 'Trash';
+
+  @override
+  String get trashEmpty =>
+      'Trash is empty. Deleted members are temporarily stored here for 30 days.';
+
+  @override
+  String get trashAutoCleanNote =>
+      'Members in the trash for more than 30 days will be permanently deleted.';
+
+  @override
+  String get trashStatusDeleted => 'Deleted';
+
+  @override
+  String trashDeletedAt(String time) {
+    return 'Deleted: $time';
+  }
+
+  @override
+  String get trashRestoreButton => 'Restore';
+
+  @override
+  String get trashPurgeButton => 'Empty';
+
+  @override
+  String get trashRestoreTitle => 'Restore Member';
+
+  @override
+  String trashRestoreMessage(String name) {
+    return 'Are you sure you want to restore member \"$name\" to the tree?';
+  }
+
+  @override
+  String trashRestoreSuccess(String name) {
+    return 'Member $name restored.';
+  }
+
+  @override
+  String get trashPurgeTitle => 'Delete Permanently';
+
+  @override
+  String get trashPurgeMessage =>
+      'Permanently delete all members in the trash older than 30 days? This cannot be undone.';
+
+  @override
+  String trashPurgeSuccess(int count) {
+    return '$count members permanently deleted.';
+  }
+
+  @override
+  String get auditLogsTitle => 'Audit Log';
+
+  @override
+  String get auditLogsEmpty => 'No editing activity yet.';
+
+  @override
+  String auditActionCreate(String actor) {
+    return '$actor added a new member';
+  }
+
+  @override
+  String auditActionUpdate(String actor) {
+    return '$actor edited a member';
+  }
+
+  @override
+  String auditActionDelete(String actor) {
+    return '$actor moved a member to trash';
+  }
+
+  @override
+  String auditActionRestore(String actor) {
+    return '$actor restored a member';
+  }
+
+  @override
+  String auditActionPurge(String actor) {
+    return '$actor cleared the trash';
+  }
+
+  @override
+  String auditActionGeneric(String actor, String action) {
+    return '$actor · $action';
+  }
+
+  @override
+  String get auditUnknownActor => 'Unknown';
+
+  @override
+  String auditChangedFields(Object fields, Object name) {
+    return '$name · changed: $fields';
+  }
 }

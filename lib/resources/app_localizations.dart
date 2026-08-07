@@ -4783,6 +4783,144 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?'**
   String confirmUnlinkMessage(Object name);
+
+  /// No description provided for @trashTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thùng rác'**
+  String get trashTitle;
+
+  /// No description provided for @trashEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thùng rác trống. Thành viên bị xóa sẽ được lưu tạm thời tại đây trong 30 ngày.'**
+  String get trashEmpty;
+
+  /// No description provided for @trashAutoCleanNote.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên trong thùng rác quá 30 ngày sẽ bị xóa vĩnh viễn.'**
+  String get trashAutoCleanNote;
+
+  /// No description provided for @trashStatusDeleted.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xóa'**
+  String get trashStatusDeleted;
+
+  /// No description provided for @trashDeletedAt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xóa: {time}'**
+  String trashDeletedAt(String time);
+
+  /// No description provided for @trashRestoreButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục'**
+  String get trashRestoreButton;
+
+  /// No description provided for @trashPurgeButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dọn sạch'**
+  String get trashPurgeButton;
+
+  /// No description provided for @trashRestoreTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi Phục Thành Viên'**
+  String get trashRestoreTitle;
+
+  /// No description provided for @trashRestoreMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc muốn khôi phục thành viên \"{name}\" vào sơ đồ?'**
+  String trashRestoreMessage(String name);
+
+  /// No description provided for @trashRestoreSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã khôi phục thành viên {name}.'**
+  String trashRestoreSuccess(String name);
+
+  /// No description provided for @trashPurgeTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa Vĩnh Viễn'**
+  String get trashPurgeTitle;
+
+  /// No description provided for @trashPurgeMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa vĩnh viễn toàn bộ thành viên trong thùng rác quá 30 ngày? Hành động này không thể hoàn tác.'**
+  String get trashPurgeMessage;
+
+  /// No description provided for @trashPurgeSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xóa vĩnh viễn {count} thành viên.'**
+  String trashPurgeSuccess(int count);
+
+  /// No description provided for @auditLogsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký biên soạn'**
+  String get auditLogsTitle;
+
+  /// No description provided for @auditLogsEmpty.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có hoạt động biên soạn nào.'**
+  String get auditLogsEmpty;
+
+  /// No description provided for @auditActionCreate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã thêm một thành viên mới'**
+  String auditActionCreate(String actor);
+
+  /// No description provided for @auditActionUpdate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã chỉnh sửa thành viên'**
+  String auditActionUpdate(String actor);
+
+  /// No description provided for @auditActionDelete.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã đưa thành viên vào thùng rác'**
+  String auditActionDelete(String actor);
+
+  /// No description provided for @auditActionRestore.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã khôi phục thành viên'**
+  String auditActionRestore(String actor);
+
+  /// No description provided for @auditActionPurge.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã dọn dẹp thùng rác'**
+  String auditActionPurge(String actor);
+
+  /// No description provided for @auditActionGeneric.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} · {action}'**
+  String auditActionGeneric(String actor, String action);
+
+  /// No description provided for @auditUnknownActor.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không xác định'**
+  String get auditUnknownActor;
+
+  /// No description provided for @auditChangedFields.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · sửa: {fields}'**
+  String auditChangedFields(Object fields, Object name);
 }
 
 class _AppLocalizationsDelegate

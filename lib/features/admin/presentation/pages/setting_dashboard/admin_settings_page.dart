@@ -20,6 +20,8 @@ import 'pages/admin_regulations_page.dart';
 import 'pages/admin_help_center_page.dart';
 import 'pages/admin_about_us_page.dart';
 import 'pages/admin_member_roles_page.dart';
+import '../admin_dashboard/pages/member_trash_page.dart';
+import '../admin_dashboard/pages/audit_logs_page.dart';
 import 'pages/admin_settings_profile_card.dart';
 import '../admin_dashboard/pages/admin_member_form_page.dart';
 import '../admin_dashboard/pages/admin_link_accounts_page.dart';
@@ -368,6 +370,18 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       icon: LucideIcons.shieldAlert,
                       title: l10n.transferOwnershipLabel,
                       destination: const AdminTransferOwnershipPage(),
+                    ),
+                    _buildSettingsTile(
+                      context: context,
+                      icon: LucideIcons.trash,
+                      title: l10n.trashTitle,
+                      destination: const MemberTrashPage(),
+                    ),
+                    _buildSettingsTile(
+                      context: context,
+                      icon: LucideIcons.clipboardList,
+                      title: l10n.auditLogsTitle,
+                      destination: const AuditLogsPage(),
                     ),
                     _buildSettingsTile(
                       context: context,

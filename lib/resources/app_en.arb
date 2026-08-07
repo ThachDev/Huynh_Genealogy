@@ -945,5 +945,82 @@
   "inviteSentSuccess": "Invitation sent to {email}.",
   "unlinkSuccess": "Account unlinked.",
   "confirmUnlinkTitle": "Confirm Unlink",
-  "confirmUnlinkMessage": "Are you sure you want to unlink the account of member {name}?"
+  "confirmUnlinkMessage": "Are you sure you want to unlink the account of member {name}?",
+
+  "trashTitle": "Trash",
+  "trashEmpty": "Trash is empty. Deleted members are temporarily stored here for 30 days.",
+  "trashAutoCleanNote": "Members in the trash for more than 30 days will be permanently deleted.",
+  "trashStatusDeleted": "Deleted",
+  "trashDeletedAt": "Deleted: {time}",
+  "trashRestoreButton": "Restore",
+  "trashPurgeButton": "Empty",
+  "trashRestoreTitle": "Restore Member",
+  "trashRestoreMessage": "Are you sure you want to restore member \"{name}\" to the tree?",
+  "trashRestoreSuccess": "Member {name} restored.",
+  "trashPurgeTitle": "Delete Permanently",
+  "trashPurgeMessage": "Permanently delete all members in the trash older than 30 days? This cannot be undone.",
+  "trashPurgeSuccess": "{count} members permanently deleted.",
+
+  "auditLogsTitle": "Audit Log",
+  "auditLogsEmpty": "No editing activity yet.",
+  "auditActionCreate": "{actor} added a new member",
+  "auditActionUpdate": "{actor} edited a member",
+  "auditActionDelete": "{actor} moved a member to trash",
+  "auditActionRestore": "{actor} restored a member",
+  "auditActionPurge": "{actor} cleared the trash",
+  "auditActionGeneric": "{actor} · {action}",
+  "auditUnknownActor": "Unknown",
+  "auditChangedFields": "{name} · changed: {fields}",
+
+  "@trashDeletedAt": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "@trashRestoreMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "@trashRestoreSuccess": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "@trashPurgeSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "@auditActionCreate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionUpdate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionDelete": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionRestore": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionPurge": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "@auditActionGeneric": {
+    "placeholders": {
+      "actor": { "type": "String" },
+      "action": { "type": "String" }
+    }
+  }
 }

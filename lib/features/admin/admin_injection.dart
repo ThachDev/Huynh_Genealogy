@@ -62,6 +62,20 @@ void initAdminDependencies(GetIt sl) {
     ),
   );
 
+  sl.registerFactory(
+    () => MemberTrashBloc(
+      getTrashedMembers: sl(),
+      restoreMember: sl(),
+      purgeTrash: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => AuditLogsBloc(
+      getAuditLogs: sl(),
+    ),
+  );
+
   // Use Cases
   sl.registerLazySingleton(() => SaveMember(sl()));
   sl.registerLazySingleton(() => DeleteMember(sl()));

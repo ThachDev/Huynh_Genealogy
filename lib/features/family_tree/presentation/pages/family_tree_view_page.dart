@@ -476,6 +476,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
   }
 
   Widget _buildSearchTitleWidget(BuildContext context, String appBarTitle) {
+    final l10n = AppLocalizations.of(context)!;
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
       switchInCurve: Curves.easeOutCubic,
@@ -517,7 +518,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                 ),
                 decoration: InputDecoration(
                   isDense: true,
-                  hintText: 'Tìm kiếm thành viên...',
+                  hintText: l10n.searchMemberHint,
                   hintStyle: GoogleFonts.inter(
                     fontSize: 12.5,
                     color: context.textSecondary.withValues(alpha: 0.6),
@@ -573,6 +574,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 
   Widget _buildSearchDropdownOverlay(
       BuildContext context, List<MemberEntity> members) {
+    final l10n = AppLocalizations.of(context)!;
     final filteredMembers = members.where((m) {
       if (_searchQuery.isEmpty) return true;
       final q = _searchQuery.toLowerCase();
@@ -624,7 +626,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Không tìm thấy thành viên phù hợp',
+                            l10n.memberSearchNoResult,
                             style: GoogleFonts.inter(
                               fontSize: 13,
                               color: context.textSecondary,
@@ -650,7 +652,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                         itemBuilder: (context, index) {
                           final m = filteredMembers[index];
                           final genText = m.generation != null
-                              ? 'Đời ${_TreeEdgePainter.toRoman(m.generation!)}'
+                              ? l10n.generationLevelFormat(
+                                  _TreeEdgePainter.toRoman(m.generation!))
                               : '';
 
                           return ListTile(
@@ -669,7 +672,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                               ),
                             ),
                             subtitle: Text(
-                              [genText, if (!m.isAlive) 'Đã mất']
+                              [genText, if (!m.isAlive) l10n.deceasedLabel]
                                   .where((s) => s.isNotEmpty)
                                   .join(' • '),
                               style: GoogleFonts.inter(
@@ -731,7 +734,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
               _isSearching ? LucideIcons.x : LucideIcons.search,
               color: context.textOnPrimary,
             ),
-            tooltip: _isSearching ? 'Đóng tìm kiếm' : 'Tìm kiếm thành viên',
+            tooltip: _isSearching ? l10n.closeSearchTooltip : l10n.searchMemberTooltip,
             onPressed: () {
               setState(() {
                 _isSearching = !_isSearching;
@@ -762,7 +765,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
           FloatingActionButton(
             heroTag: 'toggle_badges_fab',
             tooltip:
-                _showGenerationBadges ? 'Ẩn nhãn thế hệ' : 'Hiện nhãn thế hệ',
+                _showGenerationBadges ? l10n.hideGenBadges : l10n.showGenBadges,
             onPressed: () {
               setState(() {
                 _showGenerationBadges = !_showGenerationBadges;
@@ -782,7 +785,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
           const SizedBox(height: 8),
           FloatingActionButton(
             heroTag: 'fit_overview_fab',
-            tooltip: 'Tổng quan sơ đồ',
+            tooltip: l10n.treeOverviewTooltip,
             onPressed: _fitTreeOverview,
             backgroundColor:
                 context.resolve(Colors.white, const Color(0xFF2A2A2A)),
@@ -1008,7 +1011,10 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                       left: 14,
                                       top: screenY - 7,
                                       child: Text(
-                                        'ĐỜI ${_TreeEdgePainter.toRoman(gen)}',
+                                        l10n
+                                            .generationLevelFormat(
+                                                _TreeEdgePainter.toRoman(gen))
+                                            .toUpperCase(),
                                         style: GoogleFonts.beVietnamPro(
                                           fontSize: 9.5,
                                           fontWeight: FontWeight.bold,

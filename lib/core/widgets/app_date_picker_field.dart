@@ -36,8 +36,8 @@ class AppDatePickerField extends StatelessWidget {
       final sm = month.toString().padLeft(2, '0');
       final ld = lunar.day.toString().padLeft(2, '0');
       final lm = lunar.month.toString().padLeft(2, '0');
-      final leap = lunar.leapMonth == true ? ' Nhuận' : '';
       final l10n = AppLocalizations.of(context)!;
+      final leap = lunar.leapMonth == true ? l10n.leapMonthInline : '';
       return {
         'solar': '$sd/$sm/$year',
         'lunar': '$ld/$lm$leap ${l10n.lunarCalendar}',

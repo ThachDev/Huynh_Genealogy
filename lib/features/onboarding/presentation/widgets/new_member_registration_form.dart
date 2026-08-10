@@ -111,7 +111,8 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
       if (pickedFile != null) {
         if (await exceedsMaxFileSize(pickedFile, 5)) {
           if (!mounted) return;
-          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 5MB');
+          AppSnackBar.error(
+              context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
           return;
         }
         widget.onAvatarPathChanged(pickedFile.path);

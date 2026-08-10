@@ -300,7 +300,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     context: context,
                     icon: LucideIcons.bell,
                     title: l10n.notificationsSectionTitle,
-                    trailingText: _getNotificationSummaryText(),
+                    trailingText: _getNotificationSummaryText(l10n),
                     onTap: () => _showNotificationSettingsBottomSheet(
                         context, family, l10n),
                   ),
@@ -553,14 +553,14 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     );
   }
 
-  String _getNotificationSummaryText() {
+  String _getNotificationSummaryText(AppLocalizations l10n) {
     int count = 0;
     if (_ntfEvents) count++;
     if (_ntfAnnouncements) count++;
     if (_ntfWishes) count++;
     if (_ntfAnniversaries) count++;
-    if (count == 0) return 'Đã tắt';
-    return 'Đang bật ($count/4)';
+    if (count == 0) return l10n.disabledLabel;
+    return l10n.enabledCountFormat(count);
   }
 
   void _showNotificationSettingsBottomSheet(
@@ -605,7 +605,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     context: context,
                     icon: LucideIcons.calendar,
                     title: l10n.notifyEventLabel,
-                    subtitle: 'Cập nhật lịch sự kiện và họp mặt dòng tộc',
+                    subtitle: l10n.notifEventSubtitle,
                     value: _ntfEvents,
                     onChanged: (v) {
                       setState(() => _ntfEvents = v);
@@ -618,7 +618,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     icon: LucideIcons.megaphone,
                     title: l10n.notifyAnnouncementLabel,
                     subtitle:
-                        'Nhận tin tức và thông cáo quan trọng từ Ban Quản Trị',
+                        l10n.notifNewsSubtitle,
                     value: _ntfAnnouncements,
                     onChanged: (v) {
                       setState(() => _ntfAnnouncements = v);
@@ -631,7 +631,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     icon: LucideIcons.heart,
                     title: l10n.notifyWishLabel,
                     subtitle:
-                        'Thông báo khi nhận được lời chúc từ các thành viên',
+                        l10n.notifWishSubtitle,
                     value: _ntfWishes,
                     onChanged: (v) {
                       setState(() => _ntfWishes = v);
@@ -644,7 +644,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     icon: LucideIcons.cake,
                     title: l10n.notifyAnniversaryLabel,
                     subtitle:
-                        'Thông báo nhắc lịch giỗ chạp và sinh nhật thành viên',
+                        l10n.notifAnniversarySubtitle,
                     value: _ntfAnniversaries,
                     onChanged: (v) {
                       setState(() => _ntfAnniversaries = v);

@@ -70,7 +70,7 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
       if (picked != null) {
         if (await exceedsMaxFileSize(picked, 5)) {
           if (!mounted) return;
-          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 5MB');
+          AppSnackBar.error(context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
           return;
         }
         setState(() {

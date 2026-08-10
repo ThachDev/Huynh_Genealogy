@@ -2675,4 +2675,100 @@ class AppLocalizationsVi extends AppLocalizations {
   String auditChangedFields(Object fields, Object name) {
     return '$name · sửa: $fields';
   }
+
+  @override
+  String get unlinkFailed => 'Gỡ liên kết tài khoản thất bại';
+
+  @override
+  String get auditActorLabel => 'Người thực hiện:';
+
+  @override
+  String get auditEmailLabel => 'Email:';
+
+  @override
+  String get auditActionLabel => 'Hành động:';
+
+  @override
+  String get auditTargetLabel => 'Đối tượng:';
+
+  @override
+  String get auditTimeLabel => 'Thời gian:';
+
+  @override
+  String get auditChangedFieldsTitle => 'Chi tiết các trường thay đổi:';
+
+  @override
+  String get viewMemberPage => 'Xem trang thành viên';
+
+  @override
+  String get memberNoLongerExists =>
+      'Thành viên này có thể đã bị xóa hoặc không còn tồn tại.';
+
+  @override
+  String get filterCreate => 'Thêm mới';
+
+  @override
+  String get filterUpdate => 'Cập nhật';
+
+  @override
+  String get restoreLabel => 'Khôi phục';
+
+  @override
+  String get disabledLabel => 'Đã tắt';
+
+  @override
+  String enabledCountFormat(int count) {
+    return 'Đang bật ($count/4)';
+  }
+
+  @override
+  String get notifEventSubtitle => 'Cập nhật lịch sự kiện và họp mặt dòng tộc';
+
+  @override
+  String get notifNewsSubtitle =>
+      'Nhận tin tức và thông cáo quan trọng từ Ban Quản Trị';
+
+  @override
+  String get notifWishSubtitle =>
+      'Thông báo khi nhận được lời chúc từ các thành viên';
+
+  @override
+  String get notifAnniversarySubtitle =>
+      'Thông báo nhắc lịch giỗ chạp và sinh nhật thành viên';
+
+  @override
+  String imageTooLargeFormat(int size) {
+    return 'Ảnh phải nhỏ hơn ${size}MB';
+  }
+
+  @override
+  String generationTooHighFormat(int max) {
+    return 'Thế hệ không thể vượt quá thế hệ hiện tại + 1 (tối đa: $max)';
+  }
+
+  @override
+  String get closeSearchTooltip => 'Đóng tìm kiếm';
+
+  @override
+  String get searchMemberTooltip => 'Tìm kiếm thành viên';
+
+  @override
+  String get hideGenBadges => 'Ẩn nhãn thế hệ';
+
+  @override
+  String get showGenBadges => 'Hiện nhãn thế hệ';
+
+  @override
+  String get treeOverviewTooltip => 'Tổng quan sơ đồ';
+
+  @override
+  String get announcementBadge => 'THÔNG BÁO';
+
+  @override
+  String generationLevelFormat(String gen) {
+    return 'Đời $gen';
+  }
+
+  @override
+  String get memberSearchNoResult => 'Không tìm thấy thành viên phù hợp';
 }

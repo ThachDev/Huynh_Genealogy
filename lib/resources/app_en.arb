@@ -1021,5 +1021,53 @@
       "actor": { "type": "String" },
       "action": { "type": "String" }
     }
-  }
+  },
+  "unlinkFailed": "Failed to unlink account",
+  "auditActorLabel": "Performed by:",
+  "auditEmailLabel": "Email:",
+  "auditActionLabel": "Action:",
+  "auditTargetLabel": "Target:",
+  "auditTimeLabel": "Time:",
+  "auditChangedFieldsTitle": "Changed fields detail:",
+  "viewMemberPage": "View member page",
+  "memberNoLongerExists": "This member may have been deleted or no longer exists.",
+  "filterCreate": "Added",
+  "filterUpdate": "Updated",
+  "restoreLabel": "Restore",
+  "disabledLabel": "Disabled",
+  "enabledCountFormat": "Enabled ({count}/4)",
+  "@enabledCountFormat": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "notifEventSubtitle": "Updates on clan events and gatherings",
+  "notifNewsSubtitle": "Receive news and important announcements from the Board of Management",
+  "notifWishSubtitle": "Notify when receiving wishes from members",
+  "notifAnniversarySubtitle": "Remind of death anniversaries and member birthdays",
+  "imageTooLargeFormat": "Image must be smaller than {size}MB",
+  "@imageTooLargeFormat": {
+    "placeholders": {
+      "size": { "type": "int" }
+    }
+  },
+  "generationTooHighFormat": "Generation cannot exceed the current generation + 1 (max: {max})",
+  "@generationTooHighFormat": {
+    "placeholders": {
+      "max": { "type": "int" }
+    }
+  },
+  "closeSearchTooltip": "Close search",
+  "searchMemberTooltip": "Search member",
+  "hideGenBadges": "Hide generation labels",
+  "showGenBadges": "Show generation labels",
+  "treeOverviewTooltip": "Tree overview",
+  "announcementBadge": "ANNOUNCEMENT",
+  "generationLevelFormat": "Generation {gen}",
+  "@generationLevelFormat": {
+    "placeholders": {
+      "gen": { "type": "String" }
+    }
+  },
+  "memberSearchNoResult": "No matching members found"
 }

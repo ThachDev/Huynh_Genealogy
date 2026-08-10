@@ -121,7 +121,7 @@ class AnnouncementItemCard extends StatelessWidget {
                   children: [
                     const Spacer(),
                     Text(
-                      'THÔNG BÁO',
+                      l10n.announcementBadge,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 10.5,
                         fontWeight: FontWeight.w700,

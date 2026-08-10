@@ -168,7 +168,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       if (pickedFile != null) {
         if (await exceedsMaxFileSize(pickedFile, 10)) {
           if (!mounted) return;
-          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 10MB');
+          AppSnackBar.error(context, AppLocalizations.of(context)!.imageTooLargeFormat(10));
           return;
         }
         final tempDir = await getTemporaryDirectory();

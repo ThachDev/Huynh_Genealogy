@@ -4915,6 +4915,174 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'{name} · sửa: {fields}'**
   String auditChangedFields(Object fields, Object name);
+
+  /// No description provided for @unlinkFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gỡ liên kết tài khoản thất bại'**
+  String get unlinkFailed;
+
+  /// No description provided for @auditActorLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người thực hiện:'**
+  String get auditActorLabel;
+
+  /// No description provided for @auditEmailLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email:'**
+  String get auditEmailLabel;
+
+  /// No description provided for @auditActionLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hành động:'**
+  String get auditActionLabel;
+
+  /// No description provided for @auditTargetLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đối tượng:'**
+  String get auditTargetLabel;
+
+  /// No description provided for @auditTimeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian:'**
+  String get auditTimeLabel;
+
+  /// No description provided for @auditChangedFieldsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết các trường thay đổi:'**
+  String get auditChangedFieldsTitle;
+
+  /// No description provided for @viewMemberPage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trang thành viên'**
+  String get viewMemberPage;
+
+  /// No description provided for @memberNoLongerExists.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên này có thể đã bị xóa hoặc không còn tồn tại.'**
+  String get memberNoLongerExists;
+
+  /// No description provided for @filterCreate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm mới'**
+  String get filterCreate;
+
+  /// No description provided for @filterUpdate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật'**
+  String get filterUpdate;
+
+  /// No description provided for @restoreLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục'**
+  String get restoreLabel;
+
+  /// No description provided for @disabledLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tắt'**
+  String get disabledLabel;
+
+  /// No description provided for @enabledCountFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang bật ({count}/4)'**
+  String enabledCountFormat(int count);
+
+  /// No description provided for @notifEventSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật lịch sự kiện và họp mặt dòng tộc'**
+  String get notifEventSubtitle;
+
+  /// No description provided for @notifNewsSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhận tin tức và thông cáo quan trọng từ Ban Quản Trị'**
+  String get notifNewsSubtitle;
+
+  /// No description provided for @notifWishSubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo khi nhận được lời chúc từ các thành viên'**
+  String get notifWishSubtitle;
+
+  /// No description provided for @notifAnniversarySubtitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo nhắc lịch giỗ chạp và sinh nhật thành viên'**
+  String get notifAnniversarySubtitle;
+
+  /// No description provided for @imageTooLargeFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh phải nhỏ hơn {size}MB'**
+  String imageTooLargeFormat(int size);
+
+  /// No description provided for @generationTooHighFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thế hệ không thể vượt quá thế hệ hiện tại + 1 (tối đa: {max})'**
+  String generationTooHighFormat(int max);
+
+  /// No description provided for @closeSearchTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng tìm kiếm'**
+  String get closeSearchTooltip;
+
+  /// No description provided for @searchMemberTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm thành viên'**
+  String get searchMemberTooltip;
+
+  /// No description provided for @hideGenBadges.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn nhãn thế hệ'**
+  String get hideGenBadges;
+
+  /// No description provided for @showGenBadges.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện nhãn thế hệ'**
+  String get showGenBadges;
+
+  /// No description provided for @treeOverviewTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng quan sơ đồ'**
+  String get treeOverviewTooltip;
+
+  /// No description provided for @announcementBadge.
+  ///
+  /// In vi, this message translates to:
+  /// **'THÔNG BÁO'**
+  String get announcementBadge;
+
+  /// No description provided for @generationLevelFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đời {gen}'**
+  String generationLevelFormat(String gen);
+
+  /// No description provided for @memberSearchNoResult.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy thành viên phù hợp'**
+  String get memberSearchNoResult;
 }
 
 class _AppLocalizationsDelegate

@@ -2674,4 +2674,99 @@ class AppLocalizationsEn extends AppLocalizations {
   String auditChangedFields(Object fields, Object name) {
     return '$name · changed: $fields';
   }
+
+  @override
+  String get unlinkFailed => 'Failed to unlink account';
+
+  @override
+  String get auditActorLabel => 'Performed by:';
+
+  @override
+  String get auditEmailLabel => 'Email:';
+
+  @override
+  String get auditActionLabel => 'Action:';
+
+  @override
+  String get auditTargetLabel => 'Target:';
+
+  @override
+  String get auditTimeLabel => 'Time:';
+
+  @override
+  String get auditChangedFieldsTitle => 'Changed fields detail:';
+
+  @override
+  String get viewMemberPage => 'View member page';
+
+  @override
+  String get memberNoLongerExists =>
+      'This member may have been deleted or no longer exists.';
+
+  @override
+  String get filterCreate => 'Added';
+
+  @override
+  String get filterUpdate => 'Updated';
+
+  @override
+  String get restoreLabel => 'Restore';
+
+  @override
+  String get disabledLabel => 'Disabled';
+
+  @override
+  String enabledCountFormat(int count) {
+    return 'Enabled ($count/4)';
+  }
+
+  @override
+  String get notifEventSubtitle => 'Updates on clan events and gatherings';
+
+  @override
+  String get notifNewsSubtitle =>
+      'Receive news and important announcements from the Board of Management';
+
+  @override
+  String get notifWishSubtitle => 'Notify when receiving wishes from members';
+
+  @override
+  String get notifAnniversarySubtitle =>
+      'Remind of death anniversaries and member birthdays';
+
+  @override
+  String imageTooLargeFormat(int size) {
+    return 'Image must be smaller than ${size}MB';
+  }
+
+  @override
+  String generationTooHighFormat(int max) {
+    return 'Generation cannot exceed the current generation + 1 (max: $max)';
+  }
+
+  @override
+  String get closeSearchTooltip => 'Close search';
+
+  @override
+  String get searchMemberTooltip => 'Search member';
+
+  @override
+  String get hideGenBadges => 'Hide generation labels';
+
+  @override
+  String get showGenBadges => 'Show generation labels';
+
+  @override
+  String get treeOverviewTooltip => 'Tree overview';
+
+  @override
+  String get announcementBadge => 'ANNOUNCEMENT';
+
+  @override
+  String generationLevelFormat(String gen) {
+    return 'Generation $gen';
+  }
+
+  @override
+  String get memberSearchNoResult => 'No matching members found';
 }

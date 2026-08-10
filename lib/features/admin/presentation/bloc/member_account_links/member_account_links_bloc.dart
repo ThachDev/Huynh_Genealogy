@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:giatocviet/core/errors/failures.dart';
 import 'package:giatocviet/features/admin/domain/entities/member_account_link_entity.dart';
 import '../../../domain/usecase/get_account_links.dart';
 import '../../../domain/usecase/link_member_account.dart';
@@ -69,8 +70,9 @@ class MemberAccountLinksBloc
       (failure) => emit(MemberAccountLinksFailure(message: failure.message)),
       (success) => success
           ? emit(MemberAccountUnlinkedSuccess(memberId: event.memberId))
-          : emit(const MemberAccountLinksFailure(
-              message: 'Gỡ liên kết tài khoản thất bại')),
+          : emit(MemberAccountLinksFailure(
+              message: AppLanguage.current?.unlinkFailed ??
+                  'Gỡ liên kết tài khoản thất bại')),
     );
   }
 }

@@ -1031,5 +1031,53 @@
       "actor": { "type": "String" },
       "action": { "type": "String" }
     }
-  }
+  },
+  "unlinkFailed": "Gỡ liên kết tài khoản thất bại",
+  "auditActorLabel": "Người thực hiện:",
+  "auditEmailLabel": "Email:",
+  "auditActionLabel": "Hành động:",
+  "auditTargetLabel": "Đối tượng:",
+  "auditTimeLabel": "Thời gian:",
+  "auditChangedFieldsTitle": "Chi tiết các trường thay đổi:",
+  "viewMemberPage": "Xem trang thành viên",
+  "memberNoLongerExists": "Thành viên này có thể đã bị xóa hoặc không còn tồn tại.",
+  "filterCreate": "Thêm mới",
+  "filterUpdate": "Cập nhật",
+  "restoreLabel": "Khôi phục",
+  "disabledLabel": "Đã tắt",
+  "enabledCountFormat": "Đang bật ({count}/4)",
+  "@enabledCountFormat": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "notifEventSubtitle": "Cập nhật lịch sự kiện và họp mặt dòng tộc",
+  "notifNewsSubtitle": "Nhận tin tức và thông cáo quan trọng từ Ban Quản Trị",
+  "notifWishSubtitle": "Thông báo khi nhận được lời chúc từ các thành viên",
+  "notifAnniversarySubtitle": "Thông báo nhắc lịch giỗ chạp và sinh nhật thành viên",
+  "imageTooLargeFormat": "Ảnh phải nhỏ hơn {size}MB",
+  "@imageTooLargeFormat": {
+    "placeholders": {
+      "size": { "type": "int" }
+    }
+  },
+  "generationTooHighFormat": "Thế hệ không thể vượt quá thế hệ hiện tại + 1 (tối đa: {max})",
+  "@generationTooHighFormat": {
+    "placeholders": {
+      "max": { "type": "int" }
+    }
+  },
+  "closeSearchTooltip": "Đóng tìm kiếm",
+  "searchMemberTooltip": "Tìm kiếm thành viên",
+  "hideGenBadges": "Ẩn nhãn thế hệ",
+  "showGenBadges": "Hiện nhãn thế hệ",
+  "treeOverviewTooltip": "Tổng quan sơ đồ",
+  "announcementBadge": "THÔNG BÁO",
+  "generationLevelFormat": "Đời {gen}",
+  "@generationLevelFormat": {
+    "placeholders": {
+      "gen": { "type": "String" }
+    }
+  },
+  "memberSearchNoResult": "Không tìm thấy thành viên phù hợp"
 }

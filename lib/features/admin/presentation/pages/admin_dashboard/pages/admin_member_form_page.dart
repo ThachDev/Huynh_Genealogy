@@ -212,7 +212,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       if (pickedFile != null) {
         if (await exceedsMaxFileSize(pickedFile, 5)) {
           if (!mounted) return;
-          AppSnackBar.error(context, 'Ảnh phải nhỏ hơn 5MB');
+          AppSnackBar.error(context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
           return;
         }
         // Copy file sang thư mục tạm của app để tránh bị xóa khỏi cache picker
@@ -340,7 +340,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       if (maxGen != null && inputGen > maxGen + 1) {
         AppSnackBar.error(
           context,
-          'Thế hệ không thể vượt quá thế hệ hiện tại + 1 (tối đa: ${maxGen + 1})',
+          AppLocalizations.of(context)!
+              .generationTooHighFormat(maxGen + 1),
         );
         return;
       }

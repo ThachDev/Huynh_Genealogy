@@ -252,7 +252,7 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
                                 value: LinkStatusFilter.all,
                                 child: Center(
                                   child: Text(
-                                    'Tất cả',
+                                    l10n.allLabel,
                                     style:
                                         GoogleFonts.beVietnamPro(fontSize: 12),
                                   ),

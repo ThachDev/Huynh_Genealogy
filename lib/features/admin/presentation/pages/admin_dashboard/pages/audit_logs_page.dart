@@ -119,19 +119,19 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                 const SizedBox(height: 12),
 
                 // Thông tin chi tiết
-                _buildDetailRow(ctx, 'Người thực hiện:', actor),
+                _buildDetailRow(ctx, l10n.auditActorLabel, actor),
                 if (log.actorEmail != null && log.actorEmail!.isNotEmpty)
-                  _buildDetailRow(ctx, 'Email:', log.actorEmail!),
-                _buildDetailRow(ctx, 'Hành động:', _AuditLogItem.getActionText(log, l10n)),
+                  _buildDetailRow(ctx, l10n.auditEmailLabel, log.actorEmail!),
+                _buildDetailRow(ctx, l10n.auditActionLabel, _AuditLogItem.getActionText(log, l10n)),
                 if (targetName.isNotEmpty)
-                  _buildDetailRow(ctx, 'Đối tượng:', targetName),
+                  _buildDetailRow(ctx, l10n.auditTargetLabel, targetName),
                 if (log.createdAt != null)
-                  _buildDetailRow(ctx, 'Thời gian:', log.createdAt!.replaceAll('T', ' ').split('.').first),
+                  _buildDetailRow(ctx, l10n.auditTimeLabel, log.createdAt!.replaceAll('T', ' ').split('.').first),
 
                 if (changes is Map && changes.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   Text(
-                    'Chi tiết các trường thay đổi:',
+                    l10n.auditChangedFieldsTitle,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -177,7 +177,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                     return SizedBox(
                       width: double.infinity,
                       child: AppButton(
-                        label: 'Xem trang thành viên',
+                        label: l10n.viewMemberPage,
                         variant: AppButtonVariant.primary,
                         prefixIcon: const Icon(LucideIcons.user, size: 16),
                         onPressed: () {
@@ -201,7 +201,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                             } else {
                               AppSnackBar.info(
                                 context,
-                                'Thành viên này có thể đã bị xóa hoặc không còn tồn tại.',
+                                l10n.memberNoLongerExists,
                               );
                             }
                           }
@@ -269,15 +269,15 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
-                    _buildFilterChip('all', 'Tất cả'),
+                    _buildFilterChip('all', l10n.allLabel),
                     const SizedBox(width: 8),
-                    _buildFilterChip('create', 'Thêm mới'),
+                    _buildFilterChip('create', l10n.filterCreate),
                     const SizedBox(width: 8),
-                    _buildFilterChip('update', 'Cập nhật'),
+                    _buildFilterChip('update', l10n.filterUpdate),
                     const SizedBox(width: 8),
-                    _buildFilterChip('delete', 'Xóa'),
+                    _buildFilterChip('delete', l10n.deleteLabel),
                     const SizedBox(width: 8),
-                    _buildFilterChip('restore', 'Khôi phục'),
+                    _buildFilterChip('restore', l10n.restoreLabel),
                   ],
                 ),
               ),

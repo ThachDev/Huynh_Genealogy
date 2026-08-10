@@ -61,7 +61,8 @@ class FamilyTreeViewPage extends StatefulWidget {
   State<FamilyTreeViewPage> createState() => _FamilyTreeViewPageState();
 }
 
-class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
+class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
+    with TickerProviderStateMixin {
   double get _nodeHeight {
     final authState = context.read<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
@@ -74,11 +75,56 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 
   final TransformationController _transformationController =
       TransformationController();
+  AnimationController? _matrixAnimationController;
+  Animation<Matrix4>? _matrixAnimation;
 
   bool _hasFitTree = false;
+  bool _showGenerationBadges = true;
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  String _searchQuery = '';
   Map<int, Offset>? _lastPositions;
   Size? _lastViewportSize;
   Size _lastTreeSize = Size.zero;
+
+  void _onTransformChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _onSearchChanged() {
+    if (mounted) {
+      setState(() {
+        _searchQuery = _searchController.text.trim();
+      });
+    }
+  }
+
+  void _animateMatrixTo(Matrix4 targetMatrix) {
+    _matrixAnimationController?.stop();
+    _matrixAnimationController?.dispose();
+
+    _matrixAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
+
+    final matrixTween = Matrix4Tween(
+      begin: _transformationController.value,
+      end: targetMatrix,
+    );
+
+    _matrixAnimation = matrixTween.animate(CurvedAnimation(
+      parent: _matrixAnimationController!,
+      curve: Curves.easeInOutCubic,
+    ));
+
+    _matrixAnimation!.addListener(() {
+      _transformationController.value = _matrixAnimation!.value;
+    });
+
+    _matrixAnimationController!.forward();
+  }
 
   void _fitTreeOverview() {
     final viewport = _lastViewportSize;
@@ -102,9 +148,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     matrix.setEntry(0, 3, dx);
     matrix.setEntry(1, 3, dy);
 
-    setState(() {
-      _transformationController.value = matrix;
-    });
+    _animateMatrixTo(matrix);
   }
 
   void _centerOnNode(int memberId) {
@@ -123,9 +167,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     matrix.setEntry(0, 3, tx);
     matrix.setEntry(1, 3, ty);
 
-    setState(() {
-      _transformationController.value = matrix;
-    });
+    _animateMatrixTo(matrix);
   }
 
   /// Reload cây gia phả sau khi thêm thành viên/vợ chồng.
@@ -139,13 +181,21 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
 
   @override
   void dispose() {
+    _matrixAnimationController?.stop();
+    _matrixAnimationController?.dispose();
+    _transformationController.removeListener(_onTransformChanged);
     _transformationController.dispose();
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    _transformationController.addListener(_onTransformChanged);
+    _searchController.addListener(_onSearchChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final authState = context.read<AuthBloc>().state;
@@ -425,6 +475,238 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
     return allPositions;
   }
 
+  Widget _buildSearchTitleWidget(BuildContext context, String appBarTitle) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SizeTransition(
+            sizeFactor: animation,
+            axis: Axis.horizontal,
+            child: child,
+          ),
+        );
+      },
+      child: _isSearching
+          ? Container(
+              key: const ValueKey('search_input_active'),
+              height: 40,
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: context.resolve(
+                  Colors.white.withValues(alpha: 0.95),
+                  context.surface.withValues(alpha: 0.95),
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: context.accent.withValues(alpha: 0.6),
+                  width: 1.2,
+                ),
+              ),
+              child: TextField(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                textAlignVertical: TextAlignVertical.center,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: context.textPrimary,
+                  height: 1.2,
+                ),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: 'Tìm kiếm thành viên...',
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 12.5,
+                    color: context.textSecondary.withValues(alpha: 0.6),
+                    height: 1.2,
+                  ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 12, right: 8),
+                    child: Icon(
+                      LucideIcons.search,
+                      size: 16,
+                      color: context.accent,
+                    ),
+                  ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 36,
+                    minHeight: 36,
+                  ),
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? GestureDetector(
+                          onTap: () {
+                            _searchController.clear();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 12, left: 4),
+                            child: Icon(
+                              LucideIcons.x,
+                              size: 16,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        )
+                      : null,
+                  suffixIconConstraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+            )
+          : Text(
+              appBarTitle,
+              key: const ValueKey('search_title_inactive'),
+              style: GoogleFonts.beVietnamPro(
+                color: context.textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+    );
+  }
+
+  Widget _buildSearchDropdownOverlay(
+      BuildContext context, List<MemberEntity> members) {
+    final filteredMembers = members.where((m) {
+      if (_searchQuery.isEmpty) return true;
+      final q = _searchQuery.toLowerCase();
+      final name = m.fullName.toLowerCase();
+      final phone = (m.phone ?? '').toLowerCase();
+      return name.contains(q) || phone.contains(q);
+    }).toList();
+
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+      top: _isSearching ? 8 : -45,
+      left: 16,
+      right: 16,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        opacity: _isSearching ? 1.0 : 0.0,
+        child: IgnorePointer(
+          ignoring: !_isSearching,
+          child: Material(
+            elevation: 10,
+            borderRadius: BorderRadius.circular(16),
+            color: context.surface,
+            shadowColor: Colors.black.withValues(alpha: 0.3),
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 340),
+              decoration: BoxDecoration(
+                color: context.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: context.accent.withValues(alpha: 0.4),
+                  width: 1.2,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (filteredMembers.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            LucideIcons.searchX,
+                            size: 18,
+                            color: context.textSecondary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Không tìm thấy thành viên phù hợp',
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    Flexible(
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        itemCount: filteredMembers.length > 8
+                            ? 8
+                            : filteredMembers.length,
+                        separatorBuilder: (_, __) => Divider(
+                          height: 1,
+                          indent: 16,
+                          endIndent: 16,
+                          color: context.textSecondary.withValues(alpha: 0.1),
+                        ),
+                        itemBuilder: (context, index) {
+                          final m = filteredMembers[index];
+                          final genText = m.generation != null
+                              ? 'Đời ${_TreeEdgePainter.toRoman(m.generation!)}'
+                              : '';
+
+                          return ListTile(
+                            dense: true,
+                            leading: AppAvatar(
+                              avatarUrl: m.avatarUrl,
+                              fullName: m.fullName,
+                              radius: 18,
+                            ),
+                            title: Text(
+                              m.fullName,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                            subtitle: Text(
+                              [genText, if (!m.isAlive) 'Đã mất']
+                                  .where((s) => s.isNotEmpty)
+                                  .join(' • '),
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                color: context.textSecondary,
+                              ),
+                            ),
+                            trailing: Icon(
+                              LucideIcons.focus,
+                              size: 16,
+                              color: context.accent,
+                            ),
+                            onTap: () {
+                              _centerOnNode(m.id);
+                              context.read<FamilyTreeBloc>().add(
+                                    FamilyTreeSelectMemberEvent(m.id),
+                                  );
+                              setState(() {
+                                _isSearching = false;
+                                _searchQuery = '';
+                                _searchController.clear();
+                              });
+                              _searchFocusNode.unfocus();
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -445,20 +727,22 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       if (treeState.members.isNotEmpty) {
         appBarActions = [
           IconButton(
-            icon: Icon(LucideIcons.search, color: context.textOnPrimary),
-            onPressed: () async {
-              final selectedId = await showSearch<int?>(
-                context: context,
-                delegate: MemberSearchDelegate(treeState.members),
-              );
-              if (selectedId != null) {
-                _centerOnNode(selectedId);
-                if (context.mounted) {
-                  context
-                      .read<FamilyTreeBloc>()
-                      .add(FamilyTreeSelectMemberEvent(selectedId));
+            icon: Icon(
+              _isSearching ? LucideIcons.x : LucideIcons.search,
+              color: context.textOnPrimary,
+            ),
+            tooltip: _isSearching ? 'Đóng tìm kiếm' : 'Tìm kiếm thành viên',
+            onPressed: () {
+              setState(() {
+                _isSearching = !_isSearching;
+                if (!_isSearching) {
+                  _searchController.clear();
+                  _searchQuery = '';
+                  _searchFocusNode.unfocus();
+                } else {
+                  _searchFocusNode.requestFocus();
                 }
-              }
+              });
             },
           ),
         ];
@@ -469,195 +753,286 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage> {
       backgroundColor: context.appBarBg,
       appBar: AppAppBar(
         transparent: false,
-        title: appBarTitle,
+        titleWidget: _buildSearchTitleWidget(context, appBarTitle),
         actions: appBarActions,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _fitTreeOverview,
-        backgroundColor: context.resolve(Colors.white, const Color(0xFF2A2A2A)),
-        mini: true,
-        child: Icon(
-          LucideIcons.maximize2,
-          color: context.accent,
-          size: 20,
-        ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            heroTag: 'toggle_badges_fab',
+            tooltip:
+                _showGenerationBadges ? 'Ẩn nhãn thế hệ' : 'Hiện nhãn thế hệ',
+            onPressed: () {
+              setState(() {
+                _showGenerationBadges = !_showGenerationBadges;
+              });
+            },
+            backgroundColor:
+                context.resolve(Colors.white, const Color(0xFF2A2A2A)),
+            mini: true,
+            child: Icon(
+              LucideIcons.tag,
+              color: _showGenerationBadges
+                  ? context.accent
+                  : context.textSecondary.withValues(alpha: 0.4),
+              size: 18,
+            ),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            heroTag: 'fit_overview_fab',
+            tooltip: 'Tổng quan sơ đồ',
+            onPressed: _fitTreeOverview,
+            backgroundColor:
+                context.resolve(Colors.white, const Color(0xFF2A2A2A)),
+            mini: true,
+            child: Icon(
+              LucideIcons.maximize2,
+              color: context.accent,
+              size: 18,
+            ),
+          ),
+        ],
       ),
       body: AppBackgroundBody(
-        child: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
-          builder: (context, state) {
-            if (state is FamilyTreeLoading) {
-              _hasFitTree = false; // Reset to auto-fit on next load
-              return const Padding(
-                padding: EdgeInsets.all(24),
-                child: FamilyTreeSkeleton(),
-              );
-            }
-
-            if (state is FamilyTreeError) {
-              return Center(
-                child: Text(
-                  state.message,
-                  style: GoogleFonts.inter(color: context.primary),
-                ),
-              );
-            }
-
-            if (state is FamilyTreeLoaded) {
-              if (state.members.isEmpty) {
-                return Center(
-                  child: Text(
-                    l10n.noTreeDataMessage,
-                    style: GoogleFonts.inter(
-                      color: context.textSecondary,
-                      fontSize: 16,
-                    ),
-                  ),
-                );
-              }
-
-              final coupleEdges = <_CoupleEdge>[];
-              final orphanEdges = <_EdgeData>[];
-              final spouseEdges = <_SpouseEdge>[];
-              final positions = _calculateLayout(
-                state.members,
-                coupleEdges,
-                orphanEdges,
-                spouseEdges,
-              );
-
-              double maxX = _padding * 2, maxY = _padding * 2;
-              for (final entry in positions.entries) {
-                final right = entry.value.dx + _nodeWidth / 2;
-                final bottom = entry.value.dy + _nodeHeight / 2;
-                maxX = maxX > right ? maxX : right;
-                maxY = maxY > bottom ? maxY : bottom;
-              }
-              final treeSize = Size(maxX, maxY);
-
-              final generationLevels = <int, double>{};
-              for (final m in state.members) {
-                final pos = positions[m.id];
-                if (pos != null && m.generation != null) {
-                  generationLevels.putIfAbsent(m.generation!, () => pos.dy);
+        child: Stack(
+          children: [
+            BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
+              builder: (context, state) {
+                if (state is FamilyTreeLoading) {
+                  _hasFitTree = false; // Reset to auto-fit on next load
+                  return const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: FamilyTreeSkeleton(),
+                  );
                 }
-              }
 
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  if (constraints.maxWidth == 0 || constraints.maxHeight == 0) {
-                    return const SizedBox.shrink();
+                if (state is FamilyTreeError) {
+                  return Center(
+                    child: Text(
+                      state.message,
+                      style: GoogleFonts.inter(color: context.primary),
+                    ),
+                  );
+                }
+
+                if (state is FamilyTreeLoaded) {
+                  if (state.members.isEmpty) {
+                    return Center(
+                      child: Text(
+                        l10n.noTreeDataMessage,
+                        style: GoogleFonts.inter(
+                          color: context.textSecondary,
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
                   }
 
-                  // Update positions & viewport sizes for search node centering
-                  _lastPositions = positions;
-                  _lastViewportSize =
-                      Size(constraints.maxWidth, constraints.maxHeight);
-                  _lastTreeSize = treeSize;
+                  final coupleEdges = <_CoupleEdge>[];
+                  final orphanEdges = <_EdgeData>[];
+                  final spouseEdges = <_SpouseEdge>[];
+                  final positions = _calculateLayout(
+                    state.members,
+                    coupleEdges,
+                    orphanEdges,
+                    spouseEdges,
+                  );
 
-                  final authState = context.read<AuthBloc>().state;
-                  final userMemberId = authState is Authenticated
-                      ? authState.user.memberId
-                      : null;
+                  double maxX = _padding * 2, maxY = _padding * 2;
+                  for (final entry in positions.entries) {
+                    final right = entry.value.dx + _nodeWidth / 2;
+                    final bottom = entry.value.dy + _nodeHeight / 2;
+                    maxX = maxX > right ? maxX : right;
+                    maxY = maxY > bottom ? maxY : bottom;
+                  }
+                  final treeSize = Size(maxX, maxY);
 
-                  // Auto fit or zoom to user's node on load
-                  if (!_hasFitTree) {
-                    _hasFitTree = true;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (userMemberId != null &&
-                          positions.containsKey(userMemberId)) {
-                        _centerOnNode(userMemberId);
-                      } else {
-                        _fitTreeOverview();
+                  final generationLevels = <int, double>{};
+                  for (final m in state.members) {
+                    final pos = positions[m.id];
+                    if (pos != null && m.generation != null) {
+                      generationLevels.putIfAbsent(m.generation!, () => pos.dy);
+                    }
+                  }
+
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth == 0 ||
+                          constraints.maxHeight == 0) {
+                        return const SizedBox.shrink();
                       }
-                    });
-                  }
 
-                  return InteractiveViewer(
-                    transformationController: _transformationController,
-                    constrained: false,
-                    boundaryMargin: const EdgeInsets.all(double.infinity),
-                    minScale: 0.1, // Allow zooming out further for overview
-                    maxScale: 3.0,
-                    child: SizedBox(
-                      width: treeSize.width,
-                      height: treeSize.height,
-                      child: Stack(
+                      // Update positions & viewport sizes for search node centering
+                      _lastPositions = positions;
+                      _lastViewportSize =
+                          Size(constraints.maxWidth, constraints.maxHeight);
+                      _lastTreeSize = treeSize;
+
+                      final authState = context.read<AuthBloc>().state;
+                      final userMemberId = authState is Authenticated
+                          ? authState.user.memberId
+                          : null;
+
+                      // Auto fit or zoom to user's node on load
+                      if (!_hasFitTree) {
+                        _hasFitTree = true;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (userMemberId != null &&
+                              positions.containsKey(userMemberId)) {
+                            _centerOnNode(userMemberId);
+                          } else {
+                            _fitTreeOverview();
+                          }
+                        });
+                      }
+
+                      return Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          RepaintBoundary(
-                            child: CustomPaint(
-                              size: treeSize,
-                              painter: _TreeEdgePainter(
-                                coupleEdges: coupleEdges,
-                                orphanEdges: orphanEdges,
-                                spouseEdges: spouseEdges,
-                                positions: positions,
-                                generationLevels: generationLevels,
-                                nodeHeight: _nodeHeight,
-                                accentColor: context.accent,
-                                surfaceColor: context.surface,
-                                textColor: context.textPrimary,
-                                linePaint: Paint()
-                                  ..color = context.resolve(
-                                      context.accent, Colors.grey.shade700)
-                                  ..strokeWidth = 3.0
-                                  ..strokeCap = StrokeCap.round
-                                  ..style = PaintingStyle.stroke,
-                                spousePaint: Paint()
-                                  ..color = context.resolve(
-                                      context.accent.withValues(alpha: 0.8),
-                                      Colors.grey.shade700
-                                          .withValues(alpha: 0.8))
-                                  ..strokeWidth = 2.0
-                                  ..strokeCap = StrokeCap.round
-                                  ..style = PaintingStyle.stroke,
+                          InteractiveViewer(
+                            transformationController: _transformationController,
+                            constrained: false,
+                            boundaryMargin:
+                                const EdgeInsets.all(double.infinity),
+                            minScale:
+                                0.1, // Allow zooming out further for overview
+                            maxScale: 3.0,
+                            child: SizedBox(
+                              width: treeSize.width,
+                              height: treeSize.height,
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  RepaintBoundary(
+                                    child: CustomPaint(
+                                      size: treeSize,
+                                      painter: _TreeEdgePainter(
+                                        coupleEdges: coupleEdges,
+                                        orphanEdges: orphanEdges,
+                                        spouseEdges: spouseEdges,
+                                        positions: positions,
+                                        generationLevels: generationLevels,
+                                        nodeHeight: _nodeHeight,
+                                        accentColor: context.accent,
+                                        surfaceColor: context.surface,
+                                        textColor: context.textPrimary,
+                                        linePaint: Paint()
+                                          ..color = context.resolve(
+                                              context.accent,
+                                              Colors.grey.shade700)
+                                          ..strokeWidth = 3.0
+                                          ..strokeCap = StrokeCap.round
+                                          ..style = PaintingStyle.stroke,
+                                        spousePaint: Paint()
+                                          ..color = context.resolve(
+                                              context.accent
+                                                  .withValues(alpha: 0.8),
+                                              Colors.grey.shade700
+                                                  .withValues(alpha: 0.8))
+                                          ..strokeWidth = 2.0
+                                          ..strokeCap = StrokeCap.round
+                                          ..style = PaintingStyle.stroke,
+                                      ),
+                                    ),
+                                  ),
+                                  ...state.members.map((member) {
+                                    final pos = positions[member.id];
+                                    if (pos == null) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Positioned(
+                                      left: pos.dx - _nodeWidth / 2,
+                                      top: pos.dy - _nodeHeight / 2,
+                                      child: FamilyMemberNodeWidget(
+                                        member: member,
+                                        isSelected:
+                                            state.selectedMemberId == member.id,
+                                        isCurrentUser:
+                                            userMemberId == member.id,
+                                        onTap: () {
+                                          context.read<FamilyTreeBloc>().add(
+                                              FamilyTreeSelectMemberEvent(
+                                                  member.id));
+                                          Navigator.push(
+                                            context,
+                                            SereneFadeSlidePageRoute(
+                                              page: FamilyMemberDetailPage(
+                                                member: member,
+                                                allMembers: state.members,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        onAddChildTap: canEdit
+                                            ? () => _onAddChild(
+                                                member, state.members)
+                                            : null,
+                                        onAddSpouseTap: canEdit
+                                            ? () => _onAddSpouse(
+                                                member, state.members)
+                                            : null,
+                                      ),
+                                    );
+                                  }),
+                                ],
                               ),
                             ),
                           ),
-                          ...state.members.map((member) {
-                            final pos = positions[member.id];
-                            if (pos == null) {
-                              return const SizedBox.shrink();
-                            }
-                            return Positioned(
-                              left: pos.dx - _nodeWidth / 2,
-                              top: pos.dy - _nodeHeight / 2,
-                              child: FamilyMemberNodeWidget(
-                                member: member,
-                                isSelected: state.selectedMemberId == member.id,
-                                isCurrentUser: userMemberId == member.id,
-                                onTap: () {
-                                  context.read<FamilyTreeBloc>().add(
-                                      FamilyTreeSelectMemberEvent(member.id));
-                                  Navigator.push(
-                                    context,
-                                    SereneFadeSlidePageRoute(
-                                      page: FamilyMemberDetailPage(
-                                        member: member,
-                                        allMembers: state.members,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                onAddChildTap: canEdit
-                                    ? () => _onAddChild(member, state.members)
-                                    : null,
-                                onAddSpouseTap: canEdit
-                                    ? () => _onAddSpouse(member, state.members)
-                                    : null,
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-            }
 
-            return const SizedBox.shrink();
-          },
+                          // ── Sticky Pinned Floating Generation Badges (Ghim mép trái màn hình) ──
+                          if (_showGenerationBadges)
+                            AnimatedBuilder(
+                              animation: _transformationController,
+                              builder: (context, _) {
+                                final matrix = _transformationController.value;
+                                final sortedGens =
+                                    generationLevels.keys.toList()..sort();
+
+                                return Stack(
+                                  clipBehavior: Clip.none,
+                                  children: sortedGens.map((gen) {
+                                    final canvasY = generationLevels[gen]!;
+                                    final screenY = MatrixUtils.transformPoint(
+                                            matrix, Offset(0, canvasY))
+                                        .dy;
+
+                                    // Ẩn badge nếu nằm ngoài khung nhìn màn hình
+                                    if (screenY < -30 ||
+                                        screenY > constraints.maxHeight + 30) {
+                                      return const SizedBox.shrink();
+                                    }
+
+                                    return Positioned(
+                                      left: 14,
+                                      top: screenY - 7,
+                                      child: Text(
+                                        'ĐỜI ${_TreeEdgePainter.toRoman(gen)}',
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 9.5,
+                                          fontWeight: FontWeight.bold,
+                                          color: context.accent,
+                                          letterSpacing: 0.8,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                );
+                              },
+                            ),
+                        ],
+                      );
+                    },
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
+            _buildSearchDropdownOverlay(context,
+                treeState is FamilyTreeLoaded ? treeState.members : []),
+          ],
         ),
       ),
     );
@@ -862,8 +1237,22 @@ class _TreeEdgePainter extends CustomPainter {
     required this.textColor,
   });
 
-  static String _toRoman(int gen) {
-    const map = {1000: 'M', 900: 'CM', 500: 'D', 400: 'CD', 100: 'C', 90: 'XC', 50: 'L', 40: 'XL', 10: 'X', 9: 'IX', 5: 'V', 4: 'IV', 1: 'I'};
+  static String toRoman(int gen) {
+    const map = {
+      1000: 'M',
+      900: 'CM',
+      500: 'D',
+      400: 'CD',
+      100: 'C',
+      90: 'XC',
+      50: 'L',
+      40: 'XL',
+      10: 'X',
+      9: 'IX',
+      5: 'V',
+      4: 'IV',
+      1: 'I'
+    };
     var res = '';
     var n = gen;
     for (final e in map.entries) {
@@ -877,69 +1266,6 @@ class _TreeEdgePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // ── 0. Generation Guide Lines & Badges ──────────────────────────────
-    final guidePaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.18)
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    final sortedGens = generationLevels.keys.toList()..sort();
-    for (final gen in sortedGens) {
-      final y = generationLevels[gen]!;
-
-      // Đường kẻ ngang nét mờ phân biệt tầng thế hệ
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        guidePaint,
-      );
-
-      // Thẻ Đánh Dấu Thế Hệ (Badge: ĐỜI I, ĐỜI II...) ở mép trái canvas
-      final badgeText = 'ĐỜI ${_toRoman(gen)}';
-      final textStyle = GoogleFonts.beVietnamPro(
-        fontSize: 11,
-        fontWeight: FontWeight.bold,
-        color: accentColor,
-        letterSpacing: 0.8,
-      );
-
-      final tp = TextPainter(
-        text: TextSpan(text: badgeText, style: textStyle),
-        textDirection: TextDirection.ltr,
-      )..layout();
-
-      const paddingH = 10.0;
-      const paddingV = 4.0;
-      final badgeWidth = tp.width + paddingH * 2;
-      final badgeHeight = tp.height + paddingV * 2;
-      final badgeRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          12.0,
-          y - badgeHeight / 2,
-          badgeWidth,
-          badgeHeight,
-        ),
-        const Radius.circular(12),
-      );
-
-      // Background pill cho thế hệ badge
-      final bgPaint = Paint()
-        ..color = surfaceColor
-        ..style = PaintingStyle.fill;
-      final borderPaint = Paint()
-        ..color = accentColor.withValues(alpha: 0.4)
-        ..strokeWidth = 1.2
-        ..style = PaintingStyle.stroke;
-
-      canvas.drawRRect(badgeRect, bgPaint);
-      canvas.drawRRect(badgeRect, borderPaint);
-
-      tp.paint(
-        canvas,
-        Offset(12.0 + paddingH, y - tp.height / 2),
-      );
-    }
-
     // ── Couple edges — T-bar junction style ──────────────────────────────
     for (final ce in coupleEdges) {
       final primary = positions[ce.primaryId];

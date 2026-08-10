@@ -62,17 +62,12 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                     width: 96,
                     height: 96,
                     decoration: BoxDecoration(
-                      color: context.isDarkMode
-                          ? Colors.black.withValues(alpha: 0.3)
-                          : Colors.white.withValues(alpha: 0.3),
+                      color: Colors.transparent,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.primary.withValues(alpha: 0.15),
-                          blurRadius: 16,
-                          spreadRadius: 2,
-                        ),
-                      ],
+                      border: Border.all(
+                        color: context.accent.withValues(alpha: 0.5),
+                        width: 1.5,
+                      ),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12),
@@ -95,7 +90,7 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: context.primary,
+                  color: context.resolve(context.primary, context.textPrimary),
                   letterSpacing: 0.5,
                 ),
               ),
@@ -113,11 +108,18 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                       decoration: BoxDecoration(
                         color: context.surface,
                         borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: context.accent.withValues(alpha: 0.35),
+                          width: 1.2,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: context.resolve(
+                              Colors.black.withValues(alpha: 0.04),
+                              Colors.black.withValues(alpha: 0.25),
+                            ),
                             blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -139,6 +141,20 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                       decoration: BoxDecoration(
                         color: context.surface,
                         borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: context.accent.withValues(alpha: 0.35),
+                          width: 1.2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.resolve(
+                              Colors.black.withValues(alpha: 0.04),
+                              Colors.black.withValues(alpha: 0.25),
+                            ),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
                       child: Column(
                         children: [

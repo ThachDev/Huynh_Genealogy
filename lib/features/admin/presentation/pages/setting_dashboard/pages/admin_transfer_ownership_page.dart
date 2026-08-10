@@ -307,9 +307,6 @@ class _AdminTransferOwnershipPageState
                                           fullName: candidate.userFullName,
                                           radius: 20,
                                           fallbackInitial: 'U',
-                                          backgroundColor: context.appBarBg
-                                              .withValues(alpha: 0.08),
-                                          textColor: context.appBarBg,
                                         ),
                                         title: Text(
                                           candidate.userFullName ??

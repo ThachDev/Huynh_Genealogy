@@ -35,8 +35,16 @@ class AppAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveBgColor = backgroundColor ?? context.appBarBg.withValues(alpha: 0.1);
-    final effectiveTextColor = textColor ?? context.primary;
+    final effectiveBgColor = backgroundColor ??
+        context.resolve(
+          context.primary.withValues(alpha: 0.12),
+          context.accent.withValues(alpha: 0.18),
+        );
+    final effectiveTextColor = textColor ??
+        context.resolve(
+          context.primary,
+          context.accent,
+        );
     final effectiveFontSize = fontSize ?? (radius * 0.8);
 
     final hasAvatarUrl = avatarUrl != null && avatarUrl!.trim().isNotEmpty;

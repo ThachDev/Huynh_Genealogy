@@ -90,20 +90,20 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            context.primary,
-            context.primary.withValues(alpha: 0.85),
-          ],
-        ),
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: context.accent.withValues(alpha: 0.35),
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: context.primary.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: context.resolve(
+              Colors.black.withValues(alpha: 0.06),
+              Colors.black.withValues(alpha: 0.25),
+            ),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -113,7 +113,7 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: context.accent.withValues(alpha: 0.5),
@@ -140,7 +140,7 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: context.textPrimary,
                     height: 1.3,
                   ),
                 ),
@@ -149,7 +149,10 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
                   l10n.regulationLastUpdated,
                   style: GoogleFonts.inter(
                     fontSize: 11,
-                    color: context.accent.withValues(alpha: 0.9),
+                    color: context.resolve(
+                      context.textSecondary,
+                      context.accent,
+                    ),
                   ),
                 ),
               ],

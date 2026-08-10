@@ -285,8 +285,6 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                                     fullName: user.userFullName,
                                     radius: 20,
                                     fallbackInitial: 'U',
-                                    backgroundColor: context.appBarBg.withValues(alpha: 0.1),
-                                    textColor: context.appBarBg,
                                   ),
                                   title: Text(
                                     user.userFullName ?? l10n.roleViewer,

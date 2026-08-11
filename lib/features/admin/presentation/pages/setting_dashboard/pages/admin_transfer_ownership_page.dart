@@ -43,82 +43,16 @@ class _AdminTransferOwnershipPageState
 
   void _confirmTransfer(int familyId, int newOwnerUserId, String newOwnerName) async {
     final l10n = AppLocalizations.of(context)!;
-    final confirmController = TextEditingController();
 
-    final confirmed = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogCtx) {
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            final isValid =
-                confirmController.text.trim().toUpperCase() == l10n.confirmWord.toUpperCase();
-            return AlertDialog(
-              backgroundColor: ctx.surface,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: Row(
-                children: [
-                  const Icon(LucideIcons.alertTriangle, color: AppColors.error, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.warningDialogTitle,
-                    style: GoogleFonts.beVietnamPro(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: AppColors.error,
-                    ),
-                  ),
-                ],
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.warningDialogConfirmMessage(newOwnerName),
-                    style: GoogleFonts.beVietnamPro(fontSize: 13, height: 1.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.typeConfirmToTransfer,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: ctx.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: confirmController,
-                    onChanged: (_) => setDialogState(() {}),
-                    decoration: InputDecoration(
-                      hintText: l10n.confirmWord,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogCtx, false),
-                  child: Text(l10n.formCancel, style: GoogleFonts.beVietnamPro()),
-                ),
-                AppButton(
-                  label: l10n.confirmTransferButton,
-                  variant: AppButtonVariant.danger,
-                  onPressed: isValid ? () => Navigator.pop(dialogCtx, true) : null,
-                ),
-              ],
-            );
-          },
-        );
-      },
+    final confirmed = await AppDialog.confirmWithInput(
+      context,
+      title: l10n.warningDialogTitle,
+      message: l10n.warningDialogConfirmMessage(newOwnerName),
+      requiredWord: l10n.confirmWord,
+      inputInstruction: l10n.typeConfirmToTransfer,
+      confirmLabel: l10n.confirmTransferButton,
+      cancelLabel: l10n.formCancel,
+      type: AppDialogType.danger,
     );
 
     if (confirmed == true && mounted) {

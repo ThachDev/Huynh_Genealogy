@@ -5,6 +5,7 @@ import '../theme/app_theme.dart';
 import '../theme/theme_extensions.dart';
 import 'app_button.dart';
 import 'app_common_widgets.dart';
+import 'app_text_field.dart';
 
 enum AppDialogType { info, warning, danger, success }
 
@@ -37,6 +38,33 @@ class AppDialog {
         showCancel: true,
         showIcon: showIcon,
         confirmColor: confirmColor,
+      ),
+    );
+  }
+
+  /// Dialog xác nhận 2 bước yêu cầu nhập đúng từ khoá (ví dụ: "XÁC NHẬN" hoặc "GIẢI TÁN")
+  static Future<bool?> confirmWithInput(
+    BuildContext context, {
+    required String title,
+    required String message,
+    required String requiredWord,
+    required String inputInstruction,
+    String? confirmLabel,
+    String? cancelLabel,
+    AppDialogType type = AppDialogType.danger,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _AppInputDialogWidget(
+        title: title,
+        message: message,
+        requiredWord: requiredWord,
+        inputInstruction: inputInstruction,
+        confirmLabel: confirmLabel ?? l10n.confirmLabel,
+        cancelLabel: cancelLabel ?? l10n.cancelLabel,
+        type: type,
       ),
     );
   }
@@ -200,11 +228,13 @@ class _AppDialogWidget extends StatelessWidget {
               child: messageSpan != null
                   ? Text.rich(
                       messageSpan!,
-                      textAlign: showIcon ? TextAlign.center : TextAlign.justify,
+                      textAlign:
+                          showIcon ? TextAlign.center : TextAlign.justify,
                     )
                   : Text(
                       message,
-                      textAlign: showIcon ? TextAlign.center : TextAlign.justify,
+                      textAlign:
+                          showIcon ? TextAlign.center : TextAlign.justify,
                       style: GoogleFonts.inter(
                         fontSize: 13,
                         color: context.textSecondary,
@@ -293,5 +323,177 @@ class _AppDialogWidget extends StatelessWidget {
       case AppDialogType.info:
         return Icons.info_outline_rounded;
     }
+  }
+}
+
+class _AppInputDialogWidget extends StatefulWidget {
+  final String title;
+  final String message;
+  final String requiredWord;
+  final String inputInstruction;
+  final String confirmLabel;
+  final String cancelLabel;
+  final AppDialogType type;
+
+  const _AppInputDialogWidget({
+    required this.title,
+    required this.message,
+    required this.requiredWord,
+    required this.inputInstruction,
+    required this.confirmLabel,
+    required this.cancelLabel,
+    required this.type,
+  });
+
+  @override
+  State<_AppInputDialogWidget> createState() => _AppInputDialogWidgetState();
+}
+
+class _AppInputDialogWidgetState extends State<_AppInputDialogWidget> {
+  final _controller = TextEditingController();
+  bool _isValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_onTextChanged);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    final valid = _controller.text.trim().toUpperCase() ==
+        widget.requiredWord.trim().toUpperCase();
+    if (valid != _isValid) {
+      setState(() => _isValid = valid);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final titleColor = widget.type == AppDialogType.danger
+        ? context.primary
+        : (widget.type == AppDialogType.warning
+            ? AppColors.gold
+            : context.textPrimary);
+
+    // Tách chuỗi instruction để in đậm từ khoá cần nhập (ví dụ "XÁC NHẬN")
+    final word = widget.requiredWord;
+    final instruction = widget.inputInstruction;
+    List<InlineSpan> instructionSpans = [];
+
+    if (instruction.contains(word)) {
+      final parts = instruction.split(word);
+      for (int i = 0; i < parts.length; i++) {
+        if (parts[i].isNotEmpty) {
+          instructionSpans.add(TextSpan(text: parts[i]));
+        }
+        if (i < parts.length - 1) {
+          instructionSpans.add(
+            TextSpan(
+              text: word,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                color: context.textPrimary,
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      instructionSpans.add(TextSpan(text: instruction));
+    }
+
+    return Dialog(
+      backgroundColor: context.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title (Căn trái, chữ đỏ sẫm truyền thống)
+            Text(
+              widget.title,
+              textAlign: TextAlign.left,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: titleColor,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Message (Căn trái)
+            Text(
+              widget.message,
+              textAlign: TextAlign.left,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: context.textSecondary,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Instruction Label với từ khoá "XÁC NHẬN" / "GIẢI TÁN" IN ĐẬM
+            Text.rich(
+              TextSpan(
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: context.textSecondary,
+                  height: 1.4,
+                ),
+                children: instructionSpans,
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Text Input Field chuẩn hệ thống
+            AppTextFieldLight(
+              label: '',
+              controller: _controller,
+              hintText: widget.requiredWord,
+            ),
+            const SizedBox(height: 24),
+
+            // Buttons row (Huỷ + Xác nhận)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(
+                    widget.cancelLabel,
+                    style: GoogleFonts.inter(
+                      color: context.textSecondary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                AppButton(
+                  label: widget.confirmLabel,
+                  onPressed:
+                      _isValid ? () => Navigator.of(context).pop(true) : null,
+                  variant: AppButtonVariant.primary,
+                  size: AppButtonSize.small,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

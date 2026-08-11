@@ -11,33 +11,64 @@ import '../../../../resources/app_localizations.dart';
 Future<String?> showLinkAccountEmailSheet(
   BuildContext context, {
   required String memberName,
-}) async {
-  final l10n = AppLocalizations.of(context)!;
-  final emailController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
-
-  final result = await showModalBottomSheet<String>(
+}) {
+  return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (modalContext) {
-      return Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(modalContext).viewInsets.bottom,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: modalContext.surface,
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(24)),
-            border: Border.all(
-              color: modalContext.primary.withValues(alpha: 0.2),
-              width: 1,
-            ),
+      return _LinkAccountEmailSheetWidget(memberName: memberName);
+    },
+  );
+}
+
+class _LinkAccountEmailSheetWidget extends StatefulWidget {
+  final String memberName;
+
+  const _LinkAccountEmailSheetWidget({required this.memberName});
+
+  @override
+  State<_LinkAccountEmailSheetWidget> createState() =>
+      __LinkAccountEmailSheetWidgetState();
+}
+
+class __LinkAccountEmailSheetWidgetState
+    extends State<_LinkAccountEmailSheetWidget> {
+  late final TextEditingController _emailController;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: context.primary.withValues(alpha: 0.2),
+            width: 1,
           ),
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+        child: SingleChildScrollView(
           child: Form(
-            key: formKey,
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +78,7 @@ Future<String?> showLinkAccountEmailSheet(
                     width: 36,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: modalContext.textSecondary.withValues(alpha: 0.3),
+                      color: context.textSecondary.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -58,11 +89,11 @@ Future<String?> showLinkAccountEmailSheet(
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: modalContext.primary.withValues(alpha: 0.1),
+                        color: context.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(LucideIcons.mail,
-                          size: 20, color: modalContext.primary),
+                          size: 20, color: context.primary),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -74,17 +105,17 @@ Future<String?> showLinkAccountEmailSheet(
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: modalContext.textPrimary,
+                              color: context.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            memberName,
+                            widget.memberName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.inter(
                               fontSize: 12,
-                              color: modalContext.textSecondary,
+                              color: context.textSecondary,
                             ),
                           ),
                         ],
@@ -94,10 +125,10 @@ Future<String?> showLinkAccountEmailSheet(
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
-                  controller: emailController,
+                  controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) =>
-                      AppValidators.validateEmail(modalContext, value),
+                      AppValidators.validateEmail(context, value),
                   decoration: InputDecoration(
                     labelText: l10n.emailLabel,
                     hintText: l10n.emailHint,
@@ -112,7 +143,7 @@ Future<String?> showLinkAccountEmailSheet(
                   l10n.linkAccountEmailDesc,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: modalContext.textSecondary,
+                    color: context.textSecondary,
                     height: 1.4,
                   ),
                 ),
@@ -121,21 +152,20 @@ Future<String?> showLinkAccountEmailSheet(
                   saveLabel: l10n.linkButton,
                   cancelLabel: l10n.cancelLabel,
                   onSave: () {
-                    if (formKey.currentState?.validate() == true) {
-                      Navigator.pop(modalContext,
-                          emailController.text.trim().toLowerCase());
+                    if (_formKey.currentState?.validate() == true) {
+                      Navigator.pop(
+                        context,
+                        _emailController.text.trim().toLowerCase(),
+                      );
                     }
                   },
-                  onCancel: () => Navigator.pop(modalContext),
+                  onCancel: () => Navigator.pop(context),
                 ),
               ],
             ),
           ),
         ),
-      );
-    },
-  );
-
-  emailController.dispose();
-  return result;
+      ),
+    );
+  }
 }

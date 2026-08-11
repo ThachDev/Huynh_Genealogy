@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -91,13 +93,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy Policy';
 
   @override
-  String get termsValidationErr => 'You must agree to the Terms of Service and Privacy Policy to continue';
+  String get termsValidationErr =>
+      'You must agree to the Terms of Service and Privacy Policy to continue';
 
   @override
-  String get termsContent => 'Welcome to Gia Toc Viet. By using our service, you agree to the following terms:\n\n1. Account regulations: You are responsible for maintaining the confidentiality of your account and password.\n\n2. Data ownership: Genealogy information contributed by the clan is owned collectively by authorized members of the family.\n\n3. Prohibited conduct: Do not post content that distorts history, contains false information, or violates others\' privacy.\n\n4. Changes to terms: We reserve the right to update these terms of service to better fit system operations.';
+  String get termsContent =>
+      'Welcome to Gia Toc Viet. By using our service, you agree to the following terms:\n\n1. Account regulations: You are responsible for maintaining the confidentiality of your account and password.\n\n2. Data ownership: Genealogy information contributed by the clan is owned collectively by authorized members of the family.\n\n3. Prohibited conduct: Do not post content that distorts history, contains false information, or violates others\' privacy.\n\n4. Changes to terms: We reserve the right to update these terms of service to better fit system operations.';
 
   @override
-  String get privacyContent => 'Gia Toc Viet is committed to protecting your family\'s privacy:\n\n1. Data collection: We collect name, email, avatar, and genealogy data actively provided by you.\n\n2. Data usage: Data is used to build the family tree diagram, connect members, and notify family events.\n\n3. Security: We apply modern security measures to prevent data breaches.\n\n4. Data sharing: We strictly do not sell or share your genealogy data with any third party for advertising purposes.';
+  String get privacyContent =>
+      'Gia Toc Viet is committed to protecting your family\'s privacy:\n\n1. Data collection: We collect name, email, avatar, and genealogy data actively provided by you.\n\n2. Data usage: Data is used to build the family tree diagram, connect members, and notify family events.\n\n3. Security: We apply modern security measures to prevent data breaches.\n\n4. Data sharing: We strictly do not sell or share your genealogy data with any third party for advertising purposes.';
 
   @override
   String get closeButton => 'Close';
@@ -118,22 +123,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingMessage => 'Processing...';
 
   @override
-  String get emailLoginFeatureNotice => 'Email Login feature is under development. Please use Login with Google.';
+  String get emailLoginFeatureNotice =>
+      'Email Login feature is under development. Please use Login with Google.';
 
   @override
-  String get forgotPasswordNotice => 'Please contact the Clan Leader to reset your password.';
+  String get forgotPasswordNotice =>
+      'Please contact the Clan Leader to reset your password.';
 
   @override
   String get forgotPasswordTitle => 'Forgot Password';
 
   @override
-  String get forgotPasswordSubtitle => 'Enter your registered email to receive a 6-digit verification code.';
+  String get forgotPasswordSubtitle =>
+      'Enter your registered email to receive a 6-digit verification code.';
 
   @override
   String get forgotPasswordButton => 'Send Verification Code';
 
   @override
-  String get forgotPasswordSuccess => 'Password reset email sent. Please check your inbox (including spam folder).';
+  String get forgotPasswordSuccess =>
+      'Password reset email sent. Please check your inbox (including spam folder).';
 
   @override
   String get backToLogin => 'Back to login';
@@ -169,7 +178,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetPasswordTitle => 'Reset Password';
 
   @override
-  String get resetPasswordSubtitle => 'Enter your new password for your account.';
+  String get resetPasswordSubtitle =>
+      'Enter your new password for your account.';
 
   @override
   String get resetPasswordButton => 'Reset Password';
@@ -178,7 +188,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetPasswordSuccessTitle => 'Success!';
 
   @override
-  String get resetPasswordSuccessMessage => 'Your password has been reset. Please sign in with your new password.';
+  String get resetPasswordSuccessMessage =>
+      'Your password has been reset. Please sign in with your new password.';
 
   @override
   String get newPasswordLabel => 'New password';
@@ -212,7 +223,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get pendingApprovalMessageSimple => 'Your request to join the family has been sent successfully. Please wait for admin approval.';
+  String get pendingApprovalMessageSimple =>
+      'Your request to join the family has been sent successfully. Please wait for admin approval.';
 
   @override
   String get checkStatusButton => 'Check Status';
@@ -223,7 +235,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get welcomeCreatorSubtitle => 'Please enter the information below to initialize your family tree.';
+  String get welcomeCreatorSubtitle =>
+      'Please enter the information below to initialize your family tree.';
 
   @override
   String get familyNameLabel => 'Family / Clan Name';
@@ -244,7 +257,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get initFamilyButton => 'Initialize Family';
 
   @override
-  String get initFamilySectionDesc => 'Create a digital family tree today to connect generations and preserve your family\'s heritage.';
+  String get initFamilySectionDesc =>
+      'Create a digital family tree today to connect generations and preserve your family\'s heritage.';
 
   @override
   String get initFamilySectionTitle => 'Start a new family tree';
@@ -255,7 +269,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get welcomeViewerSubtitle => 'Please enter the Invite Code provided by the Clan Leader to join and view the family tree.';
+  String get welcomeViewerSubtitle =>
+      'Please enter the Invite Code provided by the Clan Leader to join and view the family tree.';
 
   @override
   String get inviteCodeLabel => 'Family Invite Code';
@@ -272,7 +287,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get selectMemberPrompt => 'Please select your name from the list below to link with the family tree (if any):';
+  String get selectMemberPrompt =>
+      'Please select your name from the list below to link with the family tree (if any):';
 
   @override
   String get whoAreYouDropdownHint => 'Who are you on the family tree?';
@@ -281,19 +297,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendJoinRequestButton => 'Send Join Request';
 
   @override
-  String get chooseOnboardingSubtitle => 'Please select a family tree setup method to start connecting your clan.';
+  String get chooseOnboardingSubtitle =>
+      'Please select a family tree setup method to start connecting your clan.';
 
   @override
   String get createFamilyCardTitle => 'Create a new Family';
 
   @override
-  String get createFamilyCardDesc => 'For Clan Leaders/Genealogists who want to build a completely new family tree.';
+  String get createFamilyCardDesc =>
+      'For Clan Leaders/Genealogists who want to build a completely new family tree.';
 
   @override
   String get joinFamilyCardTitle => 'Connect with Family';
 
   @override
-  String get joinFamilyCardDesc => 'For members who have an invite code from the Clan Leader to view and update the family tree.';
+  String get joinFamilyCardDesc =>
+      'For members who have an invite code from the Clan Leader to view and update the family tree.';
 
   @override
   String get familyPhotoSectionLabel => 'Family Representative Photo';
@@ -308,19 +327,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errPasswordRequired => 'Please enter password';
 
   @override
-  String get errPasswordMinLength => 'Password must contain at least 6 characters';
+  String get errPasswordMinLength =>
+      'Password must contain at least 6 characters';
 
   @override
-  String get errStrongPasswordMinLength => 'Strong password must have at least 8 characters';
+  String get errStrongPasswordMinLength =>
+      'Strong password must have at least 8 characters';
 
   @override
-  String get errStrongPasswordUppercase => 'Password needs at least 1 uppercase letter';
+  String get errStrongPasswordUppercase =>
+      'Password needs at least 1 uppercase letter';
 
   @override
   String get errStrongPasswordNumber => 'Password needs at least 1 digit';
 
   @override
-  String get errStrongPasswordSpecialChar => 'Password needs at least 1 special character (!@#...)';
+  String get errStrongPasswordSpecialChar =>
+      'Password needs at least 1 special character (!@#...)';
 
   @override
   String get errConfirmPasswordRequired => 'Please confirm your password';
@@ -338,7 +361,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errFullNameTooLong => 'Full name cannot exceed 50 characters';
 
   @override
-  String get errFullNameInvalid => 'Full name can only contain letters and spaces';
+  String get errFullNameInvalid =>
+      'Full name can only contain letters and spaces';
 
   @override
   String get errPhoneNumberRequired => 'Please enter phone number';
@@ -363,7 +387,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get errYearTooSmall => 'Year is too small (required from year 1000 onwards)';
+  String get errYearTooSmall =>
+      'Year is too small (required from year 1000 onwards)';
 
   @override
   String errRequiredField(String fieldName) {
@@ -371,31 +396,40 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get errServer => 'The system is temporarily unavailable. Please try again in a few minutes.';
+  String get errServer =>
+      'The system is temporarily unavailable. Please try again in a few minutes.';
 
   @override
-  String get errNetwork => 'No internet connection. Please check your Wi-Fi or cellular data.';
+  String get errNetwork =>
+      'No internet connection. Please check your Wi-Fi or cellular data.';
 
   @override
-  String get errCache => 'Could not access temporary data on the device. Please reload the page.';
+  String get errCache =>
+      'Could not access temporary data on the device. Please reload the page.';
 
   @override
-  String get errNotFound => 'Requested information could not be found or has been deleted.';
+  String get errNotFound =>
+      'Requested information could not be found or has been deleted.';
 
   @override
-  String get errValidation => 'The entered details are incorrect. Please verify and try again.';
+  String get errValidation =>
+      'The entered details are incorrect. Please verify and try again.';
 
   @override
-  String get errUnknown => 'An unexpected error occurred. Please try again later.';
+  String get errUnknown =>
+      'An unexpected error occurred. Please try again later.';
 
   @override
-  String get errAuth => 'Session has expired or credentials are incorrect. Please sign in again.';
+  String get errAuth =>
+      'Session has expired or credentials are incorrect. Please sign in again.';
 
   @override
-  String get errPermission => 'Your account does not have permission to access this feature.';
+  String get errPermission =>
+      'Your account does not have permission to access this feature.';
 
   @override
-  String get errTimeout => 'Connection is too slow or was interrupted. Please try again.';
+  String get errTimeout =>
+      'Connection is too slow or was interrupted. Please try again.';
 
   @override
   String get retryButton => 'Retry';
@@ -407,13 +441,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qrScannerTitle => 'Scan QR Code';
 
   @override
-  String get qrScannerInstruction => 'Place the QR code inside the frame to scan automatically';
+  String get qrScannerInstruction =>
+      'Place the QR code inside the frame to scan automatically';
 
   @override
   String get qrScannerNoCodeFound => 'No QR code found in this photo.';
 
   @override
-  String get qrScannerSelectImageError => 'An error occurred while choosing the photo.';
+  String get qrScannerSelectImageError =>
+      'An error occurred while choosing the photo.';
 
   @override
   String get tapToChangePhoto => 'Tap to Change Photo';
@@ -434,7 +470,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inviteCodeHintNew => 'EG: HGT-2024';
 
   @override
-  String get inviteCodeDescription => 'Enter the 6-character code provided by your family leader or administrator.';
+  String get inviteCodeDescription =>
+      'Enter the 6-character code provided by your family leader or administrator.';
 
   @override
   String get connectFamilySectionTitle => 'Connect with Family';
@@ -589,7 +626,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changePasswordTitle => 'Change Password';
 
   @override
-  String get passwordRequirementsDesc => 'Your new password needs at least 8 characters, including numbers, uppercase letters, and special characters for security.';
+  String get passwordRequirementsDesc =>
+      'Your new password needs at least 8 characters, including numbers, uppercase letters, and special characters for security.';
 
   @override
   String get currentPasswordLabel => 'Current Password';
@@ -622,13 +660,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get irreversibleActionTitle => 'Irreversible Action';
 
   @override
-  String get irreversibleWarningDesc => 'This CANNOT be undone. All family tree data, generations, members and information will be permanently deleted from the system.';
+  String get irreversibleWarningDesc =>
+      'This CANNOT be undone. All family tree data, generations, members and information will be permanently deleted from the system.';
 
   @override
   String get confirmDissolveTitle => 'Confirm Dissolve';
 
   @override
-  String get confirmDissolveInstruction => 'To confirm, please enter the exact clan name below:';
+  String get confirmDissolveInstruction =>
+      'To confirm, please enter the exact clan name below:';
 
   @override
   String get enterLabel => 'Enter: ';
@@ -654,13 +694,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDeletePermanentLabel => 'Confirm Delete';
 
   @override
-  String get dissolveSuccessMessage => 'Genealogy deleted. All data has been removed from the system.';
+  String get dissolveSuccessMessage =>
+      'Genealogy deleted. All data has been removed from the system.';
 
   @override
   String get chooseRecipientLabel => 'Choose Recipient';
 
   @override
-  String get transferDesc => 'Only members with activated accounts and a role other than Clan Leader appear in the list below:';
+  String get transferDesc =>
+      'Only members with activated accounts and a role other than Clan Leader appear in the list below:';
 
   @override
   String get searchMemberHint => 'Search member...';
@@ -681,7 +723,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get warningDialogTitle => 'Important Warning';
 
   @override
-  String get warningDialogMessage => 'Clan Leader is the highest authority in the genealogy system. Once transferred, you will lose the ability to edit advanced clan structure and security settings.';
+  String get warningDialogMessage =>
+      'Clan Leader is the highest authority in the genealogy system. Once transferred, you will lose the ability to edit advanced clan structure and security settings.';
 
   @override
   String warningDialogConfirmMessage(String name) {
@@ -709,7 +752,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roleBranchAdminTitle => 'Branch Leader';
 
   @override
-  String get roleBranchAdminDesc => 'Manage personnel and content of the branch.';
+  String get roleBranchAdminDesc =>
+      'Manage personnel and content of the branch.';
 
   @override
   String get roleEditorTitle => 'Editor';
@@ -730,7 +774,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMembers => 'No members in the clan yet.';
 
   @override
-  String get cannotSelfChange => 'You cannot change your own role. Use the \"Transfer Clan Leadership\" feature.';
+  String get cannotSelfChange =>
+      'You cannot change your own role. Use the \"Transfer Clan Leadership\" feature.';
 
   @override
   String get accountInfoTitle => 'Account Information';
@@ -742,7 +787,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noProfileLink => 'No genealogy profile linked';
 
   @override
-  String get noProfileLinkDesc => 'Your account is Clan Leader but hasn\'t been linked to any member in the family tree. Create a profile now to start managing the genealogy.';
+  String get noProfileLinkDesc =>
+      'Your account is Clan Leader but hasn\'t been linked to any member in the family tree. Create a profile now to start managing the genealogy.';
 
   @override
   String get createProfileButton => 'Create Genealogy Profile';
@@ -802,61 +848,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String get regSection1Title => 'Acceptance';
 
   @override
-  String get regSection1Content => 'By downloading and using Gia Tộc Việt, you agree to the following terms and our Privacy Policy. If you do not agree, please do not use the app.';
+  String get regSection1Content =>
+      'By downloading and using Gia Tộc Việt, you agree to the following terms and our Privacy Policy. If you do not agree, please do not use the app.';
 
   @override
   String get regSection2Title => 'Definitions';
 
   @override
-  String get regSection2Content => '**App:** Gia Tộc Việt and its features.\n**User:** An individual who has registered an account.\n**Clan:** A group of members created by the Clan Leader, including branches, members, and genealogy data.\n**Clan Leader:** The highest administrator of the clan.\n**Branch Admin:** A person authorized to manage a family branch.\n**Editor:** A person allowed to contribute and edit genealogy information.\n**Member:** A person with permission to view the genealogy and family activities.\n**Personal Data:** Full name, date of birth, gender, family relationships, images, phone number, email...';
+  String get regSection2Content =>
+      '**App:** Gia Tộc Việt and its features.\n**User:** An individual who has registered an account.\n**Clan:** A group of members created by the Clan Leader, including branches, members, and genealogy data.\n**Clan Leader:** The highest administrator of the clan.\n**Branch Admin:** A person authorized to manage a family branch.\n**Editor:** A person allowed to contribute and edit genealogy information.\n**Member:** A person with permission to view the genealogy and family activities.\n**Personal Data:** Full name, date of birth, gender, family relationships, images, phone number, email...';
 
   @override
   String get regSection3Title => 'Accounts';
 
   @override
-  String get regSection3Content => '• You must be at least 18 years old or have a legal guardian.\n• You are responsible for protecting your password.\n• Each person may only create one account for personal use.\n• Registration information must be accurate and truthful.';
+  String get regSection3Content =>
+      '• You must be at least 18 years old or have a legal guardian.\n• You are responsible for protecting your password.\n• Each person may only create one account for personal use.\n• Registration information must be accurate and truthful.';
 
   @override
   String get regSection4Title => 'Role Permissions';
 
   @override
-  String get regSection4Content => '**Member** – View genealogy, view family events & news, update personal information.\n**Editor** – Add, edit member information (cannot delete).\n**Branch Admin** – Manage assigned family branch, approve member requests for the branch.\n**Clan Leader** – Full administrative rights, assign roles, transfer ownership, dissolve clan.';
+  String get regSection4Content =>
+      '**Member** – View genealogy, view family events & news, update personal information.\n**Editor** – Add, edit member information (cannot delete).\n**Branch Admin** – Manage assigned family branch, approve member requests for the branch.\n**Clan Leader** – Full administrative rights, assign roles, transfer ownership, dissolve clan.';
 
   @override
   String get regSection5Title => 'Clan Management';
 
   @override
-  String get regSection5Content => 'The Clan Leader has full authority: approve members, assign roles, update information, transfer Clan Leadership, and dissolve the clan. Upon transfer, the former Clan Leader becomes a Member and cannot regain the previous role. All add, edit, and delete operations in the system are recorded.';
+  String get regSection5Content =>
+      'The Clan Leader has full authority: approve members, assign roles, update information, transfer Clan Leadership, and dissolve the clan. Upon transfer, the former Clan Leader becomes a Member and cannot regain the previous role. All add, edit, and delete operations in the system are recorded.';
 
   @override
   String get regSection6Title => 'Data Security';
 
   @override
-  String get regSection6Content => 'We protect your data in accordance with Vietnam\'s Cybersecurity Law and Decree 13/2023/NĐ-CP. Data is stored on servers in Vietnam, encrypted during transmission and storage. We do not sell your data to third parties. Clan information is only visible to approved members.';
+  String get regSection6Content =>
+      'We protect your data in accordance with Vietnam\'s Cybersecurity Law and Decree 13/2023/NĐ-CP. Data is stored on servers in Vietnam, encrypted during transmission and storage. We do not sell your data to third parties. Clan information is only visible to approved members.';
 
   @override
   String get regSection7Title => 'Intellectual Property';
 
   @override
-  String get regSection7Content => 'Gia Tộc Việt (source code, design, brand, logo) is the property of the developer, protected under Vietnamese law. Genealogy data created by users belongs to their respective clan.';
+  String get regSection7Content =>
+      'Gia Tộc Việt (source code, design, brand, logo) is the property of the developer, protected under Vietnamese law. Genealogy data created by users belongs to their respective clan.';
 
   @override
   String get regSection8Title => 'Liability';
 
   @override
-  String get regSection8Content => 'The app is provided as-is. We are not liable if: (i) you misuse the app; (ii) the information you provide is inaccurate; (iii) the Clan Leader actively deletes or dissolves the clan. If data is lost due to system errors, we will attempt to restore it.';
+  String get regSection8Content =>
+      'The app is provided as-is. We are not liable if: (i) you misuse the app; (ii) the information you provide is inaccurate; (iii) the Clan Leader actively deletes or dissolves the clan. If data is lost due to system errors, we will attempt to restore it.';
 
   @override
   String get regSection9Title => 'Violations';
 
   @override
-  String get regSection9Content => 'We may suspend or terminate accounts if violations are detected. Actions include: warning, temporary suspension, permanent ban, or notifying authorities if laws are broken. The Clan Leader may dissolve the clan at any time — after confirmation, all data is permanently deleted and cannot be recovered.';
+  String get regSection9Content =>
+      'We may suspend or terminate accounts if violations are detected. Actions include: warning, temporary suspension, permanent ban, or notifying authorities if laws are broken. The Clan Leader may dissolve the clan at any time — after confirmation, all data is permanently deleted and cannot be recovered.';
 
   @override
   String get regSection10Title => 'General Terms';
 
   @override
-  String get regSection10Content => 'These terms are governed by Vietnamese law. Disputes shall first be resolved through negotiation. We may modify the terms and will notify you via the app. Your continued use after changes constitutes acceptance of the new terms.';
+  String get regSection10Content =>
+      'These terms are governed by Vietnamese law. Disputes shall first be resolved through negotiation. We may modify the terms and will notify you via the app. Your continued use after changes constitutes acceptance of the new terms.';
 
   @override
   String get copyrightText => '© 2026 ThachDev. All rights reserved.';
@@ -913,109 +969,129 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faqRegisterQuestion => 'How to register an account?';
 
   @override
-  String get faqRegisterAnswer => 'Download Gia Tộc Việt, tap \"Register\" and fill in your full name, email, and password. After successful registration, use the invite code from your Clan Leader to request to join your Clan.';
+  String get faqRegisterAnswer =>
+      'Download Gia Tộc Việt, tap \"Register\" and fill in your full name, email, and password. After successful registration, use the invite code from your Clan Leader to request to join your Clan.';
 
   @override
-  String get faqForgotPasswordQuestion => 'I forgot my password, what should I do?';
+  String get faqForgotPasswordQuestion =>
+      'I forgot my password, what should I do?';
 
   @override
-  String get faqForgotPasswordAnswer => 'On the login screen, tap \"Forgot password\". Enter your registered email, the system will send a 6-digit OTP code via email. Enter the OTP to verify and set a new password.';
+  String get faqForgotPasswordAnswer =>
+      'On the login screen, tap \"Forgot password\". Enter your registered email, the system will send a 6-digit OTP code via email. Enter the OTP to verify and set a new password.';
 
   @override
   String get faqChangePasswordQuestion => 'How to change password?';
 
   @override
-  String get faqChangePasswordAnswer => 'Go to Settings > Account Security, enter your current password, then enter and confirm your new password. The password must have at least 8 characters.';
+  String get faqChangePasswordAnswer =>
+      'Go to Settings > Account Security, enter your current password, then enter and confirm your new password. The password must have at least 8 characters.';
 
   @override
   String get faqAddMemberQuestion => 'How to add a new member?';
 
   @override
-  String get faqAddMemberAnswer => 'Go to Dashboard, tap the \"+\" button on the Members tab. Fill in the information: full name, gender, date of birth, place of birth, generation, branch, parents (if any). You can add optional details like date of death, marital status, notes. Tap \"Save\" to finish. Requires Editor role or higher.';
+  String get faqAddMemberAnswer =>
+      'Go to Dashboard, tap the \"+\" button on the Members tab. Fill in the information: full name, gender, date of birth, place of birth, generation, branch, parents (if any). You can add optional details like date of death, marital status, notes. Tap \"Save\" to finish. Requires Editor role or higher.';
 
   @override
   String get faqAddBranchQuestion => 'How to add a new branch?';
 
   @override
-  String get faqAddBranchAnswer => 'Go to Dashboard, select the Branches tab and tap the \"+\" button. Enter the branch name, description, and founder information (if any). After creating, the Clan Leader can assign a Branch Admin to manage that branch.';
+  String get faqAddBranchAnswer =>
+      'Go to Dashboard, select the Branches tab and tap the \"+\" button. Enter the branch name, description, and founder information (if any). After creating, the Clan Leader can assign a Branch Admin to manage that branch.';
 
   @override
   String get faqEditMemberQuestion => 'How to edit member information?';
 
   @override
-  String get faqEditMemberAnswer => 'In the member list, select the member to edit and tap the edit icon (pen). Update the information then tap \"Save\". Only Editors and higher roles can edit.';
+  String get faqEditMemberAnswer =>
+      'In the member list, select the member to edit and tap the edit icon (pen). Update the information then tap \"Save\". Only Editors and higher roles can edit.';
 
   @override
   String get faqDeleteMemberQuestion => 'How to delete a member?';
 
   @override
-  String get faqDeleteMemberAnswer => 'Select the member from the list, tap the delete icon (trash) and confirm. Note: only Clan Leaders and Branch Admins can delete members; Editors cannot delete.';
+  String get faqDeleteMemberAnswer =>
+      'Select the member from the list, tap the delete icon (trash) and confirm. Note: only Clan Leaders and Branch Admins can delete members; Editors cannot delete.';
 
   @override
-  String get faqImportGenealogyQuestion => 'Can I import genealogy from a file?';
+  String get faqImportGenealogyQuestion =>
+      'Can I import genealogy from a file?';
 
   @override
-  String get faqImportGenealogyAnswer => 'The app currently supports adding members manually. Bulk import from file is under development.';
+  String get faqImportGenealogyAnswer =>
+      'The app currently supports adding members manually. Bulk import from file is under development.';
 
   @override
   String get faqInviteCodeQuestion => 'How does the clan invite code work?';
 
   @override
-  String get faqInviteCodeAnswer => 'Each Clan has a unique Invite Code generated by the system. The Clan Leader can view, copy, and share the Invite Code (along with a QR code) in the Dashboard. New members use this code to send a join request — approved by the Clan Leader or Branch Admin.';
+  String get faqInviteCodeAnswer =>
+      'Each Clan has a unique Invite Code generated by the system. The Clan Leader can view, copy, and share the Invite Code (along with a QR code) in the Dashboard. New members use this code to send a join request — approved by the Clan Leader or Branch Admin.';
 
   @override
   String get faqRolesQuestion => 'What are the roles in the Clan?';
 
   @override
-  String get faqRolesAnswer => 'The system has 4 role levels:\n• Clan Leader — Highest authority: manages the entire Clan, assigns roles, transfers leadership, and dissolves.\n• Branch Admin — Manages assigned family branch, approves join requests.\n• Editor — Adds and edits member information (cannot delete).\n• Member — Views genealogy information and family events.';
+  String get faqRolesAnswer =>
+      'The system has 4 role levels:\n• Clan Leader — Highest authority: manages the entire Clan, assigns roles, transfers leadership, and dissolves.\n• Branch Admin — Manages assigned family branch, approves join requests.\n• Editor — Adds and edits member information (cannot delete).\n• Member — Views genealogy information and family events.';
 
   @override
   String get faqAssignRoleQuestion => 'How to assign roles to members?';
 
   @override
-  String get faqAssignRoleAnswer => 'Go to Settings > Member Roles (only visible to Clan Leader). Select the member and choose the appropriate role. The Clan Leader cannot self-demote — use the Transfer Clan Leadership feature.';
+  String get faqAssignRoleAnswer =>
+      'Go to Settings > Member Roles (only visible to Clan Leader). Select the member and choose the appropriate role. The Clan Leader cannot self-demote — use the Transfer Clan Leadership feature.';
 
   @override
   String get faqTransferOwnershipQuestion => 'How to transfer Clan Leadership?';
 
   @override
-  String get faqTransferOwnershipAnswer => 'Go to Settings > Transfer Clan Leadership. Select a member with an activated account from the list. Confirm the transfer — this action cannot be undone. After transferring, you become a Member and the recipient becomes the new Clan Leader.';
+  String get faqTransferOwnershipAnswer =>
+      'Go to Settings > Transfer Clan Leadership. Select a member with an activated account from the list. Confirm the transfer — this action cannot be undone. After transferring, you become a Member and the recipient becomes the new Clan Leader.';
 
   @override
   String get faqDissolveClanQuestion => 'How to dissolve a clan?';
 
   @override
-  String get faqDissolveClanAnswer => 'Go to Settings > Dissolve Clan (Clan Leader only). Type the exact Clan name to confirm. All data — members, branches, genealogy — will be permanently deleted and cannot be recovered. This action cannot be undone.';
+  String get faqDissolveClanAnswer =>
+      'Go to Settings > Dissolve Clan (Clan Leader only). Type the exact Clan name to confirm. All data — members, branches, genealogy — will be permanently deleted and cannot be recovered. This action cannot be undone.';
 
   @override
   String get faqDataSecurityQuestion => 'Is my genealogy data secure?';
 
   @override
-  String get faqDataSecurityAnswer => 'Yes. All data is stored on servers in Vietnam, encrypted during transmission and storage. We comply with Decree 13/2023/NĐ-CP on personal data protection and commit not to share data with third parties. Clan information is only visible to approved members.';
+  String get faqDataSecurityAnswer =>
+      'Yes. All data is stored on servers in Vietnam, encrypted during transmission and storage. We comply with Decree 13/2023/NĐ-CP on personal data protection and commit not to share data with third parties. Clan information is only visible to approved members.';
 
   @override
   String get faqDeleteAccountQuestion => 'How to delete my account?';
 
   @override
-  String get faqDeleteAccountAnswer => 'Go to Settings > Account Security, select \"Delete Account\" and confirm. Note: if you are Clan Leader, please transfer Clan Leadership or dissolve the Clan before deleting your account.';
+  String get faqDeleteAccountAnswer =>
+      'Go to Settings > Account Security, select \"Delete Account\" and confirm. Note: if you are Clan Leader, please transfer Clan Leadership or dissolve the Clan before deleting your account.';
 
   @override
   String get faqMultiDeviceQuestion => 'Can I use the app on multiple devices?';
 
   @override
-  String get faqMultiDeviceAnswer => 'Yes. Your account can log in on multiple devices simultaneously, data will be synced in real-time. For security reasons, please log out from unused devices.';
+  String get faqMultiDeviceAnswer =>
+      'Yes. Your account can log in on multiple devices simultaneously, data will be synced in real-time. For security reasons, please log out from unused devices.';
 
   @override
   String get faqEnglishSupportQuestion => 'Does the app support English?';
 
   @override
-  String get faqEnglishSupportAnswer => 'Yes. Go to Settings > Language, toggle the switch to change to English. The interface will update immediately. Genealogy data and member information remain intact.';
+  String get faqEnglishSupportAnswer =>
+      'Yes. Go to Settings > Language, toggle the switch to change to English. The interface will update immediately. Genealogy data and member information remain intact.';
 
   @override
   String get aboutUsTitle => 'About Us';
 
   @override
-  String get aboutUsTagline => 'Gia Tộc Việt helps you preserve your family genealogy on a digital platform, connecting generations no matter where they are.';
+  String get aboutUsTagline =>
+      'Gia Tộc Việt helps you preserve your family genealogy on a digital platform, connecting generations no matter where they are.';
 
   @override
   String get versionLabel => 'Version';
@@ -1101,7 +1177,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get qrSaved => 'QR saved to gallery!';
 
   @override
-  String get qrSaveError => 'Cannot save image. Please grant gallery permission.';
+  String get qrSaveError =>
+      'Cannot save image. Please grant gallery permission.';
 
   @override
   String get downloadLabel => 'Download';
@@ -1379,7 +1456,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bioLabel => 'Biography';
 
   @override
-  String get bioHint => 'Enter profession, education, or important milestones...';
+  String get bioHint =>
+      'Enter profession, education, or important milestones...';
 
   @override
   String get uploadPhotoLabel => 'Upload Photo';
@@ -1532,7 +1610,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get knownLabel => 'Known';
 
   @override
-  String get logoutConfirmMessage => 'Are you sure you want to log out of the app?';
+  String get logoutConfirmMessage =>
+      'Are you sure you want to log out of the app?';
 
   @override
   String get logoutLabel => 'Logout';
@@ -1674,7 +1753,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventDescriptionLabel => 'Detailed Description';
 
   @override
-  String get eventDescriptionHint => 'Enter description of the event (location, content)...';
+  String get eventDescriptionHint =>
+      'Enter description of the event (location, content)...';
 
   @override
   String get saveEventButton => 'Save Event';
@@ -1894,16 +1974,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventTitleLabelEventArticle => 'Event / Article name';
 
   @override
-  String get eventTitleHintAnnouncement => 'Enter a short announcement title...';
+  String get eventTitleHintAnnouncement =>
+      'Enter a short announcement title...';
 
   @override
-  String get eventTitleRequiredAnnouncement => 'Please enter announcement title';
+  String get eventTitleRequiredAnnouncement =>
+      'Please enter announcement title';
 
   @override
   String get eventOrganizerLabelFull => 'Organizer / Host';
 
   @override
-  String get eventOrganizerHintFull => 'Enter host name or organizing committee...';
+  String get eventOrganizerHintFull =>
+      'Enter host name or organizing committee...';
 
   @override
   String get eventContentLabelAnnouncement => 'Announcement content';
@@ -1912,13 +1995,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventContentLabelEventArticle => 'Content & Schedule';
 
   @override
-  String get eventContentHintAnnouncement => 'Enter detailed announcement content sent to the clan...';
+  String get eventContentHintAnnouncement =>
+      'Enter detailed announcement content sent to the clan...';
 
   @override
-  String get eventContentHintEventArticle => 'Enter detailed article content and event schedule...';
+  String get eventContentHintEventArticle =>
+      'Enter detailed article content and event schedule...';
 
   @override
-  String get eventContentRequiredAnnouncement => 'Please enter announcement content';
+  String get eventContentRequiredAnnouncement =>
+      'Please enter announcement content';
 
   @override
   String get eventSearchHint => 'Search events, announcements...';
@@ -1982,10 +2068,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectUnlinkedMemberTitle => 'Select Unlinked Member';
 
   @override
-  String get selectUnlinkedMemberSubtitle => 'Select a member to view info and link to the family tree';
+  String get selectUnlinkedMemberSubtitle =>
+      'Select a member to view info and link to the family tree';
 
   @override
-  String get deleteMemberConfirmStart => 'Are you sure you want to delete member ';
+  String get deleteMemberConfirmStart =>
+      'Are you sure you want to delete member ';
 
   @override
   String get deleteMemberConfirmEnd => ' from the family tree?';
@@ -1994,7 +2082,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteMemberTitlePrefix => 'Delete member ';
 
   @override
-  String get deleteMemberWithDescendantsMessage => 'This member has descendants continuing the family tree. Please choose how to handle the generation links:';
+  String get deleteMemberWithDescendantsMessage =>
+      'This member has descendants continuing the family tree. Please choose how to handle the generation links:';
 
   @override
   String get promoteChildrenOption => 'Promote children';
@@ -2003,13 +2092,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recommendedLabel => 'Recommended';
 
   @override
-  String get promoteChildrenDesc => 'Automatically link children to the previous generation so the tree is not broken.';
+  String get promoteChildrenDesc =>
+      'Automatically link children to the previous generation so the tree is not broken.';
 
   @override
   String get deleteAndDetachOption => 'Delete & Detach branch';
 
   @override
-  String get deleteAndDetachDesc => 'Descendants will be detached into orphan branches (losing the link to the father\'s generation).';
+  String get deleteAndDetachDesc =>
+      'Descendants will be detached into orphan branches (losing the link to the father\'s generation).';
 
   @override
   String get accountSection => 'Account';
@@ -2104,7 +2195,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get meLabel => 'Me';
 
   @override
-  String get addMemberChooseMethodDesc => 'Choose how to add a member to the clan';
+  String get addMemberChooseMethodDesc =>
+      'Choose how to add a member to the clan';
 
   @override
   String get linkUnlinkedMemberLabel => 'Link a member not yet on the tree';
@@ -2113,7 +2205,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createNewMemberLabel => 'Create new member';
 
   @override
-  String get createNewMemberDesc => 'Enter complete information for the new member';
+  String get createNewMemberDesc =>
+      'Enter complete information for the new member';
 
   @override
   String addChildForFormat(Object name) {
@@ -2186,7 +2279,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteNotificationAction => 'Delete notification';
 
   @override
-  String get wishLoginRequired => 'Please wait for your information to load or log in again to send a wish';
+  String get wishLoginRequired =>
+      'Please wait for your information to load or log in again to send a wish';
 
   @override
   String get noWishesMessage => 'No wishes yet.';
@@ -2207,7 +2301,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearBranchFilterLabel => 'Clear branch filter';
 
   @override
-  String get pendingApprovalRequestSent => 'Your clan join request has been sent successfully. Please wait for admin approval or contact ';
+  String get pendingApprovalRequestSent =>
+      'Your clan join request has been sent successfully. Please wait for admin approval or contact ';
 
   @override
   String pendingApprovalLeaderFormat(Object name, Object phone) {
@@ -2221,7 +2316,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errNameEmpty => 'Name cannot be empty';
 
   @override
-  String get errGoogleSignInCanceled => 'Google sign-in was canceled by the user';
+  String get errGoogleSignInCanceled =>
+      'Google sign-in was canceled by the user';
 
   @override
   String get errFirebaseAuth => 'Unable to authenticate with Firebase';
@@ -2256,13 +2352,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errEmailInvalidFormat => 'Email address is not in a valid format.';
 
   @override
-  String get errInvalidCredentialsRetry => 'Incorrect email or password. Please try again in a few seconds.';
+  String get errInvalidCredentialsRetry =>
+      'Incorrect email or password. Please try again in a few seconds.';
 
   @override
-  String get errRegisterFirebase => 'Unable to register an account with Firebase';
+  String get errRegisterFirebase =>
+      'Unable to register an account with Firebase';
 
   @override
-  String get errFirebaseTokenAfterRegister => 'Unable to get Firebase ID Token after registration';
+  String get errFirebaseTokenAfterRegister =>
+      'Unable to get Firebase ID Token after registration';
 
   @override
   String get errRegisterServer => 'Error registering the account on the server';
@@ -2271,7 +2370,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errFirebaseRegisterError => 'Firebase registration error';
 
   @override
-  String get errEmailAlreadyUsed => 'Email address is already used by another account.';
+  String get errEmailAlreadyUsed =>
+      'Email address is already used by another account.';
 
   @override
   String get errPasswordTooWeak => 'Password is too weak.';
@@ -2304,7 +2404,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errSavePassword => 'Error saving password';
 
   @override
-  String get errDeleteStoredCredentials => 'Error deleting saved login information';
+  String get errDeleteStoredCredentials =>
+      'Error deleting saved login information';
 
   @override
   String errLoginFormat(Object error) {
@@ -2355,10 +2456,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errInvalidResponseData => 'Invalid response data';
 
   @override
-  String get errInvalidDataFormat => 'Returned data is not in the correct format';
+  String get errInvalidDataFormat =>
+      'Returned data is not in the correct format';
 
   @override
-  String get errInvalidListFormat => 'Returned list data is not in the correct format';
+  String get errInvalidListFormat =>
+      'Returned list data is not in the correct format';
 
   @override
   String get errMemberNotFound => 'Member not found';
@@ -2432,7 +2535,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get linkAccountsLabel => 'Link accounts';
 
   @override
-  String get linkAccountEmailDesc => 'Enter the member\'s email. If the email already has an account it will be linked immediately; otherwise the system sends an email invite and auto-links once they register.';
+  String get linkAccountEmailDesc =>
+      'Enter the member\'s email. If the email already has an account it will be linked immediately; otherwise the system sends an email invite and auto-links once they register.';
 
   @override
   String get linkInviteButton => 'Link / Invite';
@@ -2485,7 +2589,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trashTitle => 'Trash';
 
   @override
-  String get trashEmpty => 'Members in the trash for more than 30 days will be permanently deleted.';
+  String get trashEmpty =>
+      'Members in the trash for more than 30 days will be permanently deleted.';
 
   @override
   String get trashStatusDeleted => 'Deleted';
@@ -2518,7 +2623,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trashPurgeTitle => 'Delete Permanently';
 
   @override
-  String get trashPurgeMessage => 'Permanently delete all members in the trash older than 30 days? This cannot be undone.';
+  String get trashPurgeMessage =>
+      'Permanently delete all members in the trash older than 30 days? This cannot be undone.';
 
   @override
   String trashPurgeSuccess(int count) {
@@ -2594,7 +2700,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewMemberPage => 'View member page';
 
   @override
-  String get memberNoLongerExists => 'This member may have been deleted or no longer exists.';
+  String get memberNoLongerExists =>
+      'This member may have been deleted or no longer exists.';
 
   @override
   String get filterCreate => 'Added';
@@ -2617,13 +2724,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifEventSubtitle => 'Updates on clan events and gatherings';
 
   @override
-  String get notifNewsSubtitle => 'Receive news and important announcements from the Board of Management';
+  String get notifNewsSubtitle =>
+      'Receive news and important announcements from the Board of Management';
 
   @override
   String get notifWishSubtitle => 'Notify when receiving wishes from members';
 
   @override
-  String get notifAnniversarySubtitle => 'Remind of death anniversaries and member birthdays';
+  String get notifAnniversarySubtitle =>
+      'Remind of death anniversaries and member birthdays';
 
   @override
   String imageTooLargeFormat(int size) {
@@ -2665,7 +2774,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccountTitle => 'Delete Account';
 
   @override
-  String get deleteAccountConfirmMessage => 'All your personal data will be permanently deleted and cannot be recovered. You will lose access to the clan.\n\nAre you sure you want to continue?';
+  String get deleteAccountConfirmMessage =>
+      'All your personal data will be permanently deleted and cannot be recovered. You will lose access to the clan.\n\nAre you sure you want to continue?';
 
   @override
   String get deleteAccountSuccess => 'Your account has been deleted.';
@@ -2683,7 +2793,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dangerZoneTitle => 'Danger Zone';
 
   @override
-  String get dangerZoneDesc => 'After deleting your account, all personal data will be permanently deleted and cannot be restored.';
+  String get dangerZoneDesc =>
+      'After deleting your account, all personal data will be permanently deleted and cannot be restored.';
 
   @override
   String get reportContentTitle => 'Report Violation';
@@ -2707,10 +2818,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportReasonOther => 'Other reason';
 
   @override
-  String get reportSuccessMessage => 'Report submitted successfully. Thank you!';
+  String get reportSuccessMessage =>
+      'Report submitted successfully. Thank you!';
 
   @override
-  String get reportFailedMessage => 'Failed to submit report. Please try again.';
+  String get reportFailedMessage =>
+      'Failed to submit report. Please try again.';
 
   @override
   String otpResendCountdownFormat(int seconds) {
@@ -2718,7 +2831,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get typeConfirmToTransfer => 'Type \"CONFIRM\" to transfer clan leadership:';
+  String get typeConfirmToTransfer =>
+      'Type \"CONFIRM\" to transfer clan leadership:';
 
   @override
   String get confirmWord => 'CONFIRM';

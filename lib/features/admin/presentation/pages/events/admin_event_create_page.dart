@@ -148,10 +148,8 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       final year = int.tryParse(parts[2]);
       if (day != null && month != null && year != null) {
         final parsedDate = DateTime(year, month, day);
-        if (_type == 'event') {
-          final lunarStr = LunarDateHelper.getLunarDateString(parsedDate, l10n);
-          return '$_displayDate ($lunarStr)';
-        }
+        final lunarStr = LunarDateHelper.getLunarDateString(parsedDate, l10n);
+        return 'DL: $_displayDate · ÂL: $lunarStr';
       }
     }
     return _displayDate;

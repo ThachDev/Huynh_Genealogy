@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:dio/dio.dart';
 import '../../../../../../core/network/dio_client.dart';
 import '../../../../../../core/constants/app_constants.dart';
+import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
@@ -24,6 +25,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _isSaving = false;
+  bool _isDeleting = false;
 
   @override
   void dispose() {
@@ -83,6 +85,48 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
               context, e.toString().replaceAll('Exception: ', ''));
         }
       }
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await AppDialog.confirm(
+      context,
+      title: l10n.deleteAccountTitle,
+      message: l10n.deleteAccountConfirmMessage,
+      confirmLabel: l10n.deleteAccountButton,
+      cancelLabel: l10n.cancelLabel,
+      type: AppDialogType.danger,
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isDeleting = true);
+    try {
+      final response = await DioClient.instance.delete(
+        AppConstants.deleteAccountEndpoint,
+      );
+      if (!mounted) return;
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        await fb.FirebaseAuth.instance.signOut();
+        if (mounted) {
+          AppSnackBar.success(context, l10n.deleteAccountSuccess);
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      } else {
+        final msg = response.data['message'] ?? l10n.deleteAccountFailed;
+        AppSnackBar.error(context, msg);
+      }
+    } on DioException catch (e) {
+      if (mounted) {
+        final msg = e.response?.data['message'] ?? l10n.serverConnectionError;
+        AppSnackBar.error(context, msg);
+      }
+    } catch (e) {
+      if (mounted) {
+        AppSnackBar.error(context, e.toString().replaceAll('Exception: ', ''));
+      }
+    } finally {
+      if (mounted) setState(() => _isDeleting = false);
     }
   }
 
@@ -195,6 +239,64 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                       ],
                     ),
                   ),
+
+                  // ─── KHU VỰC NGUY HIỂM ───────────────────────────────────
+                  const SizedBox(height: 32),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.error.withValues(alpha: 0.35),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(LucideIcons.alertTriangle,
+                                size: 16, color: AppColors.error),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.dangerZoneTitle,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.dangerZoneDesc,
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 12,
+                            color: AppColors.error.withValues(alpha: 0.85),
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        AppButton(
+                          label: l10n.deleteAccountButton,
+                          onPressed: _isDeleting ? null : _deleteAccount,
+                          variant: AppButtonVariant.danger,
+                          isLoading: _isDeleting,
+                          fullWidth: true,
+                          prefixIcon: const Icon(
+                            LucideIcons.trash2,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),

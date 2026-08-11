@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -93,16 +91,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get privacyPolicy => 'Chính sách bảo mật';
 
   @override
-  String get termsValidationErr =>
-      'Bạn phải đồng ý với Điều khoản dịch vụ và Chính sách bảo mật để tiếp tục';
+  String get termsValidationErr => 'Bạn phải đồng ý với Điều khoản dịch vụ và Chính sách bảo mật để tiếp tục';
 
   @override
-  String get termsContent =>
-      'Chào mừng bạn đến với Gia Tộc Việt. Khi sử dụng dịch vụ của chúng tôi, bạn đồng ý với các điều khoản dưới đây:\n\n1. Quy định tài khoản: Bạn chịu trách nhiệm bảo mật thông tin tài khoản và mật khẩu của mình.\n\n2. Quyền sở hữu dữ liệu: Thông tin gia phả do dòng họ đóng góp thuộc quyền sở hữu chung của các thành viên được cấp quyền trong dòng họ.\n\n3. Hành vi bị cấm: Không đăng tải nội dung xuyên tạc lịch sử, thông tin sai sự thật hoặc xâm phạm đời tư của người khác.\n\n4. Thay đổi điều khoản: Chúng tôi có quyền cập nhật điều khoản dịch vụ để phù hợp hơn với hoạt động của hệ thống.';
+  String get termsContent => 'Chào mừng bạn đến với Gia Tộc Việt. Khi sử dụng dịch vụ của chúng tôi, bạn đồng ý với các điều khoản dưới đây:\n\n1. Quy định tài khoản: Bạn chịu trách nhiệm bảo mật thông tin tài khoản và mật khẩu của mình.\n\n2. Quyền sở hữu dữ liệu: Thông tin gia phả do dòng họ đóng góp thuộc quyền sở hữu chung của các thành viên được cấp quyền trong dòng họ.\n\n3. Hành vi bị cấm: Không đăng tải nội dung xuyên tạc lịch sử, thông tin sai sự thật hoặc xâm phạm đời tư của người khác.\n\n4. Thay đổi điều khoản: Chúng tôi có quyền cập nhật điều khoản dịch vụ để phù hợp hơn với hoạt động của hệ thống.';
 
   @override
-  String get privacyContent =>
-      'Gia Tộc Việt cam kết bảo vệ thông tin riêng tư của gia đình bạn:\n\n1. Thu thập dữ liệu: Chúng tôi thu thập họ tên, email, ảnh đại diện, và dữ liệu phả hệ do bạn chủ động cung cấp.\n\n2. Sử dụng thông tin: Dữ liệu được sử dụng để xây dựng sơ đồ cây gia phả, kết nối các thành viên và thông báo các sự kiện dòng họ.\n\n3. Bảo mật: Chúng tôi áp dụng các biện pháp bảo mật hiện đại để ngăn chặn rò rỉ dữ liệu.\n\n4. Chia sẻ dữ liệu: Chúng tôi tuyệt đối không bán hoặc chia sẻ dữ liệu gia phả của bạn cho bất kỳ bên thứ ba nào vì mục đích quảng cáo.';
+  String get privacyContent => 'Gia Tộc Việt cam kết bảo vệ thông tin riêng tư của gia đình bạn:\n\n1. Thu thập dữ liệu: Chúng tôi thu thập họ tên, email, ảnh đại diện, và dữ liệu phả hệ do bạn chủ động cung cấp.\n\n2. Sử dụng thông tin: Dữ liệu được sử dụng để xây dựng sơ đồ cây gia phả, kết nối các thành viên và thông báo các sự kiện dòng họ.\n\n3. Bảo mật: Chúng tôi áp dụng các biện pháp bảo mật hiện đại để ngăn chặn rò rỉ dữ liệu.\n\n4. Chia sẻ dữ liệu: Chúng tôi tuyệt đối không bán hoặc chia sẻ dữ liệu gia phả của bạn cho bất kỳ bên thứ ba nào vì mục đích quảng cáo.';
 
   @override
   String get closeButton => 'Đóng';
@@ -123,26 +118,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get loadingMessage => 'Đang xử lý...';
 
   @override
-  String get emailLoginFeatureNotice =>
-      'Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.';
+  String get emailLoginFeatureNotice => 'Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.';
 
   @override
-  String get forgotPasswordNotice =>
-      'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.';
+  String get forgotPasswordNotice => 'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.';
 
   @override
   String get forgotPasswordTitle => 'Quên mật khẩu';
 
   @override
-  String get forgotPasswordSubtitle =>
-      'Nhập email đã đăng ký để nhận mã xác thực đặt lại mật khẩu.';
+  String get forgotPasswordSubtitle => 'Nhập email đã đăng ký để nhận mã xác thực đặt lại mật khẩu.';
 
   @override
   String get forgotPasswordButton => 'Gửi Mã Xác Thực';
 
   @override
-  String get forgotPasswordSuccess =>
-      'Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư (kể cả thư mục spam).';
+  String get forgotPasswordSuccess => 'Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư (kể cả thư mục spam).';
 
   @override
   String get backToLogin => 'Quay lại đăng nhập';
@@ -178,8 +169,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get resetPasswordTitle => 'Đặt lại mật khẩu';
 
   @override
-  String get resetPasswordSubtitle =>
-      'Nhập mật khẩu mới cho tài khoản của bạn.';
+  String get resetPasswordSubtitle => 'Nhập mật khẩu mới cho tài khoản của bạn.';
 
   @override
   String get resetPasswordButton => 'Đặt Lại Mật Khẩu';
@@ -188,8 +178,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get resetPasswordSuccessTitle => 'Thành công!';
 
   @override
-  String get resetPasswordSuccessMessage =>
-      'Mật khẩu của bạn đã được đặt lại. Vui lòng đăng nhập lại bằng mật khẩu mới.';
+  String get resetPasswordSuccessMessage => 'Mật khẩu của bạn đã được đặt lại. Vui lòng đăng nhập lại bằng mật khẩu mới.';
 
   @override
   String get newPasswordLabel => 'Mật khẩu mới';
@@ -223,8 +212,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get pendingApprovalMessageSimple =>
-      'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt để được tham gia dòng họ.';
+  String get pendingApprovalMessageSimple => 'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt để được tham gia dòng họ.';
 
   @override
   String get checkStatusButton => 'Kiểm tra trạng thái';
@@ -235,8 +223,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get welcomeCreatorSubtitle =>
-      'Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.';
+  String get welcomeCreatorSubtitle => 'Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.';
 
   @override
   String get familyNameLabel => 'Tên Gia tộc';
@@ -257,8 +244,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get initFamilyButton => 'Khởi Tạo Gia Tộc';
 
   @override
-  String get initFamilySectionDesc =>
-      'Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.';
+  String get initFamilySectionDesc => 'Khởi tạo cây gia phả số ngay hôm nay để kết nối các thế hệ và gìn giữ nguồn cội của dòng họ.';
 
   @override
   String get initFamilySectionTitle => 'Khởi tạo gia tộc mới';
@@ -269,8 +255,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get welcomeViewerSubtitle =>
-      'Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.';
+  String get welcomeViewerSubtitle => 'Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.';
 
   @override
   String get inviteCodeLabel => 'Mã Mời Gia Tộc';
@@ -287,8 +272,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get selectMemberPrompt =>
-      'Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):';
+  String get selectMemberPrompt => 'Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):';
 
   @override
   String get whoAreYouDropdownHint => 'Bạn là ai trên cây gia phả?';
@@ -297,22 +281,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get sendJoinRequestButton => 'Gửi Yêu Cầu Gia Nhập';
 
   @override
-  String get chooseOnboardingSubtitle =>
-      'Chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.';
+  String get chooseOnboardingSubtitle => 'Chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.';
 
   @override
   String get createFamilyCardTitle => 'Khởi tạo Gia tộc mới';
 
   @override
-  String get createFamilyCardDesc =>
-      'Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.';
+  String get createFamilyCardDesc => 'Dành cho Trưởng tộc, người lập phả muốn xây dựng một cây gia phả mới hoàn toàn.';
 
   @override
   String get joinFamilyCardTitle => 'Kết nối dòng tộc';
 
   @override
-  String get joinFamilyCardDesc =>
-      'Dành cho thành viên đã có mã mời từ Trưởng tộc để xem và cập nhật cây gia phả.';
+  String get joinFamilyCardDesc => 'Dành cho thành viên đã có mã mời từ Trưởng tộc để xem và cập nhật cây gia phả.';
 
   @override
   String get familyPhotoSectionLabel => 'Ảnh Đại Diện Dòng Họ';
@@ -321,8 +302,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errEmailRequired => 'Vui lòng nhập địa chỉ email';
 
   @override
-  String get errEmailInvalid =>
-      'Email không đúng định dạng (Ví dụ: ten@gmail.com)';
+  String get errEmailInvalid => 'Email không đúng định dạng (Ví dụ: ten@gmail.com)';
 
   @override
   String get errPasswordRequired => 'Vui lòng nhập mật khẩu';
@@ -331,19 +311,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errPasswordMinLength => 'Mật khẩu phải chứa ít nhất 6 ký tự';
 
   @override
-  String get errStrongPasswordMinLength =>
-      'Mật khẩu bảo mật phải có ít nhất 8 ký tự';
+  String get errStrongPasswordMinLength => 'Mật khẩu bảo mật phải có ít nhất 8 ký tự';
 
   @override
-  String get errStrongPasswordUppercase =>
-      'Mật khẩu cần ít nhất 1 chữ cái viết hoa';
+  String get errStrongPasswordUppercase => 'Mật khẩu cần ít nhất 1 chữ cái viết hoa';
 
   @override
   String get errStrongPasswordNumber => 'Mật khẩu cần ít nhất 1 chữ số';
 
   @override
-  String get errStrongPasswordSpecialChar =>
-      'Mật khẩu cần ít nhất 1 ký tự đặc biệt (!@#...)';
+  String get errStrongPasswordSpecialChar => 'Mật khẩu cần ít nhất 1 ký tự đặc biệt (!@#...)';
 
   @override
   String get errConfirmPasswordRequired => 'Vui lòng xác nhận lại mật khẩu';
@@ -361,15 +338,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errFullNameTooLong => 'Họ và tên không được vượt quá 50 ký tự';
 
   @override
-  String get errFullNameInvalid =>
-      'Họ và tên chỉ được chứa chữ cái và khoảng trắng';
+  String get errFullNameInvalid => 'Họ và tên chỉ được chứa chữ cái và khoảng trắng';
 
   @override
   String get errPhoneNumberRequired => 'Vui lòng nhập số điện thoại';
 
   @override
-  String get errPhoneNumberInvalid =>
-      'Số điện thoại không hợp lệ (Ví dụ: 0912345678)';
+  String get errPhoneNumberInvalid => 'Số điện thoại không hợp lệ (Ví dụ: 0912345678)';
 
   @override
   String get errYearRequired => 'Vui lòng nhập năm';
@@ -396,40 +371,31 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get errServer =>
-      'Hệ thống đang gặp sự cố tạm thời. Vui lòng thử lại sau ít phút.';
+  String get errServer => 'Hệ thống đang gặp sự cố tạm thời. Vui lòng thử lại sau ít phút.';
 
   @override
-  String get errNetwork =>
-      'Không có kết nối mạng. Vui lòng kiểm tra lại Wi-Fi hoặc dữ liệu di động.';
+  String get errNetwork => 'Không có kết nối mạng. Vui lòng kiểm tra lại Wi-Fi hoặc dữ liệu di động.';
 
   @override
-  String get errCache =>
-      'Không thể truy xuất dữ liệu lưu tạm trên thiết bị. Vui lòng tải lại trang.';
+  String get errCache => 'Không thể truy xuất dữ liệu lưu tạm trên thiết bị. Vui lòng tải lại trang.';
 
   @override
-  String get errNotFound =>
-      'Không tìm thấy thông tin yêu cầu hoặc dữ liệu đã bị xóa.';
+  String get errNotFound => 'Không tìm thấy thông tin yêu cầu hoặc dữ liệu đã bị xóa.';
 
   @override
-  String get errValidation =>
-      'Thông tin nhập vào chưa chính xác. Vui lòng kiểm tra lại.';
+  String get errValidation => 'Thông tin nhập vào chưa chính xác. Vui lòng kiểm tra lại.';
 
   @override
-  String get errUnknown =>
-      'Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.';
+  String get errUnknown => 'Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.';
 
   @override
-  String get errAuth =>
-      'Phiên đăng nhập đã hết hạn hoặc tài khoản/mật khẩu không chính xác. Vui lòng đăng nhập lại.';
+  String get errAuth => 'Phiên đăng nhập đã hết hạn hoặc tài khoản/mật khẩu không chính xác. Vui lòng đăng nhập lại.';
 
   @override
-  String get errPermission =>
-      'Tài khoản của bạn không có quyền thực hiện chức năng này.';
+  String get errPermission => 'Tài khoản của bạn không có quyền thực hiện chức năng này.';
 
   @override
-  String get errTimeout =>
-      'Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại.';
+  String get errTimeout => 'Kết nối mạng quá chậm hoặc bị gián đoạn. Vui lòng thử lại.';
 
   @override
   String get retryButton => 'Thử lại';
@@ -441,12 +407,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get qrScannerTitle => 'Quét mã QR';
 
   @override
-  String get qrScannerInstruction =>
-      'Đặt mã QR vào trong khung hình để thực hiện quét tự động';
+  String get qrScannerInstruction => 'Đặt mã QR vào trong khung hình để thực hiện quét tự động';
 
   @override
-  String get qrScannerNoCodeFound =>
-      'Không tìm thấy mã QR nào trong bức ảnh này.';
+  String get qrScannerNoCodeFound => 'Không tìm thấy mã QR nào trong bức ảnh này.';
 
   @override
   String get qrScannerSelectImageError => 'Đã xảy ra lỗi khi chọn ảnh.';
@@ -470,8 +434,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get inviteCodeHintNew => 'VD: HGT-2024';
 
   @override
-  String get inviteCodeDescription =>
-      'Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.';
+  String get inviteCodeDescription => 'Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.';
 
   @override
   String get connectFamilySectionTitle => 'Kết nối dòng tộc';
@@ -626,8 +589,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get changePasswordTitle => 'Đổi mật khẩu';
 
   @override
-  String get passwordRequirementsDesc =>
-      'Mật khẩu mới của bạn cần chứa ít nhất 8 ký tự, bao gồm cả chữ số, chữ hoa và ký tự đặc biệt để đảm bảo an toàn.';
+  String get passwordRequirementsDesc => 'Mật khẩu mới của bạn cần chứa ít nhất 8 ký tự, bao gồm cả chữ số, chữ hoa và ký tự đặc biệt để đảm bảo an toàn.';
 
   @override
   String get currentPasswordLabel => 'Mật khẩu hiện tại';
@@ -660,15 +622,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get irreversibleActionTitle => 'Hành động không thể hoàn tác';
 
   @override
-  String get irreversibleWarningDesc =>
-      'Việc này KHÔNG THỂ hoàn tác. Toàn bộ cây gia phả, thông tin các đời, thành viên và dữ liệu sẽ bị xóa vĩnh viễn khỏi hệ thống.';
+  String get irreversibleWarningDesc => 'Việc này KHÔNG THỂ hoàn tác. Toàn bộ cây gia phả, thông tin các đời, thành viên và dữ liệu sẽ bị xóa vĩnh viễn khỏi hệ thống.';
 
   @override
   String get confirmDissolveTitle => 'Xác nhận giải tán';
 
   @override
-  String get confirmDissolveInstruction =>
-      'Để xác nhận, vui lòng nhập chính xác tên dòng họ bên dưới:';
+  String get confirmDissolveInstruction => 'Để xác nhận, vui lòng nhập chính xác tên dòng họ bên dưới:';
 
   @override
   String get enterLabel => 'Nhập: ';
@@ -694,15 +654,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get confirmDeletePermanentLabel => 'Đồng Ý Xóa Bỏ';
 
   @override
-  String get dissolveSuccessMessage =>
-      'Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.';
+  String get dissolveSuccessMessage => 'Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.';
 
   @override
   String get chooseRecipientLabel => 'Chọn người nhận quyền';
 
   @override
-  String get transferDesc =>
-      'Chỉ những thành viên đã kích hoạt tài khoản và có vai trò khác Trưởng tộc mới xuất hiện trong danh sách dưới đây:';
+  String get transferDesc => 'Chỉ những thành viên đã kích hoạt tài khoản và có vai trò khác Trưởng tộc mới xuất hiện trong danh sách dưới đây:';
 
   @override
   String get searchMemberHint => 'Tìm thành viên...';
@@ -714,8 +672,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noSearchResultsMessage => 'Không tìm thấy kết quả phù hợp.';
 
   @override
-  String get noEligibleMembers =>
-      'Không có thành viên nào đủ điều kiện nhận chuyển nhượng.';
+  String get noEligibleMembers => 'Không có thành viên nào đủ điều kiện nhận chuyển nhượng.';
 
   @override
   String get proceedTransferButton => 'Tiến Hành Chuyển Nhượng';
@@ -724,8 +681,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get warningDialogTitle => 'Cảnh báo quan trọng';
 
   @override
-  String get warningDialogMessage =>
-      'Quyền Trưởng tộc là quyền hạn cao nhất trong hệ thống gia phả. Khi chuyển nhượng thành công, bạn sẽ mất quyền chỉnh sửa cấu trúc dòng họ cao cấp và các thiết lập bảo mật.';
+  String get warningDialogMessage => 'Quyền Trưởng tộc là quyền hạn cao nhất trong hệ thống gia phả. Khi chuyển nhượng thành công, bạn sẽ mất quyền chỉnh sửa cấu trúc dòng họ cao cấp và các thiết lập bảo mật.';
 
   @override
   String warningDialogConfirmMessage(String name) {
@@ -774,8 +730,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noMembers => 'Chưa có thành viên nào trong gia tộc.';
 
   @override
-  String get cannotSelfChange =>
-      'Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng \"Chuyển nhượng quyền Trưởng tộc\".';
+  String get cannotSelfChange => 'Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng \"Chuyển nhượng quyền Trưởng tộc\".';
 
   @override
   String get accountInfoTitle => 'Thông Tin Cá Nhân';
@@ -787,8 +742,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noProfileLink => 'Chưa liên kết hồ sơ gia phả';
 
   @override
-  String get noProfileLinkDesc =>
-      'Tài khoản của bạn là Trưởng tộc nhưng chưa được liên kết với một thành viên nào trong cây gia phả. Hãy tạo hồ sơ ngay để bắt đầu quản lý phả hệ.';
+  String get noProfileLinkDesc => 'Tài khoản của bạn là Trưởng tộc nhưng chưa được liên kết với một thành viên nào trong cây gia phả. Hãy tạo hồ sơ ngay để bắt đầu quản lý phả hệ.';
 
   @override
   String get createProfileButton => 'Tạo Hồ Sơ Gia Phả';
@@ -848,71 +802,61 @@ class AppLocalizationsVi extends AppLocalizations {
   String get regSection1Title => 'Chấp thuận';
 
   @override
-  String get regSection1Content =>
-      'Khi tải và sử dụng Gia Tộc Việt, bạn đồng ý với các điều khoản dưới đây và Chính sách bảo mật của chúng tôi. Nếu không đồng ý, vui lòng không dùng ứng dụng.';
+  String get regSection1Content => 'Khi tải và sử dụng Gia Tộc Việt, bạn đồng ý với các điều khoản dưới đây và Chính sách bảo mật của chúng tôi. Nếu không đồng ý, vui lòng không dùng ứng dụng.';
 
   @override
   String get regSection2Title => 'Giải thích từ ngữ';
 
   @override
-  String get regSection2Content =>
-      '**Ứng dụng:** Gia Tộc Việt và các tính năng của ứng dụng.\n**Người dùng:** Cá nhân đã đăng ký tài khoản.\n**Dòng họ:** Nhóm thành viên do Trưởng tộc tạo lập, gồm chi tộc, thành viên và dữ liệu gia phả.\n**Trưởng tộc:** Người quản trị cao nhất của dòng họ.\n**Trưởng chi:** Người được phân quyền quản lý một chi tộc.\n**Biên tập viên:** Người được quyền đóng góp và chỉnh sửa thông tin gia phả.\n**Thành viên:** Người có quyền xem gia phả và các hoạt động của dòng họ.\n**Dữ liệu cá nhân:** Họ tên, ngày sinh, giới tính, quan hệ gia đình, hình ảnh, số điện thoại, email…';
+  String get regSection2Content => '**Ứng dụng:** Gia Tộc Việt và các tính năng của ứng dụng.\n**Người dùng:** Cá nhân đã đăng ký tài khoản.\n**Dòng họ:** Nhóm thành viên do Trưởng tộc tạo lập, gồm chi tộc, thành viên và dữ liệu gia phả.\n**Trưởng tộc:** Người quản trị cao nhất của dòng họ.\n**Trưởng chi:** Người được phân quyền quản lý một chi tộc.\n**Biên tập viên:** Người được quyền đóng góp và chỉnh sửa thông tin gia phả.\n**Thành viên:** Người có quyền xem gia phả và các hoạt động của dòng họ.\n**Dữ liệu cá nhân:** Họ tên, ngày sinh, giới tính, quan hệ gia đình, hình ảnh, số điện thoại, email…';
 
   @override
   String get regSection3Title => 'Tài khoản';
 
   @override
-  String get regSection3Content =>
-      '• Bạn phải đủ 18 tuổi hoặc có người giám hộ hợp pháp.\n• Bạn chịu trách nhiệm bảo vệ mật khẩu của mình.\n• Mỗi người chỉ được tạo một tài khoản, dùng cho mục đích cá nhân.\n• Thông tin đăng ký phải chính xác và trung thực.';
+  String get regSection3Content => '• Bạn phải đủ 18 tuổi hoặc có người giám hộ hợp pháp.\n• Bạn chịu trách nhiệm bảo vệ mật khẩu của mình.\n• Mỗi người chỉ được tạo một tài khoản, dùng cho mục đích cá nhân.\n• Thông tin đăng ký phải chính xác và trung thực.';
 
   @override
   String get regSection4Title => 'Quyền hạn theo vai trò';
 
   @override
-  String get regSection4Content =>
-      '**Thành viên** – Xem gia phả, xem tin tức & sự kiện dòng tộc, cập nhật thông tin cá nhân.\n**Biên tập viên** – Thêm, sửa thông tin thành viên (không được xóa).\n**Trưởng chi** – Quản lý chi tộc được phân công, phê duyệt yêu cầu tham gia chi tộc.\n**Trưởng tộc** – Toàn quyền quản trị dòng họ, phân quyền vai trò cho thành viên, chuyển nhượng quyền Trưởng tộc, giải tán dòng họ.';
+  String get regSection4Content => '**Thành viên** – Xem gia phả, xem tin tức & sự kiện dòng tộc, cập nhật thông tin cá nhân.\n**Biên tập viên** – Thêm, sửa thông tin thành viên (không được xóa).\n**Trưởng chi** – Quản lý chi tộc được phân công, phê duyệt yêu cầu tham gia chi tộc.\n**Trưởng tộc** – Toàn quyền quản trị dòng họ, phân quyền vai trò cho thành viên, chuyển nhượng quyền Trưởng tộc, giải tán dòng họ.';
 
   @override
   String get regSection5Title => 'Quản trị dòng họ';
 
   @override
-  String get regSection5Content =>
-      'Trưởng tộc có toàn quyền: phê duyệt thành viên, phân vai trò, cập nhật thông tin, chuyển nhượng quyền Trưởng tộc và giải tán dòng họ. Khi chuyển nhượng, Trưởng tộc cũ trở thành Thành viên và không thể lấy lại quyền cũ. Mọi thao tác thêm, sửa, xóa trong hệ thống đều được ghi lại.';
+  String get regSection5Content => 'Trưởng tộc có toàn quyền: phê duyệt thành viên, phân vai trò, cập nhật thông tin, chuyển nhượng quyền Trưởng tộc và giải tán dòng họ. Khi chuyển nhượng, Trưởng tộc cũ trở thành Thành viên và không thể lấy lại quyền cũ. Mọi thao tác thêm, sửa, xóa trong hệ thống đều được ghi lại.';
 
   @override
   String get regSection6Title => 'Bảo mật dữ liệu';
 
   @override
-  String get regSection6Content =>
-      'Chúng tôi bảo vệ dữ liệu của bạn theo Luật An ninh mạng Việt Nam và Nghị định 13/2023/NĐ-CP. Dữ liệu được lưu tại máy chủ Việt Nam, mã hóa khi truyền tải và lưu trữ. Chúng tôi không bán dữ liệu của bạn cho bên thứ ba. Thông tin dòng họ chỉ hiển thị cho thành viên đã được phê duyệt.';
+  String get regSection6Content => 'Chúng tôi bảo vệ dữ liệu của bạn theo Luật An ninh mạng Việt Nam và Nghị định 13/2023/NĐ-CP. Dữ liệu được lưu tại máy chủ Việt Nam, mã hóa khi truyền tải và lưu trữ. Chúng tôi không bán dữ liệu của bạn cho bên thứ ba. Thông tin dòng họ chỉ hiển thị cho thành viên đã được phê duyệt.';
 
   @override
   String get regSection7Title => 'Sở hữu trí tuệ';
 
   @override
-  String get regSection7Content =>
-      'Gia Tộc Việt (mã nguồn, thiết kế, thương hiệu, logo) là tài sản của đơn vị phát triển, được bảo hộ theo pháp luật Việt Nam. Dữ liệu gia phả do người dùng tạo ra thuộc quyền sở hữu của dòng họ đó.';
+  String get regSection7Content => 'Gia Tộc Việt (mã nguồn, thiết kế, thương hiệu, logo) là tài sản của đơn vị phát triển, được bảo hộ theo pháp luật Việt Nam. Dữ liệu gia phả do người dùng tạo ra thuộc quyền sở hữu của dòng họ đó.';
 
   @override
   String get regSection8Title => 'Trách nhiệm';
 
   @override
-  String get regSection8Content =>
-      'Ứng dụng được cung cấp ở trạng thái hiện tại. Chúng tôi không chịu trách nhiệm nếu: (i) bạn sử dụng sai mục đích; (ii) thông tin bạn cung cấp không chính xác; (iii) Trưởng tộc chủ động xóa hoặc giải tán dòng họ. Nếu mất dữ liệu do lỗi hệ thống, chúng tôi sẽ cố gắng khôi phục.';
+  String get regSection8Content => 'Ứng dụng được cung cấp ở trạng thái hiện tại. Chúng tôi không chịu trách nhiệm nếu: (i) bạn sử dụng sai mục đích; (ii) thông tin bạn cung cấp không chính xác; (iii) Trưởng tộc chủ động xóa hoặc giải tán dòng họ. Nếu mất dữ liệu do lỗi hệ thống, chúng tôi sẽ cố gắng khôi phục.';
 
   @override
   String get regSection9Title => 'Xử lý vi phạm';
 
   @override
-  String get regSection9Content =>
-      'Chúng tôi có thể tạm khóa hoặc chấm dứt tài khoản nếu phát hiện vi phạm. Các mức xử lý: cảnh báo, tạm khóa, khóa vĩnh viễn hoặc thông báo cơ quan chức năng nếu vi phạm pháp luật. Trưởng tộc có thể giải tán dòng họ bất kỳ lúc nào — sau khi xác nhận, toàn bộ dữ liệu bị xóa vĩnh viễn và không thể khôi phục.';
+  String get regSection9Content => 'Chúng tôi có thể tạm khóa hoặc chấm dứt tài khoản nếu phát hiện vi phạm. Các mức xử lý: cảnh báo, tạm khóa, khóa vĩnh viễn hoặc thông báo cơ quan chức năng nếu vi phạm pháp luật. Trưởng tộc có thể giải tán dòng họ bất kỳ lúc nào — sau khi xác nhận, toàn bộ dữ liệu bị xóa vĩnh viễn và không thể khôi phục.';
 
   @override
   String get regSection10Title => 'Điều khoản chung';
 
   @override
-  String get regSection10Content =>
-      'Các điều khoản này được điều chỉnh theo pháp luật Việt Nam. Mọi tranh chấp được ưu tiên giải quyết qua thương lượng. Chúng tôi có thể sửa đổi điều khoản và sẽ thông báo trên ứng dụng. Nếu bạn tiếp tục dùng ứng dụng sau khi thay đổi, nghĩa là bạn đã chấp nhận điều khoản mới.';
+  String get regSection10Content => 'Các điều khoản này được điều chỉnh theo pháp luật Việt Nam. Mọi tranh chấp được ưu tiên giải quyết qua thương lượng. Chúng tôi có thể sửa đổi điều khoản và sẽ thông báo trên ứng dụng. Nếu bạn tiếp tục dùng ứng dụng sau khi thay đổi, nghĩa là bạn đã chấp nhận điều khoản mới.';
 
   @override
   String get copyrightText => '© 2026 ThachDev. Bảo lưu mọi quyền.';
@@ -969,131 +913,109 @@ class AppLocalizationsVi extends AppLocalizations {
   String get faqRegisterQuestion => 'Làm sao để đăng ký tài khoản?';
 
   @override
-  String get faqRegisterAnswer =>
-      'Tải ứng dụng Gia Tộc Việt, nhấn \"Đăng ký\" và điền đầy đủ họ tên, email và mật khẩu. Sau khi đăng ký thành công, bạn dùng mã mời từ Trưởng tộc để yêu cầu tham gia Dòng tộc.';
+  String get faqRegisterAnswer => 'Tải ứng dụng Gia Tộc Việt, nhấn \"Đăng ký\" và điền đầy đủ họ tên, email và mật khẩu. Sau khi đăng ký thành công, bạn dùng mã mời từ Trưởng tộc để yêu cầu tham gia Dòng tộc.';
 
   @override
   String get faqForgotPasswordQuestion => 'Tôi quên mật khẩu, phải làm sao?';
 
   @override
-  String get faqForgotPasswordAnswer =>
-      'Trên màn hình đăng nhập, nhấn \"Quên mật khẩu\". Nhập email đã đăng ký, hệ thống sẽ gửi mã OTP 6 chữ số qua email. Nhập mã OTP để xác thực và đặt mật khẩu mới.';
+  String get faqForgotPasswordAnswer => 'Trên màn hình đăng nhập, nhấn \"Quên mật khẩu\". Nhập email đã đăng ký, hệ thống sẽ gửi mã OTP 6 chữ số qua email. Nhập mã OTP để xác thực và đặt mật khẩu mới.';
 
   @override
   String get faqChangePasswordQuestion => 'Làm sao để đổi mật khẩu?';
 
   @override
-  String get faqChangePasswordAnswer =>
-      'Vào Cài đặt > Bảo mật tài khoản, nhập mật khẩu hiện tại, sau đó nhập mật khẩu mới và xác nhận. Mật khẩu phải có ít nhất 8 ký tự.';
+  String get faqChangePasswordAnswer => 'Vào Cài đặt > Bảo mật tài khoản, nhập mật khẩu hiện tại, sau đó nhập mật khẩu mới và xác nhận. Mật khẩu phải có ít nhất 8 ký tự.';
 
   @override
   String get faqAddMemberQuestion => 'Làm sao để thêm thành viên mới?';
 
   @override
-  String get faqAddMemberAnswer =>
-      'Vào Dashboard, nhấn nút \"+\" ở tab Thành viên. Điền thông tin: họ tên, giới tính, ngày sinh, nơi sinh, thế hệ, chi tộc, cha/mẹ (nếu có). Bạn có thể bổ sung ngày mất, tình trạng hôn nhân, ghi chú. Nhấn \"Lưu\" để hoàn tất. Yêu cầu quyền Biên tập viên trở lên.';
+  String get faqAddMemberAnswer => 'Vào Dashboard, nhấn nút \"+\" ở tab Thành viên. Điền thông tin: họ tên, giới tính, ngày sinh, nơi sinh, thế hệ, chi tộc, cha/mẹ (nếu có). Bạn có thể bổ sung ngày mất, tình trạng hôn nhân, ghi chú. Nhấn \"Lưu\" để hoàn tất. Yêu cầu quyền Biên tập viên trở lên.';
 
   @override
   String get faqAddBranchQuestion => 'Làm sao để thêm chi tộc mới?';
 
   @override
-  String get faqAddBranchAnswer =>
-      'Vào Dashboard, chọn tab Chi họ và nhấn nút \"+\". Điền tên chi tộc, mô tả và thông tin người sáng lập (nếu có). Sau khi tạo, Trưởng tộc có thể phân quyền Trưởng chi cho thành viên phụ trách chi đó.';
+  String get faqAddBranchAnswer => 'Vào Dashboard, chọn tab Chi họ và nhấn nút \"+\". Điền tên chi tộc, mô tả và thông tin người sáng lập (nếu có). Sau khi tạo, Trưởng tộc có thể phân quyền Trưởng chi cho thành viên phụ trách chi đó.';
 
   @override
-  String get faqEditMemberQuestion =>
-      'Làm sao để chỉnh sửa thông tin thành viên?';
+  String get faqEditMemberQuestion => 'Làm sao để chỉnh sửa thông tin thành viên?';
 
   @override
-  String get faqEditMemberAnswer =>
-      'Trong danh sách thành viên, chọn thành viên cần chỉnh sửa và nhấn biểu tượng bút. Cập nhật thông tin rồi nhấn \"Lưu\". Chỉ Biên tập viên và các vai trò cao hơn mới có quyền này.';
+  String get faqEditMemberAnswer => 'Trong danh sách thành viên, chọn thành viên cần chỉnh sửa và nhấn biểu tượng bút. Cập nhật thông tin rồi nhấn \"Lưu\". Chỉ Biên tập viên và các vai trò cao hơn mới có quyền này.';
 
   @override
   String get faqDeleteMemberQuestion => 'Làm sao để xóa thành viên?';
 
   @override
-  String get faqDeleteMemberAnswer =>
-      'Chọn thành viên trong danh sách, nhấn biểu tượng xóa (thùng rác) và xác nhận. Lưu ý: chỉ Trưởng tộc và Trưởng chi mới có quyền xóa thành viên; Biên tập viên không có quyền này.';
+  String get faqDeleteMemberAnswer => 'Chọn thành viên trong danh sách, nhấn biểu tượng xóa (thùng rác) và xác nhận. Lưu ý: chỉ Trưởng tộc và Trưởng chi mới có quyền xóa thành viên; Biên tập viên không có quyền này.';
 
   @override
   String get faqImportGenealogyQuestion => 'Có thể nhập gia phả từ file không?';
 
   @override
-  String get faqImportGenealogyAnswer =>
-      'Hiện tại ứng dụng hỗ trợ thêm từng thành viên thủ công. Tính năng nhập hàng loạt từ file đang được phát triển.';
+  String get faqImportGenealogyAnswer => 'Hiện tại ứng dụng hỗ trợ thêm từng thành viên thủ công. Tính năng nhập hàng loạt từ file đang được phát triển.';
 
   @override
   String get faqInviteCodeQuestion => 'Mã mời hoạt động như thế nào?';
 
   @override
-  String get faqInviteCodeAnswer =>
-      'Mỗi Dòng tộc có một Mã mời duy nhất do hệ thống tạo. Trưởng tộc có thể xem, sao chép và chia sẻ Mã mời (kèm QR code) ngay trong Dashboard. Thành viên mới dùng mã này để gửi yêu cầu gia nhập — Trưởng tộc hoặc Trưởng chi sẽ phê duyệt.';
+  String get faqInviteCodeAnswer => 'Mỗi Dòng tộc có một Mã mời duy nhất do hệ thống tạo. Trưởng tộc có thể xem, sao chép và chia sẻ Mã mời (kèm QR code) ngay trong Dashboard. Thành viên mới dùng mã này để gửi yêu cầu gia nhập — Trưởng tộc hoặc Trưởng chi sẽ phê duyệt.';
 
   @override
   String get faqRolesQuestion => 'Các vai trò trong Dòng tộc là gì?';
 
   @override
-  String get faqRolesAnswer =>
-      'Hệ thống có 4 cấp vai trò:\n• Trưởng tộc — Quyền cao nhất: quản lý toàn bộ Dòng tộc, phân quyền, chuyển nhượng và giải tán.\n• Trưởng chi — Quản lý chi tộc được phân công, phê duyệt yêu cầu gia nhập.\n• Biên tập viên — Thêm và chỉnh sửa thông tin thành viên (không được xóa).\n• Thành viên — Xem gia phả và các sự kiện của dòng tộc.';
+  String get faqRolesAnswer => 'Hệ thống có 4 cấp vai trò:\n• Trưởng tộc — Quyền cao nhất: quản lý toàn bộ Dòng tộc, phân quyền, chuyển nhượng và giải tán.\n• Trưởng chi — Quản lý chi tộc được phân công, phê duyệt yêu cầu gia nhập.\n• Biên tập viên — Thêm và chỉnh sửa thông tin thành viên (không được xóa).\n• Thành viên — Xem gia phả và các sự kiện của dòng tộc.';
 
   @override
   String get faqAssignRoleQuestion => 'Làm sao để phân quyền cho thành viên?';
 
   @override
-  String get faqAssignRoleAnswer =>
-      'Vào Cài đặt > Phân quyền thành viên (chỉ Trưởng tộc thấy mục này). Chọn thành viên và chọn vai trò phù hợp. Trưởng tộc không thể tự hạ quyền của mình — cần dùng tính năng Chuyển nhượng quyền Trưởng tộc.';
+  String get faqAssignRoleAnswer => 'Vào Cài đặt > Phân quyền thành viên (chỉ Trưởng tộc thấy mục này). Chọn thành viên và chọn vai trò phù hợp. Trưởng tộc không thể tự hạ quyền của mình — cần dùng tính năng Chuyển nhượng quyền Trưởng tộc.';
 
   @override
-  String get faqTransferOwnershipQuestion =>
-      'Làm sao để chuyển nhượng quyền Trưởng tộc?';
+  String get faqTransferOwnershipQuestion => 'Làm sao để chuyển nhượng quyền Trưởng tộc?';
 
   @override
-  String get faqTransferOwnershipAnswer =>
-      'Vào Cài đặt > Chuyển nhượng quyền Trưởng tộc. Chọn thành viên đã có tài khoản từ danh sách. Xác nhận chuyển nhượng — thao tác này không thể hoàn tác. Sau khi chuyển, bạn trở thành Thành viên và người nhận là Trưởng tộc mới.';
+  String get faqTransferOwnershipAnswer => 'Vào Cài đặt > Chuyển nhượng quyền Trưởng tộc. Chọn thành viên đã có tài khoản từ danh sách. Xác nhận chuyển nhượng — thao tác này không thể hoàn tác. Sau khi chuyển, bạn trở thành Thành viên và người nhận là Trưởng tộc mới.';
 
   @override
   String get faqDissolveClanQuestion => 'Làm sao để giải tán Dòng tộc?';
 
   @override
-  String get faqDissolveClanAnswer =>
-      'Vào Cài đặt > Giải tán dòng họ (chỉ Trưởng tộc). Gõ chính xác tên Dòng tộc để xác nhận. Toàn bộ dữ liệu — thành viên, chi tộc, gia phả — sẽ bị xóa vĩnh viễn và không thể khôi phục. Hành động này không thể hoàn tác.';
+  String get faqDissolveClanAnswer => 'Vào Cài đặt > Giải tán dòng họ (chỉ Trưởng tộc). Gõ chính xác tên Dòng tộc để xác nhận. Toàn bộ dữ liệu — thành viên, chi tộc, gia phả — sẽ bị xóa vĩnh viễn và không thể khôi phục. Hành động này không thể hoàn tác.';
 
   @override
-  String get faqDataSecurityQuestion =>
-      'Dữ liệu gia phả có được bảo mật không?';
+  String get faqDataSecurityQuestion => 'Dữ liệu gia phả có được bảo mật không?';
 
   @override
-  String get faqDataSecurityAnswer =>
-      'Có. Dữ liệu được lưu trữ trên máy chủ tại Việt Nam, mã hóa khi truyền tải và lưu trữ. Chúng tôi tuân thủ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân và cam kết không chia sẻ dữ liệu cho bên thứ ba. Thông tin dòng họ chỉ hiển thị cho thành viên đã được phê duyệt.';
+  String get faqDataSecurityAnswer => 'Có. Dữ liệu được lưu trữ trên máy chủ tại Việt Nam, mã hóa khi truyền tải và lưu trữ. Chúng tôi tuân thủ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân và cam kết không chia sẻ dữ liệu cho bên thứ ba. Thông tin dòng họ chỉ hiển thị cho thành viên đã được phê duyệt.';
 
   @override
   String get faqDeleteAccountQuestion => 'Làm sao để xóa tài khoản?';
 
   @override
-  String get faqDeleteAccountAnswer =>
-      'Vào Cài đặt > Bảo mật tài khoản, chọn \"Xóa tài khoản\" và xác nhận. Lưu ý: nếu bạn đang là Trưởng tộc, hãy chuyển nhượng quyền Trưởng tộc hoặc giải tán Dòng tộc trước khi xóa tài khoản.';
+  String get faqDeleteAccountAnswer => 'Vào Cài đặt > Bảo mật tài khoản, chọn \"Xóa tài khoản\" và xác nhận. Lưu ý: nếu bạn đang là Trưởng tộc, hãy chuyển nhượng quyền Trưởng tộc hoặc giải tán Dòng tộc trước khi xóa tài khoản.';
 
   @override
-  String get faqMultiDeviceQuestion =>
-      'Có thể dùng ứng dụng trên nhiều thiết bị không?';
+  String get faqMultiDeviceQuestion => 'Có thể dùng ứng dụng trên nhiều thiết bị không?';
 
   @override
-  String get faqMultiDeviceAnswer =>
-      'Có. Tài khoản của bạn có thể đăng nhập trên nhiều thiết bị, dữ liệu được đồng bộ theo thời gian thực. Vì lý do bảo mật, hãy đăng xuất trên các thiết bị không còn sử dụng.';
+  String get faqMultiDeviceAnswer => 'Có. Tài khoản của bạn có thể đăng nhập trên nhiều thiết bị, dữ liệu được đồng bộ theo thời gian thực. Vì lý do bảo mật, hãy đăng xuất trên các thiết bị không còn sử dụng.';
 
   @override
   String get faqEnglishSupportQuestion => 'Ứng dụng có hỗ trợ tiếng Anh không?';
 
   @override
-  String get faqEnglishSupportAnswer =>
-      'Có. Vào Cài đặt > Ngôn ngữ, bật công tắc để chuyển sang Tiếng Anh. Giao diện cập nhật ngay lập tức. Dữ liệu gia phả và thông tin thành viên vẫn được giữ nguyên.';
+  String get faqEnglishSupportAnswer => 'Có. Vào Cài đặt > Ngôn ngữ, bật công tắc để chuyển sang Tiếng Anh. Giao diện cập nhật ngay lập tức. Dữ liệu gia phả và thông tin thành viên vẫn được giữ nguyên.';
 
   @override
   String get aboutUsTitle => 'Về Chúng Tôi';
 
   @override
-  String get aboutUsTagline =>
-      'Gia Tộc Việt giúp bạn gìn giữ gia phả dòng họ trên nền tảng số, kết nối các thế hệ dù ở bất kỳ nơi đâu.';
+  String get aboutUsTagline => 'Gia Tộc Việt giúp bạn gìn giữ gia phả dòng họ trên nền tảng số, kết nối các thế hệ dù ở bất kỳ nơi đâu.';
 
   @override
   String get versionLabel => 'Phiên bản';
@@ -1141,8 +1063,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get emptyBranches => 'Không tìm thấy chi tộc phù hợp';
 
   @override
-  String get emptyPendingRequests =>
-      'Không có yêu cầu tham gia nào đang chờ duyệt';
+  String get emptyPendingRequests => 'Không có yêu cầu tham gia nào đang chờ duyệt';
 
   @override
   String get addMemberLabel => 'Thêm thành viên';
@@ -1180,8 +1101,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get qrSaved => 'Đã lưu QR vào thư viện ảnh!';
 
   @override
-  String get qrSaveError =>
-      'Không thể lưu ảnh. Vui lòng cấp quyền thư viện ảnh.';
+  String get qrSaveError => 'Không thể lưu ảnh. Vui lòng cấp quyền thư viện ảnh.';
 
   @override
   String get downloadLabel => 'Tải xuống';
@@ -1359,8 +1279,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get addMemberTitle => 'Thêm Thành Viên';
 
   @override
-  String get linkAccountSuccess =>
-      'Đã tạo và liên kết hồ sơ gia phả thành công!';
+  String get linkAccountSuccess => 'Đã tạo và liên kết hồ sơ gia phả thành công!';
 
   @override
   String linkAccountError(Object msg) {
@@ -1460,8 +1379,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get bioLabel => 'Tiểu sử';
 
   @override
-  String get bioHint =>
-      'Nhập thông tin nghề nghiệp, học vấn hoặc cột mốc quan trọng...';
+  String get bioHint => 'Nhập thông tin nghề nghiệp, học vấn hoặc cột mốc quan trọng...';
 
   @override
   String get uploadPhotoLabel => 'Tải Ảnh Đại Diện';
@@ -1614,8 +1532,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get knownLabel => 'Đã rõ';
 
   @override
-  String get logoutConfirmMessage =>
-      'Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?';
+  String get logoutConfirmMessage => 'Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?';
 
   @override
   String get logoutLabel => 'Đăng xuất';
@@ -1629,8 +1546,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get memberTabLabel => 'Thành Viên';
 
   @override
-  String get noBiographyMessage =>
-      'Chưa có thông tin tiểu sử cho thành viên này.';
+  String get noBiographyMessage => 'Chưa có thông tin tiểu sử cho thành viên này.';
 
   @override
   String get noTreeDataMessage => 'Chưa có dữ liệu gia phả';
@@ -1758,8 +1674,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get eventDescriptionLabel => 'Mô tả chi tiết';
 
   @override
-  String get eventDescriptionHint =>
-      'Nhập mô tả về sự kiện (địa điểm, nội dung)...';
+  String get eventDescriptionHint => 'Nhập mô tả về sự kiện (địa điểm, nội dung)...';
 
   @override
   String get saveEventButton => 'Lưu sự kiện';
@@ -1935,8 +1850,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get deleteEventSuccess => 'Xoá sự kiện thành công';
 
   @override
-  String get transferOwnershipError =>
-      'Không thể chuyển nhượng quyền Trưởng tộc';
+  String get transferOwnershipError => 'Không thể chuyển nhượng quyền Trưởng tộc';
 
   @override
   String get roleUpdateFailed => 'Phân quyền thất bại';
@@ -1983,15 +1897,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get eventTitleHintAnnouncement => 'Nhập tiêu đề thông báo ngắn gọn...';
 
   @override
-  String get eventTitleRequiredAnnouncement =>
-      'Vui lòng nhập tiêu đề thông báo';
+  String get eventTitleRequiredAnnouncement => 'Vui lòng nhập tiêu đề thông báo';
 
   @override
   String get eventOrganizerLabelFull => 'Ban tổ chức / Người chủ trì';
 
   @override
-  String get eventOrganizerHintFull =>
-      'Nhập tên người chủ trì hoặc ban tổ chức...';
+  String get eventOrganizerHintFull => 'Nhập tên người chủ trì hoặc ban tổ chức...';
 
   @override
   String get eventContentLabelAnnouncement => 'Nội dung thông báo';
@@ -2000,16 +1912,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get eventContentLabelEventArticle => 'Nội dung & Lịch trình';
 
   @override
-  String get eventContentHintAnnouncement =>
-      'Nhập nội dung chi tiết thông báo gửi đến gia tộc...';
+  String get eventContentHintAnnouncement => 'Nhập nội dung chi tiết thông báo gửi đến gia tộc...';
 
   @override
-  String get eventContentHintEventArticle =>
-      'Nhập nội dung chi tiết bài viết, lịch trình sự kiện...';
+  String get eventContentHintEventArticle => 'Nhập nội dung chi tiết bài viết, lịch trình sự kiện...';
 
   @override
-  String get eventContentRequiredAnnouncement =>
-      'Vui lòng nhập nội dung thông báo';
+  String get eventContentRequiredAnnouncement => 'Vui lòng nhập nội dung thông báo';
 
   @override
   String get eventSearchHint => 'Tìm kiếm sự kiện, thông báo...';
@@ -2073,12 +1982,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get selectUnlinkedMemberTitle => 'Chọn Thành Viên Chưa Nối Cây';
 
   @override
-  String get selectUnlinkedMemberSubtitle =>
-      'Chọn thành viên để mở thông tin và nối vào gia phả';
+  String get selectUnlinkedMemberSubtitle => 'Chọn thành viên để mở thông tin và nối vào gia phả';
 
   @override
-  String get deleteMemberConfirmStart =>
-      'Bạn có chắc chắn muốn xoá thành viên ';
+  String get deleteMemberConfirmStart => 'Bạn có chắc chắn muốn xoá thành viên ';
 
   @override
   String get deleteMemberConfirmEnd => ' khỏi gia phả không?';
@@ -2087,8 +1994,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get deleteMemberTitlePrefix => 'Xoá thành viên ';
 
   @override
-  String get deleteMemberWithDescendantsMessage =>
-      'Thành viên này đang có con/cháu nối tiếp trong cây gia phả. Vui lòng lựa chọn phương án xử lý liên kết thế hệ:';
+  String get deleteMemberWithDescendantsMessage => 'Thành viên này đang có con/cháu nối tiếp trong cây gia phả. Vui lòng lựa chọn phương án xử lý liên kết thế hệ:';
 
   @override
   String get promoteChildrenOption => 'Đôn con lên';
@@ -2097,15 +2003,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get recommendedLabel => 'Khuyên dùng';
 
   @override
-  String get promoteChildrenDesc =>
-      'Tự động nối trực tiếp các con lên thế hệ trên để cây không bị đứt đoạn.';
+  String get promoteChildrenDesc => 'Tự động nối trực tiếp các con lên thế hệ trên để cây không bị đứt đoạn.';
 
   @override
   String get deleteAndDetachOption => 'Xoá & Tách nhánh';
 
   @override
-  String get deleteAndDetachDesc =>
-      'Các con cháu sẽ bị tách thành nhánh mồ côi (mất liên kết với thế hệ cha).';
+  String get deleteAndDetachDesc => 'Các con cháu sẽ bị tách thành nhánh mồ côi (mất liên kết với thế hệ cha).';
 
   @override
   String get accountSection => 'Tài khoản';
@@ -2200,8 +2104,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get meLabel => 'Tôi';
 
   @override
-  String get addMemberChooseMethodDesc =>
-      'Chọn cách thức thêm thành viên vào gia tộc';
+  String get addMemberChooseMethodDesc => 'Chọn cách thức thêm thành viên vào gia tộc';
 
   @override
   String get linkUnlinkedMemberLabel => 'Kết nối thành viên chưa có trên cây';
@@ -2283,8 +2186,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get deleteNotificationAction => 'Xóa thông báo';
 
   @override
-  String get wishLoginRequired =>
-      'Vui lòng chờ tải thông tin hoặc đăng nhập lại để gửi lời chúc';
+  String get wishLoginRequired => 'Vui lòng chờ tải thông tin hoặc đăng nhập lại để gửi lời chúc';
 
   @override
   String get noWishesMessage => 'Chưa có lời chúc nào.';
@@ -2305,8 +2207,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get clearBranchFilterLabel => 'Bỏ lọc chi';
 
   @override
-  String get pendingApprovalRequestSent =>
-      'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ ';
+  String get pendingApprovalRequestSent => 'Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ ';
 
   @override
   String pendingApprovalLeaderFormat(Object name, Object phone) {
@@ -2320,8 +2221,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errNameEmpty => 'Tên không được để trống';
 
   @override
-  String get errGoogleSignInCanceled =>
-      'Đăng nhập Google bị huỷ bởi người dùng';
+  String get errGoogleSignInCanceled => 'Đăng nhập Google bị huỷ bởi người dùng';
 
   @override
   String get errFirebaseAuth => 'Không thể xác thực với Firebase';
@@ -2356,15 +2256,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errEmailInvalidFormat => 'Địa chỉ email không đúng định dạng.';
 
   @override
-  String get errInvalidCredentialsRetry =>
-      'Email hoặc mật khẩu không chính xác. Vui lòng thử lại sau vài giây.';
+  String get errInvalidCredentialsRetry => 'Email hoặc mật khẩu không chính xác. Vui lòng thử lại sau vài giây.';
 
   @override
   String get errRegisterFirebase => 'Không thể đăng ký tài khoản với Firebase';
 
   @override
-  String get errFirebaseTokenAfterRegister =>
-      'Không thể lấy Firebase ID Token sau đăng ký';
+  String get errFirebaseTokenAfterRegister => 'Không thể lấy Firebase ID Token sau đăng ký';
 
   @override
   String get errRegisterServer => 'Lỗi đăng ký tài khoản trên máy chủ';
@@ -2373,8 +2271,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errFirebaseRegisterError => 'Lỗi đăng ký Firebase';
 
   @override
-  String get errEmailAlreadyUsed =>
-      'Địa chỉ email đã được sử dụng bởi một tài khoản khác.';
+  String get errEmailAlreadyUsed => 'Địa chỉ email đã được sử dụng bởi một tài khoản khác.';
 
   @override
   String get errPasswordTooWeak => 'Mật khẩu quá yếu.';
@@ -2461,8 +2358,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errInvalidDataFormat => 'Dữ liệu trả về không đúng định dạng';
 
   @override
-  String get errInvalidListFormat =>
-      'Dữ liệu danh sách trả về không đúng định dạng';
+  String get errInvalidListFormat => 'Dữ liệu danh sách trả về không đúng định dạng';
 
   @override
   String get errMemberNotFound => 'Không tìm thấy thành viên';
@@ -2536,8 +2432,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get linkAccountsLabel => 'Liên kết tài khoản';
 
   @override
-  String get linkAccountEmailDesc =>
-      'Nhập email của thành viên. Nếu email đã có tài khoản sẽ liên kết ngay; ngược lại hệ thống sẽ gửi email mời và tự động liên kết khi họ đăng ký.';
+  String get linkAccountEmailDesc => 'Nhập email của thành viên. Nếu email đã có tài khoản sẽ liên kết ngay; ngược lại hệ thống sẽ gửi email mời và tự động liên kết khi họ đăng ký.';
 
   @override
   String get linkInviteButton => 'Liên kết / Mời';
@@ -2590,8 +2485,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get trashTitle => 'Thùng rác';
 
   @override
-  String get trashEmpty =>
-      'Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.';
+  String get trashEmpty => 'Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.';
 
   @override
   String get trashStatusDeleted => 'Đã xóa';
@@ -2624,8 +2518,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get trashPurgeTitle => 'Xóa Vĩnh Viễn';
 
   @override
-  String get trashPurgeMessage =>
-      'Xóa vĩnh viễn toàn bộ thành viên trong thùng rác quá 30 ngày? Hành động này không thể hoàn tác.';
+  String get trashPurgeMessage => 'Xóa vĩnh viễn toàn bộ thành viên trong thùng rác quá 30 ngày? Hành động này không thể hoàn tác.';
 
   @override
   String trashPurgeSuccess(int count) {
@@ -2701,8 +2594,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get viewMemberPage => 'Xem trang thành viên';
 
   @override
-  String get memberNoLongerExists =>
-      'Thành viên này có thể đã bị xóa hoặc không còn tồn tại.';
+  String get memberNoLongerExists => 'Thành viên này có thể đã bị xóa hoặc không còn tồn tại.';
 
   @override
   String get filterCreate => 'Thêm mới';
@@ -2725,16 +2617,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get notifEventSubtitle => 'Cập nhật lịch sự kiện và họp mặt dòng tộc';
 
   @override
-  String get notifNewsSubtitle =>
-      'Nhận tin tức và thông cáo quan trọng từ Ban Quản Trị';
+  String get notifNewsSubtitle => 'Nhận tin tức và thông cáo quan trọng từ Ban Quản Trị';
 
   @override
-  String get notifWishSubtitle =>
-      'Thông báo khi nhận được lời chúc từ các thành viên';
+  String get notifWishSubtitle => 'Thông báo khi nhận được lời chúc từ các thành viên';
 
   @override
-  String get notifAnniversarySubtitle =>
-      'Thông báo nhắc lịch giỗ chạp và sinh nhật thành viên';
+  String get notifAnniversarySubtitle => 'Thông báo nhắc lịch giỗ chạp và sinh nhật thành viên';
 
   @override
   String imageTooLargeFormat(int size) {
@@ -2771,4 +2660,75 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get memberSearchNoResult => 'Không tìm thấy thành viên phù hợp';
+
+  @override
+  String get deleteAccountTitle => 'Xóa tài khoản';
+
+  @override
+  String get deleteAccountConfirmMessage => 'Toàn bộ dữ liệu cá nhân của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục. Bạn sẽ mất quyền truy cập vào dòng họ.\n\nBạn có chắc chắn muốn tiếp tục không?';
+
+  @override
+  String get deleteAccountSuccess => 'Tài khoản của bạn đã được xóa.';
+
+  @override
+  String get deleteAccountFailed => 'Không thể xóa tài khoản.';
+
+  @override
+  String get deleteAccountButton => 'Xóa tài khoản';
+
+  @override
+  String get deleteAccountDeleting => 'Đang xóa…';
+
+  @override
+  String get dangerZoneTitle => 'Khu vực nguy hiểm';
+
+  @override
+  String get dangerZoneDesc => 'Sau khi xóa tài khoản, toàn bộ dữ liệu cá nhân sẽ bị xóa vĩnh viễn và không thể khôi phục.';
+
+  @override
+  String get reportContentTitle => 'Báo cáo vi phạm';
+
+  @override
+  String get selectReportReason => 'Chọn lý do báo cáo';
+
+  @override
+  String get reportReasonInappropriate => 'Nội dung không phù hợp';
+
+  @override
+  String get reportReasonAbusive => 'Ngôn từ xúc phạm, thô tục';
+
+  @override
+  String get reportReasonFalseInfo => 'Thông tin sai sự thật';
+
+  @override
+  String get reportReasonSpam => 'Spam / Quảng cáo';
+
+  @override
+  String get reportReasonOther => 'Lý do khác';
+
+  @override
+  String get reportSuccessMessage => 'Báo cáo đã được ghi nhận. Cảm ơn bạn!';
+
+  @override
+  String get reportFailedMessage => 'Không thể gửi báo cáo. Vui lòng thử lại.';
+
+  @override
+  String otpResendCountdownFormat(int seconds) {
+    return 'Gửi lại mã sau $seconds giây';
+  }
+
+  @override
+  String get typeConfirmToTransfer => 'Nhập \"XÁC NHẬN\" để đồng ý chuyển quyền Trưởng tộc:';
+
+  @override
+  String get confirmWord => 'XÁC NHẬN';
+
+  @override
+  String get dissolveWord => 'GIẢI TÁN';
+
+  @override
+  String get copyInfoTooltip => 'Sao chép thông tin';
+
+  @override
+  String get copyInfoSuccess => 'Đã sao chép thông tin thành viên!';
 }

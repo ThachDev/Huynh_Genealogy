@@ -1069,5 +1069,33 @@
       "gen": { "type": "String" }
     }
   },
-  "memberSearchNoResult": "No matching members found"
+  "memberSearchNoResult": "No matching members found",
+  "deleteAccountTitle": "Delete Account",
+  "deleteAccountConfirmMessage": "All your personal data will be permanently deleted and cannot be recovered. You will lose access to the clan.\n\nAre you sure you want to continue?",
+  "deleteAccountSuccess": "Your account has been deleted.",
+  "deleteAccountFailed": "Failed to delete account.",
+  "deleteAccountButton": "Delete Account",
+  "deleteAccountDeleting": "Deleting…",
+  "dangerZoneTitle": "Danger Zone",
+  "dangerZoneDesc": "After deleting your account, all personal data will be permanently deleted and cannot be restored.",
+  "reportContentTitle": "Report Violation",
+  "selectReportReason": "Select a reason for reporting",
+  "reportReasonInappropriate": "Inappropriate content",
+  "reportReasonAbusive": "Abusive or offensive language",
+  "reportReasonFalseInfo": "False or misleading information",
+  "reportReasonSpam": "Spam or advertising",
+  "reportReasonOther": "Other reason",
+  "reportSuccessMessage": "Report submitted successfully. Thank you!",
+  "reportFailedMessage": "Failed to submit report. Please try again.",
+  "otpResendCountdownFormat": "Resend code in {seconds}s",
+  "@otpResendCountdownFormat": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "typeConfirmToTransfer": "Type \"CONFIRM\" to transfer clan leadership:",
+  "confirmWord": "CONFIRM",
+  "dissolveWord": "DISSOLVE",
+  "copyInfoTooltip": "Copy member info",
+  "copyInfoSuccess": "Member info copied to clipboard!"
 }

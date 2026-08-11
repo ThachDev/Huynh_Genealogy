@@ -2,9 +2,10 @@ class AppConstants {
   AppConstants._();
 
   // API
-  // static const String baseUrl ='https://be-family-tree.thachhuynh-dev.workers.dev/api';
   // static const String baseUrl = 'http://10.0.2.2:8787/api';
-  static const String baseUrl = 'http://172.16.0.148:8787/api';
+  // static const String baseUrl = 'http://172.16.0.148:8787/api';
+  static const String baseUrl =
+      'https://be-family-tree.thachhuynh-dev.workers.dev/api';
 
   // Endpoints
   static const String membersEndpoint = '/members';
@@ -14,6 +15,7 @@ class AppConstants {
   static const String verifyOtpEndpoint = '/auth/verify-otp';
   static const String resetPasswordEndpoint = '/auth/reset-password';
   static const String changePasswordEndpoint = '/auth/change-password';
+  static const String deleteAccountEndpoint = '/auth/account';
   static const String familiesEndpoint = '/families';
   static const String verifyCodeEndpoint = '/families/verify-code';
   static const String joinFamilyEndpoint = '/families/join';
@@ -23,6 +25,8 @@ class AppConstants {
   static const String eventsEndpoint = '/events';
   static const String authEndpoint = '/auth';
   static const String auditLogsEndpoint = '/families/audit-logs';
+  static const String reportsEndpoint = '/reports';
+  static const String wishReactEndpoint = '/wishes';
 
   // Storage keys
   static const String cachedMembers = 'CACHED_MEMBERS';

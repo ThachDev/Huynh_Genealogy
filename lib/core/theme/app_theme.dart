@@ -6,7 +6,7 @@ class AppColors {
 
   // Primary palette – "Neo-Industrial"
   static const Color crimson = Color(0xFF5C0612);
-  static const Color gold = Color(0xFFD4AF37);
+  static const Color gold = Color(0xFF9E7B1C);
   static const Color parchment = Color(0xFFF5F5F5);
   static const Color wood = Color(0xFF000000);
 

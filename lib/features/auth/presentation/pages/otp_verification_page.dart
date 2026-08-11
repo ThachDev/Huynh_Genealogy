@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,10 +25,41 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   final _formKey = GlobalKey<FormState>();
   final _otpController = TextEditingController();
 
+  // Countdown cho nút Gửi lại OTP (60 giây chống spam)
+  static const int _countdownSeconds = 60;
+  int _secondsLeft = 0;
+  Timer? _countdownTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Bắt đầu countdown ngay khi màn hình mở (OTP vừa gửi)
+    _startCountdown();
+  }
+
   @override
   void dispose() {
     _otpController.dispose();
+    _countdownTimer?.cancel();
     super.dispose();
+  }
+
+  void _startCountdown() {
+    _countdownTimer?.cancel();
+    setState(() => _secondsLeft = _countdownSeconds);
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() {
+        if (_secondsLeft > 0) {
+          _secondsLeft--;
+        } else {
+          timer.cancel();
+        }
+      });
+    });
   }
 
   void _onSubmitPressed() {
@@ -42,14 +74,17 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   }
 
   void _onResendPressed() {
+    if (_secondsLeft > 0) return; // Chưa hết countdown
     context.read<AuthBloc>().add(
           AuthForgotPasswordRequested(email: widget.email),
         );
+    _startCountdown();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final canResend = _secondsLeft == 0;
 
     return Scaffold(
       backgroundColor: context.background,
@@ -182,17 +217,27 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               size: AppButtonSize.large,
                             ),
                             const SizedBox(height: 16),
-                            TextButton(
-                              onPressed: isLoading ? null : _onResendPressed,
-                              child: Text(
-                                l10n.otpResendButton,
-                                style: GoogleFonts.inter(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: context.accent,
-                                ),
-                              ),
-                            ),
+
+                            // Nút Gửi lại OTP với Countdown chống spam
+                            canResend
+                                ? TextButton(
+                                    onPressed: isLoading ? null : _onResendPressed,
+                                    child: Text(
+                                      l10n.otpResendButton,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: context.accent,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    l10n.otpResendCountdownFormat(_secondsLeft),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      color: context.textSecondary,
+                                    ),
+                                  ),
                             const Spacer(),
                           ],
                         ),

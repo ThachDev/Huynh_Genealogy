@@ -1079,5 +1079,33 @@
       "gen": { "type": "String" }
     }
   },
-  "memberSearchNoResult": "Không tìm thấy thành viên phù hợp"
+  "memberSearchNoResult": "Không tìm thấy thành viên phù hợp",
+  "deleteAccountTitle": "Xóa tài khoản",
+  "deleteAccountConfirmMessage": "Toàn bộ dữ liệu cá nhân của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục. Bạn sẽ mất quyền truy cập vào dòng họ.\n\nBạn có chắc chắn muốn tiếp tục không?",
+  "deleteAccountSuccess": "Tài khoản của bạn đã được xóa.",
+  "deleteAccountFailed": "Không thể xóa tài khoản.",
+  "deleteAccountButton": "Xóa tài khoản",
+  "deleteAccountDeleting": "Đang xóa…",
+  "dangerZoneTitle": "Khu vực nguy hiểm",
+  "dangerZoneDesc": "Sau khi xóa tài khoản, toàn bộ dữ liệu cá nhân sẽ bị xóa vĩnh viễn và không thể khôi phục.",
+  "reportContentTitle": "Báo cáo vi phạm",
+  "selectReportReason": "Chọn lý do báo cáo",
+  "reportReasonInappropriate": "Nội dung không phù hợp",
+  "reportReasonAbusive": "Ngôn từ xúc phạm, thô tục",
+  "reportReasonFalseInfo": "Thông tin sai sự thật",
+  "reportReasonSpam": "Spam / Quảng cáo",
+  "reportReasonOther": "Lý do khác",
+  "reportSuccessMessage": "Báo cáo đã được ghi nhận. Cảm ơn bạn!",
+  "reportFailedMessage": "Không thể gửi báo cáo. Vui lòng thử lại.",
+  "otpResendCountdownFormat": "Gửi lại mã sau {seconds} giây",
+  "@otpResendCountdownFormat": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "typeConfirmToTransfer": "Nhập \"XÁC NHẬN\" để đồng ý chuyển quyền Trưởng tộc:",
+  "confirmWord": "XÁC NHẬN",
+  "dissolveWord": "GIẢI TÁN",
+  "copyInfoTooltip": "Sao chép thông tin",
+  "copyInfoSuccess": "Đã sao chép thông tin thành viên!"
 }

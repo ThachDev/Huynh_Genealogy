@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -88,16 +90,21 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
   Size? _lastViewportSize;
   Size _lastTreeSize = Size.zero;
 
+  Timer? _searchDebounceTimer;
+
   void _onTransformChanged() {
     if (mounted) setState(() {});
   }
 
   void _onSearchChanged() {
-    if (mounted) {
-      setState(() {
-        _searchQuery = _searchController.text.trim();
-      });
-    }
+    _searchDebounceTimer?.cancel();
+    _searchDebounceTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        setState(() {
+          _searchQuery = _searchController.text.trim();
+        });
+      }
+    });
   }
 
   void _animateMatrixTo(Matrix4 targetMatrix) {
@@ -185,6 +192,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     _matrixAnimationController?.dispose();
     _transformationController.removeListener(_onTransformChanged);
     _transformationController.dispose();
+    _searchDebounceTimer?.cancel();
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     _searchFocusNode.dispose();
@@ -955,9 +963,10 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                         isCurrentUser:
                                             userMemberId == member.id,
                                         onTap: () {
-                                          context.read<FamilyTreeBloc>().add(
-                                              FamilyTreeSelectMemberEvent(
-                                                  member.id));
+                                           HapticFeedback.lightImpact();
+                                           context.read<FamilyTreeBloc>().add(
+                                               FamilyTreeSelectMemberEvent(
+                                                   member.id));
                                           Navigator.push(
                                             context,
                                             SereneFadeSlidePageRoute(
@@ -1015,12 +1024,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                             .generationLevelFormat(
                                                 _TreeEdgePainter.toRoman(gen))
                                             .toUpperCase(),
-                                        style: GoogleFonts.beVietnamPro(
-                                          fontSize: 9.5,
-                                          fontWeight: FontWeight.bold,
-                                          color: context.accent,
-                                          letterSpacing: 0.8,
-                                        ),
+                                         style: GoogleFonts.beVietnamPro(
+                                           fontSize: 11.5,
+                                           fontWeight: FontWeight.bold,
+                                           color: context.accent,
+                                           letterSpacing: 0.8,
+                                         ),
                                       ),
                                     );
                                   }).toList(),

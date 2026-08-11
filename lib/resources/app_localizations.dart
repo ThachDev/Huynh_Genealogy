@@ -62,8 +62,7 @@ import 'app_localizations_vi.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,8 +82,7 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -5083,10 +5080,147 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Không tìm thấy thành viên phù hợp'**
   String get memberSearchNoResult;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa tài khoản'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountConfirmMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ dữ liệu cá nhân của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục. Bạn sẽ mất quyền truy cập vào dòng họ.\n\nBạn có chắc chắn muốn tiếp tục không?'**
+  String get deleteAccountConfirmMessage;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản của bạn đã được xóa.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể xóa tài khoản.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @deleteAccountButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa tài khoản'**
+  String get deleteAccountButton;
+
+  /// No description provided for @deleteAccountDeleting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang xóa…'**
+  String get deleteAccountDeleting;
+
+  /// No description provided for @dangerZoneTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khu vực nguy hiểm'**
+  String get dangerZoneTitle;
+
+  /// No description provided for @dangerZoneDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sau khi xóa tài khoản, toàn bộ dữ liệu cá nhân sẽ bị xóa vĩnh viễn và không thể khôi phục.'**
+  String get dangerZoneDesc;
+
+  /// No description provided for @reportContentTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo cáo vi phạm'**
+  String get reportContentTitle;
+
+  /// No description provided for @selectReportReason.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn lý do báo cáo'**
+  String get selectReportReason;
+
+  /// No description provided for @reportReasonInappropriate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung không phù hợp'**
+  String get reportReasonInappropriate;
+
+  /// No description provided for @reportReasonAbusive.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngôn từ xúc phạm, thô tục'**
+  String get reportReasonAbusive;
+
+  /// No description provided for @reportReasonFalseInfo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin sai sự thật'**
+  String get reportReasonFalseInfo;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In vi, this message translates to:
+  /// **'Spam / Quảng cáo'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lý do khác'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportSuccessMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Báo cáo đã được ghi nhận. Cảm ơn bạn!'**
+  String get reportSuccessMessage;
+
+  /// No description provided for @reportFailedMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể gửi báo cáo. Vui lòng thử lại.'**
+  String get reportFailedMessage;
+
+  /// No description provided for @otpResendCountdownFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lại mã sau {seconds} giây'**
+  String otpResendCountdownFormat(int seconds);
+
+  /// No description provided for @typeConfirmToTransfer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập \"XÁC NHẬN\" để đồng ý chuyển quyền Trưởng tộc:'**
+  String get typeConfirmToTransfer;
+
+  /// No description provided for @confirmWord.
+  ///
+  /// In vi, this message translates to:
+  /// **'XÁC NHẬN'**
+  String get confirmWord;
+
+  /// No description provided for @dissolveWord.
+  ///
+  /// In vi, this message translates to:
+  /// **'GIẢI TÁN'**
+  String get dissolveWord;
+
+  /// No description provided for @copyInfoTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép thông tin'**
+  String get copyInfoTooltip;
+
+  /// No description provided for @copyInfoSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép thông tin thành viên!'**
+  String get copyInfoSuccess;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -5095,25 +5229,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'vi'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'vi':
-      return AppLocalizationsVi();
+    case 'en': return AppLocalizationsEn();
+    case 'vi': return AppLocalizationsVi();
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -75,8 +76,18 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
       appBar: AppAppBar(
         title: l10n.memberDetailTitle,
         transparent: false,
-        actions: canEdit
-            ? [
+        actions: [
+          IconButton(
+            icon: const Icon(LucideIcons.copy, color: Colors.white, size: 18),
+            tooltip: l10n.copyInfoTooltip,
+            onPressed: () {
+              final info =
+                  '${widget.member.fullName} - ${l10n.generationBadge('${widget.member.generation ?? "?"}')} - ${l10n.appTitle}';
+              Clipboard.setData(ClipboardData(text: info));
+              AppSnackBar.success(context, l10n.copyInfoSuccess);
+            },
+          ),
+          if (canEdit) ...[
                 IconButton(
                   icon: const Icon(LucideIcons.link2, color: Colors.white),
                   tooltip: l10n.linkAccountsLabel,
@@ -108,8 +119,8 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                     }
                   },
                 ),
-              ]
-            : null,
+              ],
+        ],
       ),
       body: AppBackgroundBody(
         child: SingleChildScrollView(
@@ -158,6 +169,9 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                                   widget.member.isAlive
                                       ? Colors.green
                                       : context.textSecondary,
+                                  icon: widget.member.isAlive
+                                      ? null
+                                      : LucideIcons.flame,
                                 ),
                               ],
                             ),
@@ -306,7 +320,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
     );
   }
 
-  Widget _buildBadge(String label, Color color) {
+  Widget _buildBadge(String label, Color color, {IconData? icon}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -314,13 +328,22 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
         border: Border.all(color: color.withValues(alpha: 0.4), width: 1),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        label,
-        style: GoogleFonts.beVietnamPro(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: color,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 12, color: color),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            label,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
       ),
     );
   }

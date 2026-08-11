@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +34,10 @@ class _WishWallPageState extends State<WishWallPage> {
   List<WishMessage> _wishes = [];
   final ScrollController _scrollController = ScrollController();
   int _wishLimit = 5;
+
+  // Trạng thái tim theo wishId
+  final Map<int, int> _reactionCounts = {};
+  final Map<int, bool> _reacted = {};
 
   @override
   void initState() {
@@ -64,6 +70,11 @@ class _WishWallPageState extends State<WishWallPage> {
       setState(() {
         _wishes = wishes;
         _isLoading = false;
+        // Khởi tạo trạng thái tim mặc định
+        for (final w in wishes) {
+          _reactionCounts[w.id] = 0;
+          _reacted[w.id] = false;
+        }
       });
     }
   }
@@ -112,13 +123,110 @@ class _WishWallPageState extends State<WishWallPage> {
 
       setState(() {
         _wishes.insert(0, newWish);
+        _reactionCounts[newWish.id] = 0;
+        _reacted[newWish.id] = false;
       });
 
       final created = await widget.apiService.createWish(newWish);
       if (created != null && mounted) {
         setState(() {
           _wishes[0] = created;
+          _reactionCounts[created.id] = 0;
+          _reacted[created.id] = false;
         });
+      }
+    }
+  }
+
+  Future<void> _toggleReact(int wishId) async {
+    HapticFeedback.lightImpact();
+    // Optimistic update
+    setState(() {
+      final prev = _reacted[wishId] ?? false;
+      _reacted[wishId] = !prev;
+      _reactionCounts[wishId] = (_reactionCounts[wishId] ?? 0) + (prev ? -1 : 1);
+    });
+
+    final result = await widget.apiService.reactToWish(wishId);
+    if (result != null && mounted) {
+      setState(() {
+        _reacted[wishId] = result['reacted'] as bool? ?? _reacted[wishId]!;
+        _reactionCounts[wishId] = result['reactionCount'] as int? ?? _reactionCounts[wishId]!;
+      });
+    }
+  }
+
+  Future<void> _reportWish(int wishId) async {
+    final l10n = AppLocalizations.of(context)!;
+    final reasons = [
+      l10n.reportReasonInappropriate,
+      l10n.reportReasonAbusive,
+      l10n.reportReasonFalseInfo,
+      l10n.reportReasonSpam,
+      l10n.reportReasonOther,
+    ];
+
+    final selectedReason = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: context.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: context.textSecondary.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.reportContentTitle,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: context.textPrimary,
+              ),
+            ),
+            Text(
+              l10n.selectReportReason,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 13,
+                color: context.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            ...reasons.map((reason) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(LucideIcons.flag, size: 18, color: context.accent),
+                  title: Text(
+                    reason,
+                    style: GoogleFonts.beVietnamPro(fontSize: 14),
+                  ),
+                  onTap: () => Navigator.pop(ctx, reason),
+                )),
+          ],
+        ),
+      ),
+    );
+
+    if (selectedReason == null || !mounted) return;
+
+    final success = await widget.apiService.reportWish(wishId, selectedReason);
+    if (mounted) {
+      if (success) {
+        AppSnackBar.success(context, l10n.reportSuccessMessage);
+      } else {
+        AppSnackBar.error(context, l10n.reportFailedMessage);
       }
     }
   }
@@ -156,9 +264,14 @@ class _WishWallPageState extends State<WishWallPage> {
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 16),
                 itemBuilder: (context, index) {
+                  final wish = _wishes[index];
                   return _WishCard(
-                    wish: _wishes[index],
+                    wish: wish,
                     isBirthday: isBirthday,
+                    reactionCount: _reactionCounts[wish.id] ?? 0,
+                    isReacted: _reacted[wish.id] ?? false,
+                    onReact: () => _toggleReact(wish.id),
+                    onReport: () => _reportWish(wish.id),
                   );
                 },
               ),
@@ -183,8 +296,19 @@ class _WishWallPageState extends State<WishWallPage> {
 class _WishCard extends StatelessWidget {
   final WishMessage wish;
   final bool isBirthday;
+  final int reactionCount;
+  final bool isReacted;
+  final VoidCallback onReact;
+  final VoidCallback onReport;
 
-  const _WishCard({required this.wish, required this.isBirthday});
+  const _WishCard({
+    required this.wish,
+    required this.isBirthday,
+    required this.reactionCount,
+    required this.isReacted,
+    required this.onReact,
+    required this.onReport,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +364,32 @@ class _WishCard extends StatelessWidget {
                   ],
                 ),
               ),
-              // Leaf/cake icon removed as requested
+              // Menu 3 chấm – Báo cáo vi phạm (CH Play UGC Policy)
+              PopupMenuButton<String>(
+                icon: Icon(
+                  LucideIcons.moreVertical,
+                  size: 18,
+                  color: context.textSecondary.withValues(alpha: 0.6),
+                ),
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(
+                    value: 'report',
+                    child: Row(
+                      children: [
+                        Icon(LucideIcons.flag, size: 16, color: context.textSecondary),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.reportContentTitle,
+                          style: GoogleFonts.beVietnamPro(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == 'report') onReport();
+                },
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -248,7 +397,7 @@ class _WishCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 36, // Diameter of radius: 18 avatar
+                width: 36,
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 2),
@@ -272,6 +421,42 @@ class _WishCard extends StatelessWidget {
                   ),
                 ),
               ),
+            ],
+          ),
+          // ─── Reaction row ──────────────────────────────────────────────
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const SizedBox(width: 36 + 8), // align với nội dung
+              GestureDetector(
+                onTap: onReact,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, anim) => ScaleTransition(
+                    scale: anim,
+                    child: child,
+                  ),
+                  child: Icon(
+                    isReacted ? Icons.favorite : Icons.favorite_border,
+                    key: ValueKey(isReacted),
+                    size: 20,
+                    color: isReacted
+                        ? AppColors.error
+                        : context.textSecondary.withValues(alpha: 0.4),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              if (reactionCount > 0)
+                Text(
+                  '$reactionCount',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isReacted
+                        ? AppColors.error
+                        : context.textSecondary,
+                  ),
+                ),
             ],
           ),
         ],

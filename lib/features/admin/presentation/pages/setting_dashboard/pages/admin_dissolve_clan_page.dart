@@ -41,8 +41,11 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
   }
 
   void _onTextChanged() {
+    final text = _confirmController.text.trim().toUpperCase();
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
-      _canDissolve = _confirmController.text.trim() == widget.familyName;
+      _canDissolve = text == widget.familyName.trim().toUpperCase() ||
+          text == l10n.dissolveWord.toUpperCase();
     });
   }
 

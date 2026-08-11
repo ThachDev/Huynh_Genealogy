@@ -49,24 +49,26 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
     });
   }
 
-  void _dissolveClan() {
+  void _dissolveClan() async {
     if (!_canDissolve) return;
 
     final l10n = AppLocalizations.of(context)!;
-    AppDialog.confirm(
+    final confirmed = await AppDialog.confirmWithInput(
       context,
       title: l10n.deletePermanentDialogTitle,
       message: l10n.deletePermanentDialogMessage(widget.familyName),
+      requiredWord: l10n.dissolveWord,
+      inputInstruction: l10n.confirmDissolveInstruction,
       confirmLabel: l10n.confirmDeletePermanentLabel,
       cancelLabel: l10n.formCancel,
       type: AppDialogType.danger,
-    ).then((confirmed) {
-      if (confirmed == true && mounted) {
-        context
-            .read<AdminDissolveClanBloc>()
-            .add(DeleteFamilyRequested(familyId: widget.familyId));
-      }
-    });
+    );
+
+    if (confirmed == true && mounted) {
+      context
+          .read<AdminDissolveClanBloc>()
+          .add(DeleteFamilyRequested(familyId: widget.familyId));
+    }
   }
 
   @override
@@ -94,156 +96,125 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
       },
       child: Scaffold(
         backgroundColor: context.background,
-      appBar: AppAppBar(title: l10n.dissolveClanTitle),
+        appBar: AppAppBar(title: l10n.dissolveClanTitle),
         body: AppBackgroundBody(
           child: BlocBuilder<AdminDissolveClanBloc, AdminDissolveClanState>(
             builder: (context, state) {
-            final isLoading = state is AdminDissolveClanLoading;
+              final isLoading = state is AdminDissolveClanLoading;
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Card(
-                    elevation: 0,
-                    color: AppColors.error.withValues(alpha: 0.06),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(
-                          color: AppColors.error.withValues(alpha: 0.2)),
-                    ),
-                    margin: EdgeInsets.zero,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.error.withValues(alpha: 0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(LucideIcons.alertOctagon,
-                                color: AppColors.error, size: 22),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  l10n.irreversibleActionTitle,
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.error,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  l10n.irreversibleWarningDesc,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    height: 1.5,
-                                    color:
-                                        AppColors.error.withValues(alpha: 0.8),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Card(
-                    elevation: 0,
-                    color: context.surface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(
-                          color: context.accent.withValues(alpha: 0.1)),
-                    ),
-                    margin: EdgeInsets.zero,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.confirmDissolveTitle,
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Warning Section (no card background)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          LucideIcons.alertTriangle,
+                          color: context.primary,
+                          size: 22,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            l10n.irreversibleActionTitle,
                             style: GoogleFonts.beVietnamPro(
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: context.textPrimary,
+                              color: context.primary,
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          Text(
-                            l10n.confirmDissolveInstruction,
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: context.textSecondary,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.irreversibleWarningDesc,
+                      style: GoogleFonts.inter(
+                        fontSize: 13.5,
+                        height: 1.6,
+                        color: context.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Divider(
+                      height: 1,
+                      color: context.textSecondary.withValues(alpha: 0.15),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Confirmation Section (no card background)
+                    Text(
+                      l10n.confirmDissolveTitle,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: context.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Instruction line
+                    Text.rich(
+                      TextSpan(
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: context.textSecondary,
+                          height: 1.5,
+                        ),
+                        children: [
+                          TextSpan(text: '${l10n.enterLabel} '),
+                          TextSpan(
+                            text: '"${widget.familyName}"',
+                            style: GoogleFonts.beVietnamPro(
+                              fontWeight: FontWeight.bold,
+                              color: context.primary,
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: context.primary.withValues(alpha: 0.04),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color:
-                                      context.primary.withValues(alpha: 0.15)),
+                          const TextSpan(text: ' hoặc '),
+                          TextSpan(
+                            text: '"${l10n.dissolveWord}"',
+                            style: GoogleFonts.beVietnamPro(
+                              fontWeight: FontWeight.bold,
+                              color: context.primary,
                             ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  l10n.enterLabel,
-                                  style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      color: context.textSecondary),
-                                ),
-                                Text(
-                                  widget.familyName,
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: context.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          AppTextFieldLight(
-                            controller: _confirmController,
-                            label: l10n.reenterClanNameLabel,
-                            hintText: l10n.reenterClanNameHint,
-                            prefixIcon: const Icon(LucideIcons.trash2,
-                                color: AppColors.error),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  AppButton(
-                    label: l10n.dissolvePermanentButton,
-                    onPressed: _canDissolve ? _dissolveClan : null,
-                    isLoading: isLoading,
-                    fullWidth: true,
-                    size: AppButtonSize.large,
-                    variant: AppButtonVariant.danger,
-                  ),
-                ],
-              ),
-            );
-          },
-        ),),
+                    const SizedBox(height: 16),
+
+                    // Input Text Field
+                    AppTextFieldLight(
+                      controller: _confirmController,
+                      label: l10n.reenterClanNameLabel,
+                      hintText: l10n.dissolveWord,
+                      prefixIcon: Icon(
+                        LucideIcons.trash2,
+                        color: context.primary,
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Submit Action Button
+                    AppButton(
+                      label: l10n.dissolvePermanentButton,
+                      onPressed: _canDissolve ? _dissolveClan : null,
+                      isLoading: isLoading,
+                      fullWidth: true,
+                      size: AppButtonSize.large,
+                      variant: AppButtonVariant.danger,
+                      color: AppColors.crimson,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }

@@ -123,10 +123,11 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );
       case AppButtonVariant.danger:
+        final dangerColor = color ?? AppColors.error;
         return ElevatedButton.styleFrom(
-          backgroundColor: AppColors.error,
+          backgroundColor: dangerColor,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: AppColors.error.withValues(alpha: 0.5),
+          disabledBackgroundColor: dangerColor.withValues(alpha: 0.5),
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         );

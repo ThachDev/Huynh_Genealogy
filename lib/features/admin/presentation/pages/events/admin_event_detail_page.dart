@@ -931,8 +931,8 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
     final canEdit = !widget.isUserView &&
         authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
-            authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR');
+            authState.user.role == 'EDITOR' ||
+            authState.user.role == 'CREATOR');
     final pageTitle = _isReadOnly ? l10n.eventDetailTitle : l10n.editEventTitle;
 
     return Scaffold(

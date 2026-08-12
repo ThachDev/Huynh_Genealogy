@@ -22,6 +22,14 @@ class _AdminTransferOwnershipPageState
   int? _selectedUserId;
   final _searchController = TextEditingController();
 
+  bool _isOwner() {
+    final authState = context.read<AuthBloc>().state;
+    final role = authState is Authenticated
+        ? authState.user.role.toUpperCase()
+        : '';
+    return role == 'OWNER' || role == 'CREATOR';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -68,6 +76,35 @@ class _AdminTransferOwnershipPageState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    if (!_isOwner()) {
+      return Scaffold(
+        backgroundColor: context.background,
+        appBar: AppAppBar(title: l10n.transferOwnershipLabel),
+        body: AppBackgroundBody(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(LucideIcons.shieldAlert,
+                      color: context.textSecondary, size: 48),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.rolePermissionDenied,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.beVietnamPro(
+                      color: context.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(title: l10n.transferOwnershipLabel),

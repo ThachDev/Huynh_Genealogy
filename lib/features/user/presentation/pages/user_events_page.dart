@@ -101,8 +101,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
     final canEdit = widget.isAdminMode &&
         authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
-            authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR');
+            authState.user.role == 'EDITOR' ||
+            authState.user.role == 'CREATOR');
 
     if (canEdit) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -257,8 +257,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
     final canEdit = widget.isAdminMode &&
         authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
-            authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR');
+            authState.user.role == 'EDITOR' ||
+            authState.user.role == 'CREATOR');
 
     return BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
       builder: (context, treeState) {

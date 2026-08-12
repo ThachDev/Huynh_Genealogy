@@ -1436,6 +1436,12 @@ abstract class AppLocalizations {
   /// **'Đang xử lý chuyển nhượng...'**
   String get transferProcessing;
 
+  /// No description provided for @rolePermissionDenied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn không có quyền thực hiện thao tác này.'**
+  String get rolePermissionDenied;
+
   /// No description provided for @memberRolesTitle.
   ///
   /// In vi, this message translates to:

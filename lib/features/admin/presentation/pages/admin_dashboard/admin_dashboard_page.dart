@@ -45,9 +45,9 @@ class AdminDashboardPage extends StatefulWidget {
     final l10n = AppLocalizations.of(context)!;
     switch (role.toUpperCase()) {
       case 'OWNER':
+      case 'CREATOR':
         return l10n.roleOwner;
       case 'BRANCH_ADMIN':
-        return l10n.roleBranchAdmin;
       case 'EDITOR':
         return l10n.roleEditor;
       case 'VIEWER':
@@ -60,9 +60,11 @@ class AdminDashboardPage extends StatefulWidget {
   static Color roleColor(String role) {
     switch (role.toUpperCase()) {
       case 'OWNER':
+      case 'CREATOR':
         return AppColors.crimson;
       case 'BRANCH_ADMIN':
-        return Colors.orange.shade800;
+      case 'EDITOR':
+        return Colors.indigo.shade600;
       default:
         return Colors.teal;
     }
@@ -98,7 +100,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final role = user?.role ?? 'VIEWER';
     final roleUpper = role.toUpperCase();
     final canEdit = roleUpper == 'OWNER' ||
-        roleUpper == 'BRANCH_ADMIN' ||
         roleUpper == 'EDITOR' ||
         roleUpper == 'CREATOR';
 
@@ -268,7 +269,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     // Mọi vai trò admin đều cần dữ liệu gia tộc (tên + mã mời), không chỉ Owner.
     final canSeeFamily = role == 'OWNER' ||
         role == 'CREATOR' ||
-        role == 'BRANCH_ADMIN' ||
         role == 'EDITOR';
     if (familyId != null && canSeeFamily) {
       context.read<AdminPendingRequestsBloc>().add(
@@ -282,8 +282,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
     final l10n = AppLocalizations.of(context)!;
-    final role = user?.role ?? 'VIEWER';
-    final isEditor = role.toUpperCase() == 'EDITOR';
     final double topPadding = MediaQuery.of(context).padding.top;
     final double headerHeight = 190 + topPadding;
 
@@ -423,7 +421,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 left: 0,
                 right: 0,
                 child: QuickStatsRow(
-                  showPending: !isEditor,
+                  showPending: true,
                   memberCount: memberCount,
                   branchCount: branchCount,
                   pendingCount: pendingCount,
@@ -506,9 +504,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: user.role == 'OWNER'
-                                ? context.primary
-                                : AdminDashboardPage.roleColor(user.role),
+color: user.role == 'OWNER' ||
+                                      user.role == 'CREATOR'
+                                  ? context.primary
+                                  : AdminDashboardPage.roleColor(user.role),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -544,10 +543,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     required List<FamilyUserEntity> requests,
   }) {
     final l10n = AppLocalizations.of(context)!;
-    final authState = context.read<AuthBloc>().state;
-    final user = authState is Authenticated ? authState.user : null;
-    final role = user?.role ?? 'VIEWER';
-    final isEditor = role.toUpperCase() == 'EDITOR';
 
     switch (_selectedTab) {
       case AdminDashboardTab.members:
@@ -594,9 +589,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           ),
                         );
                       },
-                      onDelete: isEditor
-                          ? null
-                          : () => _showDeleteConfirmation(context, member),
+                      onDelete: () => _showDeleteConfirmation(context, member),
                     );
                   },
                 ),
@@ -642,10 +635,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       memberCount:
                           members.where((m) => m.branchId == branch.id).length,
                       onEdit: () => _openBranchForm(context, branch: branch),
-                      onDelete: isEditor
-                          ? null
-                          : () =>
-                              _showDeleteBranchConfirmation(context, branch),
+                      onDelete: () =>
+                          _showDeleteBranchConfirmation(context, branch),
                     );
                   },
                 ),
@@ -654,9 +645,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         );
 
       case AdminDashboardTab.pending:
-        if (isEditor) {
-          return const SizedBox.shrink();
-        }
         if (pendingState is AdminPendingRequestsLoading) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 24),

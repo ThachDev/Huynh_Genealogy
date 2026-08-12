@@ -59,8 +59,8 @@ class _EventsListPageState extends State<EventsListPage> {
     final authState = context.read<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
-            authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR');
+            authState.user.role == 'EDITOR' ||
+            authState.user.role == 'CREATOR');
 
     if (canEdit) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -155,8 +155,8 @@ class _EventsListPageState extends State<EventsListPage> {
     final authState = context.watch<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
-            authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR');
+            authState.user.role == 'EDITOR' ||
+            authState.user.role == 'CREATOR');
 
     return Scaffold(
       backgroundColor: context.background,

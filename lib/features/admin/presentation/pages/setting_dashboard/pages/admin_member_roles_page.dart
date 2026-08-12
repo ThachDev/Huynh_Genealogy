@@ -71,8 +71,6 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                   ),
                 ),
                 const Divider(),
-                _buildRoleOption(user, familyId, 'BRANCH_ADMIN',
-                    l10n.roleBranchAdminTitle, l10n.roleBranchAdminDesc),
                 _buildRoleOption(user, familyId, 'EDITOR', l10n.roleEditorTitle,
                     l10n.roleEditorDesc),
                 _buildRoleOption(user, familyId, 'VIEWER', l10n.roleViewerTitle,
@@ -101,13 +99,9 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
             );
       },
       leading: Icon(
-        roleValue == 'OWNER'
-            ? LucideIcons.crown
-            : roleValue == 'BRANCH_ADMIN'
-                ? LucideIcons.shield
-                : roleValue == 'EDITOR'
-                    ? LucideIcons.edit3
-                    : LucideIcons.user,
+        roleValue == 'EDITOR'
+            ? LucideIcons.edit3
+            : LucideIcons.user,
         color: context.textSecondary,
         size: 22,
       ),

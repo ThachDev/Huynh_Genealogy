@@ -45,7 +45,7 @@ class FamilyUserEntity extends Equatable {
   final int userId;
   final int familyId;
   final int? memberNodeId;
-  final String role; // 'OWNER' | 'BRANCH_ADMIN' | 'EDITOR' | 'VIEWER'
+  final String role; // 'OWNER' | 'EDITOR' | 'VIEWER'
   final String status; // 'PENDING' | 'APPROVED' | 'REJECTED'
   final String? userFullName;
   final String? userEmail;

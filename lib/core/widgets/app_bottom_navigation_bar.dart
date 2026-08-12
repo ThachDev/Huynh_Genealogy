@@ -43,13 +43,23 @@ class UserMainNavigationPage extends StatefulWidget {
   static bool _loadCachedAdminMode() {
     try {
       final prefs = sl<SharedPreferences>();
-      return prefs.getBool(_adminModePrefKey) ?? true;
+      return prefs.getBool(_adminModePrefKey) ?? false;
     } catch (_) {
-      return true;
+      return false;
     }
   }
 
-  static void setAdminMode(bool enabled) {
+  static bool? _loadAdminModeForUser(int? userId) {
+    if (userId == null) return null;
+    try {
+      final prefs = sl<SharedPreferences>();
+      return prefs.getBool('${_adminModePrefKey}_$userId');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static void setAdminMode(bool enabled, {int? userId}) {
     adminModeNotifier.value = enabled;
     if (tabIndexNotifier.value == 0) {
       // Nếu tabIndex đang là 0, cập nhật lại để trigger listener
@@ -58,6 +68,9 @@ class UserMainNavigationPage extends StatefulWidget {
     tabIndexNotifier.value = 0; // Chuyển về Dashboard (tab 0)
     try {
       final prefs = sl<SharedPreferences>();
+      if (userId != null) {
+        prefs.setBool('${_adminModePrefKey}_$userId', enabled);
+      }
       prefs.setBool(_adminModePrefKey, enabled);
     } catch (_) {}
   }
@@ -87,9 +100,14 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
         final authState = context.read<AuthBloc>().state;
         if (authState is Authenticated) {
           final role = authState.user.role;
-          final hasAdminPriv = _isAdminRole(role);
-          // Nếu user có quyền admin, luôn đặt Admin Dashboard làm mặc định khi vào app
-          if (hasAdminPriv) {
+          final isOwnerRole = _isOwnerRole(role);
+          // OWNER/CREATOR luôn vào Admin Dashboard; EDITOR giữ lựa chọn
+          // giao diện đã lưu riêng cho tài khoản (mặc định member view).
+          final userId = authState.user.id;
+          final savedForUser = UserMainNavigationPage._loadAdminModeForUser(
+              userId);
+          UserMainNavigationPage.adminModeNotifier.value = savedForUser ?? false;
+          if (isOwnerRole) {
             UserMainNavigationPage.adminModeNotifier.value = true;
           }
         }
@@ -165,10 +183,12 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 
   static bool _isAdminRole(String role) {
     final r = role.toUpperCase();
-    return r == 'OWNER' ||
-        r == 'BRANCH_ADMIN' ||
-        r == 'EDITOR' ||
-        r == 'CREATOR';
+    return r == 'OWNER' || r == 'EDITOR' || r == 'CREATOR';
+  }
+
+  static bool _isOwnerRole(String role) {
+    final r = role.toUpperCase();
+    return r == 'OWNER' || r == 'CREATOR';
   }
 
   @override

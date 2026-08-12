@@ -81,7 +81,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       familyId: state.family.id,
                       role: 'OWNER',
                     );
-                    UserMainNavigationPage.setAdminMode(true);
+                    UserMainNavigationPage.setAdminMode(true,
+                        userId: user.id);
                     context
                         .read<AuthBloc>()
                         .add(AuthUserUpdated(user: updatedUser));

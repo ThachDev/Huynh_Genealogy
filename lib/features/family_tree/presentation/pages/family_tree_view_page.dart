@@ -69,8 +69,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     final authState = context.read<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
-            authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR') &&
+            authState.user.role == 'EDITOR' ||
+            authState.user.role == 'CREATOR') &&
         UserMainNavigationPage.adminModeNotifier.value;
     return canEdit ? 160.0 : 125.0;
   }
@@ -724,8 +724,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     final authState = context.watch<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
-            authState.user.role == 'BRANCH_ADMIN' ||
-            authState.user.role == 'EDITOR') &&
+            authState.user.role == 'EDITOR' ||
+            authState.user.role == 'CREATOR') &&
         UserMainNavigationPage.adminModeNotifier.value;
     final treeState = context.watch<FamilyTreeBloc>().state;
     String appBarTitle = l10n.familyTreeTitle;

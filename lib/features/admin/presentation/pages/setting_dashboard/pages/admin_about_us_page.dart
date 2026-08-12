@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../resources/app_localizations.dart';
@@ -18,9 +19,12 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
   late Animation<double> _logoScale;
   late Animation<double> _contentFade;
 
+  String _appVersion = '1.0.0';
+
   @override
   void initState() {
     super.initState();
+    _loadAppVersion();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -34,6 +38,16 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
       curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
     );
     _controller.forward();
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) return;
+      setState(() => _appVersion = info.version);
+    } catch (_) {
+      // Giữ giá trị mặc định nếu không đọc được version.
+    }
   }
 
   @override
@@ -162,7 +176,7 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                             context,
                             icon: LucideIcons.info,
                             label: l10n.versionLabel,
-                            value: '1.0.0',
+                            value: _appVersion,
                           ),
                           _buildDivider(context),
                           _buildInfoTile(

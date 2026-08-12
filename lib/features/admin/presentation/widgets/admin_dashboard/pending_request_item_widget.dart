@@ -509,9 +509,9 @@ class _PendingRequestDetailSheet extends StatelessWidget {
   String _roleName(String role) {
     switch (role.toUpperCase()) {
       case 'OWNER':
+      case 'CREATOR':
         return l10n.roleOwner;
       case 'BRANCH_ADMIN':
-        return l10n.roleBranchAdmin;
       case 'EDITOR':
         return l10n.roleEditor;
       default:
@@ -522,9 +522,11 @@ class _PendingRequestDetailSheet extends StatelessWidget {
   Color _roleColor(BuildContext context, String role) {
     switch (role.toUpperCase()) {
       case 'OWNER':
+      case 'CREATOR':
         return context.primary;
       case 'BRANCH_ADMIN':
-        return Colors.orange.shade700;
+      case 'EDITOR':
+        return Colors.indigo.shade600;
       default:
         return context.textSecondary;
     }

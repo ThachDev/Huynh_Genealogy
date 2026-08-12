@@ -86,7 +86,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     final role = user?.role ?? 'VIEWER';
     final roleUpper = role.toUpperCase();
     final hasAdminPrivileges = roleUpper == 'OWNER' ||
-        roleUpper == 'BRANCH_ADMIN' ||
         roleUpper == 'EDITOR' ||
         roleUpper == 'CREATOR';
 
@@ -310,7 +309,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         ? l10n.accountAndClanSection
                         : l10n.accountSectionTitle,
                   ),
-                  if (showAdminInterface)
+                  if (showAdminInterface && isOwner)
                     _buildSettingsTile(
                       context: context,
                       icon: LucideIcons.landmark,
@@ -332,7 +331,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       icon: LucideIcons.userCheck,
                       title: l10n.switchToMemberPage,
                       onTap: () {
-                        UserMainNavigationPage.setAdminMode(false);
+                        UserMainNavigationPage.setAdminMode(false,
+                            userId: user?.id);
                       },
                     )
                   else if (hasAdminPrivileges)
@@ -341,7 +341,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       icon: LucideIcons.shieldAlert,
                       title: l10n.switchToAdminLabel,
                       onTap: () {
-                        UserMainNavigationPage.setAdminMode(true);
+                        UserMainNavigationPage.setAdminMode(true,
+                            userId: user?.id);
                       },
                     ),
                   _buildSectionHeaderInsideCard(

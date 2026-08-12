@@ -74,6 +74,40 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.read<AuthBloc>().state;
+    final role = authState is Authenticated
+        ? authState.user.role.toUpperCase()
+        : '';
+    final isOwner = role == 'OWNER' || role == 'CREATOR';
+    if (!isOwner) {
+      return Scaffold(
+        backgroundColor: context.background,
+        appBar: AppAppBar(title: l10n.dissolveClanTitle),
+        body: AppBackgroundBody(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(LucideIcons.shieldAlert,
+                      color: context.textSecondary, size: 48),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.rolePermissionDenied,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.beVietnamPro(
+                      color: context.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return BlocListener<AdminDissolveClanBloc, AdminDissolveClanState>(
       listener: (context, state) {
         if (state is AdminDissolveClanSuccess) {

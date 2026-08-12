@@ -741,6 +741,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transferProcessing => 'Processing transfer...';
 
   @override
+  String get rolePermissionDenied =>
+      'You do not have permission to perform this action.';
+
+  @override
   String get memberRolesTitle => 'Member Roles';
 
   @override

@@ -36,6 +36,11 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
   bool _isEditable = false;
   bool _isSaving = false;
 
+  bool get _isOwner {
+    final role = (widget.user?.role ?? '').toUpperCase();
+    return role == 'OWNER' || role == 'CREATOR';
+  }
+
   // Controllers for Clan Info
   late TextEditingController _clanNameController;
   late TextEditingController _clanDescController;
@@ -148,7 +153,7 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
       appBar: AppAppBar(
         title: l10n.clanInfoSettingsTitle,
         actions: [
-          if (widget.family != null)
+          if (widget.family != null && _isOwner)
             IconButton(
               icon: Icon(
                 _isEditable ? LucideIcons.check : LucideIcons.edit2,

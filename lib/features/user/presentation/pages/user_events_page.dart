@@ -36,7 +36,8 @@ class UserEventsPage extends StatefulWidget {
   State<UserEventsPage> createState() => _UserEventsPageState();
 }
 
-class _UserEventsPageState extends State<UserEventsPage> {
+class _UserEventsPageState extends State<UserEventsPage>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   int _eventLimit = 5;
 
@@ -174,7 +175,6 @@ class _UserEventsPageState extends State<UserEventsPage> {
           final todayLunar = Lunar(createdFromSolar: true, date: today);
           final currentLunarYear = todayLunar.year;
 
-          // Convert current lunar year anniversary to solar date
           final listSolar = convertLunar2Solar(
               lunarDay, lunarMonth, currentLunarYear, false, 7);
           var solarAnniversary =
@@ -283,10 +283,10 @@ class _UserEventsPageState extends State<UserEventsPage> {
                   t != 'thông báo';
             }).toList();
 
-            final unreadAnnouncements = announcements
+            final unreadCount = announcements
                 .where((e) => !NotificationReadController.instance
                     .isRead(e.id.toString()))
-                .toList();
+                .length;
 
             return Scaffold(
               appBar: AppAppBar(
@@ -296,9 +296,8 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     icon: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        Icon(LucideIcons.bell,
-                            color: context.textPrimary, size: 22),
-                        if (unreadAnnouncements.isNotEmpty)
+                        Icon(LucideIcons.bell, color: Colors.white, size: 22),
+                        if (unreadCount > 0)
                           Positioned(
                             top: -8,
                             right: -6,
@@ -313,7 +312,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
                                 minHeight: 16,
                               ),
                               child: Text(
-                                '${unreadAnnouncements.length}',
+                                '$unreadCount',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 9,
@@ -336,9 +335,7 @@ class _UserEventsPageState extends State<UserEventsPage> {
                           ),
                         ),
                       );
-                      if (mounted) {
-                        setState(() {});
-                      }
+                      if (mounted) setState(() {});
                     },
                     tooltip: l10n.eventTypeAnnouncement,
                   ),
@@ -367,74 +364,15 @@ class _UserEventsPageState extends State<UserEventsPage> {
                     return SingleChildScrollView(
                       controller: _scrollController,
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // ── Section 1: Ngày Giỗ Dòng Họ ──
-                          if (deathAnniversaries.isNotEmpty &&
-                              !widget.isAdminMode) ...[
-                            AppSectionTitle(
-                              title: l10n.deathAnniversariesSectionTitle,
-                              trailing: _buildTrailingSeeAll(
-                                onTap: () => _openAnniversaryList(
-                                  l10n.deathAnniversariesSectionTitle,
-                                  deathAnniversaries,
-                                ),
-                              ),
-                            ),
-                            _buildAnniversaryList(deathAnniversaries),
-                          ],
-
-                          // ── Section 2: Sinh Nhật Dòng Họ ──
-                          if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
-                            AppSectionTitle(
-                              title: l10n.birthdaysSectionTitle,
-                              trailing: _buildTrailingSeeAll(
-                                onTap: () => _openAnniversaryList(
-                                  l10n.birthdaysSectionTitle,
-                                  birthdays,
-                                  isBirthday: true,
-                                ),
-                              ),
-                            ),
-                            _buildAnniversaryList(birthdays),
-                          ],
-
-                          // ── Section 3: Sự Kiện ──
-                          AppSectionTitle(
-                            title: l10n.eventsListTitle,
-                            trailing: _buildTrailingSeeAll(
-                              onTap: () => _openEventList(displayEvents),
-                            ),
-                          ),
-
-                          if (displayEvents.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 48, horizontal: 16),
-                              child: AppEmptyState(
-                                icon: LucideIcons.calendarDays,
-                                message: l10n.noEventsMessage,
-                              ),
-                            )
-                          else
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: displayEvents.length > _eventLimit
-                                    ? _eventLimit
-                                    : displayEvents.length,
-                                itemBuilder: (context, index) {
-                                  final event = displayEvents[index];
-                                  return _buildEventCard(event, canEdit);
-                                },
-                              ),
-                            ),
-                        ],
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: _buildTabContent(
+                        context,
+                        l10n,
+                        canEdit,
+                        deathAnniversaries,
+                        birthdays,
+                        displayEvents,
+                        announcements,
                       ),
                     );
                   },
@@ -447,81 +385,88 @@ class _UserEventsPageState extends State<UserEventsPage> {
     );
   }
 
-  void _openAnniversaryList(
-    String title,
-    List<UpcomingAnniversary> list, {
-    bool isBirthday = false,
-  }) {
-    Navigator.push(
-      context,
-      SereneFadeSlidePageRoute(
-        page: UserAnniversaryListPage(
-          title: title,
-          anniversaries: list,
-          isBirthday: isBirthday,
-        ),
-      ),
-    );
-  }
+  // ────────────────────────────────────────────────────────────────
+  //  Tab Content
+  // ────────────────────────────────────────────────────────────────
+  Widget _buildTabContent(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool canEdit,
+    List<UpcomingAnniversary> deathAnniversaries,
+    List<UpcomingAnniversary> birthdays,
+    List<EventEntity> displayEvents,
+    List<EventEntity> announcements,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Section: Ngày Giỗ ──
+        if (deathAnniversaries.isNotEmpty && !widget.isAdminMode) ...[
+          AppSectionTitle(
+            title: l10n.deathAnniversariesSectionTitle,
+            trailing: _buildSeeAll(
+              onTap: () => _openAnniversaryList(
+                l10n.deathAnniversariesSectionTitle,
+                deathAnniversaries,
+              ),
+            ),
+          ),
+          _buildHorizontalAnniversaryList(deathAnniversaries),
+        ],
 
-  void _openEventList(List<EventEntity> events) {
-    Navigator.push(
-      context,
-      SereneFadeSlidePageRoute(
-        page: UserEventListPage(
-          familyId: widget.familyId,
-          isAdminMode: widget.isAdminMode,
-          events: events,
-        ),
-      ),
-    );
-  }
+        // ── Section: Sinh Nhật ──
+        if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
+          AppSectionTitle(
+            title: l10n.birthdaysSectionTitle,
+            trailing: _buildSeeAll(
+              onTap: () => _openAnniversaryList(
+                l10n.birthdaysSectionTitle,
+                birthdays,
+                isBirthday: true,
+              ),
+            ),
+          ),
+          _buildHorizontalAnniversaryList(birthdays),
+        ],
 
-  Widget _buildTrailingSeeAll({VoidCallback? onTap}) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        child: Text(
-          AppLocalizations.of(context)!.seeMoreLabel,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: context.primary,
+        // ── Section: Sự Kiện ──
+        AppSectionTitle(
+          title: l10n.eventsListTitle,
+          trailing: _buildSeeAll(
+            onTap: () => _openEventList(displayEvents),
           ),
         ),
-      ),
-    );
-  }
-
-  /// Danh sách cuộn ngang dùng chung cho cả Ngày Giỗ và Sinh Nhật.
-  Widget _buildAnniversaryList(List<UpcomingAnniversary> list) {
-    return ClipRect(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SizedBox(
-          height: 124,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.zero,
-            clipBehavior: Clip.none,
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              final data = list[index];
-              return Padding(
-                padding: EdgeInsets.only(
-                  right: index < list.length - 1 ? 16 : 0,
-                ),
-                child: AnniversaryCard(data: data),
-              );
-            },
+        if (displayEvents.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+            child: AppEmptyState(
+              icon: LucideIcons.calendarDays,
+              message: l10n.noEventsMessage,
+            ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: displayEvents.length > _eventLimit
+                  ? _eventLimit
+                  : displayEvents.length,
+              itemBuilder: (context, index) {
+                final event = displayEvents[index];
+                return _buildEventCard(event, canEdit);
+              },
+            ),
           ),
-        ),
-      ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 
+  // ────────────────────────────────────────────────────────────────
+  //  Event Card (swipeable for admin)
+  // ────────────────────────────────────────────────────────────────
   Widget _buildEventCard(EventEntity event, bool canEdit) {
     final l10n = AppLocalizations.of(context)!;
 
@@ -573,6 +518,83 @@ class _UserEventsPageState extends State<UserEventsPage> {
     );
   }
 
+  // ────────────────────────────────────────────────────────────────
+  //  Helpers
+  // ────────────────────────────────────────────────────────────────
+  Widget _buildHorizontalAnniversaryList(List<UpcomingAnniversary> list) {
+    return ClipRect(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: SizedBox(
+          height: 124,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            clipBehavior: Clip.none,
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              final data = list[index];
+              return Padding(
+                padding: EdgeInsets.only(
+                  right: index < list.length - 1 ? 16 : 0,
+                ),
+                child: AnniversaryCard(data: data),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSeeAll({VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Text(
+          AppLocalizations.of(context)!.seeMoreLabel,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: context.primary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openAnniversaryList(
+    String title,
+    List<UpcomingAnniversary> list, {
+    bool isBirthday = false,
+  }) {
+    Navigator.push(
+      context,
+      SereneFadeSlidePageRoute(
+        page: UserAnniversaryListPage(
+          title: title,
+          anniversaries: list,
+          isBirthday: isBirthday,
+        ),
+      ),
+    );
+  }
+
+  void _openEventList(List<EventEntity> events) {
+    Navigator.push(
+      context,
+      SereneFadeSlidePageRoute(
+        page: UserEventListPage(
+          familyId: widget.familyId,
+          isAdminMode: widget.isAdminMode,
+          events: events,
+        ),
+      ),
+    );
+  }
+
   Future<bool?> _showConfirmDeleteDialog(EventEntity event) {
     final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
@@ -599,3 +621,4 @@ class _UserEventsPageState extends State<UserEventsPage> {
     );
   }
 }
+

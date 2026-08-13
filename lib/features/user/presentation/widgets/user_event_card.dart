@@ -8,42 +8,7 @@ import '../../../events/events.dart';
 import '../../../admin/admin.dart';
 import '../../../../core/widgets/widgets.dart';
 
-/// Banner mặc định khi sự kiện không có ảnh.
-class EventDefaultBanner extends StatelessWidget {
-  const EventDefaultBanner({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: context.appBarBg,
-          image: DecorationImage(
-            image: AssetImage(
-              context.isDarkMode
-                  ? 'assets/images/background_appbar_dark.png'
-                  : 'assets/images/background_appbar_light.png',
-            ),
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.high,
-            onError: (_, __) {},
-          ),
-        ),
-        child: Center(
-          child: Icon(
-            LucideIcons.calendarDays,
-            size: 40,
-            color: context.accent.withValues(alpha: 0.8),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Card hiển thị sự kiện. Tap vào sẽ mở trang chi tiết.
+/// Card sự kiện kiểu compact — ảnh thumbnail bên trái, nội dung bên phải.
 class UserEventCard extends StatelessWidget {
   final EventEntity event;
   final int familyId;
@@ -88,21 +53,32 @@ class UserEventCard extends StatelessWidget {
     }
   }
 
+  /// Kiểm tra sự kiện đã kết thúc hay chưa dựa vào eventDate.
+  bool _isEnded() {
+    try {
+      // Support both yyyy-MM-dd and dd/MM/yyyy
+      final raw = event.eventDate.trim();
+      DateTime? dt;
+      if (raw.contains('-')) {
+        final parts = raw.split('-');
+        if (parts.length == 3) {
+          dt = DateTime(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
+        }
+      } else if (raw.contains('/')) {
+        final parts = raw.split('/');
+        if (parts.length == 3) {
+          dt = DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
+        }
+      }
+      if (dt != null) return dt.isBefore(DateTime.now());
+    } catch (_) {}
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    final Color badgeColor = context.primary;
-    final String badgeLabel = switch (event.type) {
-      'article' => l10n.eventTypeArticle,
-      'announcement' => l10n.eventTypeAnnouncement,
-      _ => l10n.eventTypeEvent,
-    };
-    final IconData badgeIcon = switch (event.type) {
-      'article' => LucideIcons.bookOpen,
-      'announcement' => LucideIcons.megaphone,
-      _ => LucideIcons.calendar,
-    };
+    final ended = _isEnded();
 
     final imageUrl = event.imageUrl;
     final isNetworkImage = imageUrl != null &&
@@ -111,35 +87,74 @@ class UserEventCard extends StatelessWidget {
         imageUrl != null && !isNetworkImage && File(imageUrl).existsSync();
     final hasImage = isNetworkImage || isLocalImage;
 
-    Widget banner = hasImage
-        ? AspectRatio(
-            aspectRatio: 16 / 9,
-            child: isNetworkImage
-                ? AppNetworkImage(
-                    url: imageUrl,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_) => const EventDefaultBanner(),
-                  )
-                : Image.file(
-                    File(imageUrl),
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.high,
-                    errorBuilder: (_, __, ___) => const EventDefaultBanner(),
-                  ),
-          )
-        : const EventDefaultBanner();
+    // ── Thumbnail ──────────────────────────────────────────────
+    Widget thumbnail = Container(
+      width: 84,
+      height: 84,
+      decoration: BoxDecoration(
+        color: context.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Icon(
+          LucideIcons.calendarDays,
+          size: 26,
+          color: context.primary.withValues(alpha: 0.45),
+        ),
+      ),
+    );
 
-    if (heroTag != null && heroTag!.isNotEmpty) {
-      banner = Hero(
-        tag: heroTag!,
-        child: banner,
+    if (hasImage) {
+      Widget imgWidget = isNetworkImage
+          ? AppNetworkImage(
+              url: imageUrl,
+              width: 84,
+              height: 84,
+              fit: BoxFit.cover,
+              errorBuilder: (_) => thumbnail,
+            )
+          : Image.file(
+              File(imageUrl),
+              width: 84,
+              height: 84,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+              errorBuilder: (_, __, ___) => thumbnail,
+            );
+      thumbnail = ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: imgWidget,
       );
     }
 
+    if (heroTag != null && heroTag!.isNotEmpty) {
+      thumbnail = Hero(tag: heroTag!, child: thumbnail);
+    }
+
+    // ── Status Badge ──────────────────────────────────────────
+    final badgeColor = ended ? context.textSecondary : context.primary;
+    final badgeText = ended ? l10n.eventEnded : l10n.eventOngoing;
+
+    Widget statusBadge = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: badgeColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: badgeColor.withValues(alpha: 0.25), width: 0.8),
+      ),
+      child: Text(
+        badgeText,
+        style: GoogleFonts.beVietnamPro(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: badgeColor,
+        ),
+      ),
+    );
+
+    // ── Card ──────────────────────────────────────────────────
     Widget content = Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 10),
       child: RepaintBoundary(
         child: Semantics(
           label: l10n.eventDetailSemanticLabel(event.eventDate, event.title),
@@ -147,187 +162,134 @@ class UserEventCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: context.surface,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: context.textSecondary.withValues(alpha: 0.2),
-                width: 1.2,
+                color: context.textSecondary.withValues(alpha: 0.15),
+                width: 1,
               ),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-            padding: const EdgeInsets.all(10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  banner,
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Thumbnail ──
+                thumbnail,
+                const SizedBox(width: 12),
 
-                  // Card Content
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Row 1: Tag & Date
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: badgeColor.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: badgeColor.withValues(alpha: 0.3),
-                                  width: 0.8,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    badgeIcon,
-                                    size: 11,
-                                    color: badgeColor,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    badgeLabel.toUpperCase(),
-                                    style: GoogleFonts.beVietnamPro(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: badgeColor,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  LucideIcons.clock,
-                                  size: 13,
-                                  color: context.textSecondary,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  event.eventDate,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                    color: context.textSecondary,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        // Row 2: Title
-                        Text(
-                          event.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: context.textPrimary,
-                            height: 1.3,
-                          ),
-                        ),
-                        // Row 3: Description
-                        if (event.description != null &&
-                            event.description!.isNotEmpty) ...[
-                          const SizedBox(height: 6),
+                // ── Text content ──
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Status + Date
+                      Row(
+                        children: [
+                          statusBadge,
+                          const Spacer(),
+                          Icon(LucideIcons.clock3, size: 11, color: context.textSecondary),
+                          const SizedBox(width: 3),
                           Text(
-                            event.description!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            event.eventDate,
                             style: GoogleFonts.inter(
-                              fontSize: 13,
+                              fontSize: 11,
                               color: context.textSecondary,
-                              height: 1.4,
                             ),
                           ),
                         ],
-                        const SizedBox(height: 12),
-                        // Row 4: Author (left) & Location (right)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (event.organizer != null &&
-                                event.organizer!.isNotEmpty)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(LucideIcons.user,
-                                      size: 13, color: context.textSecondary),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    event.organizer!,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12,
-                                      color: context.textSecondary,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            else
-                              const SizedBox.shrink(),
-                            if (event.location != null &&
-                                event.location!.isNotEmpty)
-                              Flexible(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Icon(LucideIcons.mapPin,
-                                        size: 13, color: context.textSecondary),
-                                    const SizedBox(width: 4),
-                                    Flexible(
-                                      child: Text(
-                                        event.location!,
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          color: context.textSecondary,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
+                      ),
+                      const SizedBox(height: 6),
+
+                      // Title
+                      Text(
+                        event.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: context.textPrimary,
+                          height: 1.3,
+                        ),
+                      ),
+
+                      // Description
+                      if (event.description != null && event.description!.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          event.description!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: context.textSecondary,
+                            height: 1.4,
+                          ),
                         ),
                       ],
-                    ),
+
+                      const SizedBox(height: 8),
+
+                      // Organizer + Location
+                      Row(
+                        children: [
+                          if (event.organizer != null && event.organizer!.isNotEmpty) ...[
+                            Icon(LucideIcons.user, size: 11, color: context.textSecondary),
+                            const SizedBox(width: 3),
+                            Flexible(
+                              child: Text(
+                                event.organizer!,
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  color: context.textSecondary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                          if (event.organizer != null &&
+                              event.organizer!.isNotEmpty &&
+                              event.location != null &&
+                              event.location!.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Text('·', style: TextStyle(color: context.textSecondary, fontSize: 11)),
+                            ),
+                          if (event.location != null && event.location!.isNotEmpty) ...[
+                            Icon(LucideIcons.mapPin, size: 11, color: context.textSecondary),
+                            const SizedBox(width: 3),
+                            Flexible(
+                              child: Text(
+                                event.location!,
+                                style: GoogleFonts.inter(fontSize: 11, color: context.textSecondary),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
 
-    if (!tappable) {
-      return content;
-    }
+    if (!tappable) return content;
 
     final tap = onTap ?? () => _openDetail(context);
-    return GestureDetector(
-      onTap: tap,
-      child: content,
-    );
+    return GestureDetector(onTap: tap, child: content);
   }
 }

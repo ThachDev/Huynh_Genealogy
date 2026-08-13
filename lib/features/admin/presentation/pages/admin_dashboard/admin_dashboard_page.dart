@@ -463,17 +463,65 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ),
           SafeArea(
             bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              child: _buildInviteCodeCard(
-                context,
-                familyName,
-                inviteCode,
-                user: user,
-                logoUrl: logoUrl,
-                isLoading: userTreeState is FamilyTreeLoading &&
-                    pendingState is AdminPendingRequestsLoading,
-              ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Xin chào, ',
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 16,
+                          color: context.textSecondary,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          '${user?.fullName ?? "Bạn"}!',
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: context.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: context.primary,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          user != null
+                              ? AdminDashboardPage.roleLabel(user.role, context)
+                              : 'Gia tộc',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: context.textOnPrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4, bottom: 8),
+                  child: _buildInviteCodeCard(
+                    context,
+                    familyName,
+                    inviteCode,
+                    user: user,
+                    logoUrl: logoUrl,
+                    isLoading: userTreeState is FamilyTreeLoading &&
+                        pendingState is AdminPendingRequestsLoading,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -650,9 +698,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final l10n = AppLocalizations.of(context)!;
     if (isLoading) {
       return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: AppShimmer(
-          child: SkeletonBox(height: 84, borderRadius: 16),
+          child: SkeletonBox(height: 100, borderRadius: 16),
         ),
       );
     }
@@ -661,45 +709,38 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ? familyName.trim()
         : 'Họ ${familyName.trim()}';
 
-    final roleName = user != null
-        ? AdminDashboardPage.roleLabel(user.role, context)
-        : 'Gia tộc';
-    final displayRoleText = user != null ? 'Vai trò: $roleName' : roleName;
-
     final bool isDark = context.isDarkMode;
     final Color cardBg =
         isDark ? const Color(0xFF2A231F) : const Color(0xFFFFFBF2);
-    final Color darkRedText =
-        isDark ? const Color(0xFFFFB7B2) : const Color(0xFF800000);
-    final Color subtitleColor =
-        isDark ? const Color(0xFFE0C0A8) : const Color(0xFF800000);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.textSecondary.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.06),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
-            offset: const Offset(0, 3),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Left circular crest/logo
+          // Left Seal
           Container(
-            width: 56,
-            height: 56,
+            width: 72,
+            height: 72,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(0xFF800000),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -715,60 +756,48 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   : _buildFallbackLogo(),
             ),
           ),
-          const SizedBox(width: 12),
-
-          // Center info
+          const SizedBox(width: 16),
+          // Center Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Family Title
                 Text(
                   displayFamilyName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: darkRedText,
+                    color: context.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 2),
-                // Role / Subtitle
-                Text(
-                  displayRoleText,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: subtitleColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                // Invite Code + Copy
+                const SizedBox(height: 8),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Flexible(
-                      child: Text(
-                        '${l10n.inviteCodeSectionLabel}: ',
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: isDark
-                              ? Colors.white.withValues(alpha: 0.7)
-                              : const Color(0xFF4A3E3D),
-                        ),
+                    Text(
+                      'Mã gia tộc:',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: context.textSecondary,
                       ),
                     ),
-                    Text(
-                      inviteCode,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF111111),
-                        letterSpacing: 0.5,
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: context.textSecondary.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        inviteCode,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: context.textPrimary,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -781,13 +810,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               context, l10n.inviteCodeCopied(inviteCode));
                         }
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: context.textSecondary.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                         child: Icon(
                           LucideIcons.copy,
-                          size: 13,
-                          color:
-                              isDark ? Colors.white70 : const Color(0xFF4A3E3D),
+                          size: 14,
+                          color: context.textSecondary,
                         ),
                       ),
                     ),
@@ -796,43 +828,58 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               ],
             ),
           ),
-          const SizedBox(width: 8),
-
-          // Right QR preview card
-          Tooltip(
-            message: l10n.qrCodeTooltip,
-            child: InkWell(
-              onTap: () {
-                if (inviteCode.isNotEmpty) {
-                  _showQrDialog(context, inviteCode);
-                }
-              },
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: 58,
-                height: 58,
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+          // Vertical Divider
+          Container(
+            width: 1,
+            height: 80,
+            color: context.textSecondary.withValues(alpha: 0.1),
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+          ),
+          // Right QR
+          InkWell(
+            onTap: () {
+              if (inviteCode.isNotEmpty) {
+                _showQrDialog(context, inviteCode);
+              }
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: context.textSecondary.withValues(alpha: 0.1)),
                     ),
-                  ],
-                ),
-                child: QrImageView(
-                  data: inviteCode.isEmpty ? 'GIA_TOC_VIET' : inviteCode,
-                  version: QrVersions.auto,
-                  size: 50.0,
-                  padding: EdgeInsets.zero,
-                  dataModuleStyle: const QrDataModuleStyle(
-                    dataModuleShape: QrDataModuleShape.square,
-                    color: Color(0xFF111111),
+                    child: QrImageView(
+                      data: inviteCode.isEmpty ? 'GIA_TOC_VIET' : inviteCode,
+                      version: QrVersions.auto,
+                      size: 48.0,
+                      padding: EdgeInsets.zero,
+                      dataModuleStyle: const QrDataModuleStyle(
+                        dataModuleShape: QrDataModuleShape.square,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Xem mã QR',
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 11,
+                      color: const Color(0xFF800000),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -1335,79 +1382,125 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     height: 38,
                     child: Row(
                       children: [
-                        Icon(LucideIcons.filterX, color: context.textPrimary, size: 18),
+                        Icon(LucideIcons.filterX,
+                            color: context.textPrimary, size: 18),
                         const SizedBox(width: 8),
-                        Text('Bỏ chọn tất cả', style: GoogleFonts.beVietnamPro(fontSize: 13, color: context.textPrimary)),
+                        Text('Bỏ chọn tất cả',
+                            style: GoogleFonts.beVietnamPro(
+                                fontSize: 13, color: context.textPrimary)),
                       ],
                     ),
                   ),
                   const PopupMenuDivider(),
                   PopupMenuItem<String>(
                     enabled: false,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: StatefulBuilder(
                       builder: (context, setPopupState) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('Giới tính', style: GoogleFonts.beVietnamPro(fontSize: 12, fontWeight: FontWeight.w600, color: context.textPrimary)),
+                            Text('Giới tính',
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.textPrimary)),
                             const SizedBox(height: 8),
                             SizedBox(
                               width: double.infinity,
                               child: CupertinoSlidingSegmentedControl<String>(
-                                backgroundColor: context.isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
-                                thumbColor: context.isDarkMode ? Colors.grey.shade700 : Colors.white,
+                                backgroundColor: context.isDarkMode
+                                    ? Colors.grey.shade900
+                                    : Colors.grey.shade200,
+                                thumbColor: context.isDarkMode
+                                    ? Colors.grey.shade700
+                                    : Colors.white,
                                 groupValue: _genderFilter,
                                 children: {
                                   'MALE': Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Nam', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Nam',
+                                        style: GoogleFonts.beVietnamPro(
+                                            fontSize: 12,
+                                            color: context.textPrimary)),
                                   ),
                                   'FEMALE': Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Nữ', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Nữ',
+                                        style: GoogleFonts.beVietnamPro(
+                                            fontSize: 12,
+                                            color: context.textPrimary)),
                                   ),
                                 },
                                 onValueChanged: (value) {
                                   if (value != null) {
-                                    setPopupState(() { _genderFilter = value; });
+                                    setPopupState(() {
+                                      _genderFilter = value;
+                                    });
                                     setState(() {
                                       _genderFilter = value;
                                       _memberLimit = 5;
-                                      if (_scrollController.hasClients) _scrollController.jumpTo(0);
+                                      if (_scrollController.hasClients) {
+                                        _scrollController.jumpTo(0);
+                                      }
                                     });
                                   }
                                 },
                               ),
                             ),
                             const SizedBox(height: 16),
-                            Text('Tình trạng', style: GoogleFonts.beVietnamPro(fontSize: 12, fontWeight: FontWeight.w600, color: context.textPrimary)),
+                            Text('Tình trạng',
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.textPrimary)),
                             const SizedBox(height: 8),
                             SizedBox(
                               width: double.infinity,
                               child: CupertinoSlidingSegmentedControl<String>(
-                                backgroundColor: context.isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
-                                thumbColor: context.isDarkMode ? Colors.grey.shade700 : Colors.white,
-                                groupValue: _isAliveFilter == null ? null : (_isAliveFilter! ? 'ALIVE' : 'DECEASED'),
+                                backgroundColor: context.isDarkMode
+                                    ? Colors.grey.shade900
+                                    : Colors.grey.shade200,
+                                thumbColor: context.isDarkMode
+                                    ? Colors.grey.shade700
+                                    : Colors.white,
+                                groupValue: _isAliveFilter == null
+                                    ? null
+                                    : (_isAliveFilter! ? 'ALIVE' : 'DECEASED'),
                                 children: {
                                   'ALIVE': Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Còn sống', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Còn sống',
+                                        style: GoogleFonts.beVietnamPro(
+                                            fontSize: 12,
+                                            color: context.textPrimary)),
                                   ),
                                   'DECEASED': Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Đã mất', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Đã mất',
+                                        style: GoogleFonts.beVietnamPro(
+                                            fontSize: 12,
+                                            color: context.textPrimary)),
                                   ),
                                 },
                                 onValueChanged: (value) {
                                   if (value != null) {
                                     final isAlive = value == 'ALIVE';
-                                    setPopupState(() { _isAliveFilter = isAlive; });
+                                    setPopupState(() {
+                                      _isAliveFilter = isAlive;
+                                    });
                                     setState(() {
                                       _isAliveFilter = isAlive;
                                       _memberLimit = 5;
-                                      if (_scrollController.hasClients) _scrollController.jumpTo(0);
+                                      if (_scrollController.hasClients) {
+                                        _scrollController.jumpTo(0);
+                                      }
                                     });
                                   }
                                 },
@@ -1425,7 +1518,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       ),
     );
   }
-
 
   Widget _buildEmptyWidget(String message) {
     return AppEmptyState(

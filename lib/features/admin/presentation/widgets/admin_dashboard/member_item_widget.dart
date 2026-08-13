@@ -28,11 +28,12 @@ class MemberItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final genderColor = member.gender == Gender.male
-        ? context.genderMale
-        : member.gender == Gender.female
-            ? context.genderFemale
-            : Colors.grey;
+    final bool isDark = context.isDarkMode;
+    final Color cardBg =
+        isDark ? const Color(0xFF261F1B) : const Color(0xFFFFFDF8);
+    final Color borderColor = isDark
+        ? Colors.white10
+        : const Color(0xFFE8D7B8).withValues(alpha: 0.6);
 
     return GestureDetector(
       onTap: () {
@@ -48,74 +49,70 @@ class MemberItemWidget extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        child: useOrnamentalBorder
-            ? CustomPaint(
-                painter: TraditionalOrnamentalBorderPainter(
-                  borderColor: context.textSecondary.withValues(alpha: 0.2),
-                  fillColor: context.surface,
-                  leftAccentColor: genderColor,
-                ),
-                child: _buildContent(context, genderColor),
-              )
-            : DecoratedBox(
-                decoration: BoxDecoration(
-                  color: context.surface,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: context.textSecondary.withValues(alpha: 0.2),
-                    width: 1.2,
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
-                child: _buildContent(context, genderColor),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: borderColor,
+              width: 1.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
+            ],
+          ),
+          child: _buildContent(context),
+        ),
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context, Color genderColor) {
+  Widget _buildContent(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final String aliveText =
         member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
       child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // ── Avatar ──
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: context.resolve(
-                          Colors.grey.shade300, Colors.grey.shade700),
-                      width: 1.0,
-                    ),
-                  ),
-                  child: AppAvatar(
-                    avatarUrl: member.avatarUrl,
-                    fullName: member.fullName,
-                    radius: 26,
-                    fontSize: 18,
-                    backgroundColor: context.resolve(
-                        Colors.grey.shade100, const Color(0xFF2C2C2C)),
-                  ),
-                ),
-                const SizedBox(width: 14),
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // ── Avatar ──
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color:
+                    context.resolve(Colors.grey.shade300, Colors.grey.shade700),
+                width: 1.0,
+              ),
+            ),
+            child: AppAvatar(
+              avatarUrl: member.avatarUrl,
+              fullName: member.fullName,
+              radius: 26,
+              fontSize: 18,
+              backgroundColor: context.resolve(
+                  Colors.grey.shade100, const Color(0xFF2C2C2C)),
+            ),
+          ),
+          const SizedBox(width: 14),
 
-                // ── Thông tin ──
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Họ tên
-                      Text(
+          // ── Thông tin ──
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Row 1: Họ tên + Status
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
                         member.fullName,
                         style: GoogleFonts.beVietnamPro(
                           fontWeight: FontWeight.bold,
@@ -123,147 +120,143 @@ class MemberItemWidget extends StatelessWidget {
                           color: context.textPrimary,
                           letterSpacing: -0.1,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 5),
-
-                      // Đời | Trạng thái sống
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(LucideIcons.gitCommit,
-                              size: 10, color: Colors.grey),
-                          const SizedBox(width: 4),
-                          Text(
-                            l10n.generationBadge('${member.generation ?? "?"}'),
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: context.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '|',
-                            style: TextStyle(
-                              color: context.resolve(
-                                  Colors.grey.shade400, Colors.grey.shade700),
-                              fontSize: 10,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            member.isAlive
-                                ? LucideIcons.heart
-                                : LucideIcons.heartCrack,
-                            size: 10,
-                            color:
-                                member.isAlive ? context.primary : Colors.grey,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            aliveText,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: member.isAlive
-                                  ? context.primary
-                                  : context.textSecondary,
-                            ),
-                          ),
-                        ],
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: member.isAlive
+                            ? Colors.green.withValues(alpha: 0.1)
+                            : Colors.grey.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-
-                      // Chi tộc (nếu có)
-                      if (member.branchName != null &&
-                          member.branchName!.isNotEmpty) ...[
-                        const SizedBox(height: 6),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(LucideIcons.gitBranch,
-                                size: 12,
-                                color: context.textSecondary
-                                    .withValues(alpha: 0.7)),
-                            const SizedBox(width: 4),
-                            Flexible(
-                              child: Text(
-                                l10n.branchBadge(member.branchName!),
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 11,
-                                  color: context.textSecondary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                      child: Text(
+                        aliveText,
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: member.isAlive
+                              ? Colors.green.shade700
+                              : context.textSecondary,
                         ),
-                      ],
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 6),
 
-                // ── Menu ──
-                if (showMenu) ...[
-                  const SizedBox(width: 4),
-                  PopupMenuButton<String>(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                // Row 2: Đời + Chi
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(LucideIcons.users,
+                        size: 12,
+                        color: context.textSecondary.withValues(alpha: 0.7)),
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.generationBadge('${member.generation ?? "?"}'),
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 12,
+                        color: context.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    color: context.surface,
-                    elevation: 4,
-                    offset: const Offset(18, 30),
-                    onSelected: (value) {
-                      if (value == 'edit') {
-                        onEdit?.call();
-                      } else if (value == 'delete') {
-                        onDelete?.call();
-                      }
-                    },
-                    itemBuilder: (BuildContext context) => [
-                      if (onEdit != null)
-                        PopupMenuItem<String>(
-                          value: 'edit',
-                          height: 38,
-                          child: Row(
-                            children: [
-                              Icon(LucideIcons.edit,
-                                  color: context.textPrimary, size: 18),
-                              const SizedBox(width: 8),
-                              Text(l10n.editLabel,
-                                  style: GoogleFonts.beVietnamPro(
-                                      fontSize: 13,
-                                      color: context.textPrimary)),
-                            ],
-                          ),
+                    if (member.branchName != null &&
+                        member.branchName!.isNotEmpty) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        '|',
+                        style: TextStyle(
+                          color: context.resolve(
+                              Colors.grey.shade400, Colors.grey.shade700),
+                          fontSize: 11,
                         ),
-                      if (onDelete != null)
-                        PopupMenuItem<String>(
-                          value: 'delete',
-                          height: 38,
-                          child: Row(
-                            children: [
-                              Icon(LucideIcons.trash2,
-                                  color: context.textPrimary, size: 18),
-                              const SizedBox(width: 8),
-                              Text(l10n.deleteLabel,
-                                  style: GoogleFonts.beVietnamPro(
-                                      fontSize: 13,
-                                      color: context.textPrimary)),
-                            ],
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(LucideIcons.network,
+                          size: 12,
+                          color: context.textSecondary.withValues(alpha: 0.7)),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          l10n.branchBadge(member.branchName!),
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 12,
+                            color: context.textSecondary,
+                            fontWeight: FontWeight.w500,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                      ),
                     ],
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(LucideIcons.moreVertical,
-                          color: context.textSecondary, size: 20),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // ── Menu ──
+          if (showMenu) ...[
+            const SizedBox(width: 4),
+            PopupMenuButton<String>(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              color: context.surface,
+              elevation: 4,
+              offset: const Offset(18, 30),
+              onSelected: (value) {
+                if (value == 'edit') {
+                  onEdit?.call();
+                } else if (value == 'delete') {
+                  onDelete?.call();
+                }
+              },
+              itemBuilder: (BuildContext context) => [
+                if (onEdit != null)
+                  PopupMenuItem<String>(
+                    value: 'edit',
+                    height: 38,
+                    child: Row(
+                      children: [
+                        Icon(LucideIcons.edit,
+                            color: context.textPrimary, size: 18),
+                        const SizedBox(width: 8),
+                        Text(l10n.editLabel,
+                            style: GoogleFonts.beVietnamPro(
+                                fontSize: 13, color: context.textPrimary)),
+                      ],
                     ),
                   ),
-                ],
+                if (onDelete != null)
+                  PopupMenuItem<String>(
+                    value: 'delete',
+                    height: 38,
+                    child: Row(
+                      children: [
+                        Icon(LucideIcons.trash2,
+                            color: context.textPrimary, size: 18),
+                        const SizedBox(width: 8),
+                        Text(l10n.deleteLabel,
+                            style: GoogleFonts.beVietnamPro(
+                                fontSize: 13, color: context.textPrimary)),
+                      ],
+                    ),
+                  ),
               ],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(LucideIcons.moreVertical,
+                    color: context.textSecondary, size: 20),
               ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

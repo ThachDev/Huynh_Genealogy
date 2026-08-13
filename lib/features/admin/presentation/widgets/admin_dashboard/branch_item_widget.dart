@@ -5,8 +5,6 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../resources/app_localizations.dart';
 
-import '../../../../../core/widgets/app_common_widgets.dart';
-
 class BranchItemWidget extends StatelessWidget {
   final BranchEntity branch;
   final int memberCount;
@@ -24,15 +22,32 @@ class BranchItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final bool isDark = context.isDarkMode;
+    final Color cardBg =
+        isDark ? const Color(0xFF261F1B) : const Color(0xFFFFFDF8);
+    final Color borderColor = isDark
+        ? Colors.white10
+        : const Color(0xFFE8D7B8).withValues(alpha: 0.6);
+
     return GestureDetector(
       onTap: onEdit,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        child: CustomPaint(
-          painter: TraditionalOrnamentalBorderPainter(
-            borderColor: context.textSecondary.withValues(alpha: 0.2),
-            fillColor: context.surface,
-            leftAccentColor: context.accent,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: borderColor,
+              width: 1.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
@@ -59,58 +74,60 @@ class BranchItemWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        branch.name,
-                        style: GoogleFonts.beVietnamPro(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: context.textPrimary,
-                          letterSpacing: -0.1,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 4),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  LucideIcons.users,
-                                  size: 10,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  l10n.memberCountBadge(memberCount),
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: context.textPrimary,
-                                  ),
-                                ),
-                              ],
+                          Flexible(
+                            child: Text(
+                              branch.name,
+                              style: GoogleFonts.beVietnamPro(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: context.textPrimary,
+                                letterSpacing: -0.1,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
-                      if (branch.founderName != null &&
-                          branch.founderName!.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
+                      const SizedBox(height: 6),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            LucideIcons.users,
+                            size: 12,
+                            color: context.textSecondary.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            l10n.memberCountBadge(memberCount),
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 12,
+                              color: context.textSecondary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (branch.founderName != null &&
+                              branch.founderName!.isNotEmpty) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              '|',
+                              style: TextStyle(
+                                color: context.resolve(
+                                    Colors.grey.shade400, Colors.grey.shade700),
+                                fontSize: 11,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             Icon(
                               LucideIcons.user,
                               size: 12,
@@ -122,7 +139,7 @@ class BranchItemWidget extends StatelessWidget {
                               child: Text(
                                 l10n.founderBadge(branch.founderName!),
                                 style: GoogleFonts.beVietnamPro(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   color: context.textSecondary,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -131,8 +148,8 @@ class BranchItemWidget extends StatelessWidget {
                               ),
                             ),
                           ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ],
                   ),
                 ),

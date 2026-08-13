@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -21,6 +22,7 @@ class AdminMemberRolesPage extends StatefulWidget {
 
 class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
   final _searchController = TextEditingController();
+  String? _roleFilter;
 
   @override
   void initState() {
@@ -99,9 +101,7 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
             );
       },
       leading: Icon(
-        roleValue == 'EDITOR'
-            ? LucideIcons.edit3
-            : LucideIcons.user,
+        roleValue == 'EDITOR' ? LucideIcons.edit3 : LucideIcons.user,
         color: context.textSecondary,
         size: 22,
       ),
@@ -195,6 +195,16 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                     .toList();
               }
 
+              if (_roleFilter != null) {
+                members = members.where((m) {
+                  final mappedRole =
+                      AdminDashboardPage.roleLabel(m.role, context);
+                  final filterRole =
+                      AdminDashboardPage.roleLabel(_roleFilter!, context);
+                  return mappedRole == filterRole;
+                }).toList();
+              }
+
               if (allMembers.isEmpty) {
                 return Center(
                   child: Text(
@@ -211,28 +221,148 @@ class _AdminMemberRolesPageState extends State<AdminMemberRolesPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                    child: TextField(
+                    child: AppSearchBar(
                       controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: l10n.searchMemberHint,
-                        hintStyle: GoogleFonts.inter(fontSize: 13),
-                        prefixIcon: Icon(LucideIcons.search,
-                            size: 18, color: context.textSecondary),
-                        isDense: true,
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                              color: context.accent.withValues(alpha: 0.2)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                              color: context.accent.withValues(alpha: 0.2)),
-                        ),
-                      ),
+                      hintText: l10n.searchMemberHint,
                       onChanged: (_) => setState(() {}),
+                      trailing: [
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                          ),
+                          child: PopupMenuButton<String>(
+                            icon: Icon(
+                              LucideIcons.listFilter,
+                              size: 20,
+                              color: _roleFilter != null
+                                  ? context.primary
+                                  : context.textSecondary,
+                            ),
+                            offset: const Offset(0, 40),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color: context.surface,
+                            elevation: 4,
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'clear_all',
+                                height: 38,
+                                child: Row(
+                                  children: [
+                                    Icon(LucideIcons.filterX,
+                                        color: context.textPrimary, size: 18),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Bỏ chọn tất cả',
+                                      style: GoogleFonts.beVietnamPro(
+                                          fontSize: 13,
+                                          color: context.textPrimary),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    _roleFilter = null;
+                                  });
+                                },
+                              ),
+                              const PopupMenuDivider(),
+                              PopupMenuItem(
+                                enabled: false,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: StatefulBuilder(
+                                  builder: (context, setPopupState) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('Phân quyền',
+                                            style: GoogleFonts.beVietnamPro(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: context.textPrimary)),
+                                        const SizedBox(height: 8),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child:
+                                              CupertinoSlidingSegmentedControl<
+                                                  String>(
+                                            backgroundColor: context.isDarkMode
+                                                ? Colors.grey.shade900
+                                                : Colors.grey.shade200,
+                                            thumbColor: context.isDarkMode
+                                                ? Colors.grey.shade700
+                                                : Colors.white,
+                                            groupValue: _roleFilter == 'OWNER'
+                                                ? 'OWNER'
+                                                : (_roleFilter == 'EDITOR'
+                                                    ? 'EDITOR'
+                                                    : (_roleFilter == 'VIEWER'
+                                                        ? 'VIEWER'
+                                                        : null)),
+                                            children: {
+                                              'OWNER': Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Text(l10n.roleOwner,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts
+                                                        .beVietnamPro(
+                                                            fontSize: 12,
+                                                            color: context
+                                                                .textPrimary)),
+                                              ),
+                                              'EDITOR': Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Text(l10n.roleEditor,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts
+                                                        .beVietnamPro(
+                                                            fontSize: 12,
+                                                            color: context
+                                                                .textPrimary)),
+                                              ),
+                                              'VIEWER': Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Text(l10n.roleViewer,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts
+                                                        .beVietnamPro(
+                                                            fontSize: 12,
+                                                            color: context
+                                                                .textPrimary)),
+                                              ),
+                                            },
+                                            onValueChanged: (value) {
+                                              if (value != null) {
+                                                setPopupState(() {
+                                                  _roleFilter = value;
+                                                });
+                                                setState(() {
+                                                  _roleFilter = value;
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(

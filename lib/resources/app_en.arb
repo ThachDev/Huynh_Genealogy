@@ -1097,5 +1097,6 @@
   "confirmWord": "CONFIRM",
   "dissolveWord": "DISSOLVE",
   "copyInfoTooltip": "Copy member info",
-  "copyInfoSuccess": "Member info copied to clipboard!"
+  "copyInfoSuccess": "Member info copied to clipboard!",
+  "rolePermissionDenied": "Your account does not have permission to access this page."
 }

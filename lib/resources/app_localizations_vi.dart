@@ -742,9 +742,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get transferProcessing => 'Đang xử lý chuyển nhượng...';
 
   @override
-  String get rolePermissionDenied => 'Bạn không có quyền thực hiện thao tác này.';
-
-  @override
   String get memberRolesTitle => 'Phân Quyền Thành Viên';
 
   @override
@@ -2848,4 +2845,8 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get copyInfoSuccess => 'Đã sao chép thông tin thành viên!';
+
+  @override
+  String get rolePermissionDenied =>
+      'Tài khoản của bạn không có quyền truy cập trang này.';
 }

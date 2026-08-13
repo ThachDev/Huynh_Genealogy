@@ -306,51 +306,12 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   Widget _buildSearchBar(BuildContext context, String hintText) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 55),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 55),
+      child: AppSearchBar(
         controller: _searchController,
-        style: GoogleFonts.inter(fontSize: 13, color: context.textPrimary),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.inter(
-            fontSize: 13,
-            color: context.textSecondary.withValues(alpha: 0.6),
-          ),
-          prefixIcon: Icon(
-            LucideIcons.search,
-            size: 18,
-            color: context.textSecondary,
-          ),
-          suffixIcon: _searchQuery.isNotEmpty
-              ? IconButton(
-                  icon: Icon(
-                    LucideIcons.x,
-                    size: 16,
-                    color: context.textSecondary,
-                  ),
-                  onPressed: () {
-                    _searchController.clear();
-                  },
-                )
-              : null,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 14,
-            horizontal: 16,
-          ),
-        ),
+        hintText: hintText,
+        onChanged: (_) => setState(() {}),
       ),
     );
   }

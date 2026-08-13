@@ -741,10 +741,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transferProcessing => 'Processing transfer...';
 
   @override
-  String get rolePermissionDenied =>
-      'You do not have permission to perform this action.';
-
-  @override
   String get memberRolesTitle => 'Member Roles';
 
   @override
@@ -2849,4 +2845,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copyInfoSuccess => 'Member info copied to clipboard!';
+
+  @override
+  String get rolePermissionDenied =>
+      'Your account does not have permission to access this page.';
 }

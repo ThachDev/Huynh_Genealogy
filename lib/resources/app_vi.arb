@@ -1107,5 +1107,6 @@
   "confirmWord": "XÁC NHẬN",
   "dissolveWord": "GIẢI TÁN",
   "copyInfoTooltip": "Sao chép thông tin",
-  "copyInfoSuccess": "Đã sao chép thông tin thành viên!"
+  "copyInfoSuccess": "Đã sao chép thông tin thành viên!",
+  "rolePermissionDenied": "Tài khoản của bạn không có quyền truy cập trang này."
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
@@ -27,6 +28,7 @@ class UserEventListPage extends StatefulWidget {
 class _UserEventListPageState extends State<UserEventListPage> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
+  String _selectedSort = 'newest';
 
   @override
   void dispose() {
@@ -36,13 +38,22 @@ class _UserEventListPageState extends State<UserEventListPage> {
 
   List<EventEntity> get _filteredList {
     final q = _query.trim().toLowerCase();
-    if (q.isEmpty) return widget.events;
-    return widget.events
-        .where((e) =>
-            e.title.toLowerCase().contains(q) ||
-            (e.description?.toLowerCase().contains(q) ?? false) ||
-            e.eventDate.contains(q))
-        .toList();
+    var list = widget.events;
+    if (q.isNotEmpty) {
+      list = list.where((e) =>
+          e.title.toLowerCase().contains(q) ||
+          (e.description?.toLowerCase().contains(q) ?? false) ||
+          e.eventDate.contains(q))
+          .toList();
+    }
+    
+    if (_selectedSort == 'newest') {
+      list.sort((a, b) => b.eventDate.compareTo(a.eventDate));
+    } else {
+      list.sort((a, b) => a.eventDate.compareTo(b.eventDate));
+    }
+    
+    return list;
   }
 
   Widget _buildSearchBar(BuildContext context) {
@@ -52,50 +63,120 @@ class _UserEventListPageState extends State<UserEventListPage> {
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 460),
-          child: TextField(
+          child: AppSearchBar(
             controller: _searchController,
-            decoration: InputDecoration(
-              hintText: l10n.searchHint,
-              hintStyle: GoogleFonts.inter(
-                fontSize: 13,
-                color: context.textSecondary.withValues(alpha: 0.6),
-              ),
-              prefixIcon: Icon(
-                LucideIcons.search,
-                size: 18,
-                color: context.textSecondary,
-              ),
-              suffixIcon: _query.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(
-                        LucideIcons.x,
-                        size: 16,
-                        color: context.textSecondary,
-                      ),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() => _query = '');
-                      },
-                    )
-                  : null,
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 10),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                    color: context.accent.withValues(alpha: 0.6), width: 1.2),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                    color: context.accent.withValues(alpha: 0.6), width: 1.2),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: context.accent, width: 1.5),
-              ),
-            ),
+            hintText: l10n.searchHint,
             onChanged: (value) => setState(() => _query = value),
+            trailing: [
+              Theme(
+                data: Theme.of(context).copyWith(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: PopupMenuButton<String>(
+                  icon: Icon(
+                    LucideIcons.listFilter,
+                    size: 20,
+                    color: context.textSecondary,
+                  ),
+                  offset: const Offset(0, 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  color: context.surface,
+                  elevation: 4,
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'clear_all',
+                      height: 38,
+                      child: Row(
+                        children: [
+                          Icon(LucideIcons.filterX,
+                              color: context.textPrimary, size: 18),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Bỏ chọn tất cả',
+                            style: GoogleFonts.beVietnamPro(
+                                fontSize: 13,
+                                color: context.textPrimary),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _selectedSort = 'newest';
+                        });
+                      },
+                    ),
+                    const PopupMenuDivider(),
+                    PopupMenuItem<String>(
+                      enabled: false,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: StatefulBuilder(
+                        builder: (context, setPopupState) {
+                          return Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Sắp xếp',
+                                  style: GoogleFonts.beVietnamPro(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.textPrimary)),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: double.infinity,
+                                child: CupertinoSlidingSegmentedControl<String>(
+                                  backgroundColor: context.isDarkMode
+                                      ? Colors.grey.shade900
+                                      : Colors.grey.shade200,
+                                  thumbColor: context.isDarkMode
+                                      ? Colors.grey.shade700
+                                      : Colors.white,
+                                  groupValue: _selectedSort,
+                                  children: {
+                                    'newest': Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      child: Text(
+                                        'Mới nhất',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 12,
+                                          color: context.textPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                    'oldest': Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      child: Text(
+                                        'Cũ nhất',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 12,
+                                          color: context.textPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  },
+                                  onValueChanged: (value) {
+                                    if (value != null) {
+                                      setState(() => _selectedSort = value);
+                                      setPopupState(() {});
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

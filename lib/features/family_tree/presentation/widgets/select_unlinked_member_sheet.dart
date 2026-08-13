@@ -58,14 +58,13 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
     final primaryColor = context.primary;
-    final accentColor = context.accent;
 
     final filteredMembers = widget.candidateMembers.where((m) {
       if (_searchQuery.trim().isEmpty) return true;
       final query = _searchQuery.trim().toLowerCase();
       final nameMatches = m.fullName.toLowerCase().contains(query);
-      final genMatches =
-          m.generation != null && l10n.generationBadge(m.generation!).contains(query);
+      final genMatches = m.generation != null &&
+          l10n.generationBadge(m.generation!).contains(query);
       return nameMatches || genMatches;
     }).toList();
 
@@ -146,48 +145,10 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
             // Search Box (styled like AdminMemberRolesPage)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextField(
+              child: AppSearchBar(
                 controller: _searchController,
+                hintText: l10n.searchMemberByNameHint,
                 onChanged: (val) => setState(() => _searchQuery = val),
-                style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
-                decoration: InputDecoration(
-                  hintText: l10n.searchMemberByNameHint,
-                  hintStyle:
-                      GoogleFonts.inter(fontSize: 13, color: textSecondary),
-                  prefixIcon:
-                      Icon(LucideIcons.search, size: 18, color: textSecondary),
-                  suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(
-                          icon: Icon(LucideIcons.x,
-                              size: 16, color: textSecondary),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() => _searchQuery = '');
-                          },
-                        )
-                      : null,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: accentColor.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: accentColor.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: primaryColor,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -229,7 +190,8 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                               avatarUrl: member.avatarUrl,
                               fullName: member.fullName,
                               radius: 20,
-                              backgroundColor: primaryColor.withValues(alpha: 0.1),
+                              backgroundColor:
+                                  primaryColor.withValues(alpha: 0.1),
                               textColor: primaryColor,
                             ),
                             title: Text(

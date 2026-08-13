@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -83,6 +84,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   int _memberLimit = 5;
   int _branchLimit = 5;
   int _pendingLimit = 5;
+
+  String? _genderFilter;
+  bool? _isAliveFilter;
   AppLocalizations? _l10n;
 
   @override
@@ -99,9 +103,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final user = authState is Authenticated ? authState.user : null;
     final role = user?.role ?? 'VIEWER';
     final roleUpper = role.toUpperCase();
-    final canEdit = roleUpper == 'OWNER' ||
-        roleUpper == 'EDITOR' ||
-        roleUpper == 'CREATOR';
+    final canEdit =
+        roleUpper == 'OWNER' || roleUpper == 'EDITOR' || roleUpper == 'CREATOR';
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!canEdit) {
@@ -267,9 +270,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ? authState.user.role.toUpperCase()
         : 'VIEWER';
     // Mọi vai trò admin đều cần dữ liệu gia tộc (tên + mã mời), không chỉ Owner.
-    final canSeeFamily = role == 'OWNER' ||
-        role == 'CREATOR' ||
-        role == 'EDITOR';
+    final canSeeFamily =
+        role == 'OWNER' || role == 'CREATOR' || role == 'EDITOR';
     if (familyId != null && canSeeFamily) {
       context.read<AdminPendingRequestsBloc>().add(
             LoadAdminPendingRequestsEvent(familyId: familyId),
@@ -282,9 +284,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
     final l10n = AppLocalizations.of(context)!;
-    final double topPadding = MediaQuery.of(context).padding.top;
-    final double headerHeight = 190 + topPadding;
-
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
 
     // Resolve family name & invite code dynamically
@@ -387,58 +386,43 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: AppBackgroundBody(
-          child: Stack(
+          child: Column(
             children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: _buildHeader(
-                    context, user, headerHeight, familyName, inviteCode,
-                    userTreeState: userTreeState, pendingState: pendingState),
+              _buildHeader(
+                context,
+                user,
+                familyName,
+                inviteCode,
+                userTreeState: userTreeState,
+                pendingState: pendingState,
               ),
-              Positioned(
-                top: headerHeight + 60,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: _buildContentSection(
-                        userTreeState: userTreeState,
-                        pendingState: pendingState,
-                        members: allMembers,
-                        branches: allBranches,
-                        requests: pendingRequests,
-                      ),
-                    ),
-                  ],
-                ),
+              QuickStatsRow(
+                showPending: true,
+                memberCount: memberCount,
+                branchCount: branchCount,
+                pendingCount: pendingCount,
+                selectedTab: _selectedTab,
+                onTabChanged: (tab) {
+                  setState(() {
+                    _selectedTab = tab;
+                    _searchController.clear();
+                    _memberLimit = 5;
+                    _branchLimit = 5;
+                    _pendingLimit = 5;
+                    if (_scrollController.hasClients) {
+                      _scrollController.jumpTo(0);
+                    }
+                    _updateFAB();
+                  });
+                },
               ),
-              Positioned(
-                top: headerHeight - 45,
-                left: 0,
-                right: 0,
-                child: QuickStatsRow(
-                  showPending: true,
-                  memberCount: memberCount,
-                  branchCount: branchCount,
-                  pendingCount: pendingCount,
-                  selectedTab: _selectedTab,
-                  onTabChanged: (tab) {
-                    setState(() {
-                      _selectedTab = tab;
-                      _searchController.clear();
-                      _memberLimit = 5;
-                      _branchLimit = 5;
-                      _pendingLimit = 5;
-                      if (_scrollController.hasClients) {
-                        _scrollController.jumpTo(0);
-                      }
-                      _updateFAB();
-                    });
-                  },
+              Expanded(
+                child: _buildContentSection(
+                  userTreeState: userTreeState,
+                  pendingState: pendingState,
+                  members: allMembers,
+                  branches: allBranches,
+                  requests: pendingRequests,
                 ),
               ),
             ],
@@ -448,12 +432,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, UserEntity? user, double height,
-      String familyName, String inviteCode,
+  Widget _buildHeader(BuildContext context, UserEntity? user, String familyName,
+      String inviteCode,
       {required FamilyTreeState userTreeState,
       required AdminPendingRequestsState pendingState}) {
+    final logoUrl = (pendingState is AdminPendingRequestsLoaded)
+        ? pendingState.family?.logoUrl
+        : (userTreeState is FamilyTreeLoaded
+            ? userTreeState.family?.logoUrl
+            : null);
+
     return Container(
-      height: height,
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.appBarBg,
@@ -473,60 +462,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             child: Container(color: context.appBarOverlay),
           ),
           SafeArea(
+            bottom: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: userTreeState is FamilyTreeLoading &&
-                                pendingState is AdminPendingRequestsLoading
-                            ? const AppShimmer(
-                                child: SkeletonBox(height: 26, borderRadius: 6),
-                              )
-                            : Text(
-                                familyName.toUpperCase(),
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: context.textPrimary,
-                                  letterSpacing: 1.0,
-                                ),
-                              ),
-                      ),
-                      const SizedBox(width: 12),
-                      if (user != null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-color: user.role == 'OWNER' ||
-                                      user.role == 'CREATOR'
-                                  ? context.primary
-                                  : AdminDashboardPage.roleColor(user.role),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            AdminDashboardPage.roleLabel(user.role, context),
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  _buildInviteCodeCard(context, inviteCode,
-                      isLoading: userTreeState is FamilyTreeLoading &&
-                          pendingState is AdminPendingRequestsLoading),
-                ],
+              padding: const EdgeInsets.only(top: 4, bottom: 8),
+              child: _buildInviteCodeCard(
+                context,
+                familyName,
+                inviteCode,
+                user: user,
+                logoUrl: logoUrl,
+                isLoading: userTreeState is FamilyTreeLoading &&
+                    pendingState is AdminPendingRequestsLoading,
               ),
             ),
           ),
@@ -552,20 +498,36 @@ color: user.role == 'OWNER' ||
             child: AdminDashboardSkeleton(),
           );
         }
-        final filteredMembers = members
-            .where((m) =>
-                m.fullName.toLowerCase().contains(_searchQuery) ||
-                (m.branchName != null &&
-                    m.branchName!.toLowerCase().contains(_searchQuery)))
-            .toList();
+        final filteredMembers = members.where((m) {
+          final matchQuery = m.fullName.toLowerCase().contains(_searchQuery) ||
+              (m.branchName != null &&
+                  m.branchName!.toLowerCase().contains(_searchQuery));
+          if (!matchQuery) {
+            return false;
+          }
+
+          if (_genderFilter != null) {
+            if (_genderFilter == 'MALE' && m.gender != Gender.male) {
+              return false;
+            }
+            if (_genderFilter == 'FEMALE' && m.gender != Gender.female) {
+              return false;
+            }
+          }
+
+          if (_isAliveFilter != null) {
+            if (m.isAlive != _isAliveFilter) {
+              return false;
+            }
+          }
+
+          return true;
+        }).toList();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(
-              l10n.memberListTitle,
-            ),
-            _buildSearchBar(l10n.searchMembersHint),
+            _buildSearchBar(l10n.searchMembersHint, showFilter: true),
             if (filteredMembers.isEmpty)
               _buildEmptyWidget(l10n.emptyMembers)
             else
@@ -614,9 +576,6 @@ color: user.role == 'OWNER' ||
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(
-              l10n.branchListTitle,
-            ),
             _buildSearchBar(l10n.searchBranchesHint),
             if (filteredBranches.isEmpty)
               _buildEmptyWidget(l10n.emptyBranches)
@@ -651,22 +610,28 @@ color: user.role == 'OWNER' ||
             child: AdminDashboardSkeleton(),
           );
         }
+        final filteredRequests = requests
+            .where((r) => (r.userFullName ?? r.memberData?.fullName ?? '')
+                .toLowerCase()
+                .contains(_searchQuery))
+            .toList();
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader(l10n.pendingRequestTitle),
-            if (requests.isEmpty)
+            _buildSearchBar("Tìm kiếm..."),
+            if (filteredRequests.isEmpty)
               _buildEmptyWidget(l10n.emptyPendingRequests)
             else
               Expanded(
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.only(bottom: 30),
-                  itemCount: requests.length > _pendingLimit
+                  itemCount: filteredRequests.length > _pendingLimit
                       ? _pendingLimit
-                      : requests.length,
-                  itemBuilder: (context, index) =>
-                      PendingRequestItemWidget(request: requests[index]),
+                      : filteredRequests.length,
+                  itemBuilder: (context, index) => PendingRequestItemWidget(
+                      request: filteredRequests[index]),
                 ),
               ),
           ],
@@ -674,74 +639,224 @@ color: user.role == 'OWNER' ||
     }
   }
 
-  Widget _buildInviteCodeCard(BuildContext context, String inviteCode,
-      {bool isLoading = false}) {
+  Widget _buildInviteCodeCard(
+    BuildContext context,
+    String familyName,
+    String inviteCode, {
+    UserEntity? user,
+    String? logoUrl,
+    bool isLoading = false,
+  }) {
     final l10n = AppLocalizations.of(context)!;
     if (isLoading) {
       return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: AppShimmer(
-          child: SkeletonBox(height: 48, borderRadius: 12),
+          child: SkeletonBox(height: 84, borderRadius: 16),
         ),
       );
     }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+
+    final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
+        ? familyName.trim()
+        : 'Họ ${familyName.trim()}';
+
+    final roleName = user != null
+        ? AdminDashboardPage.roleLabel(user.role, context)
+        : 'Gia tộc';
+    final displayRoleText = user != null ? 'Vai trò: $roleName' : roleName;
+
+    final bool isDark = context.isDarkMode;
+    final Color cardBg =
+        isDark ? const Color(0xFF2A231F) : const Color(0xFFFFFBF2);
+    final Color darkRedText =
+        isDark ? const Color(0xFFFFB7B2) : const Color(0xFF800000);
+    final Color subtitleColor =
+        isDark ? const Color(0xFFE0C0A8) : const Color(0xFF800000);
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Row(
         children: [
+          // Left circular crest/logo
           Container(
-            padding: const EdgeInsets.all(8),
+            width: 56,
+            height: 56,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
+              shape: BoxShape.circle,
+              color: const Color(0xFF800000),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child:
-                Icon(LucideIcons.qrCode, color: context.textPrimary, size: 22),
+            child: ClipOval(
+              child: (logoUrl != null && logoUrl.isNotEmpty)
+                  ? AppNetworkImage(
+                      url: logoUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context) => _buildFallbackLogo(),
+                    )
+                  : _buildFallbackLogo(),
+            ),
           ),
           const SizedBox(width: 12),
+
+          // Center info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Family Title
                 Text(
-                  l10n.inviteCodeSectionLabel,
-                  style: GoogleFonts.inter(
-                    fontSize: 10,
+                  displayFamilyName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: context.textSecondary,
-                    letterSpacing: 0.5,
+                    color: darkRedText,
                   ),
                 ),
                 const SizedBox(height: 2),
+                // Role / Subtitle
                 Text(
-                  inviteCode,
+                  displayRoleText,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.beVietnamPro(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: context.textPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: subtitleColor,
                   ),
+                ),
+                const SizedBox(height: 4),
+                // Invite Code + Copy
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '${l10n.inviteCodeSectionLabel}: ',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.7)
+                              : const Color(0xFF4A3E3D),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      inviteCode,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : const Color(0xFF111111),
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(4),
+                      onTap: () {
+                        if (inviteCode.isNotEmpty) {
+                          Clipboard.setData(ClipboardData(text: inviteCode));
+                          AppSnackBar.success(
+                              context, l10n.inviteCodeCopied(inviteCode));
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Icon(
+                          LucideIcons.copy,
+                          size: 13,
+                          color:
+                              isDark ? Colors.white70 : const Color(0xFF4A3E3D),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          IconButton(
-            icon: Icon(LucideIcons.copy, size: 18, color: context.textPrimary),
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: inviteCode));
-              AppSnackBar.success(context, l10n.inviteCodeCopied(inviteCode));
-            },
-            tooltip: l10n.copyCodeTooltip,
-          ),
-          const SizedBox(width: 4),
-          AppButton(
-            label: l10n.qrCodeTooltip,
-            onPressed: () => _showQrDialog(context, inviteCode),
-            prefixIcon: const Icon(LucideIcons.maximize2, size: 10),
-            variant: AppButtonVariant.outline,
-            size: AppButtonSize.small,
-            color: context.textPrimary,
+          const SizedBox(width: 8),
+
+          // Right QR preview card
+          Tooltip(
+            message: l10n.qrCodeTooltip,
+            child: InkWell(
+              onTap: () {
+                if (inviteCode.isNotEmpty) {
+                  _showQrDialog(context, inviteCode);
+                }
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: 58,
+                height: 58,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: QrImageView(
+                  data: inviteCode.isEmpty ? 'GIA_TOC_VIET' : inviteCode,
+                  version: QrVersions.auto,
+                  size: 50.0,
+                  padding: EdgeInsets.zero,
+                  dataModuleStyle: const QrDataModuleStyle(
+                    dataModuleShape: QrDataModuleShape.square,
+                    color: Color(0xFF111111),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFallbackLogo() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset(
+          'assets/images/logo.png',
+          width: 32,
+          height: 32,
+          fit: BoxFit.contain,
+          color: const Color(0xFFFFD700),
+          errorBuilder: (context, error, stackTrace) => const Icon(
+            LucideIcons.shield,
+            color: Color(0xFFFFD700),
+            size: 24,
+          ),
+        ),
       ),
     );
   }
@@ -873,90 +988,6 @@ color: user.role == 'OWNER' ||
           ),
         );
       },
-    );
-  }
-
-  Widget _buildSectionHeader(String title,
-      {VoidCallback? onAdd, String? addLabel}) {
-    final l10n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: context.textPrimary,
-              letterSpacing: 0.5,
-            ),
-          ),
-          if (onAdd != null)
-            addLabel == l10n.addMemberLabel
-                ? IconButton(
-                    onPressed: onAdd,
-                    icon: const Icon(LucideIcons.userPlus,
-                        size: 16, color: Colors.black),
-                    style: IconButton.styleFrom(
-                      backgroundColor: context.accent,
-                      padding: const EdgeInsets.all(8),
-                    ),
-                    tooltip: addLabel,
-                  )
-                : addLabel == l10n.addBranchLabel
-                    ? IconButton(
-                        onPressed: onAdd,
-                        icon: const Stack(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(right: 3, bottom: 3),
-                              child: Icon(LucideIcons.gitBranch,
-                                  size: 14, color: Colors.black),
-                            ),
-                            Positioned(
-                              bottom: -1,
-                              right: -1,
-                              child:
-                                  Icon(Icons.add, size: 9, color: Colors.black),
-                            ),
-                          ],
-                        ),
-                        style: IconButton.styleFrom(
-                          backgroundColor: context.accent,
-                          padding: const EdgeInsets.all(8),
-                        ),
-                        tooltip: addLabel,
-                      )
-                    : TextButton.icon(
-                        onPressed: onAdd,
-                        icon: Icon(
-                          addLabel == l10n.viewAllLabel
-                              ? LucideIcons.eye
-                              : LucideIcons.plus,
-                          size: 14,
-                          color: Colors.black,
-                        ),
-                        label: Text(
-                          addLabel ?? l10n.addNewLabel,
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 8),
-                          backgroundColor: context.accent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
-        ],
-      ),
     );
   }
 
@@ -1263,46 +1294,138 @@ color: user.role == 'OWNER' ||
     );
   }
 
-  Widget _buildSearchBar(String hintText) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(20, 4, 20, 6),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
+  Widget _buildSearchBar(String hintText, {bool showFilter = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AppSearchBar(
         controller: _searchController,
-        style: GoogleFonts.inter(fontSize: 13, color: context.textPrimary),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.inter(
-              fontSize: 13,
-              color: context.textSecondary.withValues(alpha: 0.6)),
-          prefixIcon:
-              Icon(LucideIcons.search, size: 18, color: context.textSecondary),
-          suffixIcon: _searchQuery.isNotEmpty
-              ? IconButton(
-                  icon: Icon(LucideIcons.x,
-                      size: 16, color: context.textSecondary),
-                  onPressed: () {
-                    _searchController.clear();
-                  },
-                )
-              : null,
-          border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        ),
+        hintText: hintText,
+        trailing: [
+          if (showFilter)
+            PopupMenuButton<String>(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              color: context.surface,
+              elevation: 4,
+              offset: const Offset(0, 40),
+              icon: Icon(
+                LucideIcons.listFilter,
+                size: 20,
+                color: (_genderFilter != null || _isAliveFilter != null)
+                    ? context.primary
+                    : context.textSecondary,
+              ),
+              onSelected: (value) {
+                if (value == 'clear_all') {
+                  setState(() {
+                    _genderFilter = null;
+                    _isAliveFilter = null;
+                    _memberLimit = 5;
+                    if (_scrollController.hasClients) {
+                      _scrollController.jumpTo(0);
+                    }
+                  });
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem<String>(
+                    value: 'clear_all',
+                    height: 38,
+                    child: Row(
+                      children: [
+                        Icon(LucideIcons.filterX, color: context.textPrimary, size: 18),
+                        const SizedBox(width: 8),
+                        Text('Bỏ chọn tất cả', style: GoogleFonts.beVietnamPro(fontSize: 13, color: context.textPrimary)),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem<String>(
+                    enabled: false,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: StatefulBuilder(
+                      builder: (context, setPopupState) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Giới tính', style: GoogleFonts.beVietnamPro(fontSize: 12, fontWeight: FontWeight.w600, color: context.textPrimary)),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: CupertinoSlidingSegmentedControl<String>(
+                                backgroundColor: context.isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
+                                thumbColor: context.isDarkMode ? Colors.grey.shade700 : Colors.white,
+                                groupValue: _genderFilter,
+                                children: {
+                                  'MALE': Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Nam', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                  ),
+                                  'FEMALE': Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Nữ', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                  ),
+                                },
+                                onValueChanged: (value) {
+                                  if (value != null) {
+                                    setPopupState(() { _genderFilter = value; });
+                                    setState(() {
+                                      _genderFilter = value;
+                                      _memberLimit = 5;
+                                      if (_scrollController.hasClients) _scrollController.jumpTo(0);
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text('Tình trạng', style: GoogleFonts.beVietnamPro(fontSize: 12, fontWeight: FontWeight.w600, color: context.textPrimary)),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              child: CupertinoSlidingSegmentedControl<String>(
+                                backgroundColor: context.isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
+                                thumbColor: context.isDarkMode ? Colors.grey.shade700 : Colors.white,
+                                groupValue: _isAliveFilter == null ? null : (_isAliveFilter! ? 'ALIVE' : 'DECEASED'),
+                                children: {
+                                  'ALIVE': Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Còn sống', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                  ),
+                                  'DECEASED': Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    child: Text('Đã mất', style: GoogleFonts.beVietnamPro(fontSize: 12, color: context.textPrimary)),
+                                  ),
+                                },
+                                onValueChanged: (value) {
+                                  if (value != null) {
+                                    final isAlive = value == 'ALIVE';
+                                    setPopupState(() { _isAliveFilter = isAlive; });
+                                    setState(() {
+                                      _isAliveFilter = isAlive;
+                                      _memberLimit = 5;
+                                      if (_scrollController.hasClients) _scrollController.jumpTo(0);
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ];
+              },
+            ),
+        ],
       ),
     );
   }
+
 
   Widget _buildEmptyWidget(String message) {
     return AppEmptyState(

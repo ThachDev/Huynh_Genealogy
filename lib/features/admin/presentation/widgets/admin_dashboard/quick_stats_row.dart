@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../../../../resources/app_localizations.dart';
@@ -26,38 +25,21 @@ class QuickStatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
           Expanded(
-            child: StatItem(
-              icon: LucideIcons.users,
+            child: StatCardItem(
               label: l10n.statMembers,
               value: memberCount,
               isSelected: selectedTab == AdminDashboardTab.members,
               onTap: () => onTabChanged(AdminDashboardTab.members),
             ),
           ),
-          Container(
-              width: 1,
-              height: 32,
-              color: context.textSecondary.withValues(alpha: 0.1)),
+          const SizedBox(width: 8),
           Expanded(
-            child: StatItem(
-              icon: LucideIcons.gitBranch,
+            child: StatCardItem(
               label: l10n.statBranches,
               value: branchCount,
               isSelected: selectedTab == AdminDashboardTab.branches,
@@ -65,13 +47,9 @@ class QuickStatsRow extends StatelessWidget {
             ),
           ),
           if (showPending) ...[
-            Container(
-                width: 1,
-                height: 32,
-                color: context.textSecondary.withValues(alpha: 0.1)),
+            const SizedBox(width: 8),
             Expanded(
-              child: StatItem(
-                icon: LucideIcons.clock,
+              child: StatCardItem(
                 label: l10n.statPending,
                 value: pendingCount,
                 isSelected: selectedTab == AdminDashboardTab.pending,
@@ -85,16 +63,14 @@ class QuickStatsRow extends StatelessWidget {
   }
 }
 
-class StatItem extends StatelessWidget {
-  final IconData icon;
+class StatCardItem extends StatelessWidget {
   final String label;
   final String value;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const StatItem({
+  const StatCardItem({
     super.key,
-    required this.icon,
     required this.label,
     required this.value,
     required this.isSelected,
@@ -103,68 +79,70 @@ class StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = context.isDarkMode;
+
+    final Color cardBg = isSelected
+        ? const Color(0xFF800000)
+        : (isDark ? const Color(0xFF261F1B) : const Color(0xFFFFFDF8));
+
+    final Color borderColor = isDark
+        ? Colors.white10
+        : const Color(0xFFE8D7B8).withValues(alpha: 0.6);
+
+    final Color numberColor = isSelected
+        ? Colors.white
+        : (isDark ? Colors.white : const Color(0xFF222222));
+
+    final Color labelColor = isSelected
+        ? Colors.white
+        : (isDark ? Colors.white70 : const Color(0xFF665544));
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
           decoration: BoxDecoration(
-            color: isSelected ? context.surface : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    )
-                  ]
-                : null,
-            border: Border.all(
-              color: isSelected
-                  ? context.accent.withValues(alpha: 0.25)
-                  : Colors.transparent,
-            ),
+            color: cardBg,
+            borderRadius: BorderRadius.circular(12),
+            border: isSelected
+                ? null
+                : Border.all(
+                    color: borderColor,
+                    width: 1.0,
+                  ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isSelected ? 0.12 : 0.03),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    icon,
-                    color: isSelected
-                        ? context.textPrimary
-                        : context.textSecondary,
-                    size: 13,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    label,
-                    style: GoogleFonts.beVietnamPro(
-                      color: isSelected
-                          ? context.textPrimary
-                          : context.textSecondary,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
               Text(
                 value,
                 style: GoogleFonts.beVietnamPro(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: context.accent,
+                  color: numberColor,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  color: labelColor,
                 ),
               ),
             ],

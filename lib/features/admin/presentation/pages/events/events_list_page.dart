@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -274,87 +275,120 @@ class _EventsListPageState extends State<EventsListPage> {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.03),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
+                            child: AppSearchBar(
+                              controller: _searchController,
+                              hintText: l10n.eventSearchHint,
+                              onChanged: (_) => setState(() {}),
+                              trailing: [
+                                Theme(
+                                  data: Theme.of(context).copyWith(
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
                                   ),
-                                ],
-                              ),
-                              child: TextField(
-                                controller: _searchController,
-                                style: GoogleFonts.beVietnamPro(
-                                    fontSize: 14, color: context.textPrimary),
-                                decoration: InputDecoration(
-                                  hintText: l10n.eventSearchHint,
-                                  hintStyle: GoogleFonts.beVietnamPro(
-                                      fontSize: 13.5,
-                                      color: context.textSecondary
-                                          .withValues(alpha: 0.6)),
-                                  prefixIcon: Icon(LucideIcons.search,
-                                      size: 17, color: context.textSecondary),
-                                  suffixIcon: _searchController.text.isNotEmpty
-                                      ? IconButton(
-                                          icon: Icon(LucideIcons.x,
-                                              size: 16,
-                                              color: context.textSecondary),
-                                          onPressed: () {
-                                            _searchController.clear();
-                                            setState(() {});
+                                  child: PopupMenuButton<String>(
+                                    icon: Icon(
+                                      LucideIcons.listFilter,
+                                      size: 20,
+                                      color: context.textSecondary,
+                                    ),
+                                    offset: const Offset(0, 40),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    color: context.surface,
+                                    elevation: 4,
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        value: 'clear_all',
+                                        height: 38,
+                                        child: Row(
+                                          children: [
+                                            Icon(LucideIcons.filterX,
+                                                color: context.textPrimary, size: 18),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Bỏ chọn tất cả',
+                                              style: GoogleFonts.beVietnamPro(
+                                                  fontSize: 13,
+                                                  color: context.textPrimary),
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedSort = 'newest';
+                                          });
+                                        },
+                                      ),
+                                      const PopupMenuDivider(),
+                                      PopupMenuItem<String>(
+                                        enabled: false,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 8),
+                                        child: StatefulBuilder(
+                                          builder: (context, setPopupState) {
+                                            return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text('Sắp xếp',
+                                                    style: GoogleFonts.beVietnamPro(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: context.textPrimary)),
+                                                const SizedBox(height: 8),
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: CupertinoSlidingSegmentedControl<String>(
+                                                    backgroundColor: context.isDarkMode
+                                                        ? Colors.grey.shade900
+                                                        : Colors.grey.shade200,
+                                                    thumbColor: context.isDarkMode
+                                                        ? Colors.grey.shade700
+                                                        : Colors.white,
+                                                    groupValue: _selectedSort,
+                                                    children: {
+                                                      'newest': Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                        child: Text(
+                                                          'Mới nhất',
+                                                          textAlign: TextAlign.center,
+                                                          style: GoogleFonts.beVietnamPro(
+                                                            fontSize: 12,
+                                                            color: context.textPrimary,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      'oldest': Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                                        child: Text(
+                                                          'Cũ nhất',
+                                                          textAlign: TextAlign.center,
+                                                          style: GoogleFonts.beVietnamPro(
+                                                            fontSize: 12,
+                                                            color: context.textPrimary,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    },
+                                                    onValueChanged: (value) {
+                                                      if (value != null) {
+                                                        setState(() => _selectedSort = value);
+                                                        setPopupState(() {});
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            );
                                           },
-                                        )
-                                      : null,
-                                  filled: true,
-                                  fillColor: context.surface,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 12),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                    borderSide: BorderSide(
-                                        color: context.textSecondary
-                                            .withValues(alpha: 0.15)),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                    borderSide: BorderSide(
-                                        color: context.primary, width: 1.2),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                onChanged: (_) => setState(() {}),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Material(
-                            color: context.surface,
-                            borderRadius: BorderRadius.circular(14),
-                            child: InkWell(
-                              onTap: () => setState(() {
-                                _selectedSort = _selectedSort == 'newest'
-                                    ? 'oldest'
-                                    : 'newest';
-                              }),
-                              borderRadius: BorderRadius.circular(14),
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: context.textSecondary
-                                        .withValues(alpha: 0.15),
-                                  ),
-                                ),
-                                child: Icon(
-                                  _selectedSort == 'newest'
-                                      ? LucideIcons.arrowDownNarrowWide
-                                      : LucideIcons.arrowUpNarrowWide,
-                                  size: 20,
-                                  color: context.primary,
-                                ),
-                              ),
+                              ],
                             ),
                           ),
                         ],

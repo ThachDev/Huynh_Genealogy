@@ -1,5 +1,5 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -197,95 +197,136 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _searchController,
-                            decoration: InputDecoration(
-                              hintText: l10n.searchMemberHint,
-                              hintStyle: GoogleFonts.inter(fontSize: 13),
-                              prefixIcon: Icon(LucideIcons.search,
-                                  size: 18, color: context.textSecondary),
-                              isDense: true,
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 10),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: context.textSecondary
-                                      .withValues(alpha: 0.2),
-                                  width: 1.2,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: context.textSecondary
-                                      .withValues(alpha: 0.2),
-                                  width: 1.2,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: context.accent,
-                                  width: 1.2,
-                                ),
-                              ),
-                            ),
-                            onChanged: (_) => setState(() {}),
+                    child: AppSearchBar(
+                      controller: _searchController,
+                      hintText: l10n.searchMemberHint,
+                      onChanged: (_) => setState(() {}),
+                      trailing: [
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        SizedBox(
-                          width: 105,
-                          child: AppDropdown<LinkStatusFilter>(
-                            value: _statusFilter,
-                            buttonHeight: 42,
-                            showIcon: false,
-                            textAlign: TextAlign.center,
-                            itemPadding:
-                                const EdgeInsets.symmetric(horizontal: 8),
-                            items: [
-                              DropdownItem(
+                          child: PopupMenuButton<LinkStatusFilter>(
+                            icon: Icon(
+                              LucideIcons.listFilter,
+                              size: 20,
+                              color: _statusFilter != LinkStatusFilter.all
+                                  ? context.primary
+                                  : context.textSecondary,
+                            ),
+                            offset: const Offset(0, 40),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color: context.surface,
+                            elevation: 4,
+                            onSelected: (val) {
+                              setState(() {
+                                _statusFilter = val;
+                              });
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
                                 value: LinkStatusFilter.all,
-                                child: Center(
-                                  child: Text(
-                                    l10n.allLabel,
-                                    style:
-                                        GoogleFonts.beVietnamPro(fontSize: 12),
-                                  ),
+                                height: 38,
+                                child: Row(
+                                  children: [
+                                    Icon(LucideIcons.filterX,
+                                        color: context.textPrimary, size: 18),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      l10n.allLabel,
+                                      style: GoogleFonts.beVietnamPro(
+                                          fontSize: 13,
+                                          color: context.textPrimary),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              DropdownItem(
-                                value: LinkStatusFilter.linked,
-                                child: Center(
-                                  child: Text(
-                                    l10n.linkedLabel,
-                                    style:
-                                        GoogleFonts.beVietnamPro(fontSize: 12),
-                                  ),
-                                ),
-                              ),
-                              DropdownItem(
-                                value: LinkStatusFilter.unlinked,
-                                child: Center(
-                                  child: Text(
-                                    l10n.notLinkedLabel,
-                                    style:
-                                        GoogleFonts.beVietnamPro(fontSize: 12),
-                                  ),
+                              const PopupMenuDivider(),
+                              PopupMenuItem(
+                                enabled: false,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: StatefulBuilder(
+                                  builder: (context, setPopupState) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text('Trạng thái',
+                                            style: GoogleFonts.beVietnamPro(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: context.textPrimary)),
+                                        const SizedBox(height: 8),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child:
+                                              CupertinoSlidingSegmentedControl<
+                                                  String>(
+                                            backgroundColor: context.isDarkMode
+                                                ? Colors.grey.shade900
+                                                : Colors.grey.shade200,
+                                            thumbColor: context.isDarkMode
+                                                ? Colors.grey.shade700
+                                                : Colors.white,
+                                            groupValue: _statusFilter ==
+                                                    LinkStatusFilter.all
+                                                ? null
+                                                : (_statusFilter ==
+                                                        LinkStatusFilter.linked
+                                                    ? 'linked'
+                                                    : 'unlinked'),
+                                            children: {
+                                              'linked': Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Text(l10n.linkedLabel,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts
+                                                        .beVietnamPro(
+                                                            fontSize: 12,
+                                                            color: context
+                                                                .textPrimary)),
+                                              ),
+                                              'unlinked': Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8),
+                                                child: Text(l10n.notLinkedLabel,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts
+                                                        .beVietnamPro(
+                                                            fontSize: 12,
+                                                            color: context
+                                                                .textPrimary)),
+                                              ),
+                                            },
+                                            onValueChanged: (value) {
+                                              if (value != null) {
+                                                final filter = value == 'linked'
+                                                    ? LinkStatusFilter.linked
+                                                    : LinkStatusFilter.unlinked;
+                                                setPopupState(() {
+                                                  _statusFilter = filter;
+                                                });
+                                                setState(() {
+                                                  _statusFilter = filter;
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                             ],
-                            onChanged: (val) {
-                              if (val != null) {
-                                setState(() {
-                                  _statusFilter = val;
-                                });
-                              }
-                            },
                           ),
                         ),
                       ],

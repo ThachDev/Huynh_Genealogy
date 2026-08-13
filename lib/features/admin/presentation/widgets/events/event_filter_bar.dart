@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 
@@ -23,111 +22,126 @@ class EventFilterBar extends StatelessWidget {
       {
         'key': 'all',
         'label': l10n.allLabel,
-        'icon': LucideIcons.layers,
+        'count': counts['all'] ?? 0,
       },
       {
         'key': 'event',
         'label': l10n.eventTypeEvent,
-        'icon': LucideIcons.calendar,
+        'count': counts['event'] ?? 0,
       },
       {
         'key': 'announcement',
         'label': l10n.eventTypeAnnouncement,
-        'icon': LucideIcons.megaphone,
+        'count': counts['announcement'] ?? 0,
       },
     ];
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: filters.map((filter) {
           final key = filter['key'] as String;
           final label = filter['label'] as String;
-          final icon = filter['icon'] as IconData;
-          final count = counts[key] ?? 0;
+          final count = filter['count'] as int;
           final isSelected = selectedType == key;
 
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
+          return Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                right: key != 'announcement' ? 8.0 : 0.0,
+              ),
+              child: StatFilterCardItem(
+                label: label,
+                value: '$count',
+                isSelected: isSelected,
                 onTap: () => onSelectType(key),
-                borderRadius: BorderRadius.circular(20),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? context.primary
-                        : context.surface.withValues(alpha: 0.8),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isSelected
-                          ? context.primary
-                          : context.textSecondary.withValues(alpha: 0.15),
-                      width: 1,
-                    ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: context.primary.withValues(alpha: 0.25),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ]
-                        : [],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        icon,
-                        size: 15,
-                        color: isSelected
-                            ? Colors.white
-                            : context.textSecondary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        label,
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 13,
-                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                          color: isSelected
-                              ? Colors.white
-                              : context.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? Colors.white.withValues(alpha: 0.25)
-                              : context.textSecondary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '$count',
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: isSelected
-                                ? Colors.white
-                                : context.textSecondary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+}
+
+class StatFilterCardItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const StatFilterCardItem({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color cardBg = isSelected ? context.primary : context.surface;
+
+    final Color borderColor = isSelected
+        ? context.primary
+        : context.textSecondary.withValues(alpha: 0.15);
+
+    final Color numberColor = isSelected ? Colors.white : context.textPrimary;
+
+    final Color labelColor = isSelected ? Colors.white : context.textSecondary;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(12),
+            border: isSelected
+                ? null
+                : Border.all(
+                    color: borderColor,
+                    width: 1.0,
+                  ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isSelected ? 0.12 : 0.03),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                value,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: numberColor,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  color: labelColor,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

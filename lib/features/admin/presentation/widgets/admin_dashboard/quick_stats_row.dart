@@ -79,30 +79,24 @@ class StatCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = context.isDarkMode;
+    final Color cardBg = isSelected ? context.primary : context.surface;
 
-    final Color cardBg = isSelected
-        ? const Color(0xFF800000)
-        : (isDark ? const Color(0xFF261F1B) : const Color(0xFFFFFDF8));
+    final Color borderColor = isSelected
+        ? context.primary
+        : context.textSecondary.withValues(alpha: 0.15);
 
-    final Color borderColor = isDark
-        ? Colors.white10
-        : const Color(0xFFE8D7B8).withValues(alpha: 0.6);
+    final Color numberColor = isSelected ? Colors.white : context.textPrimary;
 
-    final Color numberColor = isSelected
-        ? Colors.white
-        : (isDark ? Colors.white : const Color(0xFF222222));
-
-    final Color labelColor = isSelected
-        ? Colors.white
-        : (isDark ? Colors.white70 : const Color(0xFF665544));
+    final Color labelColor =
+        isSelected ? Colors.white : context.textSecondary;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
           decoration: BoxDecoration(
             color: cardBg,

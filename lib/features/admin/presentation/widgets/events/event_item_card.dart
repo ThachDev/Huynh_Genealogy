@@ -6,8 +6,9 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../../core/widgets/app_network_image.dart';
 import '../../../../events/events.dart';
-import 'event_calendar_widget.dart';
 
+/// Card sự kiện kiểu compact — thumbnail 84×84 bên trái, nội dung bên phải.
+/// Dùng trong AdminEventsListPage.
 class EventItemCard extends StatelessWidget {
   final EventEntity event;
   final bool canEdit;
@@ -22,7 +23,8 @@ class EventItemCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  String _getEventStatus() {
+  // ── Status helpers ────────────────────────────────────────────
+  String _getStatus() {
     try {
       final now = DateTime.now();
       final date = DateTime.parse(event.eventDate);
@@ -40,154 +42,92 @@ class EventItemCard extends StatelessWidget {
     }
   }
 
-  Widget _buildStatusTag(String status, BuildContext context,
-      {bool isOverBanner = false}) {
-    final l10n = AppLocalizations.of(context)!;
-    String statusText = l10n.eventEnded;
-    Color statusColor = isOverBanner
-        ? Colors.grey.shade300
-        : context.textSecondary.withValues(alpha: 0.7);
-
-    if (status == 'active') {
-      statusText = l10n.eventOngoing;
-      statusColor =
-          isOverBanner ? Colors.greenAccent.shade400 : context.primary;
-    } else if (status == 'upcoming') {
-      statusText = l10n.eventUpcoming;
-      statusColor =
-          isOverBanner ? Colors.amberAccent.shade200 : Colors.amber.shade800;
-    }
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 6,
-          height: 6,
-          decoration: BoxDecoration(
-            color: statusColor,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 5),
-        Text(
-          statusText,
-          style: GoogleFonts.beVietnamPro(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: isOverBanner ? Colors.white : statusColor,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBannerImage(BuildContext context, String status) {
-    final l10n = AppLocalizations.of(context)!;
+  // ── Thumbnail ────────────────────────────────────────────────
+  Widget _thumbnail(BuildContext context) {
     final imageUrl = event.imageUrl;
     final isNetwork = imageUrl != null &&
         (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
     final isLocal =
         imageUrl != null && !isNetwork && File(imageUrl).existsSync();
 
-    Widget? imageWidget;
+    Widget placeholder = Container(
+      width: 84,
+      height: 84,
+      decoration: BoxDecoration(
+        color: context.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Icon(
+          LucideIcons.calendarDays,
+          size: 26,
+          color: context.primary.withValues(alpha: 0.45),
+        ),
+      ),
+    );
+
     if (isNetwork) {
-      imageWidget = AppNetworkImage(
-        url: imageUrl,
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.contain,
-        errorBuilder: (_) => const SizedBox.shrink(),
-      );
-    } else if (isLocal) {
-      imageWidget = Image.file(
-        File(imageUrl),
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.contain,
-        alignment: Alignment.center,
-        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: AppNetworkImage(
+          url: imageUrl,
+          width: 84,
+          height: 84,
+          fit: BoxFit.cover,
+          errorBuilder: (_) => placeholder,
+        ),
       );
     }
 
-    if (imageWidget == null) return const SizedBox.shrink();
+    if (isLocal) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.file(
+          File(imageUrl),
+          width: 84,
+          height: 84,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => placeholder,
+        ),
+      );
+    }
 
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-        child: ColoredBox(
-          color: context.surface,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              imageWidget,
-              // Subtle Gradient Overlay for badge contrast
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.3),
-                        Colors.transparent,
-                        Colors.black.withValues(alpha: 0.1),
-                      ],
-                      stops: const [0.0, 0.45, 1.0],
-                    ),
-                  ),
-                ),
-              ),
-              // Top Left: Lunar Calendar Badge
-              if (event.isLunar)
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: context.accent.withValues(alpha: 0.95),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      l10n.lunarShortLabel,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ),
-                ),
-              // Top Right: Status Tag Badge
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.25),
-                      width: 0.5,
-                    ),
-                  ),
-                  child: _buildStatusTag(status, context, isOverBanner: true),
-                ),
-              ),
-            ],
-          ),
+    return placeholder;
+  }
+
+  // ── Status badge ─────────────────────────────────────────────
+  Widget _statusBadge(String status, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final Color color;
+    final String text;
+
+    switch (status) {
+      case 'active':
+        color = context.primary;
+        text = l10n.eventOngoing;
+        break;
+      case 'upcoming':
+        color = Colors.amber.shade700;
+        text = l10n.eventUpcoming;
+        break;
+      default:
+        color = context.textSecondary;
+        text = l10n.eventEnded;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withValues(alpha: 0.25), width: 0.8),
+      ),
+      child: Text(
+        text,
+        style: GoogleFonts.beVietnamPro(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: color,
         ),
       ),
     );
@@ -196,133 +136,129 @@ class EventItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final status = _getEventStatus();
-    final hasImage = event.imageUrl != null && event.imageUrl!.isNotEmpty;
-
-    Widget cardChild = Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: context.textSecondary.withValues(alpha: 0.12),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (hasImage) _buildBannerImage(context, status),
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Calendar Badge Component
-                SizedBox(
-                  width: 72,
-                  height: 72,
-                  child: EventCalendarWidget(
-                    eventDate: event.eventDate,
-                    isLunarDefault: event.isLunar,
-                    l10n: l10n,
-                  ),
-                ),
-                const SizedBox(width: 14),
-
-                // Event info column
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (!hasImage)
-                        Row(
-                          children: [
-                            _buildStatusTag(status, context),
-                            const Spacer(),
-                            if (event.isLunar)
-                              Text(
-                                l10n.lunarShortLabel,
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 10.5,
-                                  fontWeight: FontWeight.w700,
-                                  color: context.accent,
-                                ),
-                              ),
-                          ],
-                        ),
-                      if (!hasImage) const SizedBox(height: 8),
-                      Text(
-                        event.title,
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: context.textPrimary,
-                          height: 1.3,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (event.location != null &&
-                          event.location!.isNotEmpty) ...[
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Icon(LucideIcons.mapPin,
-                                size: 12, color: context.textSecondary),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                event.location!,
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 12,
-                                  color: context.textSecondary,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      const SizedBox(height: 3),
-                      Row(
-                        children: [
-                          Icon(LucideIcons.user,
-                              size: 12, color: context.textSecondary),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: Text(
-                              event.organizer ?? l10n.adminBoard,
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 12,
-                                color: context.textSecondary,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    final status = _getStatus();
 
     return GestureDetector(
       onTap: onTap,
-      child: cardChild,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: context.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: context.textSecondary.withValues(alpha: 0.14),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Thumbnail ──
+            _thumbnail(context),
+            const SizedBox(width: 12),
+
+            // ── Text content ──
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Status + Date row
+                  Row(
+                    children: [
+                      _statusBadge(status, context),
+                      if (event.isLunar) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          l10n.lunarShortLabel,
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: context.accent,
+                          ),
+                        ),
+                      ],
+                      const Spacer(),
+                      Icon(LucideIcons.clock3,
+                          size: 11, color: context.textSecondary),
+                      const SizedBox(width: 3),
+                      Text(
+                        event.eventDate,
+                        style: GoogleFonts.inter(
+                            fontSize: 11, color: context.textSecondary),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+
+                  // Title
+                  Text(
+                    event.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: context.textPrimary,
+                      height: 1.3,
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  // Organizer + Location
+                  Row(
+                    children: [
+                      Icon(LucideIcons.user,
+                          size: 11, color: context.textSecondary),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          event.organizer ?? l10n.adminBoard,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: context.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (event.location != null &&
+                          event.location!.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Text('·',
+                              style: TextStyle(
+                                  color: context.textSecondary, fontSize: 11)),
+                        ),
+                        Icon(LucideIcons.mapPin,
+                            size: 11, color: context.textSecondary),
+                        const SizedBox(width: 3),
+                        Flexible(
+                          child: Text(
+                            event.location!,
+                            style: GoogleFonts.inter(
+                                fontSize: 11, color: context.textSecondary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

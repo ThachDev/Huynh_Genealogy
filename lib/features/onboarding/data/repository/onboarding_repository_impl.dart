@@ -6,11 +6,27 @@ import '../../../../core/domain/entity/family_user_entity.dart';
 import '../../domain/repository/onboarding_repository.dart';
 import '../source/onboarding_remote_data_source.dart';
 
+/// ============================================================================
+/// REPOSITORY IMPLEMENTATION — ONBOARDING FEATURE (DATA LAYER)
+/// ============================================================================
+/// OnboardingRepositoryImpl là cầu nối giữa Domain Layer (UseCases) và Data Layer (RemoteDataSource).
+///
+/// Nhiệm vụ chính:
+///   1. Gọi Remote Data Source để lấy dữ liệu từ Server.
+///   2. Bắt các Exceptions (`ServerException`, `NetworkException`).
+///   3. Chuyển đổi (Map) Exceptions thành đối tượng `Failure` (`ServerFailure`, `NetworkFailure`).
+///   4. Trả về kiểu `Either<Failure, ResultType>` (từ thư viện `dartz`):
+///      - `Left(Failure)`: Chứa thông tin lỗi an toàn cho UI.
+///      - `Right(Result)`: Chứa dữ liệu thành công.
+/// ============================================================================
 class OnboardingRepositoryImpl implements OnboardingRepository {
   final OnboardingRemoteDataSource remoteDataSource;
 
   OnboardingRepositoryImpl({required this.remoteDataSource});
 
+  /// --------------------------------------------------------------------------
+  /// 1. Tạo dòng họ mới
+  /// --------------------------------------------------------------------------
   @override
   Future<Either<Failure, FamilyEntity>> createFamily({
     required String name,
@@ -25,14 +41,20 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         logoUrl: logoUrl,
         userId: userId,
       );
+      // Trả về Right(FamilyModel) — FamilyModel kế thừa từ FamilyEntity (Polymorphism)
       return Right(familyModel);
     } on ServerException catch (e) {
+      // Bắt lỗi ServerException từ DataSource -> Trả về Left(ServerFailure)
       return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
     } on NetworkException catch (e) {
+      // Bắt lỗi Mạng -> Trả về Left(NetworkFailure)
       return Left(NetworkFailure(message: e.message));
     }
   }
 
+  /// --------------------------------------------------------------------------
+  /// 2. Xác minh Mã mời gia nhập dòng họ
+  /// --------------------------------------------------------------------------
   @override
   Future<Either<Failure, Map<String, dynamic>>> verifyInviteCode({
     required String code,

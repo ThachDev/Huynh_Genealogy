@@ -5,6 +5,16 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../../core/domain/entity/family_entity.dart';
 import '../repository/onboarding_repository.dart';
 
+/// ============================================================================
+/// USE CASE — CREATE FAMILY (DOMAIN LAYER)
+/// ============================================================================
+/// Mỗi UseCase đảm nhận duy nhất một chức năng nghiệp vụ (Single Responsibility Principle).
+/// `CreateFamily` thực hiện nghiệp vụ tạo dòng họ mới trong hệ thống.
+///
+/// Implements `UseCase<Type, Params>`:
+///   - `Type`: Kết quả thành công mong muốn (`FamilyEntity`).
+///   - `Params`: Tham số đầu vào truyền vào phương thức `call()` (`CreateFamilyParams`).
+/// ============================================================================
 class CreateFamily implements UseCase<FamilyEntity, CreateFamilyParams> {
   final OnboardingRepository repository;
 

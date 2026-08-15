@@ -7,6 +7,11 @@ import 'package:giatocviet/core/data/model/member_model.dart';
 import '../../../../core/data/model/family_model.dart';
 import '../../../../core/data/model/family_user_model.dart';
 
+/// ============================================================================
+/// REMOTE DATA SOURCE — ONBOARDING FEATURE (REST API INTERFACE)
+/// ============================================================================
+/// Khai báo các phương thức gọi REST API trực tiếp đến Backend server.
+/// ============================================================================
 abstract class OnboardingRemoteDataSource {
   Future<FamilyModel> createFamily({
     required String name,
@@ -70,11 +75,21 @@ abstract class OnboardingRemoteDataSource {
   });
 }
 
+/// ============================================================================
+/// REMOTE DATA SOURCE IMPLEMENTATION (REST API CALLS WITH DIO)
+/// ============================================================================
+/// Thực thi gọi API bằng thư viện `Dio`.
+/// Xử lý Multipart/FormData đối với file ảnh và chuẩn hóa Exception khi có lỗi.
+/// ============================================================================
 class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
   final Dio dio;
 
   OnboardingRemoteDataSourceImpl({required this.dio});
 
+  /// --------------------------------------------------------------------------
+  /// API 1: POST /api/v1/families (Tạo dòng họ mới)
+  /// Phân loại: Xử lý cả JSON thông thường hoặc FormData nếu người dùng tải ảnh logo.
+  /// --------------------------------------------------------------------------
   @override
   Future<FamilyModel> createFamily({
     required String name,
@@ -89,6 +104,7 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
         'userId': userId,
       };
 
+      // Nếu logoUrl là đường dẫn file cục bộ (chưa upload lên server), chuyển sang FormData
       if (logoUrl != null &&
           logoUrl.isNotEmpty &&
           !logoUrl.startsWith('http') &&
@@ -108,12 +124,16 @@ class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
         }
       }
 
+      // Gửi HTTP POST request
       final response = await dio.post(
         AppConstants.familiesEndpoint,
         data: dataPayload,
       );
+
+      // Map kết quả JSON (`response.data['data']`) sang Data Model `FamilyModel`
       return FamilyModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
+      // Ném ra ServerException để Repository tầng trên bắt và wrap thành Failure
       throw ServerException(
         message: _getErrorMessage(
             e, AppLanguage.current?.errCreateFamily ?? 'Lỗi tạo dòng họ'),

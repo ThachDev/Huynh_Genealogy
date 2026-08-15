@@ -3,6 +3,16 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/domain/entity/family_entity.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
 
+/// ============================================================================
+/// REPOSITORY INTERFACE — ONBOARDING FEATURE (DOMAIN LAYER)
+/// ============================================================================
+/// Khai báo Hợp đồng (Contract) đại diện cho các nghiệp vụ dữ liệu Onboarding.
+///
+/// Theo nguyên lý Dependency Inversion trong Clean Architecture:
+///   - Domain Layer định nghĩa Interface này mà KHÔNG quan tâm dữ liệu đến từ đâu
+///     (REST API, SQLite hay Firebase).
+///   - Data Layer chịu trách nhiệm triển khai (Implement) Interface này.
+/// ============================================================================
 abstract class OnboardingRepository {
   Future<Either<Failure, FamilyEntity>> createFamily({
     required String name,

@@ -181,6 +181,29 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
                     .toList();
               }
 
+              // Sắp xếp ưu tiên: Đã liên kết -> Đang chờ xác nhận -> Chưa liên kết
+              visibleItems.sort((a, b) {
+                int statusPriority(MemberAccountLinkEntity e) {
+                  if (e.isLinked) return 0;
+                  if (e.pendingInvite != null) return 1;
+                  return 2;
+                }
+
+                final pA = statusPriority(a);
+                final pB = statusPriority(b);
+                if (pA != pB) {
+                  return pA.compareTo(pB);
+                }
+
+                // Nếu cùng trạng thái: sắp xếp theo đời thứ (nếu có) rồi theo tên
+                final genA = a.generation ?? 999;
+                final genB = b.generation ?? 999;
+                if (genA != genB) {
+                  return genA.compareTo(genB);
+                }
+                return a.fullName.compareTo(b.fullName);
+              });
+
               if (items.isEmpty) {
                 return Center(
                   child: Text(
@@ -377,6 +400,7 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppAvatar(
                 avatarUrl: item.avatarUrl,
@@ -397,7 +421,36 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
                         color: context.textPrimary,
                       ),
                     ),
-                    if (item.generation != null)
+                    if (item.isLinked && item.linkedAccount != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        item.linkedAccount!.email,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: context.textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ] else if (item.pendingInvite != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        item.pendingInvite!.email,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: context.resolve(
+                            AppColors.accent,
+                            AppColors.accent,
+                          ),
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                    if (item.generation != null) ...[
+                      const SizedBox(height: 2),
                       Text(
                         l10n.generationBadge('${item.generation}'),
                         style: GoogleFonts.inter(
@@ -405,15 +458,15 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
                           color: context.textSecondary,
                         ),
                       ),
+                    ],
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               _buildStatusChip(context, item, l10n),
             ],
           ),
-          const SizedBox(height: 12),
-          _buildAccountInfo(context, item, l10n),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(
@@ -431,14 +484,17 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
               ),
               if (item.isLinked || item.pendingInvite != null) ...[
                 const SizedBox(width: 8),
-                AppButton(
-                  label: l10n.unlinkButton,
-                  variant: AppButtonVariant.danger,
-                  size: AppButtonSize.small,
-                  prefixIcon: const Icon(LucideIcons.unlink, size: 14),
-                  onPressed: familyId == null
-                      ? null
-                      : () => _onUnlinkPressed(item, familyId, l10n),
+                Expanded(
+                  child: AppButton(
+                    label: l10n.unlinkButton,
+                    variant: AppButtonVariant.primary,
+                    color: context.primary,
+                    size: AppButtonSize.small,
+                    prefixIcon: const Icon(LucideIcons.unlink, size: 14),
+                    onPressed: familyId == null
+                        ? null
+                        : () => _onUnlinkPressed(item, familyId, l10n),
+                  ),
                 ),
               ],
             ],
@@ -475,98 +531,5 @@ class _AdminLinkAccountsPageState extends State<AdminLinkAccountsPage> {
         ),
       ),
     );
-  }
-
-  Widget _buildAccountInfo(BuildContext context, MemberAccountLinkEntity item,
-      AppLocalizations l10n) {
-    if (item.isLinked) {
-      final account = item.linkedAccount!;
-      final hasName = account.fullName.isNotEmpty;
-      return Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: context.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              LucideIcons.userCheck,
-              size: 14,
-              color: context.primary,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  if (hasName) ...[
-                    TextSpan(
-                      text: account.fullName,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.textPrimary,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' • ',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: context.textSecondary,
-                      ),
-                    ),
-                  ],
-                  TextSpan(
-                    text: account.email,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: context.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (item.pendingInvite != null) {
-      return Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: AppColors.accent.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              LucideIcons.mailWarning,
-              size: 14,
-              color: AppColors.accent,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              l10n.invitePendingDesc(item.pendingInvite!.email),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: context.textSecondary,
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    return const SizedBox.shrink();
   }
 }

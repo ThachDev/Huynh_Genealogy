@@ -1166,6 +1166,30 @@ abstract class AppLocalizations {
   /// **'Thông Tin & Trợ Giúp'**
   String get infoAndHelpSection;
 
+  /// No description provided for @helpAndInfoHubLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trợ giúp & Thông tin'**
+  String get helpAndInfoHubLabel;
+
+  /// No description provided for @tabFaqLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi đáp'**
+  String get tabFaqLabel;
+
+  /// No description provided for @tabRegulationsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều khoản'**
+  String get tabRegulationsLabel;
+
+  /// No description provided for @tabAboutLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giới thiệu'**
+  String get tabAboutLabel;
+
   /// No description provided for @regulationsLabel.
   ///
   /// In vi, this message translates to:
@@ -1189,6 +1213,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Quản Trị Nâng Cao'**
   String get advancedAdminSection;
+
+  /// No description provided for @linkAndRolesTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên kết & Phân quyền'**
+  String get linkAndRolesTitle;
+
+  /// No description provided for @tabLinkAccounts.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên kết tài khoản'**
+  String get tabLinkAccounts;
+
+  /// No description provided for @tabMemberRoles.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phân quyền'**
+  String get tabMemberRoles;
 
   /// No description provided for @memberRolesLabel.
   ///
@@ -1619,7 +1661,7 @@ abstract class AppLocalizations {
   /// No description provided for @regulationsTitle.
   ///
   /// In vi, this message translates to:
-  /// **'Quy Định & Điều Khoản'**
+  /// **'Quy Định & Điều Khoản Pháp Lý'**
   String get regulationsTitle;
 
   /// No description provided for @regulationTitle.
@@ -1631,127 +1673,127 @@ abstract class AppLocalizations {
   /// No description provided for @regulationLastUpdated.
   ///
   /// In vi, this message translates to:
-  /// **'Cập nhật lần cuối: Tháng 7, 2026'**
+  /// **'Phiên bản hiệu lực: Tháng 8, 2026'**
   String get regulationLastUpdated;
 
   /// No description provided for @regSection1Title.
   ///
   /// In vi, this message translates to:
-  /// **'Chấp thuận'**
+  /// **'Chấp thuận Điều khoản & Căn cứ Pháp lý'**
   String get regSection1Title;
 
   /// No description provided for @regSection1Content.
   ///
   /// In vi, this message translates to:
-  /// **'Khi tải và sử dụng Gia Tộc Việt, bạn đồng ý với các điều khoản dưới đây và Chính sách bảo mật của chúng tôi. Nếu không đồng ý, vui lòng không dùng ứng dụng.'**
+  /// **'• Khi đăng ký, cài đặt hoặc sử dụng ứng dụng Gia Tộc Việt, bạn xác nhận đã đọc kỹ, hiểu rõ và đồng ý vô điều kiện chịu sự ràng buộc bởi các Điều khoản này.\n• Dịch vụ được cung cấp và vận hành tuân thủ các quy định pháp luật nước CHXHCN Việt Nam, bao gồm Luật Giao dịch điện tử, Luật An toàn thông tin mạng, Luật An ninh mạng và Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân.\n• Nếu bạn không đồng ý với bất kỳ phần nào của Điều khoản, vui lòng ngừng sử dụng ứng dụng ngay lập tức.'**
   String get regSection1Content;
 
   /// No description provided for @regSection2Title.
   ///
   /// In vi, this message translates to:
-  /// **'Giải thích từ ngữ'**
+  /// **'Giải thích Thuật ngữ & Định danh'**
   String get regSection2Title;
 
   /// No description provided for @regSection2Content.
   ///
   /// In vi, this message translates to:
-  /// **'**Ứng dụng:** Gia Tộc Việt và các tính năng của ứng dụng.\n**Người dùng:** Cá nhân đã đăng ký tài khoản.\n**Dòng họ:** Nhóm thành viên do Trưởng tộc tạo lập, gồm chi tộc, thành viên và dữ liệu gia phả.\n**Trưởng tộc:** Người quản trị cao nhất của dòng họ.\n**Trưởng chi:** Người được phân quyền quản lý một chi tộc.\n**Biên tập viên:** Người được quyền đóng góp và chỉnh sửa thông tin gia phả.\n**Thành viên:** Người có quyền xem gia phả và các hoạt động của dòng họ.\n**Dữ liệu cá nhân:** Họ tên, ngày sinh, giới tính, quan hệ gia đình, hình ảnh, số điện thoại, email…'**
+  /// **'**Ứng dụng / Nhà phát triển:** Hệ thống phần mềm Gia Tộc Việt cùng hạ tầng công nghệ đi kèm, được cung cấp như một công cụ kỹ thuật trung gian.\n**Người dùng:** Cá nhân tạo tài khoản để sử dụng dịch vụ.\n**Chủ thể dữ liệu:** Cá nhân được phản ánh thông tin trong phả hệ (bao gồm người còn sống hoặc đã mất).\n**Dòng họ (Gia tộc):** Không gian dữ liệu riêng tư gồm cây gia phả, tư liệu lịch sử, hoạt động dòng họ do Trưởng tộc khởi tạo.\n**Dữ liệu phả hệ:** Thông tin họ tên, ngày sinh/mất, quan hệ thế hệ, quê quán, tư liệu do các thành viên đóng góp.'**
   String get regSection2Content;
 
   /// No description provided for @regSection3Title.
   ///
   /// In vi, this message translates to:
-  /// **'Tài khoản'**
+  /// **'Quy định Tài khoản & Điều kiện Sử dụng'**
   String get regSection3Title;
 
   /// No description provided for @regSection3Content.
   ///
   /// In vi, this message translates to:
-  /// **'• Bạn phải đủ 18 tuổi hoặc có người giám hộ hợp pháp.\n• Bạn chịu trách nhiệm bảo vệ mật khẩu của mình.\n• Mỗi người chỉ được tạo một tài khoản, dùng cho mục đích cá nhân.\n• Thông tin đăng ký phải chính xác và trung thực.'**
+  /// **'• **Độ tuổi:** Người dùng phải từ đủ 18 tuổi hoặc có sự đồng ý của người đại diện hợp pháp.\n• **Bảo mật thông tin xác thực:** Bạn tự chịu trách nhiệm bảo vệ mật khẩu, mã OTP và thiết bị của mình. Mọi hành vi thực hiện qua tài khoản của bạn được coi là do chính bạn thực hiện.\n• **Trung thực thông tin:** Cam kết cung cấp thông tin liên hệ chính xác và chịu hoàn toàn trách nhiệm cá nhân về tư cách đại diện dòng họ khi đăng ký tạo lập gia tộc.'**
   String get regSection3Content;
 
   /// No description provided for @regSection4Title.
   ///
   /// In vi, this message translates to:
-  /// **'Quyền hạn theo vai trò'**
+  /// **'Phân cấp Quyền hạn & Trách nhiệm Quản trị'**
   String get regSection4Title;
 
   /// No description provided for @regSection4Content.
   ///
   /// In vi, this message translates to:
-  /// **'**Thành viên** – Xem gia phả, xem tin tức & sự kiện dòng tộc, cập nhật thông tin cá nhân.\n**Biên tập viên** – Thêm, sửa thông tin thành viên (không được xóa).\n**Trưởng chi** – Quản lý chi tộc được phân công, phê duyệt yêu cầu tham gia chi tộc.\n**Trưởng tộc** – Toàn quyền quản trị dòng họ, phân quyền vai trò cho thành viên, chuyển nhượng quyền Trưởng tộc, giải tán dòng họ.'**
+  /// **'**Thành viên (Viewer):** Được quyền xem phả hệ, thông tin hoạt động và cập nhật hồ sơ cá nhân của chính mình.\n**Biên tập viên (Editor):** Được quyền nhập liệu, hiệu chỉnh hồ sơ thành viên theo sự phân công và đồng thuận của dòng họ.\n**Trưởng chi (Branch Leader):** Quản trị nhánh phả hệ, kiểm duyệt thành viên thuộc chi nhánh được phân công.\n**Trưởng tộc (Clan Leader):** Quản trị tối cao của không gian dòng họ, chịu trách nhiệm pháp lý và đạo đức về việc phân quyền, chuyển nhượng quyền quản trị hoặc quyết định xóa/giải tán dữ liệu dòng tộc.'**
   String get regSection4Content;
 
   /// No description provided for @regSection5Title.
   ///
   /// In vi, this message translates to:
-  /// **'Quản trị dòng họ'**
+  /// **'Quyền Sở hữu Trí tuệ & Quyền Dữ liệu'**
   String get regSection5Title;
 
   /// No description provided for @regSection5Content.
   ///
   /// In vi, this message translates to:
-  /// **'Trưởng tộc có toàn quyền: phê duyệt thành viên, phân vai trò, cập nhật thông tin, chuyển nhượng quyền Trưởng tộc và giải tán dòng họ. Khi chuyển nhượng, Trưởng tộc cũ trở thành Thành viên và không thể lấy lại quyền cũ. Mọi thao tác thêm, sửa, xóa trong hệ thống đều được ghi lại.'**
+  /// **'• **Sở hữu phần mềm:** Toàn bộ mã nguồn, giao diện, thiết kế, thương hiệu và bản quyền ứng dụng thuộc quyền sở hữu độc quyền của Đơn vị phát triển.\n• **Sở hữu dữ liệu phả hệ:** Dữ liệu lịch sử gia phả, hình ảnh và tư liệu do Người dùng đăng tải thuộc quyền sở hữu của dòng tộc tương ứng. Người dùng cấp cho Hệ thống quyền kỹ thuật hạn chế để lưu trữ, sao lưu và hiển thị phục vụ chính dòng tộc đó.'**
   String get regSection5Content;
 
   /// No description provided for @regSection6Title.
   ///
   /// In vi, this message translates to:
-  /// **'Bảo mật dữ liệu'**
+  /// **'Bảo vệ Dữ liệu Cá nhân (Nghị định 13/2023/NĐ-CP)'**
   String get regSection6Title;
 
   /// No description provided for @regSection6Content.
   ///
   /// In vi, this message translates to:
-  /// **'Chúng tôi bảo vệ dữ liệu của bạn theo Luật An ninh mạng Việt Nam và Nghị định 13/2023/NĐ-CP. Dữ liệu được lưu tại máy chủ Việt Nam, mã hóa khi truyền tải và lưu trữ. Chúng tôi không bán dữ liệu của bạn cho bên thứ ba. Thông tin dòng họ chỉ hiển thị cho thành viên đã được phê duyệt.'**
+  /// **'• **Cam kết thu thập hợp lệ:** Người dùng khi đăng tải thông tin của các thành viên khác phải đảm bảo đã có sự đồng thuận của cá nhân đó (hoặc người giám hộ/thân nhân trực hệ theo luật định).\n• **Bảo vệ quyền riêng tư:** Dữ liệu gia phả được thiết lập ở chế độ nội bộ (Private), chỉ hiển thị cho các thành viên được phê duyệt của dòng họ.\n• **Không thương mại hóa dữ liệu:** Cam kết tuyệt đối không bán, chia sẻ hoặc khai thác dữ liệu gia phả, thông tin cá nhân cho bên thứ ba vì bất kỳ mục đích thương mại nào.\n• **Xử lý dữ liệu:** Áp dụng các biện pháp mã hóa, lưu trữ an toàn trên máy chủ đạt chuẩn an toàn thông tin tại Việt Nam.'**
   String get regSection6Content;
 
   /// No description provided for @regSection7Title.
   ///
   /// In vi, this message translates to:
-  /// **'Sở hữu trí tuệ'**
+  /// **'Hành vi Nghiêm cấm Tuyệt đối'**
   String get regSection7Title;
 
   /// No description provided for @regSection7Content.
   ///
   /// In vi, this message translates to:
-  /// **'Gia Tộc Việt (mã nguồn, thiết kế, thương hiệu, logo) là tài sản của đơn vị phát triển, được bảo hộ theo pháp luật Việt Nam. Dữ liệu gia phả do người dùng tạo ra thuộc quyền sở hữu của dòng họ đó.'**
+  /// **'• Đăng tải thông tin chống phá Nhà nước, vi phạm an ninh quốc gia, xuyên tạc lịch sử dân tộc hoặc xúc phạm danh nhân văn hóa/tôn giáo.\n• Thu thập, phát tán trái phép bí mật đời tư cá nhân, thông tin nhạy cảm của người khác nhằm mục đích bôi nhọ, tống tiền hoặc vu khống.\n• Can thiệp kỹ thuật, tấn công phá hoại, khai thác lỗ hổng hoặc sao chép mã nguồn, cấu trúc dữ liệu của ứng dụng.\n• Sử dụng ứng dụng vào các mục đích lừa đảo, huy động quỹ trái pháp luật hoặc các mục đích thương mại trái phép.'**
   String get regSection7Content;
 
   /// No description provided for @regSection8Title.
   ///
   /// In vi, this message translates to:
-  /// **'Trách nhiệm'**
+  /// **'Tuyên bố Miễn trừ Trách nhiệm Pháp lý'**
   String get regSection8Title;
 
   /// No description provided for @regSection8Content.
   ///
   /// In vi, this message translates to:
-  /// **'Ứng dụng được cung cấp ở trạng thái hiện tại. Chúng tôi không chịu trách nhiệm nếu: (i) bạn sử dụng sai mục đích; (ii) thông tin bạn cung cấp không chính xác; (iii) Trưởng tộc chủ động xóa hoặc giải tán dòng họ. Nếu mất dữ liệu do lỗi hệ thống, chúng tôi sẽ cố gắng khôi phục.'**
+  /// **'• **Bản chất nền tảng:** Ứng dụng chỉ đóng vai trò cung cấp công cụ kỹ thuật và không gian lưu trữ số. Chúng tôi KHÔNG chịu trách nhiệm pháp lý về tính xác thực, tranh chấp thừa kế, tranh chấp phả hệ nội bộ hoặc thông tin sai lệch do Người dùng nhập vào.\n• **Hành động của Quản trị viên:** Chúng tôi hoàn toàn miễn trừ trách nhiệm khi dữ liệu bị xóa hoặc thay đổi do chính Trưởng tộc/Trưởng chi thực hiện (như chuyển nhượng quyền, giải tán dòng họ hoặc thao tác nhầm).\n• **Bất khả kháng:** Miễn trừ trách nhiệm bồi thường đối với các sự cố bất khả kháng ngoài tầm kiểm soát hợp lý như thiên tai, gián đoạn mạng viễn thông quốc gia hoặc tấn công mạng diện rộng.'**
   String get regSection8Content;
 
   /// No description provided for @regSection9Title.
   ///
   /// In vi, this message translates to:
-  /// **'Xử lý vi phạm'**
+  /// **'Cơ chế Báo cáo Vi phạm & Chế tài Xử lý'**
   String get regSection9Title;
 
   /// No description provided for @regSection9Content.
   ///
   /// In vi, this message translates to:
-  /// **'Chúng tôi có thể tạm khóa hoặc chấm dứt tài khoản nếu phát hiện vi phạm. Các mức xử lý: cảnh báo, tạm khóa, khóa vĩnh viễn hoặc thông báo cơ quan chức năng nếu vi phạm pháp luật. Trưởng tộc có thể giải tán dòng họ bất kỳ lúc nào — sau khi xác nhận, toàn bộ dữ liệu bị xóa vĩnh viễn và không thể khôi phục.'**
+  /// **'• **Báo cáo nội dung xấu:** Người dùng có quyền gửi khiếu nại/báo cáo khi phát hiện thông tin sai sự thật hoặc xâm phạm quyền cá nhân thông qua tính năng \"Báo cáo vi phạm\".\n• **Chế tài vi phạm:** Hệ thống có toàn quyền cảnh báo, tạm khóa, gỡ bỏ nội dung vi phạm hoặc hủy bỏ vĩnh viễn tài khoản vi phạm mà không cần hoàn phí.\n• **Phối hợp pháp lý:** Khi có yêu cầu bằng văn bản từ Cơ quan Công an hoặc Tòa án có thẩm quyền, chúng tôi có nghĩa vụ cung cấp nhật ký (logs) và dữ liệu liên quan để phục vụ điều tra theo đúng quy định pháp luật.'**
   String get regSection9Content;
 
   /// No description provided for @regSection10Title.
   ///
   /// In vi, this message translates to:
-  /// **'Điều khoản chung'**
+  /// **'Giải quyết Tranh chấp & Luật Áp dụng'**
   String get regSection10Title;
 
   /// No description provided for @regSection10Content.
   ///
   /// In vi, this message translates to:
-  /// **'Các điều khoản này được điều chỉnh theo pháp luật Việt Nam. Mọi tranh chấp được ưu tiên giải quyết qua thương lượng. Chúng tôi có thể sửa đổi điều khoản và sẽ thông báo trên ứng dụng. Nếu bạn tiếp tục dùng ứng dụng sau khi thay đổi, nghĩa là bạn đã chấp nhận điều khoản mới.'**
+  /// **'• Mọi Điều khoản này được giải thích và điều chỉnh độc quyền theo Pháp luật nước CHXHCN Việt Nam.\n• Mọi tranh chấp phát sinh giữa Người dùng và Đơn vị phát triển trước hết sẽ được giải quyết thông qua thương lượng và hòa giải trên tinh thần thiện chí.\n• Trường hợp hòa giải không thành trong vòng sáu mươi (60) ngày, tranh chấp sẽ được đưa ra giải quyết tại Tòa án nhân dân có thẩm quyền tại Việt Nam.'**
   String get regSection10Content;
 
   /// No description provided for @copyrightText.
@@ -1841,224 +1883,116 @@ abstract class AppLocalizations {
   /// No description provided for @genealogyMemberSection.
   ///
   /// In vi, this message translates to:
-  /// **'Gia phả & Thành viên'**
+  /// **'Phả Hệ & Liên Kết'**
   String get genealogyMemberSection;
 
   /// No description provided for @clanAndRolesSection.
   ///
   /// In vi, this message translates to:
-  /// **'Dòng tộc & Phân quyền'**
+  /// **'Phân Quyền & Quản Trị Dòng Họ'**
   String get clanAndRolesSection;
 
   /// No description provided for @techSecuritySection.
   ///
   /// In vi, this message translates to:
-  /// **'Kỹ thuật & Bảo mật'**
+  /// **'An Toàn Dữ Liệu & Tài Khoản'**
   String get techSecuritySection;
-
-  /// No description provided for @faqRegisterQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Làm sao để đăng ký tài khoản?'**
-  String get faqRegisterQuestion;
-
-  /// No description provided for @faqRegisterAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tải ứng dụng Gia Tộc Việt, nhấn \"Đăng ký\" và điền đầy đủ họ tên, email và mật khẩu. Sau khi đăng ký thành công, bạn dùng mã mời từ Trưởng tộc để yêu cầu tham gia Dòng tộc.'**
-  String get faqRegisterAnswer;
-
-  /// No description provided for @faqForgotPasswordQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tôi quên mật khẩu, phải làm sao?'**
-  String get faqForgotPasswordQuestion;
-
-  /// No description provided for @faqForgotPasswordAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Trên màn hình đăng nhập, nhấn \"Quên mật khẩu\". Nhập email đã đăng ký, hệ thống sẽ gửi mã OTP 6 chữ số qua email. Nhập mã OTP để xác thực và đặt mật khẩu mới.'**
-  String get faqForgotPasswordAnswer;
-
-  /// No description provided for @faqChangePasswordQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Làm sao để đổi mật khẩu?'**
-  String get faqChangePasswordQuestion;
-
-  /// No description provided for @faqChangePasswordAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Bảo mật tài khoản, nhập mật khẩu hiện tại, sau đó nhập mật khẩu mới và xác nhận. Mật khẩu phải có ít nhất 8 ký tự.'**
-  String get faqChangePasswordAnswer;
 
   /// No description provided for @faqAddMemberQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Làm sao để thêm thành viên mới?'**
+  /// **'Làm sao để thêm con cháu, vợ/chồng trên cây gia phả?'**
   String get faqAddMemberQuestion;
 
   /// No description provided for @faqAddMemberAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Dashboard, nhấn nút \"+\" ở tab Thành viên. Điền thông tin: họ tên, giới tính, ngày sinh, nơi sinh, thế hệ, chi tộc, cha/mẹ (nếu có). Bạn có thể bổ sung ngày mất, tình trạng hôn nhân, ghi chú. Nhấn \"Lưu\" để hoàn tất. Yêu cầu quyền Biên tập viên trở lên.'**
+  /// **'• **Thao tác nhanh trên Cây phả hệ:** Chạm vào bất kỳ thành viên nào trên sơ đồ và chọn nút \"Thêm Con\" hoặc \"Thêm Vợ/Chồng\".\n• **Nhập chi tiết từ Bảng quản trị:** Vào Dashboard > tab Thành viên > nhấn nút \"+\". Điền đầy đủ thế hệ, nhánh chi họ, ngày sinh/mất âm dương lịch và tiểu sử.'**
   String get faqAddMemberAnswer;
 
   /// No description provided for @faqAddBranchQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Làm sao để thêm chi tộc mới?'**
+  /// **'Cách phân tách Chi tộc và chỉ định Trưởng chi quản lý nhánh?'**
   String get faqAddBranchQuestion;
 
   /// No description provided for @faqAddBranchAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Dashboard, chọn tab Chi họ và nhấn nút \"+\". Điền tên chi tộc, mô tả và thông tin người sáng lập (nếu có). Sau khi tạo, Trưởng tộc có thể phân quyền Trưởng chi cho thành viên phụ trách chi đó.'**
+  /// **'1. Vào Dashboard > tab Chi họ, nhấn \"+\" để tạo chi họ mới (tên chi, tổ lập chi, năm lập, địa phương).\n2. Vào Cài đặt > Phân quyền thành viên để bổ nhiệm chức vị Trưởng chi. Trưởng chi sẽ có toàn quyền kiểm duyệt hồ sơ và thành viên trong nhánh chi của mình.'**
   String get faqAddBranchAnswer;
 
   /// No description provided for @faqEditMemberQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Làm sao để chỉnh sửa thông tin thành viên?'**
+  /// **'Cách liên kết tài khoản cho người thân để cùng xem gia phả?'**
   String get faqEditMemberQuestion;
 
   /// No description provided for @faqEditMemberAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Trong danh sách thành viên, chọn thành viên cần chỉnh sửa và nhấn biểu tượng bút. Cập nhật thông tin rồi nhấn \"Lưu\". Chỉ Biên tập viên và các vai trò cao hơn mới có quyền này.'**
+  /// **'Vào Cài đặt > Quản lý liên kết tài khoản > nhập Email của người thân. Hệ thống sẽ tự động ghép nối tài khoản của họ với hồ sơ trên cây gia phả để họ có thể đăng nhập xem cây dòng tộc.'**
   String get faqEditMemberAnswer;
 
   /// No description provided for @faqDeleteMemberQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Làm sao để xóa thành viên?'**
+  /// **'Xóa thành viên thì nhánh con cháu phía sau sẽ được xử lý ra sao?'**
   String get faqDeleteMemberQuestion;
 
   /// No description provided for @faqDeleteMemberAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Chọn thành viên trong danh sách, nhấn biểu tượng xóa (thùng rác) và xác nhận. Lưu ý: chỉ Trưởng tộc và Trưởng chi mới có quyền xóa thành viên; Biên tập viên không có quyền này.'**
+  /// **'Hệ thống hỗ trợ 2 cơ chế thông minh khi xóa một người có con cháu:\n• **Nâng đời con cháu (Khuyên dùng):** Tự động liên kết thế hệ con lên bậc ông bà/cha mẹ phía trên để cây phả hệ không bị đứt đoạn.\n• **Tách nhánh:** Đưa nhánh con cháu thành một nhánh độc lập riêng biệt.'**
   String get faqDeleteMemberAnswer;
-
-  /// No description provided for @faqImportGenealogyQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Có thể nhập gia phả từ file không?'**
-  String get faqImportGenealogyQuestion;
-
-  /// No description provided for @faqImportGenealogyAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hiện tại ứng dụng hỗ trợ thêm từng thành viên thủ công. Tính năng nhập hàng loạt từ file đang được phát triển.'**
-  String get faqImportGenealogyAnswer;
 
   /// No description provided for @faqInviteCodeQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Mã mời hoạt động như thế nào?'**
+  /// **'Cách lấy Mã mời và chia sẻ QR Code cho dòng họ gia nhập?'**
   String get faqInviteCodeQuestion;
 
   /// No description provided for @faqInviteCodeAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Mỗi Dòng tộc có một Mã mời duy nhất do hệ thống tạo. Trưởng tộc có thể xem, sao chép và chia sẻ Mã mời (kèm QR code) ngay trong Dashboard. Thành viên mới dùng mã này để gửi yêu cầu gia nhập — Trưởng tộc hoặc Trưởng chi sẽ phê duyệt.'**
+  /// **'Tại Bảng quản trị, Trưởng họ nhấn vào ô \"Mã Gia Tộc\" để sao chép mã 6 ký tự hoặc tải ảnh QR Code chất lượng cao để gửi vào nhóm Zalo/Facebook dòng họ hoặc in ra giấy.'**
   String get faqInviteCodeAnswer;
 
   /// No description provided for @faqRolesQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Các vai trò trong Dòng tộc là gì?'**
+  /// **'Quyền hạn cụ thể của 4 cấp bậc trong dòng họ là gì?'**
   String get faqRolesQuestion;
 
   /// No description provided for @faqRolesAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Hệ thống có 4 cấp vai trò:\n• Trưởng tộc — Quyền cao nhất: quản lý toàn bộ Dòng tộc, phân quyền, chuyển nhượng và giải tán.\n• Trưởng chi — Quản lý chi tộc được phân công, phê duyệt yêu cầu gia nhập.\n• Biên tập viên — Thêm và chỉnh sửa thông tin thành viên (không được xóa).\n• Thành viên — Xem gia phả và các sự kiện của dòng tộc.'**
+  /// **'• **Trưởng tộc (Owner):** Toàn quyền tối cao — quản trị toàn phả hệ, phân quyền, chuyển nhượng quyền Trưởng họ và giải tán dòng tộc.\n• **Trưởng chi (Branch Admin):** Quản lý hồ sơ, duyệt thành viên trong nhánh chi họ được giao.\n• **Biên tập viên (Editor):** Được quyền thêm, sửa thông tin các thành viên (không được xóa phả hệ).\n• **Thành viên (Member):** Xem cây gia phả, xem tin tức/sự kiện, gửi lời chúc và thắp nhang online.'**
   String get faqRolesAnswer;
-
-  /// No description provided for @faqAssignRoleQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Làm sao để phân quyền cho thành viên?'**
-  String get faqAssignRoleQuestion;
-
-  /// No description provided for @faqAssignRoleAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Phân quyền thành viên (chỉ Trưởng tộc thấy mục này). Chọn thành viên và chọn vai trò phù hợp. Trưởng tộc không thể tự hạ quyền của mình — cần dùng tính năng Chuyển nhượng quyền Trưởng tộc.'**
-  String get faqAssignRoleAnswer;
 
   /// No description provided for @faqTransferOwnershipQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Làm sao để chuyển nhượng quyền Trưởng tộc?'**
+  /// **'Lưu ý gì khi Chuyển nhượng quyền Trưởng tộc hoặc Giải tán dòng họ?'**
   String get faqTransferOwnershipQuestion;
 
   /// No description provided for @faqTransferOwnershipAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Chuyển nhượng quyền Trưởng tộc. Chọn thành viên đã có tài khoản từ danh sách. Xác nhận chuyển nhượng — thao tác này không thể hoàn tác. Sau khi chuyển, bạn trở thành Thành viên và người nhận là Trưởng tộc mới.'**
+  /// **'• **Chuyển nhượng quyền:** Có hiệu lực tức thì, người nhận trở thành Trưởng tộc mới và bạn sẽ trở về quyền Thành viên.\n• **Giải tán dòng họ:** Xóa vĩnh viễn toàn bộ dữ liệu, phả đồ, hình ảnh trên máy chủ và KHÔNG THỂ khôi phục dưới mọi hình thức.'**
   String get faqTransferOwnershipAnswer;
-
-  /// No description provided for @faqDissolveClanQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Làm sao để giải tán Dòng tộc?'**
-  String get faqDissolveClanQuestion;
-
-  /// No description provided for @faqDissolveClanAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Giải tán dòng họ (chỉ Trưởng tộc). Gõ chính xác tên Dòng tộc để xác nhận. Toàn bộ dữ liệu — thành viên, chi tộc, gia phả — sẽ bị xóa vĩnh viễn và không thể khôi phục. Hành động này không thể hoàn tác.'**
-  String get faqDissolveClanAnswer;
 
   /// No description provided for @faqDataSecurityQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Dữ liệu gia phả có được bảo mật không?'**
+  /// **'Dữ liệu gia phả được bảo mật thế nào (Nghị định 13/2023/NĐ-CP)?'**
   String get faqDataSecurityQuestion;
 
   /// No description provided for @faqDataSecurityAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Có. Dữ liệu được lưu trữ trên máy chủ tại Việt Nam, mã hóa khi truyền tải và lưu trữ. Chúng tôi tuân thủ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân và cam kết không chia sẻ dữ liệu cho bên thứ ba. Thông tin dòng họ chỉ hiển thị cho thành viên đã được phê duyệt.'**
+  /// **'Dữ liệu gia phả được lưu trữ tại máy chủ Việt Nam, mã hóa SSL/TLS 256-bit và chỉ hiển thị nội bộ cho các thành viên được Trưởng họ duyệt. Chúng tôi cam kết tuyệt đối không thương mại hóa dữ liệu cho bên thứ ba.'**
   String get faqDataSecurityAnswer;
-
-  /// No description provided for @faqDeleteAccountQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Làm sao để xóa tài khoản?'**
-  String get faqDeleteAccountQuestion;
-
-  /// No description provided for @faqDeleteAccountAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Bảo mật tài khoản, chọn \"Xóa tài khoản\" và xác nhận. Lưu ý: nếu bạn đang là Trưởng tộc, hãy chuyển nhượng quyền Trưởng tộc hoặc giải tán Dòng tộc trước khi xóa tài khoản.'**
-  String get faqDeleteAccountAnswer;
-
-  /// No description provided for @faqMultiDeviceQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Có thể dùng ứng dụng trên nhiều thiết bị không?'**
-  String get faqMultiDeviceQuestion;
-
-  /// No description provided for @faqMultiDeviceAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Có. Tài khoản của bạn có thể đăng nhập trên nhiều thiết bị, dữ liệu được đồng bộ theo thời gian thực. Vì lý do bảo mật, hãy đăng xuất trên các thiết bị không còn sử dụng.'**
-  String get faqMultiDeviceAnswer;
-
-  /// No description provided for @faqEnglishSupportQuestion.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ứng dụng có hỗ trợ tiếng Anh không?'**
-  String get faqEnglishSupportQuestion;
-
-  /// No description provided for @faqEnglishSupportAnswer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Có. Vào Cài đặt > Ngôn ngữ, bật công tắc để chuyển sang Tiếng Anh. Giao diện cập nhật ngay lập tức. Dữ liệu gia phả và thông tin thành viên vẫn được giữ nguyên.'**
-  String get faqEnglishSupportAnswer;
 
   /// No description provided for @aboutUsTitle.
   ///

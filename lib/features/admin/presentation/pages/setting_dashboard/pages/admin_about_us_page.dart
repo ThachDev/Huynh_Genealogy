@@ -115,36 +115,21 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                 opacity: _contentFade,
                 child: Column(
                   children: [
-                    // ── Tagline (Parchment Styled Card) ──
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 24),
-                      decoration: BoxDecoration(
-                        color: context.surface,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: context.accent.withValues(alpha: 0.35),
-                          width: 1.2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.resolve(
-                              Colors.black.withValues(alpha: 0.04),
-                              Colors.black.withValues(alpha: 0.25),
-                            ),
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
+                    const SizedBox(height: 6),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         l10n.aboutUsTagline,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 13,
-                          height: 1.8,
-                          color: context.textPrimary,
-                          fontWeight: FontWeight.w500,
+                          height: 1.6,
+                          fontStyle: FontStyle.italic,
+                          color: context.resolve(
+                            context.textSecondary,
+                            context.textSecondary.withValues(alpha: 0.85),
+                          ),
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),

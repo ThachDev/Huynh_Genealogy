@@ -109,25 +109,13 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
       ),
       child: Row(
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: context.accent.withValues(alpha: 0.5),
-                width: 1.5,
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                'assets/images/logo_launcher.png',
-                width: 64,
-                height: 64,
-                fit: BoxFit.cover,
-              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              'assets/images/logo_launcher.png',
+              width: 64,
+              height: 64,
+              fit: BoxFit.cover,
             ),
           ),
           const SizedBox(width: 16),
@@ -216,6 +204,7 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Number badge
                       Container(
@@ -325,89 +314,56 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
   }
 
   Widget _buildLine(BuildContext context, String line) {
-    final bool isBullet = line.startsWith('•');
-    final hasBold = line.contains('**');
+    final cleanLine = line.startsWith('• ') ? line.substring(2) : line;
+    final hasBold = cleanLine.contains('**');
 
-    if (!hasBold) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (isBullet)
-            Padding(
-              padding: const EdgeInsets.only(top: 3, right: 6),
-              child: Container(
-                width: 5,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: context.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          Expanded(
-            child: Text(
-              isBullet ? line.substring(2) : line,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                height: 1.6,
-                color: context.textPrimary,
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    // Handle **bold** inline markers
     final spans = <InlineSpan>[];
-    final boldRegex = RegExp(r'\*\*(.+?)\*\*');
-    int lastEnd = 0;
+    if (hasBold) {
+      final boldRegex = RegExp(r'\*\*(.+?)\*\*');
+      int lastEnd = 0;
 
-    for (final match in boldRegex.allMatches(line)) {
-      if (match.start > lastEnd) {
-        spans.add(TextSpan(text: line.substring(lastEnd, match.start)));
+      for (final match in boldRegex.allMatches(cleanLine)) {
+        if (match.start > lastEnd) {
+          spans.add(TextSpan(text: cleanLine.substring(lastEnd, match.start)));
+        }
+        spans.add(TextSpan(
+          text: match.group(1),
+          style: GoogleFonts.inter(
+            fontSize: 12.5,
+            height: 1.5,
+            fontWeight: FontWeight.bold,
+            color: context.primary,
+          ),
+        ));
+        lastEnd = match.end;
       }
-      spans.add(TextSpan(
-        text: match.group(1),
-        style: GoogleFonts.inter(
-          fontSize: 12,
-          height: 1.6,
-          fontWeight: FontWeight.bold,
-          color: context.primary,
-        ),
-      ));
-      lastEnd = match.end;
-    }
 
-    if (lastEnd < line.length) {
-      spans.add(TextSpan(text: line.substring(lastEnd)));
+      if (lastEnd < cleanLine.length) {
+        spans.add(TextSpan(text: cleanLine.substring(lastEnd)));
+      }
+    } else {
+      spans.add(TextSpan(text: cleanLine));
     }
-
-    // Role-line: has leading **Role** – description pattern
-    final isRoleLine = line.trimLeft().startsWith('**');
 
     return Container(
-      margin: isRoleLine ? const EdgeInsets.only(bottom: 2) : EdgeInsets.zero,
-      padding: isRoleLine
-          ? const EdgeInsets.symmetric(horizontal: 10, vertical: 6)
-          : EdgeInsets.zero,
-      decoration: isRoleLine
-          ? BoxDecoration(
-              color: context.primary.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(8),
-              border: Border(
-                left: BorderSide(
-                  color: context.accent.withValues(alpha: 0.5),
-                  width: 3,
-                ),
-              ),
-            )
-          : null,
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: context.primary.withValues(alpha: 0.035),
+        borderRadius: BorderRadius.circular(8),
+        border: Border(
+          left: BorderSide(
+            color: context.accent.withValues(alpha: 0.6),
+            width: 3,
+          ),
+        ),
+      ),
       child: Text.rich(
         TextSpan(children: spans),
         style: GoogleFonts.inter(
-          fontSize: 12,
-          height: 1.6,
+          fontSize: 12.5,
+          height: 1.5,
           color: context.textPrimary,
         ),
       ),

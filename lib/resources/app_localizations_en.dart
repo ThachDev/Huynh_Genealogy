@@ -593,10 +593,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifyAnniversaryLabel => 'Anniversaries & birthdays';
 
   @override
-  String get infoAndHelpSection => 'Info & Help';
+  String get infoAndHelpSection => 'Information & Help';
 
   @override
-  String get regulationsLabel => 'Regulations & Terms';
+  String get helpAndInfoHubLabel => 'Help & Information';
+
+  @override
+  String get tabFaqLabel => 'FAQ & Guide';
+
+  @override
+  String get tabRegulationsLabel => 'Regulations';
+
+  @override
+  String get tabAboutLabel => 'About Us';
+
+  @override
+  String get regulationsLabel => 'Terms & Legal Regulations';
 
   @override
   String get helpCenterLabel => 'Help Center';
@@ -605,7 +617,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutUsLabel => 'About Us';
 
   @override
-  String get advancedAdminSection => 'Advanced Admin';
+  String get advancedAdminSection => 'Advanced Management';
+
+  @override
+  String get linkAndRolesTitle => 'Link Accounts & Roles';
+
+  @override
+  String get tabLinkAccounts => 'Link Accounts';
+
+  @override
+  String get tabMemberRoles => 'Roles';
 
   @override
   String get memberRolesLabel => 'Member Roles';
@@ -836,83 +857,84 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateFamilySuccess => 'Clan information updated successfully!';
 
   @override
-  String get regulationsTitle => 'Regulations & Terms';
+  String get regulationsTitle => 'Terms & Legal Regulations';
 
   @override
   String get regulationTitle => 'Gia Tộc Việt Terms of Service';
 
   @override
-  String get regulationLastUpdated => 'Last Updated: July, 2026';
+  String get regulationLastUpdated => 'Effective Version: August 2026';
 
   @override
-  String get regSection1Title => 'Acceptance';
+  String get regSection1Title => 'Acceptance of Terms & Legal Basis';
 
   @override
   String get regSection1Content =>
-      'By downloading and using Gia Tộc Việt, you agree to the following terms and our Privacy Policy. If you do not agree, please do not use the app.';
+      '• By registering, installing, or using the Gia Tộc Việt application, you confirm that you have read, understood, and unconditionally agreed to be bound by these Terms.\n• The service is operated in strict compliance with the applicable laws of the S.R. of Vietnam, including the Law on Electronic Transactions, Law on Cyberinformation Security, Law on Cybersecurity, and Decree 13/2023/ND-CP on Personal Data Protection.\n• If you do not agree with any part of these Terms, please discontinue using the application immediately.';
 
   @override
-  String get regSection2Title => 'Definitions';
+  String get regSection2Title => 'Definitions & Identifications';
 
   @override
   String get regSection2Content =>
-      '**App:** Gia Tộc Việt and its features.\n**User:** An individual who has registered an account.\n**Clan:** A group of members created by the Clan Leader, including branches, members, and genealogy data.\n**Clan Leader:** The highest administrator of the clan.\n**Branch Admin:** A person authorized to manage a family branch.\n**Editor:** A person allowed to contribute and edit genealogy information.\n**Member:** A person with permission to view the genealogy and family activities.\n**Personal Data:** Full name, date of birth, gender, family relationships, images, phone number, email...';
+      '**Application / Developer:** The Gia Tộc Việt software and related technology infrastructure, provided as an intermediary technical tool.\n**User:** Any individual creating an account to access the service.\n**Data Subject:** Individuals whose information is recorded in the family tree (living or deceased).\n**Clan (Lineage):** A private workspace comprising family trees, historical archives, and clan activities initiated by the Clan Leader.\n**Genealogy Data:** Names, dates of birth/death, generations, hometowns, and documents contributed by members.';
 
   @override
-  String get regSection3Title => 'Accounts';
+  String get regSection3Title => 'Account Regulations & Eligibility';
 
   @override
   String get regSection3Content =>
-      '• You must be at least 18 years old or have a legal guardian.\n• You are responsible for protecting your password.\n• Each person may only create one account for personal use.\n• Registration information must be accurate and truthful.';
+      '• **Age Requirement:** Users must be at least 18 years old or possess legal guardian consent.\n• **Credential Security:** You are solely responsible for safeguarding your password, OTP codes, and devices. Any action performed through your account is legally deemed your own.\n• **Truthfulness:** You agree to provide accurate contact information and bear sole personal liability regarding your authorization to represent a clan when creating a family workspace.';
 
   @override
-  String get regSection4Title => 'Role Permissions';
+  String get regSection4Title => 'Role Hierarchy & Administrative Duties';
 
   @override
   String get regSection4Content =>
-      '**Member** – View genealogy, view family events & news, update personal information.\n**Editor** – Add, edit member information (cannot delete).\n**Branch Admin** – Manage assigned family branch, approve member requests for the branch.\n**Clan Leader** – Full administrative rights, assign roles, transfer ownership, dissolve clan.';
+      '**Member (Viewer):** Permitted to view genealogy, lineage events, and manage their own personal profile.\n**Editor:** Permitted to add and edit member records as authorized by the clan consensus.\n**Branch Leader:** Administers the branch subtree and approves join requests for their assigned branch.\n**Clan Leader:** Supreme administrator of the clan space, bearing legal and ethical responsibility for role delegation, ownership transfers, or clan dissolution/deletion decisions.';
 
   @override
-  String get regSection5Title => 'Clan Management';
+  String get regSection5Title => 'Intellectual Property & Data Rights';
 
   @override
   String get regSection5Content =>
-      'The Clan Leader has full authority: approve members, assign roles, update information, transfer Clan Leadership, and dissolve the clan. Upon transfer, the former Clan Leader becomes a Member and cannot regain the previous role. All add, edit, and delete operations in the system are recorded.';
+      '• **Software Ownership:** All source code, interfaces, designs, trademarks, and app copyrights remain the exclusive property of the Developer.\n• **Genealogy Data Ownership:** All genealogical records, photos, and materials uploaded by Users belong to the respective clan. Users grant the platform a limited technical license to store, back up, and display data solely for the clan\'s private use.';
 
   @override
-  String get regSection6Title => 'Data Security';
+  String get regSection6Title =>
+      'Personal Data Protection (Decree 13/2023/ND-CP)';
 
   @override
   String get regSection6Content =>
-      'We protect your data in accordance with Vietnam\'s Cybersecurity Law and Decree 13/2023/NĐ-CP. Data is stored on servers in Vietnam, encrypted during transmission and storage. We do not sell your data to third parties. Clan information is only visible to approved members.';
+      '• **Lawful Collection:** Users uploading personal records of others must ensure prior consent from the individual (or legal guardians/next of kin as prescribed by law).\n• **Privacy Safeguards:** Genealogy data is strictly private by default and visible only to approved clan members.\n• **No Commercialization:** We strictly do not sell, share, or monetize family data or personal records to third parties for advertising or commercial gains.\n• **Data Security:** Data is protected using modern encryption standards on secure data servers located in Vietnam.';
 
   @override
-  String get regSection7Title => 'Intellectual Property';
+  String get regSection7Title => 'Strictly Prohibited Conduct';
 
   @override
   String get regSection7Content =>
-      'Gia Tộc Việt (source code, design, brand, logo) is the property of the developer, protected under Vietnamese law. Genealogy data created by users belongs to their respective clan.';
+      '• Uploading content that violates national security, distorts national history, or insults cultural/religious figures.\n• Illegally collecting or disseminating private personal data, sensitive details to defame, blackmail, or slander others.\n• Interfering technically, attacking, exploiting vulnerabilities, or reverse-engineering app source code and data structures.\n• Utilizing the app for fraud, unauthorized fundraising, or illegal commercial activities.';
 
   @override
-  String get regSection8Title => 'Liability';
+  String get regSection8Title => 'Disclaimer & Limitation of Liability';
 
   @override
   String get regSection8Content =>
-      'The app is provided as-is. We are not liable if: (i) you misuse the app; (ii) the information you provide is inaccurate; (iii) the Clan Leader actively deletes or dissolves the clan. If data is lost due to system errors, we will attempt to restore it.';
+      '• **Intermediary Platform:** The app serves solely as a technical tool and digital storage facility. We are NOT legally liable for the authenticity of records, inheritance disputes, internal clan conflicts, or inaccurate user-submitted data.\n• **Administrator Actions:** We are fully exempt from liability for data modifications or deletions executed directly by Clan Leaders/Branch Admins (including role transfers, accidental removals, or clan dissolution).\n• **Force Majeure:** No liability shall arise from force majeure events beyond reasonable control (natural disasters, national telecom disruptions, cyber attacks).';
 
   @override
-  String get regSection9Title => 'Violations';
+  String get regSection9Title => 'Violation Reporting & Sanctions';
 
   @override
   String get regSection9Content =>
-      'We may suspend or terminate accounts if violations are detected. Actions include: warning, temporary suspension, permanent ban, or notifying authorities if laws are broken. The Clan Leader may dissolve the clan at any time — after confirmation, all data is permanently deleted and cannot be recovered.';
+      '• **Content Reporting:** Users have the right to report misleading, inappropriate, or infringing content via the built-in \'Report Violation\' feature.\n• **Enforcement:** The system reserves full authority to issue warnings, temporarily suspend, take down infringing content, or permanently terminate violating accounts without refund.\n• **Legal Cooperation:** Upon formal written requests from competent law enforcement agencies or courts, we are obligated to provide audit logs and relevant records for investigations in accordance with Vietnamese law.';
 
   @override
-  String get regSection10Title => 'General Terms';
+  String get regSection10Title => 'Dispute Resolution & Governing Law';
 
   @override
   String get regSection10Content =>
-      'These terms are governed by Vietnamese law. Disputes shall first be resolved through negotiation. We may modify the terms and will notify you via the app. Your continued use after changes constitutes acceptance of the new terms.';
+      '• These Terms are exclusively governed by and construed under the laws of the S.R. of Vietnam.\n• Any disputes between Users and the Developer shall first be resolved through good-faith negotiation and mediation.\n• If a dispute cannot be resolved within sixty (60) days through mediation, it shall be submitted to the competent People\'s Court in Vietnam.';
 
   @override
   String get copyrightText => '© 2026 ThachDev. All rights reserved.';
@@ -957,134 +979,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountLoginSection => 'Account & Login';
 
   @override
-  String get genealogyMemberSection => 'Genealogy & Members';
+  String get genealogyMemberSection => 'Genealogy & Connections';
 
   @override
-  String get clanAndRolesSection => 'Clan & Permissions';
+  String get clanAndRolesSection => 'Roles & Clan Management';
 
   @override
-  String get techSecuritySection => 'Technical & Security';
+  String get techSecuritySection => 'Data Security & Account';
 
   @override
-  String get faqRegisterQuestion => 'How to register an account?';
-
-  @override
-  String get faqRegisterAnswer =>
-      'Download Gia Tộc Việt, tap \"Register\" and fill in your full name, email, and password. After successful registration, use the invite code from your Clan Leader to request to join your Clan.';
-
-  @override
-  String get faqForgotPasswordQuestion =>
-      'I forgot my password, what should I do?';
-
-  @override
-  String get faqForgotPasswordAnswer =>
-      'On the login screen, tap \"Forgot password\". Enter your registered email, the system will send a 6-digit OTP code via email. Enter the OTP to verify and set a new password.';
-
-  @override
-  String get faqChangePasswordQuestion => 'How to change password?';
-
-  @override
-  String get faqChangePasswordAnswer =>
-      'Go to Settings > Account Security, enter your current password, then enter and confirm your new password. The password must have at least 8 characters.';
-
-  @override
-  String get faqAddMemberQuestion => 'How to add a new member?';
+  String get faqAddMemberQuestion =>
+      'How do I add descendants or spouses to the tree?';
 
   @override
   String get faqAddMemberAnswer =>
-      'Go to Dashboard, tap the \"+\" button on the Members tab. Fill in the information: full name, gender, date of birth, place of birth, generation, branch, parents (if any). You can add optional details like date of death, marital status, notes. Tap \"Save\" to finish. Requires Editor role or higher.';
+      '• **Quick action on Tree Map:** Tap any member and tap \"Add Child\" or \"Add Spouse\".\n• **Detailed input in Dashboard:** Go to Dashboard > Members tab > tap \"+\". Fill in generation, branch, solar/lunar dates, and bio.';
 
   @override
-  String get faqAddBranchQuestion => 'How to add a new branch?';
+  String get faqAddBranchQuestion =>
+      'How do I create branches and appoint Branch Leaders?';
 
   @override
   String get faqAddBranchAnswer =>
-      'Go to Dashboard, select the Branches tab and tap the \"+\" button. Enter the branch name, description, and founder information (if any). After creating, the Clan Leader can assign a Branch Admin to manage that branch.';
+      '1. Go to Dashboard > Branches tab, tap \"+\" to create a branch (branch name, founder, foundation year, location).\n2. Go to Settings > Member Roles to appoint a Branch Leader to manage that specific branch.';
 
   @override
-  String get faqEditMemberQuestion => 'How to edit member information?';
+  String get faqEditMemberQuestion =>
+      'How do I link accounts for relatives to view the family tree?';
 
   @override
   String get faqEditMemberAnswer =>
-      'In the member list, select the member to edit and tap the edit icon (pen). Update the information then tap \"Save\". Only Editors and higher roles can edit.';
+      'Go to Settings > Link Accounts > enter your relative\'s Email. The system will automatically link their account to their profile on the tree so they can log in and view the genealogy.';
 
   @override
-  String get faqDeleteMemberQuestion => 'How to delete a member?';
+  String get faqDeleteMemberQuestion =>
+      'How are descendants handled when a member is deleted?';
 
   @override
   String get faqDeleteMemberAnswer =>
-      'Select the member from the list, tap the delete icon (trash) and confirm. Note: only Clan Leaders and Branch Admins can delete members; Editors cannot delete.';
+      'The system offers 2 smart mechanisms:\n• **Promote children (Recommended):** Automatically connects children to the generation above so the lineage is not broken.\n• **Detach branch:** Separates descendants into an independent subtree.';
 
   @override
-  String get faqImportGenealogyQuestion =>
-      'Can I import genealogy from a file?';
-
-  @override
-  String get faqImportGenealogyAnswer =>
-      'The app currently supports adding members manually. Bulk import from file is under development.';
-
-  @override
-  String get faqInviteCodeQuestion => 'How does the clan invite code work?';
+  String get faqInviteCodeQuestion =>
+      'How do I get the Invite Code and share QR Codes?';
 
   @override
   String get faqInviteCodeAnswer =>
-      'Each Clan has a unique Invite Code generated by the system. The Clan Leader can view, copy, and share the Invite Code (along with a QR code) in the Dashboard. New members use this code to send a join request — approved by the Clan Leader or Branch Admin.';
+      'In the Dashboard, tap on the \"Family Code\" card to copy the 6-character code or download high-resolution QR code images to share with family members.';
 
   @override
-  String get faqRolesQuestion => 'What are the roles in the Clan?';
+  String get faqRolesQuestion =>
+      'What are the permissions for the 4 role tiers?';
 
   @override
   String get faqRolesAnswer =>
-      'The system has 4 role levels:\n• Clan Leader — Highest authority: manages the entire Clan, assigns roles, transfers leadership, and dissolves.\n• Branch Admin — Manages assigned family branch, approves join requests.\n• Editor — Adds and edits member information (cannot delete).\n• Member — Views genealogy information and family events.';
+      '• **Clan Leader (Owner):** Supreme authority — full clan management, role delegation, ownership transfers, and clan dissolution.\n• **Branch Leader (Branch Admin):** Manages records and approves members in their assigned branch.\n• **Editor:** Adds and updates member profiles (cannot delete the lineage).\n• **Member (Viewer):** Views family tree, events, sends wishes, and lights online incense.';
 
   @override
-  String get faqAssignRoleQuestion => 'How to assign roles to members?';
-
-  @override
-  String get faqAssignRoleAnswer =>
-      'Go to Settings > Member Roles (only visible to Clan Leader). Select the member and choose the appropriate role. The Clan Leader cannot self-demote — use the Transfer Clan Leadership feature.';
-
-  @override
-  String get faqTransferOwnershipQuestion => 'How to transfer Clan Leadership?';
+  String get faqTransferOwnershipQuestion =>
+      'Important notes on Transferring Leadership or Dissolving Clan?';
 
   @override
   String get faqTransferOwnershipAnswer =>
-      'Go to Settings > Transfer Clan Leadership. Select a member with an activated account from the list. Confirm the transfer — this action cannot be undone. After transferring, you become a Member and the recipient becomes the new Clan Leader.';
+      '• **Transfer Leadership:** Effective immediately, the recipient becomes the new Clan Leader and you become a Member.\n• **Dissolve Clan:** Permanently deletes all family trees, generation history, and photos from the server with NO RECOVERY possible.';
 
   @override
-  String get faqDissolveClanQuestion => 'How to dissolve a clan?';
-
-  @override
-  String get faqDissolveClanAnswer =>
-      'Go to Settings > Dissolve Clan (Clan Leader only). Type the exact Clan name to confirm. All data — members, branches, genealogy — will be permanently deleted and cannot be recovered. This action cannot be undone.';
-
-  @override
-  String get faqDataSecurityQuestion => 'Is my genealogy data secure?';
+  String get faqDataSecurityQuestion =>
+      'How is genealogy data secured (Decree 13/2023/ND-CP)?';
 
   @override
   String get faqDataSecurityAnswer =>
-      'Yes. All data is stored on servers in Vietnam, encrypted during transmission and storage. We comply with Decree 13/2023/NĐ-CP on personal data protection and commit not to share data with third parties. Clan information is only visible to approved members.';
-
-  @override
-  String get faqDeleteAccountQuestion => 'How to delete my account?';
-
-  @override
-  String get faqDeleteAccountAnswer =>
-      'Go to Settings > Account Security, select \"Delete Account\" and confirm. Note: if you are Clan Leader, please transfer Clan Leadership or dissolve the Clan before deleting your account.';
-
-  @override
-  String get faqMultiDeviceQuestion => 'Can I use the app on multiple devices?';
-
-  @override
-  String get faqMultiDeviceAnswer =>
-      'Yes. Your account can log in on multiple devices simultaneously, data will be synced in real-time. For security reasons, please log out from unused devices.';
-
-  @override
-  String get faqEnglishSupportQuestion => 'Does the app support English?';
-
-  @override
-  String get faqEnglishSupportAnswer =>
-      'Yes. Go to Settings > Language, toggle the switch to change to English. The interface will update immediately. Genealogy data and member information remain intact.';
+      'Genealogy data is hosted on secure data servers in Vietnam with 256-bit SSL/TLS encryption, strictly visible only to approved clan members. We never commercialize your data.';
 
   @override
   String get aboutUsTitle => 'About Us';

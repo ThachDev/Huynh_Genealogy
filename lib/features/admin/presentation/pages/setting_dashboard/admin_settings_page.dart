@@ -16,15 +16,12 @@ import 'pages/admin_clan_info_page.dart';
 import 'pages/admin_account_security_page.dart';
 import 'pages/admin_transfer_ownership_page.dart';
 import 'pages/admin_dissolve_clan_page.dart';
-import 'pages/admin_regulations_page.dart';
 import 'pages/admin_help_center_page.dart';
-import 'pages/admin_about_us_page.dart';
-import 'pages/admin_member_roles_page.dart';
+import '../admin_dashboard/pages/admin_link_and_roles_page.dart';
 import '../admin_dashboard/pages/member_trash_page.dart';
 import '../admin_dashboard/pages/audit_logs_page.dart';
 import 'pages/admin_settings_profile_card.dart';
 import '../admin_dashboard/pages/admin_member_form_page.dart';
-import '../admin_dashboard/pages/admin_link_accounts_page.dart';
 
 import '../../../../../main.dart';
 
@@ -85,9 +82,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
     final role = user?.role ?? 'VIEWER';
     final roleUpper = role.toUpperCase();
-    final hasAdminPrivileges = roleUpper == 'OWNER' ||
-        roleUpper == 'EDITOR' ||
-        roleUpper == 'CREATOR';
+    final hasAdminPrivileges =
+        roleUpper == 'OWNER' || roleUpper == 'EDITOR' || roleUpper == 'CREATOR';
 
     return ValueListenableBuilder<bool>(
       valueListenable: UserMainNavigationPage.adminModeNotifier,
@@ -300,6 +296,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     icon: LucideIcons.bell,
                     title: l10n.notificationsSectionTitle,
                     trailingText: _getNotificationSummaryText(l10n),
+                    showDivider: false,
                     onTap: () => _showNotificationSettingsBottomSheet(
                         context, family, l10n),
                   ),
@@ -324,12 +321,14 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     icon: LucideIcons.lock,
                     title: l10n.accountSecurityLabel,
                     destination: const AdminAccountSecurityPage(),
+                    showDivider: showAdminInterface || hasAdminPrivileges,
                   ),
                   if (showAdminInterface)
                     _buildSettingsTile(
                       context: context,
                       icon: LucideIcons.userCheck,
                       title: l10n.switchToMemberPage,
+                      showDivider: false,
                       onTap: () {
                         UserMainNavigationPage.setAdminMode(false,
                             userId: user?.id);
@@ -340,6 +339,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       context: context,
                       icon: LucideIcons.shieldAlert,
                       title: l10n.switchToAdminLabel,
+                      showDivider: false,
                       onTap: () {
                         UserMainNavigationPage.setAdminMode(true,
                             userId: user?.id);
@@ -349,36 +349,19 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       context, l10n.infoAndHelpSection),
                   _buildSettingsTile(
                     context: context,
-                    icon: LucideIcons.fileText,
-                    title: l10n.regulationsLabel,
-                    destination: const AdminRegulationsPage(),
-                  ),
-                  _buildSettingsTile(
-                    context: context,
                     icon: LucideIcons.helpCircle,
-                    title: l10n.helpCenterLabel,
+                    title: l10n.helpAndInfoHubLabel,
                     destination: const AdminHelpCenterPage(),
-                  ),
-                  _buildSettingsTile(
-                    context: context,
-                    icon: LucideIcons.info,
-                    title: l10n.aboutUsLabel,
-                    destination: const AdminAboutUsPage(),
+                    showDivider: false,
                   ),
                   if (showAdminInterface && isOwner) ...[
                     _buildSectionHeaderInsideCard(
                         context, l10n.advancedAdminSection),
                     _buildSettingsTile(
                       context: context,
-                      icon: LucideIcons.link2,
-                      title: l10n.linkAccountsLabel,
-                      destination: const AdminLinkAccountsPage(),
-                    ),
-                    _buildSettingsTile(
-                      context: context,
-                      icon: LucideIcons.users,
-                      title: l10n.memberRolesLabel,
-                      destination: const AdminMemberRolesPage(),
+                      icon: LucideIcons.shieldCheck,
+                      title: l10n.linkAndRolesTitle,
+                      destination: const AdminLinkAndRolesPage(),
                     ),
                     _buildSettingsTile(
                       context: context,
@@ -408,6 +391,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       ),
                       titleColor: AppColors.error,
                       iconColor: AppColors.error,
+                      showDivider: false,
                     ),
                   ],
                 ]),
@@ -458,6 +442,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     VoidCallback? onTap,
     Color? titleColor,
     Color? iconColor,
+    bool showDivider = true,
   }) {
     return Column(
       children: [
@@ -527,13 +512,14 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             ),
           ),
         ),
-        Divider(
-          height: 1,
-          thickness: 0.5,
-          indent: 54,
-          endIndent: 16,
-          color: context.textSecondary.withValues(alpha: 0.15),
-        ),
+        if (showDivider)
+          Divider(
+            height: 1,
+            thickness: 0.5,
+            indent: 54,
+            endIndent: 16,
+            color: context.textSecondary.withValues(alpha: 0.15),
+          ),
       ],
     );
   }
@@ -618,8 +604,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     context: context,
                     icon: LucideIcons.megaphone,
                     title: l10n.notifyAnnouncementLabel,
-                    subtitle:
-                        l10n.notifNewsSubtitle,
+                    subtitle: l10n.notifNewsSubtitle,
                     value: _ntfAnnouncements,
                     onChanged: (v) {
                       setState(() => _ntfAnnouncements = v);
@@ -631,8 +616,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     context: context,
                     icon: LucideIcons.heart,
                     title: l10n.notifyWishLabel,
-                    subtitle:
-                        l10n.notifWishSubtitle,
+                    subtitle: l10n.notifWishSubtitle,
                     value: _ntfWishes,
                     onChanged: (v) {
                       setState(() => _ntfWishes = v);
@@ -644,8 +628,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     context: context,
                     icon: LucideIcons.cake,
                     title: l10n.notifyAnniversaryLabel,
-                    subtitle:
-                        l10n.notifAnniversarySubtitle,
+                    subtitle: l10n.notifAnniversarySubtitle,
                     value: _ntfAnniversaries,
                     onChanged: (v) {
                       setState(() => _ntfAnniversaries = v);
@@ -683,15 +666,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: context.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, size: 20, color: context.primary),
-          ),
-          const SizedBox(width: 14),
+          Icon(icon, size: 26, color: context.primary),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -717,7 +693,14 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
           ),
           Switch(
             value: value,
-            activeThumbColor: context.primary,
+            activeThumbColor: Colors.white,
+            activeTrackColor: context.primary,
+            inactiveThumbColor: Colors.white,
+            inactiveTrackColor: context.resolve(
+              Colors.grey.shade300,
+              Colors.grey.shade700,
+            ),
+            trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
             onChanged: onChanged,
           ),
         ],

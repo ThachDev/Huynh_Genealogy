@@ -114,15 +114,36 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
       AppSnackBar.error(context, l10n.noFamilyInfo);
       return;
     }
+
+    final newName = _clanNameController.text.trim();
+    final newDesc = _clanDescController.text.trim();
+    final newOrigin = _clanOriginController.text.trim();
+    final currentName = (widget.family!.name).trim();
+    final currentDesc = (widget.family!.description ?? '').trim();
+    final currentOrigin = (widget.family!.origin ?? 'None').trim();
+
+    final isChanged = newName != currentName ||
+        newDesc != currentDesc ||
+        newOrigin != currentOrigin ||
+        _localClanLogoPath != null;
+
+    if (!isChanged) {
+      setState(() {
+        _isEditable = false;
+        _localClanLogoPath = null;
+      });
+      return;
+    }
+
     if (_formKey.currentState!.validate()) {
       setState(() => _isSaving = true);
 
       final updateFamilyUsecase = sl<UpdateFamily>();
       final result = await updateFamilyUsecase(UpdateFamilyParams(
         id: widget.family!.id,
-        name: _clanNameController.text.trim(),
-        description: _clanDescController.text.trim(),
-        origin: _clanOriginController.text.trim(),
+        name: newName,
+        description: newDesc,
+        origin: newOrigin,
         logoUrl: _localClanLogoPath,
       ));
 
@@ -150,14 +171,16 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: context.background,
       appBar: AppAppBar(
         title: l10n.clanInfoSettingsTitle,
+        transparent: false,
         actions: [
           if (widget.family != null && _isOwner)
             IconButton(
               icon: Icon(
-                _isEditable ? LucideIcons.check : LucideIcons.edit2,
-                color: Colors.white,
+                _isEditable ? LucideIcons.check : LucideIcons.edit3,
+                color: context.textPrimary,
               ),
               onPressed: () {
                 if (_isEditable) {
@@ -271,9 +294,9 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
           controller: _clanDescController,
           label: l10n.clanDescLabel,
           hintText: l10n.clanDescHint,
-          maxLines: 4,
+          minLines: 3,
+          maxLines: 6,
           enabled: _isEditable,
-          prefixIcon: Icon(LucideIcons.text, color: context.primary),
         ),
       ],
     );

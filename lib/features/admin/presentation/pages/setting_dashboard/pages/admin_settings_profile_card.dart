@@ -70,7 +70,8 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
       if (picked != null) {
         if (await exceedsMaxFileSize(picked, 5)) {
           if (!mounted) return;
-          AppSnackBar.error(context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
+          AppSnackBar.error(
+              context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
           return;
         }
         setState(() {
@@ -164,7 +165,24 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
     final memberId = user.memberId as int?;
 
     if (_isEditingInline) {
-      // User clicked check button to SAVE
+      // User clicked check button
+      final currentName = (user.fullName as String?) ?? '';
+      final newName = _nameController.text.trim();
+
+      // Check if anything actually changed
+      final isNameChanged = newName != currentName.trim();
+      final isAvatarChanged = _localAvatarPath != null;
+
+      if (!isNameChanged && !isAvatarChanged) {
+        // No changes made -> simply revert to normal view
+        setState(() {
+          _isEditingInline = false;
+          _nameController.text = currentName;
+          _localAvatarPath = null;
+        });
+        return;
+      }
+
       _saveChanges(memberId);
     } else {
       // User clicked edit button to EDIT INLINE
@@ -229,7 +247,8 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
                       ? Center(
                           child: Text(
                             AppAvatar.getInitialLetter(
-                              (user?.fullName as String?) ?? _nameController.text,
+                              (user?.fullName as String?) ??
+                                  _nameController.text,
                               fallback: 'U',
                             ),
                             style: GoogleFonts.beVietnamPro(
@@ -308,21 +327,16 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
             ),
           ),
           const SizedBox(width: 8),
-          // Edit/Save button
+          // Edit/Save button (no background, size 20)
           GestureDetector(
             onTap: _isSaving ? null : _onEditClick,
-            child: Container(
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: _isEditingInline
-                    ? Colors.green.withValues(alpha: 0.1)
-                    : context.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(8),
-              ),
               child: _isSaving
                   ? const SizedBox(
-                      width: 14,
-                      height: 14,
+                      width: 20,
+                      height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
@@ -330,8 +344,10 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
                     )
                   : Icon(
                       _isEditingInline ? LucideIcons.check : LucideIcons.pencil,
-                      size: 14,
-                      color: _isEditingInline ? Colors.green : context.primary,
+                      size: 20,
+                      color: _isEditingInline
+                          ? Colors.green
+                          : context.textSecondary,
                     ),
             ),
           ),

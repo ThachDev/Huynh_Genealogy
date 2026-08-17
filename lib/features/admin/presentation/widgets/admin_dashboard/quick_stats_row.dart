@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../../../../resources/app_localizations.dart';
@@ -31,6 +32,7 @@ class QuickStatsRow extends StatelessWidget {
         children: [
           Expanded(
             child: StatCardItem(
+              icon: LucideIcons.users,
               label: l10n.statMembers,
               value: memberCount,
               isSelected: selectedTab == AdminDashboardTab.members,
@@ -40,6 +42,7 @@ class QuickStatsRow extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: StatCardItem(
+              icon: LucideIcons.gitFork,
               label: l10n.statBranches,
               value: branchCount,
               isSelected: selectedTab == AdminDashboardTab.branches,
@@ -50,6 +53,7 @@ class QuickStatsRow extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: StatCardItem(
+                icon: LucideIcons.clock,
                 label: l10n.statPending,
                 value: pendingCount,
                 isSelected: selectedTab == AdminDashboardTab.pending,
@@ -64,6 +68,7 @@ class QuickStatsRow extends StatelessWidget {
 }
 
 class StatCardItem extends StatelessWidget {
+  final IconData icon;
   final String label;
   final String value;
   final bool isSelected;
@@ -71,6 +76,7 @@ class StatCardItem extends StatelessWidget {
 
   const StatCardItem({
     super.key,
+    required this.icon,
     required this.label,
     required this.value,
     required this.isSelected,
@@ -87,8 +93,7 @@ class StatCardItem extends StatelessWidget {
 
     final Color numberColor = isSelected ? Colors.white : context.textPrimary;
 
-    final Color labelColor =
-        isSelected ? Colors.white : context.textSecondary;
+    final Color labelColor = isSelected ? Colors.white : context.textSecondary;
 
     return Material(
       color: Colors.transparent,
@@ -128,16 +133,31 @@ class StatCardItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 11,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  color: labelColor,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: 13,
+                    color: labelColor,
+                  ),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 11,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: labelColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

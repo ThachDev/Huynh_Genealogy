@@ -219,14 +219,17 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: title,
-        automaticallyImplyLeading: false,
         actions: [
+          IconButton(
+            icon: Icon(LucideIcons.check, color: context.textPrimary),
+            tooltip: l10n.saveBranchLabel,
+            onPressed: _submitForm,
+          ),
           if (isEdit)
             IconButton(
-              icon: const Icon(LucideIcons.trash2,
-                  color: Colors.redAccent, size: 20),
-              onPressed: _showDeleteConfirmDialog,
+              icon: const Icon(LucideIcons.trash2, color: Colors.redAccent),
               tooltip: l10n.deleteBranchTooltip,
+              onPressed: _showDeleteConfirmDialog,
             ),
         ],
       ),
@@ -457,14 +460,6 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                       ],
                     ),
                   ),
-                ),
-              ),
-              // Sticky bottom buttons
-              Container(
-                padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
-                child: AppFormActionButtons(
-                  saveLabel: l10n.saveBranchLabel,
-                  onSave: _submitForm,
                 ),
               ),
             ],

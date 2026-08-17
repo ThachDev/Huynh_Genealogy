@@ -160,10 +160,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
           draft['occupation'] ?? _occupationController.text;
       _educationController.text =
           draft['education'] ?? _educationController.text;
-      _selectedEducationOption =
-          (draft['educationOption']?.isNotEmpty ?? false)
-              ? draft['educationOption']
-              : _selectedEducationOption;
+      _selectedEducationOption = (draft['educationOption']?.isNotEmpty ?? false)
+          ? draft['educationOption']
+          : _selectedEducationOption;
       _gender = _genderFromName(draft['gender']) ?? _gender;
       _maritalStatus =
           _maritalFromName(draft['maritalStatus']) ?? _maritalStatus;
@@ -212,7 +211,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       if (pickedFile != null) {
         if (await exceedsMaxFileSize(pickedFile, 5)) {
           if (!mounted) return;
-          AppSnackBar.error(context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
+          AppSnackBar.error(
+              context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
           return;
         }
         // Copy file sang thư mục tạm của app để tránh bị xóa khỏi cache picker
@@ -280,7 +280,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
   /// Tự động điền thế hệ khi chọn cha/mẹ.
   /// generation = cha.generation + 1
-  void _autoFillGenerationFromParent(List<MemberEntity> allMembers, int? parentId) {
+  void _autoFillGenerationFromParent(
+      List<MemberEntity> allMembers, int? parentId) {
     if (parentId == null) return;
     // Không ghi đè nếu đang ở chế độ isLockedContext (đã được truyền sẵn)
     if (widget.isLockedContext && widget.initialGeneration != null) return;
@@ -330,7 +331,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     super.dispose();
   }
 
-  void _submitForm(MemberEntity? existingMember, List<MemberEntity> allMembers) {
+  void _submitForm(
+      MemberEntity? existingMember, List<MemberEntity> allMembers) {
     if (!_formKey.currentState!.validate()) return;
 
     // Kiểm tra thế hệ không vượt quá maxGeneration + 1
@@ -340,8 +342,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       if (maxGen != null && inputGen > maxGen + 1) {
         AppSnackBar.error(
           context,
-          AppLocalizations.of(context)!
-              .generationTooHighFormat(maxGen + 1),
+          AppLocalizations.of(context)!.generationTooHighFormat(maxGen + 1),
         );
         return;
       }
@@ -408,7 +409,21 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: title,
-        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(LucideIcons.check, color: context.textPrimary),
+            tooltip: l10n.formSave,
+            onPressed: () {
+              final state = context.read<AdminMemberFormBloc>().state;
+              final existingMember =
+                  state is AdminMemberFormReady ? state.member : null;
+              final allMembers = state is AdminMemberFormReady
+                  ? state.members
+                  : <MemberEntity>[];
+              _submitForm(existingMember, allMembers);
+            },
+          ),
+        ],
       ),
       body: AppBackgroundBody(
         child: BlocConsumer<AdminMemberFormBloc, AdminMemberFormState>(
@@ -804,6 +819,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                             dateString: _dateOfBirth,
                                             label: l10n.dobLabel,
                                             hintText: l10n.dobHint,
+                                            showLunar: false,
                                             onDateSelected: (date) {
                                               final formattedDate =
                                                   "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
@@ -1182,14 +1198,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                         ],
                       ),
                     ),
-                  ),
-                ),
-                // Sticky bottom buttons
-                Container(
-                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
-                  child: AppFormActionButtons(
-                    saveLabel: l10n.formSave,
-                    onSave: () => _submitForm(existingMember, allMembers),
                   ),
                 ),
               ],

@@ -114,26 +114,23 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                         child: Column(
                           children: [
                             // TOP: Avatar, Name, DOB
-                            Hero(
-                              tag: 'member_avatar_${widget.member.id}',
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: context.resolve(Colors.grey.shade300,
-                                        Colors.grey.shade700),
-                                    width: 1.0,
-                                  ),
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: context.resolve(Colors.grey.shade300,
+                                      Colors.grey.shade700),
+                                  width: 1.0,
                                 ),
-                                child: AppAvatar(
-                                  avatarUrl: widget.member.avatarUrl,
-                                  fullName: widget.member.fullName,
-                                  radius: 20,
-                                  fontSize: 16,
-                                  backgroundColor: context.resolve(
-                                      Colors.grey.shade100,
-                                      const Color(0xFF2C2C2C)),
-                                ),
+                              ),
+                              child: AppAvatar(
+                                avatarUrl: widget.member.avatarUrl,
+                                fullName: widget.member.fullName,
+                                radius: 20,
+                                fontSize: 16,
+                                backgroundColor: context.resolve(
+                                    Colors.grey.shade100,
+                                    const Color(0xFF2C2C2C)),
                               ),
                             ),
                             const SizedBox(height: 6),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 
@@ -23,16 +24,19 @@ class EventFilterBar extends StatelessWidget {
         'key': 'all',
         'label': l10n.allLabel,
         'count': counts['all'] ?? 0,
+        'icon': LucideIcons.layers,
       },
       {
         'key': 'event',
         'label': l10n.eventTypeEvent,
         'count': counts['event'] ?? 0,
+        'icon': LucideIcons.calendar,
       },
       {
         'key': 'announcement',
         'label': l10n.eventTypeAnnouncement,
         'count': counts['announcement'] ?? 0,
+        'icon': LucideIcons.bell,
       },
     ];
 
@@ -43,6 +47,7 @@ class EventFilterBar extends StatelessWidget {
           final key = filter['key'] as String;
           final label = filter['label'] as String;
           final count = filter['count'] as int;
+          final icon = filter['icon'] as IconData;
           final isSelected = selectedType == key;
 
           return Expanded(
@@ -51,6 +56,7 @@ class EventFilterBar extends StatelessWidget {
                 right: key != 'announcement' ? 8.0 : 0.0,
               ),
               child: StatFilterCardItem(
+                icon: icon,
                 label: label,
                 value: '$count',
                 isSelected: isSelected,
@@ -65,6 +71,7 @@ class EventFilterBar extends StatelessWidget {
 }
 
 class StatFilterCardItem extends StatelessWidget {
+  final IconData icon;
   final String label;
   final String value;
   final bool isSelected;
@@ -72,6 +79,7 @@ class StatFilterCardItem extends StatelessWidget {
 
   const StatFilterCardItem({
     super.key,
+    required this.icon,
     required this.label,
     required this.value,
     required this.isSelected,
@@ -128,16 +136,31 @@ class StatFilterCardItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 11,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  color: labelColor,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: 13,
+                    color: labelColor,
+                  ),
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 11,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: labelColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

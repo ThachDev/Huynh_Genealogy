@@ -53,32 +53,9 @@ class UserEventCard extends StatelessWidget {
     }
   }
 
-  /// Kiểm tra sự kiện đã kết thúc hay chưa dựa vào eventDate.
-  bool _isEnded() {
-    try {
-      // Support both yyyy-MM-dd and dd/MM/yyyy
-      final raw = event.eventDate.trim();
-      DateTime? dt;
-      if (raw.contains('-')) {
-        final parts = raw.split('-');
-        if (parts.length == 3) {
-          dt = DateTime(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
-        }
-      } else if (raw.contains('/')) {
-        final parts = raw.split('/');
-        if (parts.length == 3) {
-          dt = DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
-        }
-      }
-      if (dt != null) return dt.isBefore(DateTime.now());
-    } catch (_) {}
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final ended = _isEnded();
 
     final imageUrl = event.imageUrl;
     final isNetworkImage = imageUrl != null &&
@@ -131,27 +108,6 @@ class UserEventCard extends StatelessWidget {
       thumbnail = Hero(tag: heroTag!, child: thumbnail);
     }
 
-    // ── Status Badge ──────────────────────────────────────────
-    final badgeColor = ended ? context.textSecondary : context.primary;
-    final badgeText = ended ? l10n.eventEnded : l10n.eventOngoing;
-
-    Widget statusBadge = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      decoration: BoxDecoration(
-        color: badgeColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: badgeColor.withValues(alpha: 0.25), width: 0.8),
-      ),
-      child: Text(
-        badgeText,
-        style: GoogleFonts.beVietnamPro(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: badgeColor,
-        ),
-      ),
-    );
-
     // ── Card ──────────────────────────────────────────────────
     Widget content = Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -188,10 +144,9 @@ class UserEventCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Status + Date
+                      // Date
                       Row(
                         children: [
-                          statusBadge,
                           const Spacer(),
                           Icon(LucideIcons.clock3, size: 11, color: context.textSecondary),
                           const SizedBox(width: 3),

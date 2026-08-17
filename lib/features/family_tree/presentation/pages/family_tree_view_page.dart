@@ -740,7 +740,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
           IconButton(
             icon: Icon(
               _isSearching ? LucideIcons.x : LucideIcons.search,
-              color: context.textOnPrimary,
+              color: context.textPrimary,
             ),
             tooltip: _isSearching ? l10n.closeSearchTooltip : l10n.searchMemberTooltip,
             onPressed: () {

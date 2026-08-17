@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -77,49 +76,39 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
         title: l10n.memberDetailTitle,
         transparent: false,
         actions: [
-          IconButton(
-            icon: const Icon(LucideIcons.copy, color: Colors.white, size: 18),
-            tooltip: l10n.copyInfoTooltip,
-            onPressed: () {
-              final info =
-                  '${widget.member.fullName} - ${l10n.generationBadge('${widget.member.generation ?? "?"}')} - ${l10n.appTitle}';
-              Clipboard.setData(ClipboardData(text: info));
-              AppSnackBar.success(context, l10n.copyInfoSuccess);
-            },
-          ),
           if (canEdit) ...[
-                IconButton(
-                  icon: const Icon(LucideIcons.link2, color: Colors.white),
-                  tooltip: l10n.linkAccountsLabel,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      SereneFadeSlidePageRoute(
-                        page: AdminLinkAccountsPage(
-                          memberId: widget.member.id,
-                          memberName: widget.member.fullName,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(LucideIcons.edit3, color: Colors.white),
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                      context,
-                      SereneFadeSlidePageRoute(
-                        page: AdminMemberFormPage(
-                          memberId: widget.member.id,
-                        ),
-                      ),
-                    );
-                    if (result == true && context.mounted) {
-                      Navigator.pop(context, true);
-                    }
-                  },
-                ),
-              ],
+            IconButton(
+              icon: Icon(LucideIcons.link2, color: context.textPrimary),
+              tooltip: l10n.linkAccountsLabel,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  SereneFadeSlidePageRoute(
+                    page: AdminLinkAccountsPage(
+                      memberId: widget.member.id,
+                      memberName: widget.member.fullName,
+                    ),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(LucideIcons.edit3, color: context.textPrimary),
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  SereneFadeSlidePageRoute(
+                    page: AdminMemberFormPage(
+                      memberId: widget.member.id,
+                    ),
+                  ),
+                );
+                if (result == true && context.mounted) {
+                  Navigator.pop(context, true);
+                }
+              },
+            ),
+          ],
         ],
       ),
       body: AppBackgroundBody(
@@ -190,7 +179,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                         l10n.dateOfBirthLabel,
                         DateFormatter.formatForDisplay(
                                 widget.member.dateOfBirth) ??
-                            '-',
+                            'Không rõ',
                       ),
                       if (!widget.member.isAlive)
                         _buildInfoRow(
@@ -198,7 +187,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                           l10n.dateOfDeathLabel,
                           DateFormatter.formatForDisplay(
                                   widget.member.dateOfDeath) ??
-                              '-',
+                              'Không rõ',
                         ),
                       _buildInfoRow(
                         LucideIcons.user,
@@ -210,17 +199,23 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                       _buildInfoRow(
                         LucideIcons.mapPin,
                         l10n.placeOfBirthLabel,
-                        widget.member.placeOfBirth ?? '-',
+                        (widget.member.placeOfBirth?.isNotEmpty == true)
+                            ? widget.member.placeOfBirth!
+                            : 'Không rõ',
                       ),
                       _buildInfoRow(
                         LucideIcons.bookOpen,
                         l10n.educationLabel,
-                        widget.member.education ?? '-',
+                        (widget.member.education?.isNotEmpty == true)
+                            ? widget.member.education!
+                            : 'Không rõ',
                       ),
                       _buildInfoRow(
                         LucideIcons.briefcase,
                         l10n.occupationLabel,
-                        widget.member.occupation ?? '-',
+                        (widget.member.occupation?.isNotEmpty == true)
+                            ? widget.member.occupation!
+                            : 'Không rõ',
                       ),
                       const SizedBox(height: 24),
                       const Divider(height: 1),
@@ -232,22 +227,24 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                       _buildInfoRow(
                         LucideIcons.user,
                         l10n.fatherLabel,
-                        father?.fullName ?? '-',
+                        father?.fullName ?? 'Không rõ',
                       ),
                       _buildInfoRow(
                         LucideIcons.user,
                         l10n.motherLabel,
-                        mother?.fullName ?? '-',
+                        mother?.fullName ?? 'Không rõ',
                       ),
                       _buildInfoRow(
                         LucideIcons.heart,
                         l10n.spouseLabel,
-                        spouse?.fullName ?? '-',
+                        spouse?.fullName ?? 'Không rõ',
                       ),
                       _buildInfoRow(
                         LucideIcons.gitCommit,
                         l10n.branchLabel,
-                        widget.member.branchName ?? '-',
+                        (widget.member.branchName?.isNotEmpty == true)
+                            ? widget.member.branchName!
+                            : 'Không rõ',
                       ),
                       const SizedBox(height: 24),
                       const Divider(height: 1),
@@ -274,31 +271,28 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
               // ── Avatar nổi ở mép trên ──
               Positioned(
                 top: 0,
-                child: Hero(
-                  tag: 'member_avatar_${widget.member.id}',
-                  child: Container(
-                    width: 96,
-                    height: 96,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: context.accent, width: 3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.resolve(
-                              Colors.black.withValues(alpha: 0.15),
-                              Colors.transparent),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: AppAvatar(
-                      avatarUrl: widget.member.avatarUrl,
-                      fullName: widget.member.fullName,
-                      radius: 45,
-                      fontSize: 32,
-                      backgroundColor: context.background,
-                    ),
+                child: Container(
+                  width: 96,
+                  height: 96,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: context.accent, width: 3),
+                    boxShadow: [
+                      BoxShadow(
+                        color: context.resolve(
+                            Colors.black.withValues(alpha: 0.15),
+                            Colors.transparent),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: AppAvatar(
+                    avatarUrl: widget.member.avatarUrl,
+                    fullName: widget.member.fullName,
+                    radius: 45,
+                    fontSize: 32,
+                    backgroundColor: context.background,
                   ),
                 ),
               ),

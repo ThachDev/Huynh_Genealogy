@@ -21,6 +21,7 @@ import '../../../../auth/auth.dart';
 import '../../../../family_tree/family_tree.dart';
 import 'pages/admin_member_form_page.dart';
 import 'pages/admin_branch_form_page.dart';
+import 'pages/admin_branch_detail_page.dart';
 import '../../../../family_tree/presentation/widgets/add_member_option_dialog.dart';
 import '../../../../family_tree/presentation/widgets/select_unlinked_member_sheet.dart';
 import '../../bloc/admin_member_form/admin_member_form_bloc.dart';
@@ -81,9 +82,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   String _searchQuery = '';
 
   final ScrollController _scrollController = ScrollController();
-  int _memberLimit = 5;
-  int _branchLimit = 5;
-  int _pendingLimit = 5;
+  static const int _pageSize = 15;
+  int _memberLimit = _pageSize;
+  int _branchLimit = _pageSize;
+  int _pendingLimit = _pageSize;
 
   String? _genderFilter;
   bool? _isAliveFilter;
@@ -225,9 +227,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text.trim().toLowerCase();
-      _memberLimit = 5;
-      _branchLimit = 5;
-      _pendingLimit = 5;
+      _memberLimit = _pageSize;
+      _branchLimit = _pageSize;
+      _pendingLimit = _pageSize;
       if (_scrollController.hasClients) {
         _scrollController.jumpTo(0);
       }
@@ -235,17 +237,22 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   void _onScroll() {
+    if (!_scrollController.hasClients) return;
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 50) {
-      setState(() {
-        if (_selectedTab == AdminDashboardTab.members) {
-          _memberLimit += 5;
-        } else if (_selectedTab == AdminDashboardTab.branches) {
-          _branchLimit += 5;
-        } else if (_selectedTab == AdminDashboardTab.pending) {
-          _pendingLimit += 5;
-        }
-      });
+        _scrollController.position.maxScrollExtent - 200) {
+      if (_selectedTab == AdminDashboardTab.members) {
+        setState(() {
+          _memberLimit += _pageSize;
+        });
+      } else if (_selectedTab == AdminDashboardTab.branches) {
+        setState(() {
+          _branchLimit += _pageSize;
+        });
+      } else if (_selectedTab == AdminDashboardTab.pending) {
+        setState(() {
+          _pendingLimit += _pageSize;
+        });
+      }
     }
   }
 
@@ -572,6 +579,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           return true;
         }).toList();
 
+        final hasMoreMembers = filteredMembers.length > _memberLimit;
+        final currentMemberCount =
+            hasMoreMembers ? _memberLimit : filteredMembers.length;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -583,10 +594,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.only(bottom: 30),
-                  itemCount: filteredMembers.length > _memberLimit
-                      ? _memberLimit
-                      : filteredMembers.length,
+                  itemCount: currentMemberCount + (hasMoreMembers ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index >= currentMemberCount) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2.5),
+                          ),
+                        ),
+                      );
+                    }
                     final member = filteredMembers[index];
                     return MemberItemWidget(
                       member: member,
@@ -621,6 +642,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     b.founderName!.toLowerCase().contains(_searchQuery)))
             .toList();
 
+        final hasMoreBranches = filteredBranches.length > _branchLimit;
+        final currentBranchCount =
+            hasMoreBranches ? _branchLimit : filteredBranches.length;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -632,15 +657,40 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.only(bottom: 30),
-                  itemCount: filteredBranches.length > _branchLimit
-                      ? _branchLimit
-                      : filteredBranches.length,
+                  itemCount: currentBranchCount + (hasMoreBranches ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index >= currentBranchCount) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2.5),
+                          ),
+                        ),
+                      );
+                    }
                     final branch = filteredBranches[index];
                     return BranchItemWidget(
                       branch: branch,
                       memberCount:
                           members.where((m) => m.branchId == branch.id).length,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          SereneFadeSlidePageRoute(
+                            page: AdminBranchDetailPage(
+                              branch: branch,
+                              members: members,
+                            ),
+                          ),
+                        ).then((result) {
+                          if (result == true) {
+                            _loadTree();
+                          }
+                        });
+                      },
                       onEdit: () => _openBranchForm(context, branch: branch),
                       onDelete: () =>
                           _showDeleteBranchConfirmation(context, branch),
@@ -664,6 +714,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 .contains(_searchQuery))
             .toList();
 
+        final hasMorePending = filteredRequests.length > _pendingLimit;
+        final currentPendingCount =
+            hasMorePending ? _pendingLimit : filteredRequests.length;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -675,11 +729,24 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: const EdgeInsets.only(bottom: 30),
-                  itemCount: filteredRequests.length > _pendingLimit
-                      ? _pendingLimit
-                      : filteredRequests.length,
-                  itemBuilder: (context, index) => PendingRequestItemWidget(
-                      request: filteredRequests[index]),
+                  itemCount: currentPendingCount + (hasMorePending ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index >= currentPendingCount) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2.5),
+                          ),
+                        ),
+                      );
+                    }
+                    return PendingRequestItemWidget(
+                      request: filteredRequests[index],
+                    );
+                  },
                 ),
               ),
           ],
@@ -1058,7 +1125,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         messageSpan: TextSpan(
           style: GoogleFonts.inter(
             fontSize: 13,
-            color: context.textSecondary,
+            color: context.textPrimary,
             height: 1.5,
           ),
           children: [
@@ -1130,7 +1197,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 Text(
                   l10n.deleteMemberWithDescendantsMessage,
                   style: GoogleFonts.inter(
-                      fontSize: 13, color: ctx.textSecondary, height: 1.4),
+                      fontSize: 13, color: ctx.textPrimary, height: 1.4),
                 ),
                 const SizedBox(height: 16),
 

@@ -111,7 +111,7 @@ class MemberItemWidget extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Flexible(
+                    Expanded(
                       child: Text(
                         member.fullName,
                         style: GoogleFonts.beVietnamPro(
@@ -126,7 +126,8 @@ class MemberItemWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         color: member.isAlive
                             ? Colors.green.withValues(alpha: 0.1)

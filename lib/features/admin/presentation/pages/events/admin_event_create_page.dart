@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../core/utils/file_size_guard.dart';
-import '../../../../../core/data/repository/form_draft_store.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -40,50 +38,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
 
   final ImagePicker _picker = ImagePicker();
 
-  Timer? _draftDebounce;
-  late final String _draftKey;
-
-  void _scheduleDraftSave() {
-    _draftDebounce?.cancel();
-    _draftDebounce = Timer(const Duration(milliseconds: 700), _saveDraft);
-  }
-
-  Future<void> _saveDraft() async {
-    await FormDraftStore.save(_draftKey, {
-      'title': _titleController.text,
-      'content': _contentController.text,
-      'location': _locationController.text,
-      'organizer': _organizerController.text,
-      'selectedDate': _selectedDate,
-      'displayDate': _displayDate,
-      'type': _type,
-      'localImagePath': _localImagePath ?? '',
-    });
-  }
-
-  Future<void> _restoreDraft() async {
-    final draft = await FormDraftStore.load(_draftKey);
-    if (draft == null || !mounted) return;
-    setState(() {
-      _titleController.text = draft['title'] ?? _titleController.text;
-      _contentController.text = draft['content'] ?? _contentController.text;
-      _locationController.text =
-          draft['location'] ?? _locationController.text;
-      _organizerController.text =
-          draft['organizer'] ?? _organizerController.text;
-      _selectedDate = draft['selectedDate']?.isNotEmpty == true
-          ? draft['selectedDate']!
-          : _selectedDate;
-      _displayDate = draft['displayDate']?.isNotEmpty == true
-          ? draft['displayDate']!
-          : _displayDate;
-      _type = draft['type'] == 'announcement' ? 'announcement' : _type;
-      _localImagePath = draft['localImagePath']?.isNotEmpty == true
-          ? draft['localImagePath']
-          : _localImagePath;
-    });
-  }
-
   static const _typeIcons = {
     'event': LucideIcons.calendar,
     'announcement': LucideIcons.megaphone,
@@ -102,17 +56,11 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   @override
   void initState() {
     super.initState();
-    _draftKey = 'event_form_${widget.familyId}';
     final authState = context.read<AuthBloc>().state;
     if (authState is Authenticated) {
       _organizerController.text = authState.user.fullName;
     }
     _setInitialTodayDate();
-    _titleController.addListener(_scheduleDraftSave);
-    _contentController.addListener(_scheduleDraftSave);
-    _locationController.addListener(_scheduleDraftSave);
-    _organizerController.addListener(_scheduleDraftSave);
-    _restoreDraft();
   }
 
   void _setInitialTodayDate() {
@@ -125,13 +73,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
 
   @override
   void dispose() {
-    _draftDebounce?.cancel();
-    _draftDebounce = null;
-    _titleController.removeListener(_scheduleDraftSave);
-    _contentController.removeListener(_scheduleDraftSave);
-    _locationController.removeListener(_scheduleDraftSave);
-    _organizerController.removeListener(_scheduleDraftSave);
-    _saveDraft();
     _titleController.dispose();
     _contentController.dispose();
     _locationController.dispose();
@@ -166,7 +107,8 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       if (pickedFile != null) {
         if (await exceedsMaxFileSize(pickedFile, 10)) {
           if (!mounted) return;
-          AppSnackBar.error(context, AppLocalizations.of(context)!.imageTooLargeFormat(10));
+          AppSnackBar.error(
+              context, AppLocalizations.of(context)!.imageTooLargeFormat(10));
           return;
         }
         final tempDir = await getTemporaryDirectory();
@@ -176,7 +118,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
         final savedFile = await File(pickedFile.path).copy(
             '${tempDir.path}/event_banner_${DateTime.now().millisecondsSinceEpoch}$ext');
         setState(() => _localImagePath = savedFile.path);
-        _scheduleDraftSave();
       }
     } catch (e) {
       debugPrint('Error picking image: $e');
@@ -211,7 +152,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
           _displayDate =
               '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
         });
-        _scheduleDraftSave();
       }
     } else {
       final picked = await showDatePicker(
@@ -227,7 +167,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
           _displayDate =
               '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
         });
-        _scheduleDraftSave();
       }
     }
   }
@@ -270,13 +209,9 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   Widget _buildSectionCard({required Widget child}) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      decoration: const BoxDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: context.textSecondary.withValues(alpha: 0.12),
-        ),
       ),
       child: child,
     );
@@ -287,14 +222,14 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
       padding: const EdgeInsets.only(bottom: 14),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: context.primary),
+          Icon(icon, size: 20, color: context.primary),
           const SizedBox(width: 8),
           Text(
             title,
             style: GoogleFonts.beVietnamPro(
-              fontSize: 14,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: context.textPrimary,
+              color: context.primary,
             ),
           ),
         ],
@@ -316,30 +251,36 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
               setState(() {
                 _type = key;
               });
-              _scheduleDraftSave();
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               margin: const EdgeInsets.symmetric(horizontal: 4),
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? context.primary.withValues(alpha: 0.12)
-                    : Colors.transparent,
+                color: isSelected ? context.primary : context.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isSelected
                       ? context.primary
-                      : context.textSecondary.withValues(alpha: 0.15),
-                  width: isSelected ? 1.5 : 1,
+                      : context.textSecondary.withValues(alpha: 0.2),
+                  width: 1.2,
                 ),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: context.primary.withValues(alpha: 0.25),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
               ),
               child: Column(
                 children: [
                   Icon(
                     icon,
                     size: 22,
-                    color: isSelected ? context.primary : context.textSecondary,
+                    color: isSelected ? Colors.white : context.textSecondary,
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -351,8 +292,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                       fontSize: 12.5,
                       fontWeight:
                           isSelected ? FontWeight.bold : FontWeight.w500,
-                      color:
-                          isSelected ? context.primary : context.textSecondary,
+                      color: isSelected ? Colors.white : context.textSecondary,
                     ),
                   ),
                 ],
@@ -368,13 +308,14 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
-        height: 140,
+        height: 180,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
-          color: context.textSecondary.withValues(alpha: 0.04),
+          color: context.surface,
           border: Border.all(
-            color: context.textSecondary.withValues(alpha: 0.18),
+            color: context.textSecondary.withValues(alpha: 0.2),
+            width: 1.2,
           ),
         ),
         clipBehavior: Clip.antiAlias,
@@ -474,24 +415,23 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    String dateSectionTitle = l10n.eventTimeLocationSection;
-    if (_type == 'announcement') {
-      dateSectionTitle = l10n.eventPublishDateLabel;
-    }
-
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: context.background,
       appBar: AppAppBar(
-        title: _type == 'announcement'
-            ? l10n.eventCreateTitle
-            : l10n.addEventTitle,
-        automaticallyImplyLeading: true,
+        title: l10n.addEventTitle,
+        transparent: false,
+        actions: [
+          IconButton(
+            icon: Icon(LucideIcons.check, color: context.textPrimary),
+            tooltip: l10n.formSave,
+            onPressed: _submitForm,
+          ),
+        ],
       ),
       body: AppBackgroundBody(
         child: BlocConsumer<EventsBloc, EventsState>(
           listener: (context, state) {
             if (state is EventsSubmitSuccess) {
-              FormDraftStore.clear(_draftKey);
               AppSnackBar.success(context, state.message);
               Navigator.pop(context, true);
             } else if (state is EventsError) {
@@ -503,209 +443,176 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
               return const Center(child: AppLoading(size: 80));
             }
 
-            return Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.all(16),
-                    child: Form(
-                      key: _formKey,
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Section 1: Type
+                    _buildSectionCard(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Section 1: Post type
-                          _buildSectionCard(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildSectionTitle(
-                                  l10n.selectPostType,
-                                  LucideIcons.layers,
-                                ),
-                                _buildTypeSelector(l10n),
-                              ],
-                            ),
+                          _buildSectionTitle(
+                            l10n.selectPostType,
+                            LucideIcons.layers,
                           ),
-                          const SizedBox(height: 16),
-
-                          // Section 2: Banner image & Details
-                          _buildSectionCard(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildSectionTitle(
-                                  l10n.basicInfoSectionTitle,
-                                  LucideIcons.fileText,
-                                ),
-                                if (_showBannerPicker) ...[
-                                  _buildImageBannerPicker(l10n),
-                                  const SizedBox(height: 16),
-                                ],
-                                AppOutlineTextField(
-                                  controller: _titleController,
-                                  label: _type == 'announcement'
-                                      ? l10n.eventTitleLabelAnnouncement
-                                      : l10n.eventTitleLabelEventArticle,
-                                  hintText: _type == 'announcement'
-                                      ? l10n.eventTitleHintAnnouncement
-                                      : l10n.eventTitleHint,
-                                  prefixIcon: Icon(_typeIcon, size: 18),
-                                  validator: (val) {
-                                    if (val == null || val.trim().isEmpty) {
-                                      return _type == 'announcement'
-                                          ? l10n.eventTitleRequiredAnnouncement
-                                          : l10n.eventTitleRequired;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                if (_showOrganizer) ...[
-                                  const SizedBox(height: 14),
-                                  AppOutlineTextField(
-                                    controller: _organizerController,
-                                    label: l10n.eventOrganizerLabelFull,
-                                    hintText: l10n.eventOrganizerHintFull,
-                                    prefixIcon:
-                                        const Icon(LucideIcons.user, size: 18),
-                                  ),
-                                ],
-                                const SizedBox(height: 14),
-                                AppOutlineTextField(
-                                  controller: _contentController,
-                                  label: _type == 'announcement'
-                                      ? l10n.eventContentLabelAnnouncement
-                                      : l10n.eventContentLabelEventArticle,
-                                  hintText: _type == 'announcement'
-                                      ? l10n.eventContentHintAnnouncement
-                                      : l10n.eventContentHintEventArticle,
-                                  minLines: 4,
-                                  maxLines: 10,
-                                  validator: (val) {
-                                    if (_type == 'announcement' &&
-                                        (val == null || val.trim().isEmpty)) {
-                                      return l10n.eventContentRequiredAnnouncement;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Section 3: Time & Location
-                          _buildSectionCard(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildSectionTitle(
-                                  dateSectionTitle,
-                                  LucideIcons.calendarClock,
-                                ),
-                                InkWell(
-                                  onTap: _selectDate,
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 14, vertical: 14),
-                                    decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: context.textSecondary
-                                            .withValues(alpha: 0.2),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          LucideIcons.calendarDays,
-                                          size: 18,
-                                          color: context.primary,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Text(
-                                            _formattedDateDisplay(l10n),
-                                            style: GoogleFonts.beVietnamPro(
-                                              fontSize: 14,
-                                              fontWeight:
-                                                  _displayDate.isNotEmpty
-                                                      ? FontWeight.w600
-                                                      : FontWeight.normal,
-                                              color: _displayDate.isNotEmpty
-                                                  ? context.textPrimary
-                                                  : context.textSecondary,
-                                            ),
-                                          ),
-                                        ),
-                                        if (_displayDate.isNotEmpty)
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                _selectedDate = '';
-                                                _displayDate = '';
-                                              });
-                                              _scheduleDraftSave();
-                                            },
-                                            child: Icon(
-                                              LucideIcons.x,
-                                              size: 16,
-                                              color: context.textSecondary,
-                                            ),
-                                          )
-                                        else
-                                          Icon(
-                                            LucideIcons.chevronRight,
-                                            size: 18,
-                                            color: context.textSecondary,
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                if (_showLocation) ...[
-                                  const SizedBox(height: 14),
-                                  AppOutlineTextField(
-                                    controller: _locationController,
-                                    label: l10n.eventLocationLabel,
-                                    hintText: l10n.eventLocationHint,
-                                    prefixIcon: Icon(
-                                      LucideIcons.mapPin,
-                                      color: context.primary,
-                                      size: 18,
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
+                          _buildTypeSelector(l10n),
                         ],
                       ),
                     ),
-                  ),
-                ),
+                    const SizedBox(height: 16),
 
-                // Fixed Action Bar at bottom
-                Container(
-                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border(
-                      top: BorderSide(
-                        color: context.textSecondary.withValues(alpha: 0.12),
-                        width: 1,
+                    // Section 2: Thông tin cơ bản (gồm Ngày & Địa điểm)
+                    _buildSectionCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSectionTitle(
+                            l10n.basicInfoSectionTitle,
+                            LucideIcons.fileText,
+                          ),
+                          if (_showBannerPicker) ...[
+                            _buildImageBannerPicker(l10n),
+                            const SizedBox(height: 16),
+                          ],
+                          AppOutlineTextField(
+                            controller: _titleController,
+                            label: _type == 'announcement'
+                                ? l10n.eventTitleLabelAnnouncement
+                                : l10n.eventTitleLabelEventArticle,
+                            hintText: _type == 'announcement'
+                                ? l10n.eventTitleHintAnnouncement
+                                : l10n.eventTitleHint,
+                            prefixIcon: Icon(_typeIcon, size: 18),
+                            validator: (val) {
+                              if (val == null || val.trim().isEmpty) {
+                                return _type == 'announcement'
+                                    ? l10n.eventTitleRequiredAnnouncement
+                                    : l10n.eventTitleRequired;
+                              }
+                              return null;
+                            },
+                          ),
+                          if (_showOrganizer) ...[
+                            const SizedBox(height: 14),
+                            AppOutlineTextField(
+                              controller: _organizerController,
+                              label: l10n.eventOrganizerLabelFull,
+                              hintText: l10n.eventOrganizerHintFull,
+                              prefixIcon:
+                                  const Icon(LucideIcons.user, size: 18),
+                            ),
+                          ],
+                          const SizedBox(height: 14),
+
+                          // Thời gian diễn ra / đăng bài
+                          InkWell(
+                            onTap: _selectDate,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 14),
+                              decoration: BoxDecoration(
+                                color: context.surface,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: context.textSecondary
+                                      .withValues(alpha: 0.2),
+                                  width: 1.2,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    LucideIcons.calendarDays,
+                                    size: 18,
+                                    color: context.primary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      _formattedDateDisplay(l10n),
+                                      style: GoogleFonts.beVietnamPro(
+                                        fontSize: 14,
+                                        fontWeight: _displayDate.isNotEmpty
+                                            ? FontWeight.w600
+                                            : FontWeight.normal,
+                                        color: _displayDate.isNotEmpty
+                                            ? context.textPrimary
+                                            : context.textSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                  if (_displayDate.isNotEmpty)
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedDate = '';
+                                          _displayDate = '';
+                                        });
+                                      },
+                                      child: Icon(
+                                        LucideIcons.x,
+                                        size: 16,
+                                        color: context.textSecondary,
+                                      ),
+                                    )
+                                  else
+                                    Icon(
+                                      LucideIcons.chevronRight,
+                                      size: 18,
+                                      color: context.textSecondary,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // Địa điểm (nếu là sự kiện)
+                          if (_showLocation) ...[
+                            const SizedBox(height: 14),
+                            AppOutlineTextField(
+                              controller: _locationController,
+                              label: l10n.eventLocationLabel,
+                              hintText: l10n.eventLocationHint,
+                              prefixIcon: Icon(
+                                LucideIcons.mapPin,
+                                color: context.primary,
+                                size: 18,
+                              ),
+                            ),
+                          ],
+
+                          const SizedBox(height: 14),
+                          AppOutlineTextField(
+                            controller: _contentController,
+                            label: _type == 'announcement'
+                                ? l10n.eventContentLabelAnnouncement
+                                : l10n.eventContentLabelEventArticle,
+                            hintText: _type == 'announcement'
+                                ? l10n.eventContentHintAnnouncement
+                                : l10n.eventContentHintEventArticle,
+                            minLines: 4,
+                            maxLines: 10,
+                            validator: (val) {
+                              if (_type == 'announcement' &&
+                                  (val == null || val.trim().isEmpty)) {
+                                return l10n.eventContentRequiredAnnouncement;
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  child: AppFormActionButtons(
-                    saveLabel: l10n.saveEventButton,
-                    onSave: _submitForm,
-                  ),
+                    const SizedBox(height: 32),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         ),

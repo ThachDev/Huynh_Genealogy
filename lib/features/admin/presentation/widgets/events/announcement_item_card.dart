@@ -1,14 +1,13 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
-import '../../../../../core/widgets/app_network_image.dart';
 import '../../../../events/events.dart';
+import 'event_calendar_widget.dart';
 
-/// Card thông báo kiểu compact — thumbnail/avatar bên trái, nội dung bên phải.
-/// Màu đồng bộ với design system (context.primary / crimson).
+/// Card thông báo — hiển thị block lịch thông minh (chuyển đổi Âm/Dương) bên trái,
+/// bên phải: Tiêu đề -> Nội dung (tối đa 2 dòng) -> Người thông báo.
 class AnnouncementItemCard extends StatelessWidget {
   final EventEntity event;
   final bool canEdit;
@@ -22,74 +21,6 @@ class AnnouncementItemCard extends StatelessWidget {
     required this.onTap,
     required this.onDelete,
   });
-
-  String _formatDate() {
-    if (event.eventDate.isEmpty) return '';
-    try {
-      final parts = event.eventDate.split('-');
-      if (parts.length == 3) {
-        return '${parts[2]}/${parts[1]}/${parts[0]}';
-      }
-    } catch (_) {}
-    return event.eventDate;
-  }
-
-  // ── Avatar / Thumbnail ────────────────────────────────────────
-  Widget _buildAvatar(BuildContext context) {
-    final imageUrl = event.imageUrl;
-    final isNetwork = imageUrl != null &&
-        (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'));
-    final isLocal =
-        imageUrl != null && !isNetwork && File(imageUrl).existsSync();
-
-    Widget placeholder = Container(
-      width: 84,
-      height: 84,
-      decoration: BoxDecoration(
-        color: context.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: context.primary.withValues(alpha: 0.15),
-          width: 1,
-        ),
-      ),
-      child: Center(
-        child: Icon(
-          LucideIcons.megaphone,
-          size: 26,
-          color: context.primary.withValues(alpha: 0.5),
-        ),
-      ),
-    );
-
-    if (isNetwork) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: AppNetworkImage(
-          url: imageUrl,
-          width: 84,
-          height: 84,
-          fit: BoxFit.cover,
-          errorBuilder: (_) => placeholder,
-        ),
-      );
-    }
-
-    if (isLocal) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.file(
-          File(imageUrl),
-          width: 84,
-          height: 84,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => placeholder,
-        ),
-      );
-    }
-
-    return placeholder;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,60 +46,30 @@ class AnnouncementItemCard extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── Avatar / thumbnail ──
-            _buildAvatar(context),
+            // ── Launcher Cuốn Lịch (Âm / Dương khi tap) ──
+            SizedBox(
+              width: 74,
+              height: 82,
+              child: EventCalendarWidget(
+                eventDate: event.eventDate,
+                isLunarDefault: event.isLunar,
+                l10n: l10n,
+              ),
+            ),
             const SizedBox(width: 12),
 
             // ── Text content ──
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Badge + Date row
-                  Row(
-                    children: [
-                      // Thông báo badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 7, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: context.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
-                            color: context.primary.withValues(alpha: 0.25),
-                            width: 0.8,
-                          ),
-                        ),
-                        child: Text(
-                          l10n.announcementBadge,
-                          style: GoogleFonts.beVietnamPro(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: context.primary,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(LucideIcons.clock3,
-                          size: 11, color: context.textSecondary),
-                      const SizedBox(width: 3),
-                      Text(
-                        _formatDate(),
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-
-                  // Title
+                  // Title (Tiêu đề thông báo)
                   Text(
                     event.title,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 14,
@@ -178,29 +79,44 @@ class AnnouncementItemCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Description
-                  if (event.description != null &&
-                      event.description!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      event.description!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: context.textSecondary,
-                        height: 1.4,
-                      ),
-                    ),
-                  ],
+                  // Description / Content (Nội dung thông báo tối đa 2 line)
+                  Builder(
+                    builder: (context) {
+                      final displayContent = (event.content != null &&
+                              event.content!.trim().isNotEmpty)
+                          ? event.content!.trim()
+                          : (event.description != null &&
+                                  event.description!.trim().isNotEmpty)
+                              ? event.description!.trim()
+                              : null;
+
+                      if (displayContent == null) {
+                        return const SizedBox.shrink();
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          displayContent,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            color: context.textSecondary,
+                            height: 1.4,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
 
                   const SizedBox(height: 6),
 
-                  // Organizer
+                  // Người thông báo
                   Row(
                     children: [
                       Icon(LucideIcons.user,
-                          size: 11, color: context.textSecondary),
+                          size: 12, color: context.textSecondary),
                       const SizedBox(width: 4),
                       Flexible(
                         child: Text(

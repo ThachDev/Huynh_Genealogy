@@ -412,7 +412,6 @@ class _EventsListPageState extends State<EventsListPage> {
                         eventsList.isNotEmpty) ...[
                       _buildSectionHeader(
                         l10n.clanEventsSection,
-                        eventsList.length,
                         onViewAll: (_selectedType == 'all' &&
                                 eventsList.length > _maxPreviewItemsPerSection)
                             ? () => setState(() => _selectedType = 'event')
@@ -449,7 +448,6 @@ class _EventsListPageState extends State<EventsListPage> {
                         announcementsList.isNotEmpty) ...[
                       _buildSectionHeader(
                         l10n.clanAnnouncementsSection,
-                        announcementsList.length,
                         onViewAll: (_selectedType == 'all' &&
                                 announcementsList.length >
                                     _maxPreviewItemsPerSection)
@@ -493,8 +491,7 @@ class _EventsListPageState extends State<EventsListPage> {
     );
   }
 
-  Widget _buildSectionHeader(String title, int count,
-      {VoidCallback? onViewAll}) {
+  Widget _buildSectionHeader(String title, {VoidCallback? onViewAll}) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
@@ -516,22 +513,6 @@ class _EventsListPageState extends State<EventsListPage> {
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,
               color: context.textPrimary,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-            decoration: BoxDecoration(
-              color: context.textSecondary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              '$count',
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: context.textSecondary,
-              ),
             ),
           ),
           const Spacer(),

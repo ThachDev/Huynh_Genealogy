@@ -11,6 +11,7 @@ class AppDatePickerField extends StatelessWidget {
   final String label;
   final String hintText;
   final ValueChanged<DateTime> onDateSelected;
+  final bool showLunar;
 
   const AppDatePickerField({
     super.key,
@@ -18,6 +19,7 @@ class AppDatePickerField extends StatelessWidget {
     required this.label,
     required this.hintText,
     required this.onDateSelected,
+    this.showLunar = true,
   });
 
   /// Returns {solar, lunar} or null if can't parse
@@ -54,9 +56,18 @@ class AppDatePickerField extends StatelessWidget {
         dateString ?? hintText,
         style: GoogleFonts.beVietnamPro(
           fontSize: 14,
-          color: dateString != null
-              ? context.textPrimary
-              : context.textSecondary,
+          color:
+              dateString != null ? context.textPrimary : context.textSecondary,
+        ),
+      );
+    }
+    if (!showLunar) {
+      return Text(
+        parsed['solar']!,
+        style: GoogleFonts.beVietnamPro(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: context.textPrimary,
         ),
       );
     }

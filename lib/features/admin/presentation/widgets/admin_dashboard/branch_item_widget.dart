@@ -10,6 +10,7 @@ class BranchItemWidget extends StatelessWidget {
   final int memberCount;
   final VoidCallback onEdit;
   final VoidCallback? onDelete;
+  final VoidCallback? onTap;
 
   const BranchItemWidget({
     super.key,
@@ -17,6 +18,7 @@ class BranchItemWidget extends StatelessWidget {
     required this.memberCount,
     required this.onEdit,
     this.onDelete,
+    this.onTap,
   });
 
   @override
@@ -30,7 +32,7 @@ class BranchItemWidget extends StatelessWidget {
         : const Color(0xFFE8D7B8).withValues(alpha: 0.6);
 
     return GestureDetector(
-      onTap: onEdit,
+      onTap: onTap ?? onEdit,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         child: DecoratedBox(

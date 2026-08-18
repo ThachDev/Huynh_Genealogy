@@ -1919,7 +1919,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqAddBranchAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'1. Vào Dashboard > tab Chi họ, nhấn \"+\" để tạo chi họ mới (tên chi, tổ lập chi, năm lập, địa phương).\n2. Vào Cài đặt > Phân quyền thành viên để bổ nhiệm chức vị Trưởng chi. Trưởng chi sẽ có toàn quyền kiểm duyệt hồ sơ và thành viên trong nhánh chi của mình.'**
+  /// **'1. Vào Dashboard > tab Chi họ, nhấn \"+\" để tạo chi họ mới (tên chi, tổ lập chi, năm lập, địa phương).\n2. Vào Cài đặt > Liên kết & Phân quyền > tab Phân quyền để bổ nhiệm vai trò cho thành viên quản lý nhánh.'**
   String get faqAddBranchAnswer;
 
   /// No description provided for @faqEditMemberQuestion.
@@ -1931,7 +1931,7 @@ abstract class AppLocalizations {
   /// No description provided for @faqEditMemberAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'Vào Cài đặt > Quản lý liên kết tài khoản > nhập Email của người thân. Hệ thống sẽ tự động ghép nối tài khoản của họ với hồ sơ trên cây gia phả để họ có thể đăng nhập xem cây dòng tộc.'**
+  /// **'Vào Cài đặt > Liên kết & Phân quyền > tab Liên kết tài khoản > nhập Email của người thân. Hệ thống sẽ tự động ghép nối tài khoản của họ với hồ sơ trên cây gia phả để họ có thể đăng nhập xem và đóng góp cho cây dòng tộc.'**
   String get faqEditMemberAnswer;
 
   /// No description provided for @faqDeleteMemberQuestion.
@@ -1973,13 +1973,13 @@ abstract class AppLocalizations {
   /// No description provided for @faqTransferOwnershipQuestion.
   ///
   /// In vi, this message translates to:
-  /// **'Lưu ý gì khi Chuyển nhượng quyền Trưởng tộc hoặc Giải tán dòng họ?'**
+  /// **'Cách Chuyển nhượng quyền Trưởng tộc và những lưu ý an toàn?'**
   String get faqTransferOwnershipQuestion;
 
   /// No description provided for @faqTransferOwnershipAnswer.
   ///
   /// In vi, this message translates to:
-  /// **'• **Chuyển nhượng quyền:** Có hiệu lực tức thì, người nhận trở thành Trưởng tộc mới và bạn sẽ trở về quyền Thành viên.\n• **Giải tán dòng họ:** Xóa vĩnh viễn toàn bộ dữ liệu, phả đồ, hình ảnh trên máy chủ và KHÔNG THỂ khôi phục dưới mọi hình thức.'**
+  /// **'• **Cách thực hiện:** Vào Cài đặt > Liên kết & Phân quyền > tab Phân quyền > chọn thành viên muốn trao quyền > chọn \"Chuyển nhượng quyền Trưởng tộc\" (có huy hiệu Tối cao) và nhập chính xác chữ \"XÁC NHẬN\" để hoàn tất.\n• **Lưu ý:** Quyền Trưởng tộc sẽ được chuyển giao tức thì, người được chọn trở thành Trưởng tộc mới và bạn sẽ tự động trở về vai trò Thành viên.'**
   String get faqTransferOwnershipAnswer;
 
   /// No description provided for @faqDataSecurityQuestion.

@@ -1001,7 +1001,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqAddBranchAnswer =>
-      '1. Go to Dashboard > Branches tab, tap \"+\" to create a branch (branch name, founder, foundation year, location).\n2. Go to Settings > Member Roles to appoint a Branch Leader to manage that specific branch.';
+      '1. Go to Dashboard > Branches tab, tap \"+\" to create a branch (branch name, founder, foundation year, location).\n2. Go to Settings > Link Accounts & Roles > Roles tab to appoint a leader for that branch.';
 
   @override
   String get faqEditMemberQuestion =>
@@ -1009,7 +1009,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqEditMemberAnswer =>
-      'Go to Settings > Link Accounts > enter your relative\'s Email. The system will automatically link their account to their profile on the tree so they can log in and view the genealogy.';
+      'Go to Settings > Link Accounts & Roles > Link Accounts tab > enter your relative\'s Email. The system will automatically connect their account to their profile on the tree so they can view and contribute.';
 
   @override
   String get faqDeleteMemberQuestion =>
@@ -1037,11 +1037,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get faqTransferOwnershipQuestion =>
-      'Important notes on Transferring Leadership or Dissolving Clan?';
+      'How to Transfer Leadership and security guidelines?';
 
   @override
   String get faqTransferOwnershipAnswer =>
-      '• **Transfer Leadership:** Effective immediately, the recipient becomes the new Clan Leader and you become a Member.\n• **Dissolve Clan:** Permanently deletes all family trees, generation history, and photos from the server with NO RECOVERY possible.';
+      '• **How to perform:** Go to Settings > Link Accounts & Roles > Roles tab > tap on the target member > choose \"Transfer Ownership\" (Supreme badge) and type \"CONFIRM\" to finalize.\n• **Notes:** Transfer takes effect immediately. The recipient becomes the new Clan Leader and your role automatically changes to Member.';
 
   @override
   String get faqDataSecurityQuestion =>

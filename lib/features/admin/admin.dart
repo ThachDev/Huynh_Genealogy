@@ -31,10 +31,9 @@ export 'presentation/bloc/audit_logs/audit_logs_bloc.dart';
 // Presentation Pages
 export 'presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 export 'presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
-export 'presentation/pages/admin_dashboard/pages/admin_link_accounts_page.dart';
+export 'presentation/pages/admin_dashboard/pages/admin_link_and_roles_page.dart';
 export 'presentation/pages/admin_dashboard/pages/member_trash_page.dart';
 export 'presentation/pages/admin_dashboard/pages/audit_logs_page.dart';
-export 'presentation/pages/setting_dashboard/pages/admin_member_roles_page.dart';
 export 'presentation/pages/setting_dashboard/admin_settings_page.dart';
 
 // Events Pages & Widgets

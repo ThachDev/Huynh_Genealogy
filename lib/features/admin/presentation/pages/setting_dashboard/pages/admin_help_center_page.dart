@@ -195,6 +195,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
           _buildSectionTitle(context, l10n.contactSection),
           const SizedBox(height: 12),
           _buildContactRow(context),
+          const SizedBox(height: 12),
           // ── Phả Hệ & Liên Kết ──
           _buildSectionTitle(context, l10n.genealogyMemberSection),
           const SizedBox(height: 12),
@@ -547,7 +548,8 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                     ),
                   ),
                   child: Center(
-                    child: Icon(LucideIcons.mail, color: context.primary, size: 20),
+                    child: Icon(LucideIcons.mail,
+                        color: context.primary, size: 20),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -767,7 +769,8 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                             style: GoogleFonts.inter(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: isExpanded ? Colors.white : context.primary,
+                              color:
+                                  isExpanded ? Colors.white : context.primary,
                             ),
                           ),
                         ),

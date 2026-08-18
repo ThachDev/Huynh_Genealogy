@@ -14,7 +14,6 @@ import '../../bloc/admin_pending_requests/admin_pending_requests_bloc.dart';
 
 import 'pages/admin_clan_info_page.dart';
 import 'pages/admin_account_security_page.dart';
-import 'pages/admin_transfer_ownership_page.dart';
 import 'pages/admin_dissolve_clan_page.dart';
 import 'pages/admin_help_center_page.dart';
 import '../admin_dashboard/pages/admin_link_and_roles_page.dart';
@@ -362,12 +361,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       icon: LucideIcons.shieldCheck,
                       title: l10n.linkAndRolesTitle,
                       destination: const AdminLinkAndRolesPage(),
-                    ),
-                    _buildSettingsTile(
-                      context: context,
-                      icon: LucideIcons.shieldAlert,
-                      title: l10n.transferOwnershipLabel,
-                      destination: const AdminTransferOwnershipPage(),
                     ),
                     _buildSettingsTile(
                       context: context,

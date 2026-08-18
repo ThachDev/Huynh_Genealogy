@@ -12,6 +12,7 @@ import 'package:giatocviet/resources/app_localizations.dart';
 import 'package:giatocviet/features/auth/auth.dart';
 import 'package:giatocviet/features/admin/presentation/bloc/member_account_links/member_account_links_bloc.dart';
 import 'package:giatocviet/features/admin/presentation/bloc/admin_member_roles/admin_member_roles_bloc.dart';
+import 'package:giatocviet/features/admin/presentation/bloc/admin_transfer_ownership_bloc/admin_transfer_ownership_bloc.dart';
 import 'package:giatocviet/features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import 'package:giatocviet/features/admin/presentation/widgets/link_account_email_sheet.dart';
 
@@ -167,6 +168,8 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                     l10n.roleEditorDesc),
                 _buildRoleOption(user, familyId, 'VIEWER', l10n.roleViewerTitle,
                     l10n.roleViewerDesc),
+                const Divider(),
+                _buildTransferOwnershipOption(user, familyId, l10n),
               ],
             ),
           ),
@@ -215,6 +218,97 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
           : null,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
     );
+  }
+
+  Widget _buildTransferOwnershipOption(
+      FamilyUserEntity user, int familyId, AppLocalizations l10n) {
+    final isOwner = user.role.toUpperCase() == 'OWNER' ||
+        user.role.toUpperCase() == 'CREATOR';
+
+    return ListTile(
+      onTap: isOwner
+          ? null
+          : () {
+              Navigator.pop(context);
+              _confirmTransferOwnership(
+                familyId,
+                user.userId,
+                user.userFullName ?? user.userEmail ?? l10n.roleViewer,
+              );
+            },
+      leading: Icon(
+        LucideIcons.crown,
+        color: isOwner ? context.textSecondary : context.primary,
+        size: 22,
+      ),
+      title: Row(
+        children: [
+          Text(
+            l10n.transferOwnershipLabel,
+            style: GoogleFonts.beVietnamPro(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: isOwner ? context.textSecondary : context.primary,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: context.primary.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              'Tối cao',
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: context.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+      subtitle: Text(
+        'Chuyển giao toàn quyền quản trị dòng họ cho người này',
+        style: GoogleFonts.inter(
+          fontSize: 12,
+          color: context.textSecondary,
+        ),
+      ),
+      trailing: isOwner
+          ? Icon(LucideIcons.check, color: context.primary, size: 20)
+          : null,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+    );
+  }
+
+  Future<void> _confirmTransferOwnership(
+    int familyId,
+    int newOwnerUserId,
+    String newOwnerName,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    final confirmed = await AppDialog.confirmWithInput(
+      context,
+      title: l10n.warningDialogTitle,
+      message: l10n.warningDialogConfirmMessage(newOwnerName),
+      requiredWord: l10n.confirmWord,
+      inputInstruction: l10n.typeConfirmToTransfer,
+      confirmLabel: l10n.confirmTransferButton,
+      cancelLabel: l10n.formCancel,
+      type: AppDialogType.danger,
+    );
+
+    if (confirmed == true && mounted) {
+      context.read<AdminTransferOwnershipBloc>().add(
+            TransferOwnershipEvent(
+              familyId: familyId,
+              newOwnerUserId: newOwnerUserId,
+            ),
+          );
+    }
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -706,20 +800,40 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
       BuildContext context, int? familyId, AppLocalizations l10n) {
     final authState = context.watch<AuthBloc>().state;
 
-    return BlocConsumer<AdminMemberRolesBloc, AdminMemberRolesState>(
-      listener: (context, state) {
-        if (state is AdminMemberRoleUpdatedSuccess) {
-          AppSnackBar.success(context, l10n.updateRoleSuccess);
-          if (familyId != null) {
-            context.read<AdminMemberRolesBloc>().add(
-                  LoadAdminMemberRolesEvent(familyId: familyId),
-                );
-          }
-        } else if (state is AdminMemberRolesFailure) {
-          AppSnackBar.error(context, state.message);
-        }
-      },
-      builder: (context, state) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AdminMemberRolesBloc, AdminMemberRolesState>(
+          listener: (context, state) {
+            if (state is AdminMemberRoleUpdatedSuccess) {
+              AppSnackBar.success(context, l10n.updateRoleSuccess);
+              if (familyId != null) {
+                context.read<AdminMemberRolesBloc>().add(
+                      LoadAdminMemberRolesEvent(familyId: familyId),
+                    );
+              }
+            } else if (state is AdminMemberRolesFailure) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
+        BlocListener<AdminTransferOwnershipBloc, AdminTransferOwnershipState>(
+          listener: (context, state) {
+            if (state is AdminTransferOwnershipSuccess) {
+              AppSnackBar.success(context, l10n.transferSuccess);
+              context.read<AuthBloc>().add(AuthProfileRefreshSilent());
+              if (familyId != null) {
+                context.read<AdminMemberRolesBloc>().add(
+                      LoadAdminMemberRolesEvent(familyId: familyId),
+                    );
+              }
+            } else if (state is AdminTransferOwnershipFailure) {
+              AppSnackBar.error(context, state.message);
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<AdminMemberRolesBloc, AdminMemberRolesState>(
+        builder: (context, state) {
         if (state is AdminMemberRolesLoading ||
             state is AdminMemberRolesInitial) {
           return const Padding(
@@ -1004,6 +1118,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
           ],
         );
       },
-    );
-  }
+    ),
+  );
+}
 }

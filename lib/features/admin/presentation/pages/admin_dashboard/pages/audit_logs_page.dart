@@ -23,6 +23,7 @@ class AuditLogsPage extends StatefulWidget {
 class _AuditLogsPageState extends State<AuditLogsPage> {
   int? _familyId;
   String _selectedFilter = 'all'; // all, create, update, delete, restore
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -38,6 +39,12 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
     });
   }
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   void _reload() {
     if (_familyId != null) {
       context
@@ -46,18 +53,48 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
     }
   }
 
-  List<AuditLogEntity> _filterLogs(List<AuditLogEntity> logs) {
-    if (_selectedFilter == 'all') return logs;
-    return logs.where((log) {
-      if (_selectedFilter == 'create') return log.action == 'member.create';
-      if (_selectedFilter == 'update') return log.action == 'member.update';
-      if (_selectedFilter == 'delete') {
-        return log.action == 'member.soft_delete' ||
-            log.action == 'member.purge_trash';
-      }
-      if (_selectedFilter == 'restore') return log.action == 'member.restore';
-      return true;
-    }).toList();
+  List<AuditLogEntity> _filterLogs(
+      List<AuditLogEntity> logs, AppLocalizations l10n) {
+    var result = logs;
+
+    if (_selectedFilter != 'all') {
+      result = result.where((log) {
+        switch (_selectedFilter) {
+          case 'create':
+            return log.action.contains('create') ||
+                log.action.contains('restore');
+          case 'update':
+            return log.action.contains('update') ||
+                log.action.contains('role') ||
+                log.action.contains('link') ||
+                log.action.contains('transfer_ownership') ||
+                log.action.startsWith('family.');
+          case 'delete':
+            return log.action.contains('delete') ||
+                log.action.contains('purge');
+          default:
+            return true;
+        }
+      }).toList();
+    }
+
+    final query = _searchController.text.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      result = result.where((log) {
+        final actor = (log.actorName ?? log.actorEmail ?? '').toLowerCase();
+        final targetName = (log.detail?['name'] as String? ??
+                log.detail?['title'] as String? ??
+                log.targetId ??
+                '')
+            .toLowerCase();
+        final actionText = _AuditLogItem.getActionText(log, l10n).toLowerCase();
+        return actor.contains(query) ||
+            targetName.contains(query) ||
+            actionText.contains(query);
+      }).toList();
+    }
+
+    return result;
   }
 
   void _showDetailBottomSheet(BuildContext context, AuditLogEntity log) {
@@ -120,13 +157,16 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
 
                 // Thông tin chi tiết
                 _buildDetailRow(ctx, l10n.auditActorLabel, actor),
+                _buildDetailRow(ctx, 'Vai trò:', 'Trưởng tộc / Quản trị viên'),
                 if (log.actorEmail != null && log.actorEmail!.isNotEmpty)
                   _buildDetailRow(ctx, l10n.auditEmailLabel, log.actorEmail!),
-                _buildDetailRow(ctx, l10n.auditActionLabel, _AuditLogItem.getActionText(log, l10n)),
-                if (targetName.isNotEmpty)
+                _buildDetailRow(ctx, l10n.auditActionLabel,
+                    _AuditLogItem.getActionText(log, l10n)),
+                if (targetName.isNotEmpty && int.tryParse(targetName) == null)
                   _buildDetailRow(ctx, l10n.auditTargetLabel, targetName),
                 if (log.createdAt != null)
-                  _buildDetailRow(ctx, l10n.auditTimeLabel, log.createdAt!.replaceAll('T', ' ').split('.').first),
+                  _buildDetailRow(ctx, l10n.auditTimeLabel,
+                      log.createdAt!.replaceAll('T', ' ').split('.').first),
 
                 if (changes is Map && changes.isNotEmpty) ...[
                   const SizedBox(height: 12),
@@ -152,10 +192,30 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: changes.entries.map((e) {
+                        final keyStr = e.key.toString();
+                        final fieldTranslations = {
+                          'fullName': 'Họ và tên',
+                          'gender': 'Giới tính',
+                          'birthDate': 'Ngày sinh',
+                          'deathDate': 'Ngày mất',
+                          'generation': 'Đời thứ',
+                          'branchId': 'Chi tộc',
+                          'fatherId': 'Cha',
+                          'motherId': 'Mẹ',
+                          'spouseId': 'Vợ/Chồng',
+                          'role': 'Vai trò',
+                          'email': 'Email',
+                          'title': 'Tiêu đề',
+                          'date': 'Ngày',
+                          'location': 'Địa điểm',
+                          'content': 'Nội dung',
+                          'newOwnerUserId': 'Trưởng tộc mới',
+                        };
+                        final friendlyKey = fieldTranslations[keyStr] ?? keyStr;
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2),
                           child: Text(
-                            '• ${e.key}: ${e.value}',
+                            '• $friendlyKey: ${e.value}',
                             style: GoogleFonts.inter(
                               fontSize: 12,
                               color: ctx.textSecondary,
@@ -254,9 +314,8 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final authState = context.read<AuthBloc>().state;
-    final role = authState is Authenticated
-        ? authState.user.role.toUpperCase()
-        : '';
+    final role =
+        authState is Authenticated ? authState.user.role.toUpperCase() : '';
     final isOwner = role == 'OWNER' || role == 'CREATOR';
     if (!isOwner) {
       return Scaffold(
@@ -296,22 +355,84 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
         child: SafeArea(
           child: Column(
             children: [
-              // ── Filter Chips ──
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  children: [
-                    _buildFilterChip('all', l10n.allLabel),
-                    const SizedBox(width: 8),
-                    _buildFilterChip('create', l10n.filterCreate),
-                    const SizedBox(width: 8),
-                    _buildFilterChip('update', l10n.filterUpdate),
-                    const SizedBox(width: 8),
-                    _buildFilterChip('delete', l10n.deleteLabel),
-                    const SizedBox(width: 8),
-                    _buildFilterChip('restore', l10n.restoreLabel),
+              // ── Search & Filter Bar ──
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: AppSearchBar(
+                  controller: _searchController,
+                  hintText: 'Tìm theo người thực hiện, đối tượng...',
+                  onChanged: (_) => setState(() {}),
+                  trailing: [
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                      ),
+                      child: PopupMenuButton<String>(
+                        icon: Icon(
+                          LucideIcons.listFilter,
+                          size: 20,
+                          color: _selectedFilter != 'all'
+                              ? context.primary
+                              : context.textSecondary,
+                        ),
+                        offset: const Offset(0, 40),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: context.surface,
+                        elevation: 4,
+                        onSelected: (val) {
+                          setState(() {
+                            _selectedFilter = val;
+                          });
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'all',
+                            height: 38,
+                            child: Row(
+                              children: [
+                                Icon(LucideIcons.filterX,
+                                    color: context.textPrimary, size: 18),
+                                const SizedBox(width: 8),
+                                Text(
+                                  l10n.allLabel,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13,
+                                    color: _selectedFilter == 'all'
+                                        ? context.primary
+                                        : context.textPrimary,
+                                    fontWeight: _selectedFilter == 'all'
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuDivider(),
+                          _buildPopupMenuItem(
+                            key: 'create',
+                            label: 'Thêm mới',
+                            icon: LucideIcons.userPlus,
+                            iconColor: Colors.green,
+                          ),
+                          _buildPopupMenuItem(
+                            key: 'update',
+                            label: 'Chỉnh sửa',
+                            icon: LucideIcons.pencil,
+                            iconColor: context.accent,
+                          ),
+                          _buildPopupMenuItem(
+                            key: 'delete',
+                            label: 'Đã xoá',
+                            icon: LucideIcons.trash2,
+                            iconColor: AppColors.error,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -339,7 +460,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                     final logs = state is AuditLogsLoaded
                         ? state.logs
                         : const <AuditLogEntity>[];
-                    final filteredLogs = _filterLogs(logs);
+                    final filteredLogs = _filterLogs(logs, l10n);
                     if (filteredLogs.isEmpty) {
                       return AppEmptyState(
                         icon: LucideIcons.clipboardList,
@@ -372,35 +493,30 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
     );
   }
 
-  Widget _buildFilterChip(String key, String label) {
+  PopupMenuItem<String> _buildPopupMenuItem({
+    required String key,
+    required String label,
+    required IconData icon,
+    required Color iconColor,
+  }) {
     final isSelected = _selectedFilter == key;
-    return ChoiceChip(
-      label: Text(
-        label,
-        style: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? Colors.white : context.textPrimary,
-        ),
+    return PopupMenuItem(
+      value: key,
+      height: 38,
+      child: Row(
+        children: [
+          Icon(icon, color: iconColor, size: 18),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 13,
+              color: isSelected ? context.primary : context.textPrimary,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
       ),
-      selected: isSelected,
-      selectedColor: context.primary,
-      backgroundColor: context.surface,
-      elevation: isSelected ? 2 : 0,
-      pressElevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: isSelected
-              ? context.primary
-              : context.textSecondary.withValues(alpha: 0.2),
-        ),
-      ),
-      onSelected: (selected) {
-        if (selected) {
-          setState(() => _selectedFilter = key);
-        }
-      },
     );
   }
 }
@@ -426,19 +542,18 @@ class _AuditLogItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: context.surface,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: context.textSecondary.withValues(alpha: 0.15),
+            color: context.accent.withValues(alpha: 0.15),
             width: 1,
           ),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center, // Icon căn giữa dòng
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Icon trực tiếp, KHÔNG dùng background circle
             Icon(
               getActionIcon(log.action),
-              size: 20,
+              size: 22,
               color: color,
             ),
             const SizedBox(width: 14),
@@ -450,7 +565,7 @@ class _AuditLogItem extends StatelessWidget {
                   Text(
                     getActionText(log, l10n),
                     style: GoogleFonts.beVietnamPro(
-                      fontSize: 13,
+                      fontSize: 13.5,
                       fontWeight: FontWeight.w600,
                       color: context.textPrimary,
                     ),
@@ -510,29 +625,139 @@ class _AuditLogItem extends StatelessWidget {
     final actor = (log.actorName?.isNotEmpty ?? false)
         ? log.actorName!
         : (log.actorEmail ?? l10n.auditUnknownActor);
-    switch (log.action) {
-      case 'member.create':
-        return l10n.auditActionCreate(actor);
-      case 'member.update':
-        return l10n.auditActionUpdate(actor);
-      case 'member.soft_delete':
-        return l10n.auditActionDelete(actor);
-      case 'member.restore':
-        return l10n.auditActionRestore(actor);
-      case 'member.purge_trash':
-        return l10n.auditActionPurge(actor);
-      default:
-        return l10n.auditActionGeneric(actor, log.action);
+
+    final rawAction = log.action.toLowerCase();
+
+    // 1. Member actions
+    if (rawAction == 'member.create' || rawAction == 'member_create') {
+      return '$actor đã thêm thành viên mới';
     }
+    if (rawAction == 'member.update' || rawAction == 'member_update') {
+      return '$actor đã cập nhật thành viên';
+    }
+    if (rawAction == 'member.soft_delete' || rawAction == 'member.delete') {
+      return '$actor đã đưa thành viên vào thùng rác';
+    }
+    if (rawAction == 'member.restore') {
+      return '$actor đã khôi phục thành viên';
+    }
+    if (rawAction == 'member.purge_trash' || rawAction == 'member.purge') {
+      return '$actor đã dọn dẹp thùng rác';
+    }
+
+    // 2. Family Invite & Account Link
+    if (rawAction.contains('send_invite') || rawAction.contains('invite')) {
+      return '$actor đã gửi lời mời gia nhập gia tộc';
+    }
+    if (rawAction.contains('role_change') ||
+        rawAction.contains('update_role') ||
+        rawAction.contains('role.update')) {
+      return '$actor đã thay đổi phân quyền thành viên';
+    }
+    if (rawAction.contains('link_account') || rawAction == 'account.link') {
+      return '$actor đã liên kết tài khoản cho thành viên';
+    }
+    if (rawAction.contains('unlink_account') || rawAction == 'account.unlink') {
+      return '$actor đã gỡ liên kết tài khoản';
+    }
+
+    // 3. Family & Ownership
+    if (rawAction.contains('transfer_ownership')) {
+      return '$actor đã chuyển nhượng quyền Trưởng tộc';
+    }
+    if (rawAction == 'family.create') {
+      return '$actor đã khởi tạo dòng họ';
+    }
+    if (rawAction == 'family.update') {
+      return '$actor đã cập nhật thông tin dòng họ';
+    }
+    if (rawAction == 'family.dissolve') {
+      return '$actor đã giải tán dòng họ';
+    }
+
+    // 4. Branch
+    if (rawAction.startsWith('branch.create')) {
+      return '$actor đã thêm chi tộc mới';
+    }
+    if (rawAction.startsWith('branch.update')) {
+      return '$actor đã cập nhật chi tộc';
+    }
+    if (rawAction.startsWith('branch.delete')) {
+      return '$actor đã xoá chi tộc';
+    }
+
+    // 5. Events
+    if (rawAction.startsWith('event.create')) {
+      return '$actor đã tạo sự kiện mới';
+    }
+    if (rawAction.startsWith('event.update')) {
+      return '$actor đã cập nhật sự kiện';
+    }
+    if (rawAction.startsWith('event.delete')) {
+      return '$actor đã xoá sự kiện';
+    }
+
+    // Fallback: chuyển đổi action dạng snake/dot sang tiếng Việt dễ hiểu
+    final friendlyAction = rawAction
+        .replaceAll('family.', '')
+        .replaceAll('member.', '')
+        .replaceAll('event.', '')
+        .replaceAll('branch.', '')
+        .replaceAll('_', ' ')
+        .replaceAll('.', ' ')
+        .trim();
+
+    return '$actor đã thực hiện: $friendlyAction';
   }
 
   String _detailText(AppLocalizations l10n) {
-    final name = log.detail?['name'] as String?;
+    final name = log.detail?['name'] as String? ??
+        log.detail?['title'] as String? ??
+        log.detail?['fullName'] as String?;
     final changes = log.detail?['changes'];
-    if (name != null && changes is Map && changes.isNotEmpty) {
-      return l10n.auditChangedFields(name, changes.keys.join(', '));
+
+    // Map tên các trường kỹ thuật sang tiếng Việt thân thiện
+    final fieldTranslations = {
+      'fullName': 'Họ và tên',
+      'gender': 'Giới tính',
+      'birthDate': 'Ngày sinh',
+      'deathDate': 'Ngày mất',
+      'generation': 'Đời thứ',
+      'branchId': 'Chi tộc',
+      'fatherId': 'Cha',
+      'motherId': 'Mẹ',
+      'spouseId': 'Vợ/Chồng',
+      'role': 'Vai trò',
+      'email': 'Email',
+      'title': 'Tiêu đề',
+      'date': 'Ngày',
+      'location': 'Địa điểm',
+      'content': 'Nội dung',
+      'newOwnerUserId': 'Trưởng tộc mới',
+    };
+
+    if (changes is Map && changes.isNotEmpty) {
+      final translatedKeys = changes.keys.map((k) {
+        final keyStr = k.toString();
+        return fieldTranslations[keyStr] ?? keyStr;
+      }).toList();
+
+      if (name != null && name.isNotEmpty) {
+        return '$name · Sửa: ${translatedKeys.join(', ')}';
+      }
+      return 'Thay đổi: ${translatedKeys.join(', ')}';
     }
-    return name ?? '';
+
+    // Nếu không có changes mà có targetName
+    if (name != null && name.isNotEmpty) {
+      // Tránh trùng lặp nếu name trùng với actor
+      final actor = log.actorName ?? log.actorEmail ?? '';
+      if (name != actor) {
+        return 'Đối tượng: $name';
+      }
+    }
+
+    return '';
   }
 
   String _formatDate(String value) {
@@ -540,35 +765,48 @@ class _AuditLogItem extends StatelessWidget {
   }
 
   static IconData getActionIcon(String action) {
-    switch (action) {
-      case 'member.create':
-        return LucideIcons.userPlus;
-      case 'member.update':
-        return LucideIcons.pencil;
-      case 'member.soft_delete':
-        return LucideIcons.trash2;
-      case 'member.restore':
-        return LucideIcons.rotateCcw;
-      case 'member.purge_trash':
-        return LucideIcons.archiveRestore;
-      default:
-        return LucideIcons.history;
+    if (action.contains('delete') || action.contains('purge')) {
+      return LucideIcons.trash2;
     }
+    if (action.contains('transfer_ownership')) {
+      return LucideIcons.crown;
+    }
+    if (action.startsWith('member.create') ||
+        action.startsWith('branch.create')) {
+      return LucideIcons.userPlus;
+    }
+    if (action.startsWith('event.create')) {
+      return LucideIcons.calendarPlus;
+    }
+    if (action.contains('update') ||
+        action.contains('role') ||
+        action.contains('link')) {
+      return LucideIcons.pencil;
+    }
+    if (action.contains('restore')) {
+      return LucideIcons.rotateCcw;
+    }
+    return LucideIcons.history;
   }
 
   static Color getActionColor(BuildContext context, String action) {
-    switch (action) {
-      case 'member.create':
-        return Colors.green;
-      case 'member.update':
-        return context.accent;
-      case 'member.soft_delete':
-      case 'member.purge_trash':
-        return AppColors.error;
-      case 'member.restore':
-        return context.primary;
-      default:
-        return context.textSecondary;
+    if (action.contains('transfer_ownership')) {
+      return context.primary;
     }
+    if (action.contains('create') || action.contains('link')) {
+      return Colors.green;
+    }
+    if (action.contains('update') || action.contains('role')) {
+      return context.accent;
+    }
+    if (action.contains('delete') ||
+        action.contains('purge') ||
+        action.contains('dissolve')) {
+      return AppColors.error;
+    }
+    if (action.contains('restore')) {
+      return context.primary;
+    }
+    return context.textSecondary;
   }
 }

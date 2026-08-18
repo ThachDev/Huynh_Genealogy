@@ -12,7 +12,7 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
 import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../features/auth/auth.dart';
-import 'admin_transfer_ownership_page.dart';
+import '../../admin_dashboard/pages/admin_link_and_roles_page.dart';
 
 class AdminAccountSecurityPage extends StatefulWidget {
   const AdminAccountSecurityPage({super.key});
@@ -117,7 +117,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
         Navigator.push(
           context,
           SereneFadeSlidePageRoute(
-            page: const AdminTransferOwnershipPage(),
+            page: const AdminLinkAndRolesPage(initialTabIndex: 1),
           ),
         );
       }

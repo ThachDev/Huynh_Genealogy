@@ -8,7 +8,7 @@ import '../../../../core/utils/date_formatter.dart';
 import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../../features/auth/auth.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
-import '../../../admin/presentation/pages/admin_dashboard/pages/admin_link_accounts_page.dart';
+import '../../../admin/presentation/pages/admin_dashboard/pages/admin_link_and_roles_page.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
@@ -84,9 +84,8 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                 Navigator.push(
                   context,
                   SereneFadeSlidePageRoute(
-                    page: AdminLinkAccountsPage(
+                    page: AdminLinkAndRolesPage(
                       memberId: widget.member.id,
-                      memberName: widget.member.fullName,
                     ),
                   ),
                 );

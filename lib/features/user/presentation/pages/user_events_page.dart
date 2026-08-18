@@ -400,7 +400,7 @@ class _UserEventsPageState extends State<UserEventsPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Section: Ngày Giỗ ──
+        // ── Section 1: Ngày Giỗ Sắp Tới (Horizontal Carousel) ──
         if (deathAnniversaries.isNotEmpty && !widget.isAdminMode) ...[
           AppSectionTitle(
             title: l10n.deathAnniversariesSectionTitle,
@@ -412,9 +412,10 @@ class _UserEventsPageState extends State<UserEventsPage>
             ),
           ),
           _buildHorizontalAnniversaryList(deathAnniversaries),
+          const SizedBox(height: 8),
         ],
 
-        // ── Section: Sinh Nhật ──
+        // ── Section 2: Sinh Nhật Sắp Tới (Horizontal Carousel) ──
         if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
           AppSectionTitle(
             title: l10n.birthdaysSectionTitle,
@@ -427,9 +428,10 @@ class _UserEventsPageState extends State<UserEventsPage>
             ),
           ),
           _buildHorizontalAnniversaryList(birthdays),
+          const SizedBox(height: 8),
         ],
 
-        // ── Section: Sự Kiện ──
+        // ── Section 3: Bảng Tin Sự Kiện (Clan Event Feed) ──
         AppSectionTitle(
           title: l10n.eventsListTitle,
           trailing: _buildSeeAll(
@@ -459,7 +461,7 @@ class _UserEventsPageState extends State<UserEventsPage>
               },
             ),
           ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 24),
       ],
     );
   }

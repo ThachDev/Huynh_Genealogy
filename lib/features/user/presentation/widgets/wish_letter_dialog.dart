@@ -245,159 +245,203 @@ class _LetterContent extends StatelessWidget {
 
     return Container(
       width: 320,
-      height: 380,
-      padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
+      height: 400,
       decoration: BoxDecoration(
         color: context.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: context.accent.withValues(alpha: 0.6),
-          width: 1.2,
-        ),
-        boxShadow: const [
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
           BoxShadow(
-            color: Colors.black26,
-            blurRadius: 12,
-            offset: Offset(0, 4),
+            color: Colors.black.withValues(alpha: context.isDarkMode ? 0.4 : 0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header: icon + tiêu đề + nút đóng ──
-          Row(
-            children: [
-              Icon(icon, size: 18, color: context.primary),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  dialogTitle,
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: context.textPrimary,
-                  ),
-                ),
-              ),
-              if (!sending)
-                InkWell(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(2),
-                    child: Icon(
-                      LucideIcons.x,
-                      size: 16,
-                      color: context.textSecondary,
+          // ── 1. Header Strip đồng bộ phong cách hệ thống ──
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.5),
+            color: context.primary,
+            child: Row(
+              children: [
+                Icon(icon, size: 15, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    dialogTitle.toUpperCase(),
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: 0.6,
                     ),
                   ),
                 ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // ── Tên + ngày ──
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: context.textPrimary,
+                if (!sending)
+                  InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Padding(
+                      padding: EdgeInsets.all(2),
+                      child: Icon(
+                        LucideIcons.x,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: context.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          const Divider(height: 1, thickness: 0.5),
-          const SizedBox(height: 12),
-          // ── Ô nhập lời chúc ──
+
           Expanded(
-            child: TextField(
-              controller: controller,
-              enabled: !sending,
-              maxLines: null,
-              expands: true,
-              textAlignVertical: TextAlignVertical.top,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: context.textPrimary,
-              ),
-              decoration: InputDecoration(
-                hintText: dialogHint,
-                hintStyle: GoogleFonts.inter(
-                  fontSize: 13,
-                  color: context.textSecondary.withValues(alpha: 0.6),
-                ),
-                filled: true,
-                fillColor: context.background,
-                isDense: true,
-                contentPadding: const EdgeInsets.all(12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    color: context.accent.withValues(alpha: 0.3),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── 2. Tên người nhận + Ngày Dương lịch ──
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: context.textPrimary,
+                    ),
                   ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    color: context.accent.withValues(alpha: 0.3),
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      Icon(
+                        LucideIcons.calendar,
+                        size: 13,
+                        color: context.primary,
+                      ),
+                      const SizedBox(width: 5),
+                      Expanded(
+                        child: Text(
+                          subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.inter(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w500,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: context.accent, width: 1.2),
-                ),
+
+                  const SizedBox(height: 12),
+
+                  // ── 3. Ô nhập lời chúc tinh tế & dễ nhìn ──
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      enabled: !sending,
+                      maxLines: null,
+                      expands: true,
+                      textAlignVertical: TextAlignVertical.top,
+                      style: GoogleFonts.inter(
+                        fontSize: 13.5,
+                        color: context.textPrimary,
+                        height: 1.4,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: dialogHint,
+                        hintStyle: GoogleFonts.inter(
+                          fontSize: 12.5,
+                          color: context.textSecondary.withValues(alpha: 0.55),
+                        ),
+                        filled: true,
+                        fillColor: context.background,
+                        contentPadding: const EdgeInsets.all(12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: context.textSecondary.withValues(alpha: 0.2),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: context.textSecondary.withValues(alpha: 0.2),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: context.primary,
+                            width: 1.2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // ── 4. Nút Hành động: Hủy & Gửi Lời Chúc ──
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: sending ? null : () => Navigator.of(context).pop(),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 11),
+                            side: BorderSide(
+                              color: context.textSecondary.withValues(alpha: 0.25),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            l10n.cancelLabel,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: ElevatedButton.icon(
+                          onPressed: sending ? null : onSend,
+                          icon: const Icon(LucideIcons.send, size: 15, color: Colors.white),
+                          label: Text(
+                            l10n.wishSendButton,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: context.primary,
+                            disabledBackgroundColor:
+                                context.primary.withValues(alpha: 0.65),
+                            padding: const EdgeInsets.symmetric(vertical: 11),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: sending ? 0 : 2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          // ── Nút: Hủy / Gửi ──
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: sending ? null : () => Navigator.of(context).pop(),
-                child: Text(
-                  l10n.cancelLabel,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    color: context.textSecondary,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: sending ? null : onSend,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.primary,
-                  foregroundColor: context.textOnPrimary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 10,
-                  ),
-                ),
-                child: Text(
-                  l10n.wishSendButton,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
           ),
         ],
       ),

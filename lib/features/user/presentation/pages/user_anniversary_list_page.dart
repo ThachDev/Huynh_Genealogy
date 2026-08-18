@@ -8,17 +8,17 @@ import '../../../../resources/app_localizations.dart';
 import '../models/upcoming_anniversary.dart';
 import '../widgets/anniversary_card.dart';
 
-/// Trang hiển thị danh sách đầy đủ Ngày Giỗ / Sinh Nhật.
+/// Trang hiển thị danh sách Ngày Giỗ & Ngày Sinh Nhật theo 2 Tab.
 class UserAnniversaryListPage extends StatefulWidget {
-  final String title;
-  final List<UpcomingAnniversary> anniversaries;
-  final bool isBirthday;
+  final List<UpcomingAnniversary> deathAnniversaries;
+  final List<UpcomingAnniversary> birthdays;
+  final int initialTabIndex;
 
   const UserAnniversaryListPage({
     super.key,
-    required this.title,
-    required this.anniversaries,
-    this.isBirthday = false,
+    required this.deathAnniversaries,
+    required this.birthdays,
+    this.initialTabIndex = 0,
   });
 
   @override
@@ -26,20 +26,38 @@ class UserAnniversaryListPage extends StatefulWidget {
       _UserAnniversaryListPageState();
 }
 
-class _UserAnniversaryListPageState extends State<UserAnniversaryListPage> {
+class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
   String _selectedSort = 'nearest';
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialTabIndex,
+    );
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
   void dispose() {
+    _tabController.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
-  List<UpcomingAnniversary> get _filteredList {
+  List<UpcomingAnniversary> _filterAndSort(List<UpcomingAnniversary> source) {
     final q = _query.trim().toLowerCase();
-    var list = widget.anniversaries;
+    var list = source;
     if (q.isNotEmpty) {
       list = list
           .where((a) =>
@@ -57,15 +75,17 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final isDeathTab = _tabController.index == 0;
+    final hint = isDeathTab ? 'Tìm kiếm ngày giỗ...' : 'Tìm kiếm ngày sinh nhật...';
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 8, 25, 4),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 6),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 460),
           child: AppSearchBar(
             controller: _searchController,
-            hintText: l10n.searchHint,
+            hintText: hint,
             onChanged: (value) => setState(() => _query = value),
             trailing: [
               Theme(
@@ -183,46 +203,158 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage> {
     );
   }
 
+  Widget _buildListView({
+    required List<UpcomingAnniversary> list,
+    required bool isBirthday,
+    required AppLocalizations l10n,
+  }) {
+    final filtered = _filterAndSort(list);
+
+    if (filtered.isEmpty) {
+      return Center(
+        child: AppEmptyState(
+          icon: list.isEmpty
+              ? (isBirthday ? LucideIcons.cake : LucideIcons.flame)
+              : LucideIcons.searchX,
+          message: list.isEmpty
+              ? (isBirthday
+                  ? l10n.noBirthdaysMessage
+                  : l10n.noDeathAnniversariesMessage)
+              : l10n.noSearchResultsMessage,
+        ),
+      );
+    }
+
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      itemCount: filtered.length,
+      itemBuilder: (context, index) {
+        final data = filtered[index];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: AnniversaryCard(data: data, fullWidth: true),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final filtered = _filteredList;
 
     return Scaffold(
-      appBar: AppAppBar(title: widget.title),
+      appBar: const AppAppBar(
+        title: 'Giỗ & Sinh Nhật',
+      ),
       body: AppBackgroundBody(
         child: Column(
           children: [
-            _buildSearchBar(context),
-            Expanded(
-              child: filtered.isEmpty
-                  ? Center(
-                      child: AppEmptyState(
-                        icon: widget.anniversaries.isEmpty
-                            ? (widget.isBirthday
-                                ? LucideIcons.cake
-                                : LucideIcons.flame)
-                            : LucideIcons.searchX,
-                        message: widget.anniversaries.isEmpty
-                            ? (widget.isBirthday
-                                ? l10n.noBirthdaysMessage
-                                : l10n.noDeathAnniversariesMessage)
-                            : l10n.noSearchResultsMessage,
-                      ),
-                    )
-                  : ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      itemCount: filtered.length,
-                      itemBuilder: (context, index) {
-                        final data = filtered[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: AnniversaryCard(data: data, fullWidth: true),
-                        );
-                      },
+            // ── Tab Bar Container chuẩn thiết kế hệ thống ──
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: context.surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: context.accent.withValues(alpha: 0.18),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: context.resolve(
+                      Colors.black.withValues(alpha: 0.04),
+                      Colors.black.withValues(alpha: 0.2),
                     ),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                indicator: BoxDecoration(
+                  color: context.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.primary.withValues(alpha: 0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                labelColor: Colors.white,
+                unselectedLabelColor: context.textSecondary,
+                labelStyle: GoogleFonts.beVietnamPro(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+                unselectedLabelStyle: GoogleFonts.beVietnamPro(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+                tabs: const [
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(LucideIcons.flame, size: 15),
+                        SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            'Ngày giỗ',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Tab(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(LucideIcons.cake, size: 15),
+                        SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            'Sinh nhật',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Search Bar ──
+            _buildSearchBar(context),
+
+            // ── Tab Bar Views ──
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildListView(
+                    list: widget.deathAnniversaries,
+                    isBirthday: false,
+                    l10n: l10n,
+                  ),
+                  _buildListView(
+                    list: widget.birthdays,
+                    isBirthday: true,
+                    l10n: l10n,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

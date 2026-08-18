@@ -7,13 +7,17 @@ import '../../../../../resources/app_localizations.dart';
 class EventCalendarWidget extends StatefulWidget {
   final String eventDate;
   final bool isLunarDefault;
-  final AppLocalizations l10n;
+  final AppLocalizations? l10n;
+  final Color? primaryColor;
+  final Color? lunarColor;
 
   const EventCalendarWidget({
     super.key,
     required this.eventDate,
     this.isLunarDefault = false,
-    required this.l10n,
+    this.l10n,
+    this.primaryColor,
+    this.lunarColor,
   });
 
   @override
@@ -37,23 +41,44 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
     }
   }
 
-  String _getDay(String dateStr) {
+  DateTime? _parseDate(String dateStr) {
     try {
-      final parts = dateStr.split('-');
-      if (parts.length == 3) {
-        return parts[2];
+      if (dateStr.contains('-')) {
+        final parts = dateStr.split('-');
+        if (parts.length == 3) {
+          final year = int.tryParse(parts[0]);
+          final month = int.tryParse(parts[1]);
+          final day = int.tryParse(parts[2]);
+          if (year != null && month != null && day != null) {
+            return DateTime(year, month, day);
+          }
+        }
+      } else if (dateStr.contains('/')) {
+        final parts = dateStr.split('/');
+        if (parts.length >= 2) {
+          final day = int.tryParse(parts[0]);
+          final month = int.tryParse(parts[1]);
+          final year = parts.length >= 3
+              ? (int.tryParse(parts[2]) ?? DateTime.now().year)
+              : DateTime.now().year;
+          if (day != null && month != null) {
+            return DateTime(year, month, day);
+          }
+        }
       }
     } catch (_) {}
+    return null;
+  }
+
+  String _getDay(String dateStr) {
+    final dt = _parseDate(dateStr);
+    if (dt != null) return '${dt.day}';
     return '--';
   }
 
   String _getMonthYear(String dateStr) {
-    try {
-      final parts = dateStr.split('-');
-      if (parts.length == 3) {
-        return '${parts[1]}/${parts[0]}';
-      }
-    } catch (_) {}
+    final dt = _parseDate(dateStr);
+    if (dt != null) return '${dt.month}/${dt.year}';
     return '';
   }
 
@@ -72,23 +97,19 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
     String lunarMonthLabel = '--';
     String lunarYear = '';
     try {
-      final parts = widget.eventDate.split('-');
-      if (parts.length == 3) {
-        final year = int.tryParse(parts[0]);
-        final month = int.tryParse(parts[1]);
-        final day = int.tryParse(parts[2]);
-        if (year != null && month != null && day != null) {
-          final solarDate = DateTime(year, month, day);
-          final lunar = Lunar(createdFromSolar: true, date: solarDate);
-          final leap = lunar.leapMonth == true ? l10n.leapMonthInline : '';
-          lunarDay = '${lunar.day}';
-          lunarMonthLabel = l10n.lunarMonthLabelFormat(leap, lunar.month);
-          lunarYear = '${lunar.year}';
-        }
+      final solarDate = _parseDate(widget.eventDate);
+      if (solarDate != null) {
+        final lunar = Lunar(createdFromSolar: true, date: solarDate);
+        final leap = lunar.leapMonth == true ? l10n.leapMonthInline : '';
+        lunarDay = '${lunar.day}';
+        lunarMonthLabel = l10n.lunarMonthLabelFormat(leap, lunar.month);
+        lunarYear = '${lunar.year}';
       }
     } catch (_) {}
 
-    final activeColor = _showLunar ? context.accent : context.primary;
+    final defaultPrimary = widget.primaryColor ?? context.primary;
+    final defaultLunar = widget.lunarColor ?? context.accent;
+    final activeColor = _showLunar ? defaultLunar : defaultPrimary;
 
     return GestureDetector(
       onTap: () {
@@ -164,7 +185,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: context.accent,
+                                  color: defaultLunar,
                                   height: 1.0,
                                 ),
                               ),
@@ -179,10 +200,10 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                               ),
                               const SizedBox(height: 1),
                               Text(
-                                widget.l10n.lunarCalendar.toLowerCase(),
+                                (widget.l10n ?? l10n).lunarCalendar.toLowerCase(),
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 7,
-                                  color: context.accent,
+                                  color: defaultLunar,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -197,7 +218,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: context.primary,
+                                  color: defaultPrimary,
                                   height: 1.0,
                                 ),
                               ),

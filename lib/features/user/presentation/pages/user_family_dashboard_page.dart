@@ -12,8 +12,15 @@ import '../../../auth/auth.dart';
 import '../../../events/events.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../admin/presentation/widgets/admin_dashboard/member_item_widget.dart';
-import '../widgets/family_highlight_card.dart';
-import '../widgets/user_quick_actions_widget.dart';
+import '../../../admin/presentation/widgets/admin_dashboard/family_dashboard_header_widget.dart';
+import '../../../admin/presentation/pages/events/admin_event_detail_page.dart';
+import '../../../../core/data/repository/notification_read_controller.dart';
+import '../../../../core/di/injection_container.dart';
+import '../widgets/family_highlight_carousel.dart';
+import '../widgets/incense_offering_dialog.dart';
+import '../widgets/user_notifications_widget.dart';
+import '../../data/source/wish_api_service.dart';
+import '../models/wish_message.dart';
 import 'user_events_page.dart';
 import 'user_anniversary_list_page.dart';
 import '../models/upcoming_anniversary.dart';
@@ -159,47 +166,55 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     return anniversaries;
   }
 
+  List<UpcomingAnniversary> _calculateBirthdays(List<MemberEntity> members) {
+    final birthdays = members
+        .where((m) =>
+            m.isAlive && m.dateOfBirth != null && m.dateOfBirth!.isNotEmpty)
+        .map((m) {
+          final today = DateTime.now();
+          final parts = m.dateOfBirth!.split('-');
+          if (parts.length != 3) return null;
+          final month = int.tryParse(parts[1]);
+          final day = int.tryParse(parts[2]);
+          if (month == null || day == null) {
+            return null;
+          }
+          var bd = DateTime(today.year, month, day);
+          if (bd.isBefore(DateTime(today.year, today.month, today.day))) {
+            bd = DateTime(today.year + 1, month, day);
+          }
+          final daysLeft = bd
+              .difference(DateTime(today.year, today.month, today.day))
+              .inDays;
+          return UpcomingAnniversary(
+            member: m,
+            title: m.fullName,
+            solarDateLabel:
+                '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}',
+            daysRemaining: daysLeft,
+            isBirthday: true,
+          );
+        })
+        .whereType<UpcomingAnniversary>()
+        .toList()
+      ..sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
+    return birthdays;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      backgroundColor: context.background,
+      backgroundColor: Colors.transparent,
       body: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
         builder: (context, state) {
-          final double topPadding = MediaQuery.of(context).padding.top;
-          final double headerHeight = 195.0 + topPadding;
-
-          return Stack(
-            children: [
-              // Header
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: _buildHeader(context, state, headerHeight),
-              ),
-              // Content Panel
-              Positioned(
-                top: headerHeight,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: context.background,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(24)),
-                    image: DecorationImage(
-                      image: AssetImage(
-                        context.isDarkMode
-                            ? 'assets/images/background_dark.png'
-                            : 'assets/images/background.png',
-                      ),
-                      fit: BoxFit.cover,
-                      opacity: context.isDarkMode ? 0.45 : 0.55,
-                      alignment: Alignment.topCenter,
-                    ),
-                  ),
+          return AppBackgroundBody(
+            child: Column(
+              children: [
+                // Header đồng bộ với Admin Dashboard
+                _buildHeader(context, state),
+                // Content List
+                Expanded(
                   child: CustomScrollView(
                     controller: _scrollController,
                     slivers: [
@@ -233,111 +248,89 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           ),
                         ),
                       if (state is FamilyTreeLoaded) ...[
-                        const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                        const SliverToBoxAdapter(child: SizedBox(height: 10)),
 
-                        // ── 1. Banner Tiêu Điểm Sắp Tới ──
+                        // ── 1. Banner Tiêu Điểm Sắp Tới (Carousel) ──
                         BlocBuilder<EventsBloc, EventsState>(
                           builder: (context, eventsState) {
-                            final deathAnniversaries =
-                                _calculateDeathAnniversaries(state.members);
+                            final events = eventsState is EventsLoaded
+                                ? eventsState.events
+                                : <EventEntity>[];
 
-                            if (eventsState is EventsLoaded &&
-                                eventsState.events.isNotEmpty) {
-                              final event = eventsState.events.first;
-                              return SliverToBoxAdapter(
-                                child: FamilyHighlightCard(
-                                  title: event.title,
-                                  dateLabel: event.eventDate,
-                                  subtitle: event.location,
-                                  daysRemaining: 0,
-                                  isAnniversary: false,
-                                  onTap: () {
-                                    final famId = _familyId();
-                                    if (famId != null) {
-                                      Navigator.push(
-                                        context,
-                                        SereneFadeSlidePageRoute(
-                                          page: UserEventsPage(familyId: famId),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              );
-                            } else if (deathAnniversaries.isNotEmpty) {
-                              final ann = deathAnniversaries.first;
-                              return SliverToBoxAdapter(
-                                child: FamilyHighlightCard(
-                                  title: ann.title,
-                                  dateLabel: ann.solarDateLabel,
-                                  subtitle: ann.lunarDateLabel,
-                                  daysRemaining: ann.daysRemaining,
-                                  isAnniversary: true,
-                                  onTap: () {
+                            return SliverToBoxAdapter(
+                              child: FamilyHighlightCarousel(
+                                events: events,
+                                members: state.members,
+                                onGoToEvents: () {
+                                  final famId = _familyId();
+                                  if (famId != null) {
                                     Navigator.push(
                                       context,
                                       SereneFadeSlidePageRoute(
-                                        page: UserAnniversaryListPage(
-                                          title: l10n
-                                              .deathAnniversariesSectionTitle,
-                                          anniversaries: deathAnniversaries,
-                                          isBirthday: false,
+                                        page: UserEventsPage(familyId: famId),
+                                      ),
+                                    );
+                                  }
+                                },
+                                onGoToEventDetail: (event) {
+                                  final famId = _familyId();
+                                  if (famId != null) {
+                                    Navigator.push(
+                                      context,
+                                      SereneFadeSlidePageRoute(
+                                        page: AdminEventDetailPage(
+                                          familyId: famId,
+                                          event: event,
+                                          isUserView: true,
                                         ),
                                       ),
                                     );
-                                  },
-                                ),
-                              );
-                            }
-                            return const SliverToBoxAdapter(
-                                child: SizedBox.shrink());
+                                  }
+                                },
+                                onGoToAnniversaries: () {
+                                  final anniversaries =
+                                      _calculateDeathAnniversaries(
+                                          state.members);
+                                  final birthdays =
+                                      _calculateBirthdays(state.members);
+                                  Navigator.push(
+                                    context,
+                                    SereneFadeSlidePageRoute(
+                                      page: UserAnniversaryListPage(
+                                        deathAnniversaries: anniversaries,
+                                        birthdays: birthdays,
+                                        initialTabIndex: 0,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                onGoToBirthdays: () {
+                                  final anniversaries =
+                                      _calculateDeathAnniversaries(
+                                          state.members);
+                                  final birthdays =
+                                      _calculateBirthdays(state.members);
+                                  Navigator.push(
+                                    context,
+                                    SereneFadeSlidePageRoute(
+                                      page: UserAnniversaryListPage(
+                                        deathAnniversaries: anniversaries,
+                                        birthdays: birthdays,
+                                        initialTabIndex: 1,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                onIncenseTap: (name) =>
+                                    _showIncenseDialog(context, name),
+                              ),
+                            );
                           },
                         ),
 
-                        // ── 2. Quick Actions (Lối tắt nhanh) ──
-                        SliverToBoxAdapter(
-                          child: UserQuickActionsWidget(
-                            onTreeTap: () {
-                              Navigator.pushNamed(context, '/family-tree');
-                            },
-                            onEventsTap: () {
-                              final famId = _familyId();
-                              if (famId != null) {
-                                Navigator.push(
-                                  context,
-                                  SereneFadeSlidePageRoute(
-                                    page: UserEventsPage(familyId: famId),
-                                  ),
-                                );
-                              }
-                            },
-                            onAnniversariesTap: () {
-                              final deathAnniversaries =
-                                  _calculateDeathAnniversaries(state.members);
-                              Navigator.push(
-                                context,
-                                SereneFadeSlidePageRoute(
-                                  page: UserAnniversaryListPage(
-                                    title: l10n.deathAnniversariesSectionTitle,
-                                    anniversaries: deathAnniversaries,
-                                    isBirthday: false,
-                                  ),
-                                ),
-                              );
-                            },
-                            onSearchTap: () {
-                              _scrollController.animateTo(
-                                260,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
-                              );
-                            },
-                          ),
-                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 2)),
 
-                        const SliverToBoxAdapter(child: SizedBox(height: 8)),
-
-                        // ── 3. Branches Section ──
+                        // ── 2. Branches Section ──
                         SliverToBoxAdapter(
                           child: AppSectionTitle(
                             title: l10n.branchTabLabel,
@@ -867,8 +860,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
@@ -903,14 +896,22 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     );
   }
 
-  Widget _buildHeader(
-      BuildContext context, FamilyTreeState state, double height) {
-    final l10n = AppLocalizations.of(context)!;
+  Widget _buildHeader(BuildContext context, FamilyTreeState state) {
+    final authState = context.watch<AuthBloc>().state;
+    final user = (authState is Authenticated) ? authState.user : null;
 
+    final l10n = AppLocalizations.of(context)!;
     String familyName = l10n.familyTreeTitle;
+    String inviteCode = '';
+    String? logoUrl;
+
     if (state is FamilyTreeLoaded) {
-      if (state.family != null && state.family!.name.isNotEmpty) {
-        familyName = state.family!.name;
+      if (state.family != null) {
+        if (state.family!.name.isNotEmpty) {
+          familyName = state.family!.name;
+        }
+        inviteCode = state.family!.inviteCode;
+        logoUrl = state.family!.logoUrl;
       } else if (state.members.isNotEmpty) {
         final rootMembers = state.members.where(
           (m) => m.generation == 1 || m.parentId == null,
@@ -924,177 +925,134 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
       }
     }
 
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: context.appBarBg,
-        image: DecorationImage(
-          image: AssetImage(
-            context.isDarkMode
-                ? 'assets/images/background_appbar_dark.png'
-                : 'assets/images/background_appbar_light.png',
-          ),
-          fit: BoxFit.cover,
-          onError: (_, __) {},
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(color: context.appBarOverlay),
-          ),
-          // Content
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Brand Logo / Avatar
-                  if (state is FamilyTreeLoading)
-                    AppShimmer(
-                      child: Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: context.textSecondary.withValues(alpha: 0.12),
-                        ),
-                      ),
-                    )
-                  else
-                    Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: context.accent, width: 2.0),
-                        borderRadius: BorderRadius.circular(16),
-                        color: context.background.withValues(alpha: 0.25),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
-                        child: () {
-                          final familyLogo = (state is FamilyTreeLoaded)
-                              ? state.family?.logoUrl
-                              : null;
-                          if (familyLogo != null && familyLogo.isNotEmpty) {
-                            return AppNetworkImage(
-                              url: familyLogo,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context) => Image.asset(
-                                'assets/images/logo.png',
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Icon(LucideIcons.gitBranch,
-                                        color: context.accent, size: 36),
-                              ),
-                            );
-                          }
-                          return Image.asset(
-                            'assets/images/logo.png',
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) => Icon(
-                                LucideIcons.gitBranch,
-                                color: context.accent,
-                                size: 36),
-                          );
-                        }(),
-                      ),
+    return BlocBuilder<EventsBloc, EventsState>(
+      builder: (context, eventsState) {
+        List<EventEntity> allEvents = [];
+        if (eventsState is EventsLoaded) {
+          allEvents = eventsState.events;
+        }
+
+        final announcements = allEvents.where((e) {
+          final t = e.type.toLowerCase();
+          return t == 'announcement' || t == 'notification' || t == 'thông báo';
+        }).toList();
+
+        final unreadCount = announcements
+            .where((e) =>
+                !NotificationReadController.instance.isRead(e.id.toString()))
+            .length;
+
+        final bellButton = IconButton(
+          icon: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Icon(
+                LucideIcons.bell,
+                color: context.textPrimary,
+                size: 20,
+              ),
+              if (unreadCount > 0)
+                Positioned(
+                  top: -6,
+                  right: -6,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
                     ),
-                  const SizedBox(height: 10),
-                  // Tên Gia Phả
-                  if (state is FamilyTreeLoading)
-                    const Center(
-                      child: AppShimmer(
-                        child: SkeletonBox(
-                            width: 180, height: 24, borderRadius: 6),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '$unreadCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
                       ),
-                    )
-                  else
-                    Text(
-                      familyName,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: context.textPrimary,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  const SizedBox(height: 5),
-                  // Motto
-                  Text(
-                    l10n.spiritualMotto,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.textSecondary,
-                      letterSpacing: 0.8,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  // Stats Row
-                  if (state is FamilyTreeLoading)
-                    const Center(
-                      child: AppShimmer(
-                        child: SkeletonBox(
-                            width: 220, height: 18, borderRadius: 4),
-                      ),
-                    )
-                  else
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(LucideIcons.users,
-                            color: context.accent, size: 16),
-                        const SizedBox(width: 6),
-                        Text(
-                          l10n.memberCountBadge(state is FamilyTreeLoaded
-                              ? state.members.length
-                              : 0),
-                          style: GoogleFonts.inter(
-                            color: context.textPrimary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Container(
-                            width: 1,
-                            height: 14,
-                            color:
-                                context.textSecondary.withValues(alpha: 0.5)),
-                        const SizedBox(width: 20),
-                        Icon(LucideIcons.gitBranch,
-                            color: context.accent, size: 16),
-                        const SizedBox(width: 6),
-                        Text(
-                          l10n.branchCountLabel(state is FamilyTreeLoaded
-                              ? state.branches.length
-                              : 0),
-                          style: GoogleFonts.inter(
-                            color: context.textPrimary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
+                ),
+            ],
           ),
-        ],
-      ),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          onPressed: () async {
+            final famId = _familyId();
+            if (famId != null) {
+              await Navigator.push(
+                context,
+                SereneFadeSlidePageRoute(
+                  page: UserNotificationsPage(
+                    familyId: famId,
+                    announcements: announcements,
+                    isAdminMode: false,
+                  ),
+                ),
+              );
+              if (mounted) setState(() {});
+            }
+          },
+        );
+
+        return FamilyDashboardHeaderWidget(
+          user: user,
+          familyName: familyName,
+          inviteCode: inviteCode,
+          logoUrl: logoUrl,
+          isLoading: state is FamilyTreeLoading,
+          showRoleTag: false, // Ẩn role tag ở user dashboard theo yêu cầu
+          trailingAction: bellButton,
+        );
+      },
     );
+  }
+
+  void _showIncenseDialog(BuildContext context, String targetName) async {
+    final result = await showIncenseDialog(
+      context,
+      targetName: targetName,
+      subtitle: 'Tưởng nhớ tiền nhân dòng tộc',
+    );
+    if (result != null && context.mounted) {
+      final authState = context.read<AuthBloc>().state;
+      UserEntity? userProfile;
+
+      if (authState is Authenticated) {
+        userProfile = authState.user;
+      }
+
+      if (userProfile != null) {
+        final prayerContent = result.trim().isNotEmpty
+            ? result.trim()
+            : 'Thắp nén tâm nhang tưởng nhớ tiền nhân thành kính.';
+
+        final newWish = WishMessage(
+          id: 0,
+          familyId: userProfile.familyId ?? 0,
+          memberId: 0,
+          senderId: userProfile.id,
+          content: prayerContent,
+          eventType: 'anniversary',
+          createdAt: DateTime.now(),
+          senderName: userProfile.fullName,
+          senderAvatar: userProfile.avatarUrl,
+        );
+
+        final apiService = sl<WishApiService>();
+        await apiService.createWish(newWish);
+      }
+
+      if (context.mounted) {
+        AppSnackBar.show(
+          context,
+          message: 'Đã thắp nén tâm nhang tưởng nhớ $targetName thành kính!',
+          type: SnackBarType.success,
+        );
+      }
+    }
   }
 }

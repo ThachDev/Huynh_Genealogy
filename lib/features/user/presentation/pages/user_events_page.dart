@@ -14,7 +14,6 @@ import '../../../../features/family_tree/family_tree.dart';
 import '../../../events/events.dart';
 import '../../../admin/admin.dart';
 import '../models/upcoming_anniversary.dart';
-import '../widgets/anniversary_card.dart';
 import '../widgets/user_event_card.dart';
 import '../widgets/user_notifications_widget.dart';
 import 'user_anniversary_list_page.dart';
@@ -283,20 +282,50 @@ class _UserEventsPageState extends State<UserEventsPage>
                   t != 'thông báo';
             }).toList();
 
+            List<MemberEntity> members = [];
+            if (treeState is FamilyTreeLoaded) {
+              members = treeState.members;
+            }
+
             final unreadCount = announcements
                 .where((e) => !NotificationReadController.instance
                     .isRead(e.id.toString()))
                 .length;
 
+            final deathAnniversaries = _calculateDeathAnniversaries(members);
+            final birthdays = _calculateBirthdays(members);
+
             return Scaffold(
               appBar: AppAppBar(
                 title: l10n.eventsListTitle,
                 actions: [
+                  // Icon Giỗ & Sinh Nhật (đứng trước chuông)
+                  IconButton(
+                    icon: Icon(
+                      LucideIcons.calendarHeart,
+                      color: context.textPrimary,
+                      size: 22,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        SereneFadeSlidePageRoute(
+                          page: UserAnniversaryListPage(
+                            deathAnniversaries: deathAnniversaries,
+                            birthdays: birthdays,
+                            initialTabIndex: 0,
+                          ),
+                        ),
+                      );
+                    },
+                    tooltip: 'Giỗ & Sinh Nhật',
+                  ),
                   IconButton(
                     icon: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        Icon(LucideIcons.bell, color: Colors.white, size: 22),
+                        Icon(LucideIcons.bell,
+                            color: context.textPrimary, size: 22),
                         if (unreadCount > 0)
                           Positioned(
                             top: -8,
@@ -352,15 +381,6 @@ class _UserEventsPageState extends State<UserEventsPage>
                       return const UserEventsSkeleton();
                     }
 
-                    List<MemberEntity> members = [];
-                    if (treeState is FamilyTreeLoaded) {
-                      members = treeState.members;
-                    }
-
-                    final deathAnniversaries =
-                        _calculateDeathAnniversaries(members);
-                    final birthdays = _calculateBirthdays(members);
-
                     return SingleChildScrollView(
                       controller: _scrollController,
                       physics: const BouncingScrollPhysics(),
@@ -369,8 +389,6 @@ class _UserEventsPageState extends State<UserEventsPage>
                         context,
                         l10n,
                         canEdit,
-                        deathAnniversaries,
-                        birthdays,
                         displayEvents,
                         announcements,
                       ),
@@ -386,52 +404,19 @@ class _UserEventsPageState extends State<UserEventsPage>
   }
 
   // ────────────────────────────────────────────────────────────────
-  //  Tab Content
+  //  Tab Content: Chỉ hiển thị Sự Kiện Dòng Tộc
   // ────────────────────────────────────────────────────────────────
   Widget _buildTabContent(
     BuildContext context,
     AppLocalizations l10n,
     bool canEdit,
-    List<UpcomingAnniversary> deathAnniversaries,
-    List<UpcomingAnniversary> birthdays,
     List<EventEntity> displayEvents,
     List<EventEntity> announcements,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Section 1: Ngày Giỗ Sắp Tới (Horizontal Carousel) ──
-        if (deathAnniversaries.isNotEmpty && !widget.isAdminMode) ...[
-          AppSectionTitle(
-            title: l10n.deathAnniversariesSectionTitle,
-            trailing: _buildSeeAll(
-              onTap: () => _openAnniversaryList(
-                l10n.deathAnniversariesSectionTitle,
-                deathAnniversaries,
-              ),
-            ),
-          ),
-          _buildHorizontalAnniversaryList(deathAnniversaries),
-          const SizedBox(height: 8),
-        ],
-
-        // ── Section 2: Sinh Nhật Sắp Tới (Horizontal Carousel) ──
-        if (birthdays.isNotEmpty && !widget.isAdminMode) ...[
-          AppSectionTitle(
-            title: l10n.birthdaysSectionTitle,
-            trailing: _buildSeeAll(
-              onTap: () => _openAnniversaryList(
-                l10n.birthdaysSectionTitle,
-                birthdays,
-                isBirthday: true,
-              ),
-            ),
-          ),
-          _buildHorizontalAnniversaryList(birthdays),
-          const SizedBox(height: 8),
-        ],
-
-        // ── Section 3: Bảng Tin Sự Kiện (Clan Event Feed) ──
+        // ── Bảng Tin Sự Kiện Dòng Tộc (Clan Event Feed) ──
         AppSectionTitle(
           title: l10n.eventsListTitle,
           trailing: _buildSeeAll(
@@ -523,33 +508,6 @@ class _UserEventsPageState extends State<UserEventsPage>
   // ────────────────────────────────────────────────────────────────
   //  Helpers
   // ────────────────────────────────────────────────────────────────
-  Widget _buildHorizontalAnniversaryList(List<UpcomingAnniversary> list) {
-    return ClipRect(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SizedBox(
-          height: 124,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.zero,
-            clipBehavior: Clip.none,
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              final data = list[index];
-              return Padding(
-                padding: EdgeInsets.only(
-                  right: index < list.length - 1 ? 16 : 0,
-                ),
-                child: AnniversaryCard(data: data),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildSeeAll({VoidCallback? onTap}) {
     return InkWell(
       onTap: onTap,
@@ -562,23 +520,6 @@ class _UserEventsPageState extends State<UserEventsPage>
             fontWeight: FontWeight.w600,
             color: context.primary,
           ),
-        ),
-      ),
-    );
-  }
-
-  void _openAnniversaryList(
-    String title,
-    List<UpcomingAnniversary> list, {
-    bool isBirthday = false,
-  }) {
-    Navigator.push(
-      context,
-      SereneFadeSlidePageRoute(
-        page: UserAnniversaryListPage(
-          title: title,
-          anniversaries: list,
-          isBirthday: isBirthday,
         ),
       ),
     );
@@ -623,4 +564,3 @@ class _UserEventsPageState extends State<UserEventsPage>
     );
   }
 }
-

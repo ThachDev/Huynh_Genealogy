@@ -766,7 +766,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                               DropdownItem(
                                                   value: MaritalStatus.unknown,
                                                   child: Text(
-                                                      l10n.maritalUnknown)),
+                                                      l10n.unknownLabel)),
                                             ],
                                             onChanged: (val) {
                                               if (val != null) {
@@ -794,7 +794,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                               DropdownItem(
                                                   value: Gender.unknown,
                                                   child:
-                                                      Text(l10n.genderUnknown)),
+                                                      Text(l10n.unknownLabel)),
                                             ],
                                             onChanged: (val) {
                                               if (val != null) {
@@ -949,7 +949,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       AppDatePickerField(
                                         dateString: _dateOfDeath,
                                         label: l10n.dodLabel,
-                                        hintText: l10n.dodHint,
+                                        hintText: l10n.dobHint,
                                         onDateSelected: (date) {
                                           final formattedDate =
                                               "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
@@ -1039,7 +1039,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                             .map((m) => DropdownItem<int?>(
                                                   value: m.id,
                                                   child: Text(
-                                                      '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
+                                                      '${m.fullName} (${l10n.generationLabel('${m.generation}')})'),
                                                 )),
                                       ],
                                       onChanged: (val) {
@@ -1085,7 +1085,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                               .map((m) => DropdownItem<int?>(
                                                     value: m.id,
                                                     child: Text(
-                                                        '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
+                                                        '${m.fullName} (${l10n.generationLabel('${m.generation}')})'),
                                                   )),
                                         ],
                                         onChanged: (val) {

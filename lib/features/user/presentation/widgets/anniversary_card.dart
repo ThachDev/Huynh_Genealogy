@@ -137,7 +137,7 @@ class AnniversaryCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           data.member.generation != null
-                              ? l10n.generationLabel(data.member.generation!)
+                              ? l10n.generationLabel('${data.member.generation!}')
                               : (data.lunarDateLabel ??
                                   (isBirthday
                                       ? l10n.memberBirthdayLabel

@@ -604,7 +604,7 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
                             (m) => DropdownItem<int?>(
                               value: m.id,
                               child: Text(
-                                '${m.fullName}${m.generation != null ? " (${l10n.generationLabel(m.generation!)})" : ""}',
+                                '${m.fullName}${m.generation != null ? " (${l10n.generationLabel('${m.generation!}')})" : ""}',
                               ),
                             ),
                           ),

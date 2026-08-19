@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '../../resources/app_localizations.dart';
-import '../theme/app_theme.dart';
 import '../theme/theme_extensions.dart';
 
 /// Loading indicator component using Lottie
@@ -189,7 +188,7 @@ class AppErrorState extends StatelessWidget {
             Icon(
               Icons.error_outline_rounded,
               size: 56,
-              color: AppColors.error.withValues(alpha: 0.8),
+              color: context.error.withValues(alpha: 0.8),
             ),
             const SizedBox(height: 16),
             Text(

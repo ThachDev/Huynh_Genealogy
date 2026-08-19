@@ -337,8 +337,8 @@ class _UserEventsPageState extends State<UserEventsPage>
                             right: -6,
                             child: Container(
                               padding: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
+                              decoration: BoxDecoration(
+                                color: context.error,
                                 shape: BoxShape.circle,
                               ),
                               constraints: const BoxConstraints(
@@ -527,7 +527,7 @@ class _UserEventsPageState extends State<UserEventsPage>
             child: Text(l10n.cancelLabel),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: context.error),
             onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.deleteLabel,
                 style: const TextStyle(color: Colors.white)),

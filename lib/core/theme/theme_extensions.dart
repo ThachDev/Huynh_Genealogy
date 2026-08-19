@@ -20,13 +20,20 @@ extension AppThemeColors on BuildContext {
   Color get textSecondary => resolve(AppColors.textSecondary, Colors.white70);
   Color get textOnPrimary => AppColors.textOnPrimary;
 
+  Color get error => resolve(AppColors.error, AppColors.errorDark);
+  Color get errorContainer => resolve(
+        const Color(0xFFFFEBEB),
+        const Color(0xFF3A1616),
+      );
+
   Color get nodeMale => resolve(AppColors.nodeMale, AppColors.nodeMaleDark);
   Color get nodeFemale =>
       resolve(AppColors.nodeFemale, AppColors.nodeFemaleDark);
   Color get nodeDeceased =>
       resolve(AppColors.nodeDeceased, AppColors.nodeDeceasedDark);
-  Color get nodeBorder => AppColors.nodeBorder;
-  Color get connectionLine => resolve(AppColors.wood, AppColors.gold);
+  Color get nodeBorder => resolve(AppColors.nodeBorder, AppColors.goldLight);
+  Color get connectionLine =>
+      resolve(AppColors.wood, AppColors.goldLight);
 
   Color get genderMale =>
       resolve(AppColors.genderMale, AppColors.genderMaleDark);

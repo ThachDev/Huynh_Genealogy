@@ -104,12 +104,6 @@ abstract class AppLocalizations {
   /// **'Đăng Nhập'**
   String get loginTitle;
 
-  /// No description provided for @clanAndPersonalInfoTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thông tin dòng tộc và cá nhân'**
-  String get clanAndPersonalInfoTitle;
-
   /// No description provided for @loginSubtitle.
   ///
   /// In vi, this message translates to:
@@ -151,18 +145,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng nhập'**
   String get loginButton;
-
-  /// No description provided for @orDivider.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hoặc'**
-  String get orDivider;
-
-  /// No description provided for @googleLoginButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đăng nhập với Google'**
-  String get googleLoginButton;
 
   /// No description provided for @noAccountText.
   ///
@@ -212,12 +194,6 @@ abstract class AppLocalizations {
   /// **'Xác nhận mật khẩu'**
   String get confirmPasswordLabel;
 
-  /// No description provided for @confirmPasswordHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'••••••••'**
-  String get confirmPasswordHint;
-
   /// No description provided for @registerButton.
   ///
   /// In vi, this message translates to:
@@ -235,12 +211,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng nhập ngay'**
   String get loginNow;
-
-  /// No description provided for @registerAsCreator.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đăng ký với tư cách Trưởng tộc'**
-  String get registerAsCreator;
 
   /// No description provided for @acceptTermsText.
   ///
@@ -308,16 +278,10 @@ abstract class AppLocalizations {
   /// **'Hủy'**
   String get cancelLabel;
 
-  /// No description provided for @closeLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đóng'**
-  String get closeLabel;
-
   /// No description provided for @okLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Đóng'**
+  /// **'OK'**
   String get okLabel;
 
   /// No description provided for @loadingMessage.
@@ -325,18 +289,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đang xử lý...'**
   String get loadingMessage;
-
-  /// No description provided for @emailLoginFeatureNotice.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.'**
-  String get emailLoginFeatureNotice;
-
-  /// No description provided for @forgotPasswordNotice.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.'**
-  String get forgotPasswordNotice;
 
   /// No description provided for @forgotPasswordTitle.
   ///
@@ -355,12 +307,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Gửi Mã Xác Thực'**
   String get forgotPasswordButton;
-
-  /// No description provided for @forgotPasswordSuccess.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư (kể cả thư mục spam).'**
-  String get forgotPasswordSuccess;
 
   /// No description provided for @backToLogin.
   ///
@@ -470,18 +416,6 @@ abstract class AppLocalizations {
   /// **'Thiết Lập Gia Tộc'**
   String get onboardingTitle;
 
-  /// No description provided for @logoutTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đăng xuất'**
-  String get logoutTooltip;
-
-  /// No description provided for @createFamilySuccess.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tạo dòng họ thành công!'**
-  String get createFamilySuccess;
-
   /// No description provided for @verifyInviteSuccess.
   ///
   /// In vi, this message translates to:
@@ -517,18 +451,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Kiểm tra trạng thái'**
   String get checkStatusButton;
-
-  /// No description provided for @welcomeCreatorTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chào Trưởng tộc, {name}!'**
-  String welcomeCreatorTitle(String name);
-
-  /// No description provided for @welcomeCreatorSubtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.'**
-  String get welcomeCreatorSubtitle;
 
   /// No description provided for @familyNameLabel.
   ///
@@ -590,23 +512,11 @@ abstract class AppLocalizations {
   /// **'Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.'**
   String get welcomeViewerSubtitle;
 
-  /// No description provided for @inviteCodeLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mã Mời Gia Tộc'**
-  String get inviteCodeLabel;
-
   /// No description provided for @inviteCodeHint.
   ///
   /// In vi, this message translates to:
   /// **'Nhập mã 6 ký tự'**
   String get inviteCodeHint;
-
-  /// No description provided for @verifyButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xác thực'**
-  String get verifyButton;
 
   /// No description provided for @familyFoundTitle.
   ///
@@ -619,12 +529,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):'**
   String get selectMemberPrompt;
-
-  /// No description provided for @whoAreYouDropdownHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bạn là ai trên cây gia phả?'**
-  String get whoAreYouDropdownHint;
 
   /// No description provided for @sendJoinRequestButton.
   ///
@@ -932,12 +836,6 @@ abstract class AppLocalizations {
   /// **'Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.'**
   String get inviteCodeDescription;
 
-  /// No description provided for @connectFamilySectionTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Kết nối dòng tộc'**
-  String get connectFamilySectionTitle;
-
   /// No description provided for @copiedShareContent.
   ///
   /// In vi, this message translates to:
@@ -967,12 +865,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Cây gia phả'**
   String get navFamilyTree;
-
-  /// No description provided for @navFamilyFund.
-  ///
-  /// In vi, this message translates to:
-  /// **'Quỹ gia tộc'**
-  String get navFamilyFund;
 
   /// No description provided for @navEvents.
   ///
@@ -1142,23 +1034,11 @@ abstract class AppLocalizations {
   /// **'Thông báo'**
   String get notificationsSectionTitle;
 
-  /// No description provided for @notifyEventLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sự kiện mới'**
-  String get notifyEventLabel;
-
   /// No description provided for @notifyAnnouncementLabel.
   ///
   /// In vi, this message translates to:
   /// **'Thông báo từ dòng họ'**
   String get notifyAnnouncementLabel;
-
-  /// No description provided for @notifyWishLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lời chúc'**
-  String get notifyWishLabel;
 
   /// No description provided for @notifyAnniversaryLabel.
   ///
@@ -1196,24 +1076,6 @@ abstract class AppLocalizations {
   /// **'Giới thiệu'**
   String get tabAboutLabel;
 
-  /// No description provided for @regulationsLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Quy định & Điều khoản'**
-  String get regulationsLabel;
-
-  /// No description provided for @helpCenterLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Trung tâm hỗ trợ'**
-  String get helpCenterLabel;
-
-  /// No description provided for @aboutUsLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Về chúng tôi'**
-  String get aboutUsLabel;
-
   /// No description provided for @advancedAdminSection.
   ///
   /// In vi, this message translates to:
@@ -1237,12 +1099,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Phân quyền'**
   String get tabMemberRoles;
-
-  /// No description provided for @memberRolesLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Phân quyền thành viên'**
-  String get memberRolesLabel;
 
   /// No description provided for @transferOwnershipLabel.
   ///
@@ -1370,12 +1226,6 @@ abstract class AppLocalizations {
   /// **'Nhập lại tên dòng họ'**
   String get reenterClanNameLabel;
 
-  /// No description provided for @reenterClanNameHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhập đúng từng chữ để xác nhận'**
-  String get reenterClanNameHint;
-
   /// No description provided for @dissolvePermanentButton.
   ///
   /// In vi, this message translates to:
@@ -1406,18 +1256,6 @@ abstract class AppLocalizations {
   /// **'Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.'**
   String get dissolveSuccessMessage;
 
-  /// No description provided for @chooseRecipientLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn người nhận quyền'**
-  String get chooseRecipientLabel;
-
-  /// No description provided for @transferDesc.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chỉ những thành viên đã kích hoạt tài khoản và có vai trò khác Trưởng tộc mới xuất hiện trong danh sách dưới đây:'**
-  String get transferDesc;
-
   /// No description provided for @searchMemberHint.
   ///
   /// In vi, this message translates to:
@@ -1436,29 +1274,11 @@ abstract class AppLocalizations {
   /// **'Không tìm thấy kết quả phù hợp.'**
   String get noSearchResultsMessage;
 
-  /// No description provided for @noEligibleMembers.
-  ///
-  /// In vi, this message translates to:
-  /// **'Không có thành viên nào đủ điều kiện nhận chuyển nhượng.'**
-  String get noEligibleMembers;
-
-  /// No description provided for @proceedTransferButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiến Hành Chuyển Nhượng'**
-  String get proceedTransferButton;
-
   /// No description provided for @warningDialogTitle.
   ///
   /// In vi, this message translates to:
   /// **'Cảnh báo quan trọng'**
   String get warningDialogTitle;
-
-  /// No description provided for @warningDialogMessage.
-  ///
-  /// In vi, this message translates to:
-  /// **'Quyền Trưởng tộc là quyền hạn cao nhất trong hệ thống gia phả. Khi chuyển nhượng thành công, bạn sẽ mất quyền chỉnh sửa cấu trúc dòng họ cao cấp và các thiết lập bảo mật.'**
-  String get warningDialogMessage;
 
   /// No description provided for @warningDialogConfirmMessage.
   ///
@@ -1478,35 +1298,11 @@ abstract class AppLocalizations {
   /// **'Chuyển nhượng quyền Trưởng tộc thành công!'**
   String get transferSuccess;
 
-  /// No description provided for @transferProcessing.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đang xử lý chuyển nhượng...'**
-  String get transferProcessing;
-
-  /// No description provided for @memberRolesTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Phân Quyền Thành Viên'**
-  String get memberRolesTitle;
-
   /// No description provided for @roleOfUser.
   ///
   /// In vi, this message translates to:
   /// **'Vai trò của {name}'**
   String roleOfUser(String name);
-
-  /// No description provided for @roleBranchAdminTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Trưởng chi'**
-  String get roleBranchAdminTitle;
-
-  /// No description provided for @roleBranchAdminDesc.
-  ///
-  /// In vi, this message translates to:
-  /// **'Quản lý nhân sự và nội dung của chi tộc.'**
-  String get roleBranchAdminDesc;
 
   /// No description provided for @roleEditorTitle.
   ///
@@ -1519,12 +1315,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đóng góp và chỉnh sửa thông tin gia phả.'**
   String get roleEditorDesc;
-
-  /// No description provided for @roleViewerTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thành viên'**
-  String get roleViewerTitle;
 
   /// No description provided for @roleViewerDesc.
   ///
@@ -1549,18 +1339,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng \"Chuyển nhượng quyền Trưởng tộc\".'**
   String get cannotSelfChange;
-
-  /// No description provided for @accountInfoTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thông Tin Cá Nhân'**
-  String get accountInfoTitle;
-
-  /// No description provided for @emailAccountLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Email (Tài khoản)'**
-  String get emailAccountLabel;
 
   /// No description provided for @noProfileLink.
   ///
@@ -1639,18 +1417,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tóm tắt lịch sử, gia phong dòng họ'**
   String get clanDescHint;
-
-  /// No description provided for @editTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chỉnh sửa'**
-  String get editTooltip;
-
-  /// No description provided for @doneTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hoàn tất'**
-  String get doneTooltip;
 
   /// No description provided for @noFamilyInfo.
   ///
@@ -1808,59 +1574,11 @@ abstract class AppLocalizations {
   /// **'© 2026 ThachDev. Bảo lưu mọi quyền.'**
   String get copyrightText;
 
-  /// No description provided for @helpCenterTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Trung Tâm Hỗ Trợ'**
-  String get helpCenterTitle;
-
-  /// No description provided for @helpDragInstruction.
-  ///
-  /// In vi, this message translates to:
-  /// **'👉 Kéo sơ đồ để di chuyển'**
-  String get helpDragInstruction;
-
-  /// No description provided for @helpTapInstruction.
-  ///
-  /// In vi, this message translates to:
-  /// **'👤 Nhấn vào thành viên để xem chi tiết'**
-  String get helpTapInstruction;
-
-  /// No description provided for @helpTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hướng dẫn'**
-  String get helpTooltip;
-
-  /// No description provided for @helpZoomInstruction.
-  ///
-  /// In vi, this message translates to:
-  /// **'🔍 Phóng to/Thu nhỏ bằng 2 ngón tay'**
-  String get helpZoomInstruction;
-
   /// No description provided for @contactSection.
   ///
   /// In vi, this message translates to:
   /// **'Liên hệ trực tiếp'**
   String get contactSection;
-
-  /// No description provided for @hotlineTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hotline hỗ trợ'**
-  String get hotlineTitle;
-
-  /// No description provided for @hotlineValue.
-  ///
-  /// In vi, this message translates to:
-  /// **'1900 8888'**
-  String get hotlineValue;
-
-  /// No description provided for @hotlineSubtitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'8:00 - 17:30 (T2-T6)'**
-  String get hotlineSubtitle;
 
   /// No description provided for @supportEmailTitle.
   ///
@@ -1879,12 +1597,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Phản hồi trong 24h'**
   String get supportEmailSubtitle;
-
-  /// No description provided for @accountLoginSection.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tài khoản & Đăng nhập'**
-  String get accountLoginSection;
 
   /// No description provided for @genealogyMemberSection.
   ///
@@ -2030,23 +1742,11 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get contactEmailLabel;
 
-  /// No description provided for @adminDashboardTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bảng Quản Trị'**
-  String get adminDashboardTitle;
-
   /// No description provided for @roleOwner.
   ///
   /// In vi, this message translates to:
   /// **'Trưởng Tộc'**
   String get roleOwner;
-
-  /// No description provided for @roleBranchAdmin.
-  ///
-  /// In vi, this message translates to:
-  /// **'Trưởng Chi'**
-  String get roleBranchAdmin;
 
   /// No description provided for @roleEditor.
   ///
@@ -2059,24 +1759,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thành Viên'**
   String get roleViewer;
-
-  /// No description provided for @memberListTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Danh Sách Thành Viên'**
-  String get memberListTitle;
-
-  /// No description provided for @branchListTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Danh Sách Chi Tộc'**
-  String get branchListTitle;
-
-  /// No description provided for @pendingRequestTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Yêu Cầu Chờ Duyệt'**
-  String get pendingRequestTitle;
 
   /// No description provided for @searchMembersHint.
   ///
@@ -2107,18 +1789,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Không có yêu cầu tham gia nào đang chờ duyệt'**
   String get emptyPendingRequests;
-
-  /// No description provided for @addMemberLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm thành viên'**
-  String get addMemberLabel;
-
-  /// No description provided for @addBranchLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm chi tộc'**
-  String get addBranchLabel;
 
   /// No description provided for @statMembers.
   ///
@@ -2155,12 +1825,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Sao chép mã'**
   String get copyCodeTooltip;
-
-  /// No description provided for @qrCodeTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mã QR'**
-  String get qrCodeTooltip;
 
   /// No description provided for @qrDialogTitle.
   ///
@@ -2215,12 +1879,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã mất'**
   String get deceasedLabel;
-
-  /// No description provided for @generationBadge.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đời thứ {gen}'**
-  String generationBadge(Object gen);
 
   /// No description provided for @branchBadge.
   ///
@@ -2384,12 +2042,6 @@ abstract class AppLocalizations {
   /// **'VD: Chi Trưởng, Chi Hai...'**
   String get branchNameHint;
 
-  /// No description provided for @branchNameRequired.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tên chi tộc'**
-  String get branchNameRequired;
-
   /// No description provided for @branchNameEmptyError.
   ///
   /// In vi, this message translates to:
@@ -2546,12 +2198,6 @@ abstract class AppLocalizations {
   /// **'Góa phụ'**
   String get maritalWidowed;
 
-  /// No description provided for @maritalUnknown.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa rõ'**
-  String get maritalUnknown;
-
   /// No description provided for @genderLabel.
   ///
   /// In vi, this message translates to:
@@ -2569,12 +2215,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nữ'**
   String get genderFemale;
-
-  /// No description provided for @genderUnknown.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa rõ'**
-  String get genderUnknown;
 
   /// No description provided for @dobLabel.
   ///
@@ -2599,12 +2239,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ngày mất'**
   String get dodLabel;
-
-  /// No description provided for @dodHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'dd/mm/yyyy'**
-  String get dodHint;
 
   /// No description provided for @phoneLabel.
   ///
@@ -2744,12 +2378,6 @@ abstract class AppLocalizations {
   /// **'Thay đổi mật khẩu thất bại'**
   String get passwordChangeFailed;
 
-  /// No description provided for @serverConnectionError.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lỗi kết nối máy chủ'**
-  String get serverConnectionError;
-
   /// No description provided for @emailSubjectHelp.
   ///
   /// In vi, this message translates to:
@@ -2774,12 +2402,6 @@ abstract class AppLocalizations {
   /// **'Tiểu Sử & Ghi Chú'**
   String get biographySectionTitle;
 
-  /// No description provided for @branchCountLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'{count} Chi tộc'**
-  String branchCountLabel(int count);
-
   /// No description provided for @branchLabel.
   ///
   /// In vi, this message translates to:
@@ -2791,24 +2413,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chi Tộc / Nhánh'**
   String get branchTabLabel;
-
-  /// No description provided for @congratulateActionMessage.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bạn đã gửi một lời chúc mừng.'**
-  String get congratulateActionMessage;
-
-  /// No description provided for @congratulateButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chúc Mừng ({count})'**
-  String congratulateButton(int count);
-
-  /// No description provided for @currentDateDisplay.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ngày {day}/{month}/{year} (Nhằm 12/05 Âm Lịch)'**
-  String currentDateDisplay(int day, int month, int year);
 
   /// No description provided for @dateOfBirthLabel.
   ///
@@ -2822,59 +2426,11 @@ abstract class AppLocalizations {
   /// **'Ngày mất'**
   String get dateOfDeathLabel;
 
-  /// No description provided for @donateButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đóng góp'**
-  String get donateButton;
-
   /// No description provided for @eventCountdown.
   ///
   /// In vi, this message translates to:
   /// **'Còn {days} ngày'**
   String eventCountdown(int days);
-
-  /// No description provided for @eventDateSample1.
-  ///
-  /// In vi, this message translates to:
-  /// **'12/05 Âm lịch'**
-  String get eventDateSample1;
-
-  /// No description provided for @eventDateSample2.
-  ///
-  /// In vi, this message translates to:
-  /// **'28/06 Dương lịch'**
-  String get eventDateSample2;
-
-  /// No description provided for @eventDateLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ngày {date}'**
-  String eventDateLabel(String date);
-
-  /// No description provided for @eventDetailFormat.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đời thứ {gen} • Ngày {date}'**
-  String eventDetailFormat(int gen, String date);
-
-  /// No description provided for @eventSample1.
-  ///
-  /// In vi, this message translates to:
-  /// **'Giỗ cụ Huỳnh Công Minh'**
-  String get eventSample1;
-
-  /// No description provided for @eventSample2.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hội thảo Dòng họ Xuân 2026'**
-  String get eventSample2;
-
-  /// No description provided for @eventTypeAncestors.
-  ///
-  /// In vi, this message translates to:
-  /// **'Giỗ Chạp'**
-  String get eventTypeAncestors;
 
   /// No description provided for @eventTypeEvent.
   ///
@@ -2882,29 +2438,11 @@ abstract class AppLocalizations {
   /// **'Sự kiện'**
   String get eventTypeEvent;
 
-  /// No description provided for @eventsSectionTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sự Kiện & Lễ Giỗ Dòng Họ'**
-  String get eventsSectionTitle;
-
-  /// No description provided for @familyFundTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Quỹ Gia Tộc'**
-  String get familyFundTitle;
-
   /// No description provided for @familyRelationSectionTitle.
   ///
   /// In vi, this message translates to:
   /// **'Quan Hệ Gia Đình'**
   String get familyRelationSectionTitle;
-
-  /// No description provided for @familyTreeMapTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bản Đồ Phả Hệ'**
-  String get familyTreeMapTitle;
 
   /// No description provided for @familyTreeNameFormat.
   ///
@@ -2917,42 +2455,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Gia Phả Dòng Họ'**
   String get familyTreeTitle;
-
-  /// No description provided for @guideButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hướng dẫn'**
-  String get guideButton;
-
-  /// No description provided for @guideDrag.
-  ///
-  /// In vi, this message translates to:
-  /// **'👉 Kéo sơ đồ để di chuyển'**
-  String get guideDrag;
-
-  /// No description provided for @guideTapMember.
-  ///
-  /// In vi, this message translates to:
-  /// **'👤 Nhấn vào thành viên để xem chi tiết'**
-  String get guideTapMember;
-
-  /// No description provided for @guideZoom.
-  ///
-  /// In vi, this message translates to:
-  /// **'🔍 Phóng to/Thu nhỏ bằng 2 ngón tay'**
-  String get guideZoom;
-
-  /// No description provided for @incenseActionMessage.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bạn đã thắp một nén nhang thành tâm.'**
-  String get incenseActionMessage;
-
-  /// No description provided for @incenseButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đốt Nhang ({count})'**
-  String incenseButton(int count);
 
   /// No description provided for @knownLabel.
   ///
@@ -2972,18 +2474,6 @@ abstract class AppLocalizations {
   /// **'Đăng xuất'**
   String get logoutLabel;
 
-  /// No description provided for @memberIdFormat.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thành viên #{id}'**
-  String memberIdFormat(int id);
-
-  /// No description provided for @memberTabLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thành Viên'**
-  String get memberTabLabel;
-
   /// No description provided for @noBiographyMessage.
   ///
   /// In vi, this message translates to:
@@ -2995,18 +2485,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa có dữ liệu gia phả'**
   String get noTreeDataMessage;
-
-  /// No description provided for @notificationLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thông báo'**
-  String get notificationLabel;
-
-  /// No description provided for @personalInfoLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thông tin cá nhân'**
-  String get personalInfoLabel;
 
   /// No description provided for @personalInfoSectionTitle.
   ///
@@ -3020,29 +2498,11 @@ abstract class AppLocalizations {
   /// **'Nơi sinh'**
   String get placeOfBirthLabel;
 
-  /// No description provided for @searchMemberYearHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tìm thành viên, năm sinh...'**
-  String get searchMemberYearHint;
-
-  /// No description provided for @seeMoreLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xem thêm'**
-  String get seeMoreLabel;
-
   /// No description provided for @settingsTitle.
   ///
   /// In vi, this message translates to:
   /// **'Cài Đặt'**
   String get settingsTitle;
-
-  /// No description provided for @spiritualMotto.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cội Nguồn Tâm Linh • Vạn Đại Trường Tồn'**
-  String get spiritualMotto;
 
   /// No description provided for @switchToAdminLabel.
   ///
@@ -3092,41 +2552,17 @@ abstract class AppLocalizations {
   /// **'Viết lời tưởng nhớ...'**
   String get anniversaryDialogHint;
 
-  /// No description provided for @anniversarySentMessage.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lời tưởng nhớ đã được gửi.'**
-  String get anniversarySentMessage;
-
-  /// No description provided for @unassignedBranch.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa phân chi'**
-  String get unassignedBranch;
-
   /// No description provided for @understoodLabel.
   ///
   /// In vi, this message translates to:
   /// **'Đã rõ'**
   String get understoodLabel;
 
-  /// No description provided for @unknownGeneration.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chưa rõ đời'**
-  String get unknownGeneration;
-
   /// No description provided for @unknownLabel.
   ///
   /// In vi, this message translates to:
   /// **'Chưa rõ'**
   String get unknownLabel;
-
-  /// No description provided for @usageGuideTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Hướng dẫn sử dụng'**
-  String get usageGuideTitle;
 
   /// No description provided for @eventsListTitle.
   ///
@@ -3181,72 +2617,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Vui lòng chọn ngày diễn ra sự kiện'**
   String get selectEventDateError;
-
-  /// No description provided for @eventNameLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tên sự kiện'**
-  String get eventNameLabel;
-
-  /// No description provided for @eventNameHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'VD: Ngày giỗ tổ dòng họ...'**
-  String get eventNameHint;
-
-  /// No description provided for @eventNameRequired.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vui lòng nhập tên sự kiện'**
-  String get eventNameRequired;
-
-  /// No description provided for @eventNameMinLength.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tên sự kiện phải từ 2 ký tự'**
-  String get eventNameMinLength;
-
-  /// No description provided for @eventDateFormLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ngày diễn ra'**
-  String get eventDateFormLabel;
-
-  /// No description provided for @selectDateHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'Chọn ngày...'**
-  String get selectDateHint;
-
-  /// No description provided for @selectDateRequired.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vui lòng chọn ngày'**
-  String get selectDateRequired;
-
-  /// No description provided for @useLunarCalendar.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sử dụng ngày âm lịch'**
-  String get useLunarCalendar;
-
-  /// No description provided for @eventDescriptionLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Mô tả chi tiết'**
-  String get eventDescriptionLabel;
-
-  /// No description provided for @eventDescriptionHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'Nhập mô tả về sự kiện (địa điểm, nội dung)...'**
-  String get eventDescriptionHint;
-
-  /// No description provided for @saveEventButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Lưu sự kiện'**
-  String get saveEventButton;
 
   /// No description provided for @educationPrimary.
   ///
@@ -3308,35 +2678,11 @@ abstract class AppLocalizations {
   /// **'Mẹ'**
   String get motherLabel;
 
-  /// No description provided for @addChildTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm Con'**
-  String get addChildTooltip;
-
-  /// No description provided for @addSpouseTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm Vợ/Chồng'**
-  String get addSpouseTooltip;
-
-  /// No description provided for @eventTypeArticle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tin tức'**
-  String get eventTypeArticle;
-
   /// No description provided for @eventTypeAnnouncement.
   ///
   /// In vi, this message translates to:
   /// **'Thông báo'**
   String get eventTypeAnnouncement;
-
-  /// No description provided for @eventTypeAnniversary.
-  ///
-  /// In vi, this message translates to:
-  /// **'Giỗ chạp / Kỷ niệm'**
-  String get eventTypeAnniversary;
 
   /// No description provided for @selectPostType.
   ///
@@ -3344,23 +2690,11 @@ abstract class AppLocalizations {
   /// **'Chọn loại bài đăng'**
   String get selectPostType;
 
-  /// No description provided for @eventTitleHintArticle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tiêu đề bài viết...'**
-  String get eventTitleHintArticle;
-
   /// No description provided for @eventTitleHint.
   ///
   /// In vi, this message translates to:
   /// **'Tên sự kiện...'**
   String get eventTitleHint;
-
-  /// No description provided for @eventTitleRequiredArticle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Vui lòng nhập tiêu đề'**
-  String get eventTitleRequiredArticle;
 
   /// No description provided for @eventTitleRequired.
   ///
@@ -3368,35 +2702,11 @@ abstract class AppLocalizations {
   /// **'Vui lòng nhập tên sự kiện'**
   String get eventTitleRequired;
 
-  /// No description provided for @eventAddDescription.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm mô tả...'**
-  String get eventAddDescription;
-
   /// No description provided for @eventSelectDate.
   ///
   /// In vi, this message translates to:
   /// **'Chọn ngày tổ chức'**
   String get eventSelectDate;
-
-  /// No description provided for @eventAddLocation.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm địa điểm'**
-  String get eventAddLocation;
-
-  /// No description provided for @eventAddOrganizer.
-  ///
-  /// In vi, this message translates to:
-  /// **'Người viết'**
-  String get eventAddOrganizer;
-
-  /// No description provided for @eventAddAuthor.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm tác giả'**
-  String get eventAddAuthor;
 
   /// No description provided for @eventLocationLabel.
   ///
@@ -3428,12 +2738,6 @@ abstract class AppLocalizations {
   /// **'Tác giả'**
   String get eventAuthorLabel;
 
-  /// No description provided for @eventAuthorHint.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tên tác giả...'**
-  String get eventAuthorHint;
-
   /// No description provided for @eventPickPhoto.
   ///
   /// In vi, this message translates to:
@@ -3445,12 +2749,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thay ảnh'**
   String get eventChangePhoto;
-
-  /// No description provided for @doneLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xong'**
-  String get doneLabel;
 
   /// No description provided for @eventDetailTitle.
   ///
@@ -3464,12 +2762,6 @@ abstract class AppLocalizations {
   /// **'NGÀY GIỖ DÒNG HỌ'**
   String get deathAnniversariesSectionTitle;
 
-  /// No description provided for @birthdaysSectionTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'NGÀY SINH NHẬT DÒNG HỌ'**
-  String get birthdaysSectionTitle;
-
   /// No description provided for @noBirthdaysMessage.
   ///
   /// In vi, this message translates to:
@@ -3482,17 +2774,11 @@ abstract class AppLocalizations {
   /// **'Chưa có ngày giỗ nào sắp tới'**
   String get noDeathAnniversariesMessage;
 
-  /// No description provided for @newsEventsSectionTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'SỰ KIỆN & TIN TỨC'**
-  String get newsEventsSectionTitle;
-
   /// No description provided for @generationLabel.
   ///
   /// In vi, this message translates to:
   /// **'Đời thứ {gen}'**
-  String generationLabel(int gen);
+  String generationLabel(String gen);
 
   /// No description provided for @spouseInfoLabel.
   ///
@@ -3638,24 +2924,6 @@ abstract class AppLocalizations {
   /// **'Định dạng JPG, PNG (Tối đa 5MB)'**
   String get eventImageFormatHint;
 
-  /// No description provided for @eventTimeLocationSection.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thời gian & Địa điểm'**
-  String get eventTimeLocationSection;
-
-  /// No description provided for @eventPublishDateLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Ngày phát thông báo'**
-  String get eventPublishDateLabel;
-
-  /// No description provided for @eventCreateTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Tạo thông báo gia tộc'**
-  String get eventCreateTitle;
-
   /// No description provided for @eventTitleLabelAnnouncement.
   ///
   /// In vi, this message translates to:
@@ -3764,35 +3032,11 @@ abstract class AppLocalizations {
   /// **'Huỷ chỉnh sửa'**
   String get eventDiscardChangesAction;
 
-  /// No description provided for @eventByAuthor.
-  ///
-  /// In vi, this message translates to:
-  /// **'Bởi '**
-  String get eventByAuthor;
-
   /// No description provided for @adminBoard.
   ///
   /// In vi, this message translates to:
   /// **'Ban Quản Trị'**
   String get adminBoard;
-
-  /// No description provided for @eventEnded.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã kết thúc'**
-  String get eventEnded;
-
-  /// No description provided for @eventOngoing.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đang diễn ra'**
-  String get eventOngoing;
-
-  /// No description provided for @eventUpcoming.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sắp diễn ra'**
-  String get eventUpcoming;
 
   /// No description provided for @lunarShortLabel.
   ///
@@ -4220,12 +3464,6 @@ abstract class AppLocalizations {
   /// **'Gửi lời chúc'**
   String get sendWishButton;
 
-  /// No description provided for @sendRemembranceButton.
-  ///
-  /// In vi, this message translates to:
-  /// **'Gửi lời tưởng nhớ'**
-  String get sendRemembranceButton;
-
   /// No description provided for @memberLabel.
   ///
   /// In vi, this message translates to:
@@ -4616,12 +3854,6 @@ abstract class AppLocalizations {
   /// **'Lỗi chuyển nhượng quyền Trưởng tộc'**
   String get errTransferOwnership;
 
-  /// No description provided for @eventDetailSemanticLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sự kiện {title}, Ngày: {date}'**
-  String eventDetailSemanticLabel(Object date, Object title);
-
   /// No description provided for @linkAccountsTitle.
   ///
   /// In vi, this message translates to:
@@ -4688,12 +3920,6 @@ abstract class AppLocalizations {
   /// **'Chưa liên kết'**
   String get notLinkedLabel;
 
-  /// No description provided for @invitePendingDesc.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã gửi lời mời tới {email}. Tài khoản sẽ tự liên kết sau khi thành viên đăng ký.'**
-  String invitePendingDesc(Object email);
-
   /// No description provided for @linkSuccess.
   ///
   /// In vi, this message translates to:
@@ -4735,12 +3961,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.'**
   String get trashEmpty;
-
-  /// No description provided for @trashStatusDeleted.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã xóa'**
-  String get trashStatusDeleted;
 
   /// No description provided for @trashDeletedAt.
   ///
@@ -4808,36 +4028,6 @@ abstract class AppLocalizations {
   /// **'Chưa có hoạt động biên soạn nào.'**
   String get auditLogsEmpty;
 
-  /// No description provided for @auditActionCreate.
-  ///
-  /// In vi, this message translates to:
-  /// **'{actor} đã thêm một thành viên mới'**
-  String auditActionCreate(String actor);
-
-  /// No description provided for @auditActionUpdate.
-  ///
-  /// In vi, this message translates to:
-  /// **'{actor} đã chỉnh sửa thành viên'**
-  String auditActionUpdate(String actor);
-
-  /// No description provided for @auditActionDelete.
-  ///
-  /// In vi, this message translates to:
-  /// **'{actor} đã đưa thành viên vào thùng rác'**
-  String auditActionDelete(String actor);
-
-  /// No description provided for @auditActionRestore.
-  ///
-  /// In vi, this message translates to:
-  /// **'{actor} đã khôi phục thành viên'**
-  String auditActionRestore(String actor);
-
-  /// No description provided for @auditActionPurge.
-  ///
-  /// In vi, this message translates to:
-  /// **'{actor} đã dọn dẹp thùng rác'**
-  String auditActionPurge(String actor);
-
   /// No description provided for @auditUnknownActor.
   ///
   /// In vi, this message translates to:
@@ -4903,24 +4093,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thành viên này có thể đã bị xóa hoặc không còn tồn tại.'**
   String get memberNoLongerExists;
-
-  /// No description provided for @filterCreate.
-  ///
-  /// In vi, this message translates to:
-  /// **'Thêm mới'**
-  String get filterCreate;
-
-  /// No description provided for @filterUpdate.
-  ///
-  /// In vi, this message translates to:
-  /// **'Cập nhật'**
-  String get filterUpdate;
-
-  /// No description provided for @restoreLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Khôi phục'**
-  String get restoreLabel;
 
   /// No description provided for @disabledLabel.
   ///
@@ -5000,35 +4172,11 @@ abstract class AppLocalizations {
   /// **'Tổng quan sơ đồ'**
   String get treeOverviewTooltip;
 
-  /// No description provided for @announcementBadge.
-  ///
-  /// In vi, this message translates to:
-  /// **'THÔNG BÁO'**
-  String get announcementBadge;
-
   /// No description provided for @generationLevelFormat.
   ///
   /// In vi, this message translates to:
   /// **'Đời {gen}'**
   String generationLevelFormat(String gen);
-
-  /// No description provided for @memberSearchNoResult.
-  ///
-  /// In vi, this message translates to:
-  /// **'Không tìm thấy thành viên phù hợp'**
-  String get memberSearchNoResult;
-
-  /// No description provided for @deleteAccountTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Xóa tài khoản'**
-  String get deleteAccountTitle;
-
-  /// No description provided for @deleteAccountConfirmMessage.
-  ///
-  /// In vi, this message translates to:
-  /// **'Toàn bộ dữ liệu cá nhân của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục. Bạn sẽ mất quyền truy cập vào dòng họ.\n\nBạn có chắc chắn muốn tiếp tục không?'**
-  String get deleteAccountConfirmMessage;
 
   /// No description provided for @deleteAccountSuccess.
   ///
@@ -5047,18 +4195,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xóa tài khoản'**
   String get deleteAccountButton;
-
-  /// No description provided for @deleteAccountDeleting.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đang xóa…'**
-  String get deleteAccountDeleting;
-
-  /// No description provided for @dangerZoneTitle.
-  ///
-  /// In vi, this message translates to:
-  /// **'Khu vực nguy hiểm'**
-  String get dangerZoneTitle;
 
   /// No description provided for @dangerZoneDesc.
   ///
@@ -5143,18 +4279,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'GIẢI TÁN'**
   String get dissolveWord;
-
-  /// No description provided for @copyInfoTooltip.
-  ///
-  /// In vi, this message translates to:
-  /// **'Sao chép thông tin'**
-  String get copyInfoTooltip;
-
-  /// No description provided for @copyInfoSuccess.
-  ///
-  /// In vi, this message translates to:
-  /// **'Đã sao chép thông tin thành viên!'**
-  String get copyInfoSuccess;
 
   /// No description provided for @rolePermissionDenied.
   ///
@@ -5665,12 +4789,6 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ngày'**
   String get dateFieldLabel;
-
-  /// No description provided for @locationFieldLabel.
-  ///
-  /// In vi, this message translates to:
-  /// **'Địa điểm'**
-  String get locationFieldLabel;
 
   /// No description provided for @contentFieldLabel.
   ///

@@ -128,7 +128,7 @@ class _EventsListPageState extends State<EventsListPage> {
             child: Text(l10n.cancelLabel),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: context.error),
             onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.deleteLabel),
           ),

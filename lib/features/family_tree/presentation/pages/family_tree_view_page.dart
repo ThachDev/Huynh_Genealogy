@@ -634,7 +634,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            l10n.memberSearchNoResult,
+                            l10n.emptyMembers,
                             style: GoogleFonts.inter(
                               fontSize: 13,
                               color: context.textSecondary,
@@ -1461,7 +1461,7 @@ class MemberSearchDelegate extends SearchDelegate<int?> {
             child: member.avatarUrl == null ? const Icon(Icons.person) : null,
           ),
           title: Text(member.fullName),
-          subtitle: Text(l10n.generationBadge('${member.generation ?? 0}')),
+          subtitle: Text(l10n.generationLabel('${member.generation ?? 0}')),
           onTap: () {
             close(context, member.id);
           },

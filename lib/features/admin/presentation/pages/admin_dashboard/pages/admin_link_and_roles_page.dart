@@ -121,7 +121,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
       message: l10n.confirmUnlinkMessage(item.fullName),
       confirmLabel: l10n.unlinkButton,
       type: AppDialogType.danger,
-      confirmColor: AppColors.error,
+      confirmColor: context.error,
     );
     if (confirmed == true && mounted) {
       context.read<MemberAccountLinksBloc>().add(UnlinkMemberAccountEvent(
@@ -166,7 +166,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                 const Divider(),
                 _buildRoleOption(user, familyId, 'EDITOR', l10n.roleEditorTitle,
                     l10n.roleEditorDesc),
-                _buildRoleOption(user, familyId, 'VIEWER', l10n.roleViewerTitle,
+                _buildRoleOption(user, familyId, 'VIEWER', l10n.memberLabel,
                     l10n.roleViewerDesc),
                 const Divider(),
                 _buildTransferOwnershipOption(user, familyId, l10n),
@@ -458,7 +458,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
               padding: const EdgeInsets.all(20),
               child: Text(
                 state.message,
-                style: GoogleFonts.beVietnamPro(color: AppColors.error),
+                style: GoogleFonts.beVietnamPro(color: context.error),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -712,7 +712,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                     if (item.generation != null) ...[
                       const SizedBox(height: 2),
                       Text(
-                        l10n.generationBadge('${item.generation}'),
+                        l10n.generationLabel('${item.generation}'),
                         style: GoogleFonts.inter(
                           fontSize: 11,
                           color: context.textSecondary,
@@ -848,7 +848,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
               padding: const EdgeInsets.all(20.0),
               child: Text(
                 state.message,
-                style: GoogleFonts.beVietnamPro(color: AppColors.error),
+                style: GoogleFonts.beVietnamPro(color: context.error),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -952,7 +952,8 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                                   width: 8,
                                   height: 8,
                                   decoration: BoxDecoration(
-                                    color: AdminDashboardPage.roleColor(role),
+                                    color: AdminDashboardPage.roleColor(
+                                        role, context),
                                     shape: BoxShape.circle,
                                   ),
                                 ),
@@ -1083,7 +1084,8 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                                           horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
                                         color:
-                                            AdminDashboardPage.roleColor(role)
+                                            AdminDashboardPage.roleColor(
+                                                    role, context)
                                                 .withValues(alpha: 0.15),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
@@ -1094,7 +1096,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
                                           color: AdminDashboardPage.roleColor(
-                                              role),
+                                              role, context),
                                           letterSpacing: 0.5,
                                         ),
                                       ),

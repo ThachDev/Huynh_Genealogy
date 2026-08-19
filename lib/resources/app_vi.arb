@@ -1,6 +1,5 @@
 {
   "loginTitle": "Đăng Nhập",
-  "clanAndPersonalInfoTitle": "Thông tin dòng tộc và cá nhân",
   "loginSubtitle": "Kết nối với cội nguồn dòng tộc của bạn",
   "emailLabel": "Địa chỉ email",
   "emailHint": "email@example.com",
@@ -8,8 +7,6 @@
   "passwordHint": "••••••••",
   "forgotPassword": "Quên mật khẩu?",
   "loginButton": "Đăng nhập",
-  "orDivider": "Hoặc",
-  "googleLoginButton": "Đăng nhập với Google",
   "noAccountText": "Chưa có tài khoản? ",
   "registerNow": "Đăng ký ngay",
   "rememberMe": "Ghi nhớ mật khẩu",
@@ -18,11 +15,9 @@
   "fullNameLabel": "Họ và tên",
   "fullNameHint": "Nguyễn Văn A",
   "confirmPasswordLabel": "Xác nhận mật khẩu",
-  "confirmPasswordHint": "••••••••",
   "registerButton": "Đăng ký",
   "alreadyHaveAccountText": "Đã có tài khoản? ",
   "loginNow": "Đăng nhập ngay",
-  "registerAsCreator": "Đăng ký với tư cách Trưởng tộc",
   "acceptTermsText": "Tôi đồng ý với ",
   "termsOfService": "Điều khoản dịch vụ",
   "andText": " và ",
@@ -34,15 +29,11 @@
   "appTitle": "Gia Tộc Việt",
   "confirmLabel": "Xác nhận",
   "cancelLabel": "Hủy",
-  "closeLabel": "Đóng",
-  "okLabel": "Đóng",
+  "okLabel": "OK",
   "loadingMessage": "Đang xử lý...",
-  "emailLoginFeatureNotice": "Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.",
-  "forgotPasswordNotice": "Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.",
   "forgotPasswordTitle": "Quên mật khẩu",
   "forgotPasswordSubtitle": "Nhập email đã đăng ký để nhận mã xác thực đặt lại mật khẩu.",
   "forgotPasswordButton": "Gửi Mã Xác Thực",
-  "forgotPasswordSuccess": "Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư (kể cả thư mục spam).",
   "backToLogin": "Quay lại đăng nhập",
   "otpTitle": "Xác thực OTP",
   "otpSubtitleStart": "Chúng tôi đã gửi mã xác thực 6 số đến email ",
@@ -61,8 +52,6 @@
   "newPasswordLabel": "Mật khẩu mới",
   "enterInviteCodeWarning": "Vui lòng nhập mã mời",
   "onboardingTitle": "Thiết Lập Gia Tộc",
-  "logoutTooltip": "Đăng xuất",
-  "createFamilySuccess": "Tạo dòng họ thành công!",
   "verifyInviteSuccess": "Xác thực mã mời thành công: {familyName}",
   "@verifyInviteSuccess": {
     "placeholders": {
@@ -86,15 +75,6 @@
   },
   "pendingApprovalMessageSimple": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt để được tham gia dòng họ.",
   "checkStatusButton": "Kiểm tra trạng thái",
-  "welcomeCreatorTitle": "Chào Trưởng tộc, {name}!",
-  "@welcomeCreatorTitle": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "welcomeCreatorSubtitle": "Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.",
   "familyNameLabel": "Tên Gia tộc",
   "familyNameHint": "Ví dụ: Nguyễn Gia Tộc",
   "familyNameRequired": "Tên dòng họ không được để trống",
@@ -112,9 +92,7 @@
     }
   },
   "welcomeViewerSubtitle": "Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.",
-  "inviteCodeLabel": "Mã Mời Gia Tộc",
   "inviteCodeHint": "Nhập mã 6 ký tự",
-  "verifyButton": "Xác thực",
   "familyFoundTitle": "Tìm thấy gia tộc: {name}",
   "@familyFoundTitle": {
     "placeholders": {
@@ -124,7 +102,6 @@
     }
   },
   "selectMemberPrompt": "Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):",
-  "whoAreYouDropdownHint": "Bạn là ai trên cây gia phả?",
   "sendJoinRequestButton": "Gửi Yêu Cầu Gia Nhập",
   "chooseOnboardingSubtitle": "Chọn một phương thức thiết lập gia phả để bắt đầu kết nối dòng tộc của bạn.",
   "createFamilyCardTitle": "Khởi tạo Gia tộc mới",
@@ -197,13 +174,11 @@
   "enterInviteCodeLabel": "Nhập Mã Tham Gia",
   "inviteCodeHintNew": "VD: HGT-2024",
   "inviteCodeDescription": "Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.",
-  "connectFamilySectionTitle": "Kết nối dòng tộc",
   "copiedShareContent": "Đã sao chép nội dung chia sẻ!",
   "creationSuccessTitle": "Khởi Tạo Thành Công",
   "confirmJoinButton": "Xác Nhận Tham Gia",
   "navOverview": "Tổng quan",
   "navFamilyTree": "Cây gia phả",
-  "navFamilyFund": "Quỹ gia tộc",
   "navEvents": "Sự kiện",
   "navSettings": "Cài đặt",
   "errGenerationRequired": "Vui lòng nhập thế hệ",
@@ -242,23 +217,17 @@
   "languageLabel": "Ngôn ngữ",
   "themeLabel": "Giao diện",
   "notificationsSectionTitle": "Thông báo",
-  "notifyEventLabel": "Sự kiện mới",
   "notifyAnnouncementLabel": "Thông báo từ dòng họ",
-  "notifyWishLabel": "Lời chúc",
   "notifyAnniversaryLabel": "Giỗ & sinh nhật",
   "infoAndHelpSection": "Thông Tin & Trợ Giúp",
   "helpAndInfoHubLabel": "Trợ giúp & Thông tin",
   "tabFaqLabel": "Hỏi đáp",
   "tabRegulationsLabel": "Điều khoản",
   "tabAboutLabel": "Giới thiệu",
-  "regulationsLabel": "Quy định & Điều khoản",
-  "helpCenterLabel": "Trung tâm hỗ trợ",
-  "aboutUsLabel": "Về chúng tôi",
   "advancedAdminSection": "Quản Trị Nâng Cao",
   "linkAndRolesTitle": "Liên kết & Phân quyền",
   "tabLinkAccounts": "Liên kết tài khoản",
   "tabMemberRoles": "Phân quyền",
-  "memberRolesLabel": "Phân quyền thành viên",
   "transferOwnershipLabel": "Chuyển nhượng quyền Trưởng tộc",
   "dissolveClanLabel": "Giải tán dòng họ",
   "logoutButton": "Đăng Xuất",
@@ -280,7 +249,6 @@
   "confirmDissolveInstruction": "Để xác nhận, vui lòng nhập chính xác tên dòng họ bên dưới:",
   "enterLabel": "Nhập: ",
   "reenterClanNameLabel": "Nhập lại tên dòng họ",
-  "reenterClanNameHint": "Nhập đúng từng chữ để xác nhận",
   "dissolvePermanentButton": "Giải Tán Dòng Họ Vĩnh Viễn",
   "deletePermanentDialogTitle": "Xóa Gia Phả Vĩnh Viễn",
   "deletePermanentDialogMessage": "Hành động này cực kỳ nguy hiểm. Toàn bộ thông tin thành viên, các nhánh dòng họ, lịch sử gia tộc của \"{name}\" sẽ bị xóa vĩnh viễn khỏi máy chủ. Bạn chắc chắn muốn tiếp tục chứ?",
@@ -293,15 +261,10 @@
   },
   "confirmDeletePermanentLabel": "Đồng Ý Xóa Bỏ",
   "dissolveSuccessMessage": "Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.",
-  "chooseRecipientLabel": "Chọn người nhận quyền",
-  "transferDesc": "Chỉ những thành viên đã kích hoạt tài khoản và có vai trò khác Trưởng tộc mới xuất hiện trong danh sách dưới đây:",
   "searchMemberHint": "Tìm thành viên...",
   "noMemberFound": "Không tìm thấy thành viên phù hợp.",
   "noSearchResultsMessage": "Không tìm thấy kết quả phù hợp.",
-  "noEligibleMembers": "Không có thành viên nào đủ điều kiện nhận chuyển nhượng.",
-  "proceedTransferButton": "Tiến Hành Chuyển Nhượng",
   "warningDialogTitle": "Cảnh báo quan trọng",
-  "warningDialogMessage": "Quyền Trưởng tộc là quyền hạn cao nhất trong hệ thống gia phả. Khi chuyển nhượng thành công, bạn sẽ mất quyền chỉnh sửa cấu trúc dòng họ cao cấp và các thiết lập bảo mật.",
   "warningDialogConfirmMessage": "Bạn có chắc chắn muốn chuyển giao quyền Trưởng tộc cho {name}?",
   "@warningDialogConfirmMessage": {
     "placeholders": {
@@ -312,8 +275,6 @@
   },
   "confirmTransferButton": "Đồng Ý Chuyển",
   "transferSuccess": "Chuyển nhượng quyền Trưởng tộc thành công!",
-  "transferProcessing": "Đang xử lý chuyển nhượng...",
-  "memberRolesTitle": "Phân Quyền Thành Viên",
   "roleOfUser": "Vai trò của {name}",
   "@roleOfUser": {
     "placeholders": {
@@ -322,17 +283,12 @@
       }
     }
   },
-  "roleBranchAdminTitle": "Trưởng chi",
-  "roleBranchAdminDesc": "Quản lý nhân sự và nội dung của chi tộc.",
   "roleEditorTitle": "Biên tập viên",
   "roleEditorDesc": "Đóng góp và chỉnh sửa thông tin gia phả.",
-  "roleViewerTitle": "Thành viên",
   "roleViewerDesc": "Chỉ được xem thông tin gia tộc.",
   "updateRoleSuccess": "Cập nhật vai trò thành công!",
   "noMembers": "Chưa có thành viên nào trong gia tộc.",
   "cannotSelfChange": "Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng \"Chuyển nhượng quyền Trưởng tộc\".",
-  "accountInfoTitle": "Thông Tin Cá Nhân",
-  "emailAccountLabel": "Email (Tài khoản)",
   "noProfileLink": "Chưa liên kết hồ sơ gia phả",
   "noProfileLinkDesc": "Tài khoản của bạn là Trưởng tộc nhưng chưa được liên kết với một thành viên nào trong cây gia phả. Hãy tạo hồ sơ ngay để bắt đầu quản lý phả hệ.",
   "createProfileButton": "Tạo Hồ Sơ Gia Phả",
@@ -346,8 +302,6 @@
   "originRequired": "Vui lòng nhập địa chỉ nguồn gốc dòng tộc",
   "clanDescLabel": "Mô tả chi tiết",
   "clanDescHint": "Tóm tắt lịch sử, gia phong dòng họ",
-  "editTooltip": "Chỉnh sửa",
-  "doneTooltip": "Hoàn tất",
   "noFamilyInfo": "Không tìm thấy thông tin dòng họ để cập nhật",
   "updateFamilySuccess": "Cập nhật thông tin dòng tộc thành công!",
   "regulationsTitle": "Quy Định & Điều Khoản Pháp Lý",
@@ -374,19 +328,10 @@
   "regSection10Title": "Giải quyết Tranh chấp & Luật Áp dụng",
   "regSection10Content": "• Mọi Điều khoản này được giải thích và điều chỉnh độc quyền theo Pháp luật nước CHXHCN Việt Nam.\n• Mọi tranh chấp phát sinh giữa Người dùng và Đơn vị phát triển trước hết sẽ được giải quyết thông qua thương lượng và hòa giải trên tinh thần thiện chí.\n• Trường hợp hòa giải không thành trong vòng sáu mươi (60) ngày, tranh chấp sẽ được đưa ra giải quyết tại Tòa án nhân dân có thẩm quyền tại Việt Nam.",
   "copyrightText": "© 2026 ThachDev. Bảo lưu mọi quyền.",
-  "helpCenterTitle": "Trung Tâm Hỗ Trợ",
-  "helpDragInstruction": "👉 Kéo sơ đồ để di chuyển",
-  "helpTapInstruction": "👤 Nhấn vào thành viên để xem chi tiết",
-  "helpTooltip": "Hướng dẫn",
-  "helpZoomInstruction": "🔍 Phóng to/Thu nhỏ bằng 2 ngón tay",
   "contactSection": "Liên hệ trực tiếp",
-  "hotlineTitle": "Hotline hỗ trợ",
-  "hotlineValue": "1900 8888",
-  "hotlineSubtitle": "8:00 - 17:30 (T2-T6)",
   "supportEmailTitle": "Email hỗ trợ",
   "supportEmailValue": "thachhuynh.dev@gmail.com",
   "supportEmailSubtitle": "Phản hồi trong 24h",
-  "accountLoginSection": "Tài khoản & Đăng nhập",
   "genealogyMemberSection": "Phả Hệ & Liên Kết",
   "clanAndRolesSection": "Phân Quyền & Quản Trị Dòng Họ",
   "techSecuritySection": "An Toàn Dữ Liệu & Tài Khoản",
@@ -411,28 +356,20 @@
   "versionLabel": "Phiên bản",
   "developerLabel": "Nhà phát triển",
   "contactEmailLabel": "Email",
-  "adminDashboardTitle": "Bảng Quản Trị",
   "roleOwner": "Trưởng Tộc",
-  "roleBranchAdmin": "Trưởng Chi",
   "roleEditor": "Biên Tập Viên",
   "roleViewer": "Thành Viên",
-  "memberListTitle": "Danh Sách Thành Viên",
-  "branchListTitle": "Danh Sách Chi Tộc",
-  "pendingRequestTitle": "Yêu Cầu Chờ Duyệt",
   "searchMembersHint": "Tìm kiếm thành viên...",
   "searchBranchesHint": "Tìm kiếm chi tộc...",
   "emptyMembers": "Không tìm thấy thành viên phù hợp",
   "emptyBranches": "Không tìm thấy chi tộc phù hợp",
   "emptyPendingRequests": "Không có yêu cầu tham gia nào đang chờ duyệt",
-  "addMemberLabel": "Thêm thành viên",
-  "addBranchLabel": "Thêm chi tộc",
   "statMembers": "Thành Viên",
   "statBranches": "Chi Tộc",
   "statPending": "Chờ Duyệt",
   "inviteCodeSectionLabel": "Mã Gia Tộc",
   "inviteCodeCopied": "Đã sao chép mã mời: {code}",
   "copyCodeTooltip": "Sao chép mã",
-  "qrCodeTooltip": "Mã QR",
   "qrDialogTitle": "Mã QR Gia Tộc",
   "qrSaved": "Đã lưu QR vào thư viện ảnh!",
   "qrSaveError": "Không thể lưu ảnh. Vui lòng cấp quyền thư viện ảnh.",
@@ -442,7 +379,6 @@
   "addNewLabel": "Thêm mới",
   "aliveLabel": "Còn sống",
   "deceasedLabel": "Đã mất",
-  "generationBadge": "Đời thứ {gen}",
   "branchBadge": "Chi tộc: {name}",
   "editLabel": "Chỉnh sửa",
   "deleteLabel": "Xoá",
@@ -470,7 +406,6 @@
   "basicInfoTitle": "Thông Tin Cơ Bản",
   "branchNameLabel": "Tên chi tộc",
   "branchNameHint": "VD: Chi Trưởng, Chi Hai...",
-  "branchNameRequired": "Tên chi tộc",
   "branchNameEmptyError": "Không được để trống",
   "founderNameLabel": "Tên tổ chi",
   "addMemberPlaceholder": "✦ Thêm thành viên mới...",
@@ -497,16 +432,13 @@
   "maritalMarried": "Đã kết hôn",
   "maritalDivorced": "Ly hôn",
   "maritalWidowed": "Góa phụ",
-  "maritalUnknown": "Chưa rõ",
   "genderLabel": "Giới Tính",
   "genderMale": "Nam",
   "genderFemale": "Nữ",
-  "genderUnknown": "Chưa rõ",
   "dobLabel": "Ngày sinh",
   "dobHint": "dd/mm/yyyy",
   "statusLabel": "Tình Trạng",
   "dodLabel": "Ngày mất",
-  "dodHint": "dd/mm/yyyy",
   "phoneLabel": "Số điện thoại",
   "phoneHint": "0xxxxxxxxx",
   "addressLabel": "Quê quán / Địa chỉ",
@@ -530,56 +462,27 @@
   "notLoggedIn": "Người dùng chưa đăng nhập",
   "sessionTokenError": "Không thể lấy mã xác thực phiên đăng nhập",
   "passwordChangeFailed": "Thay đổi mật khẩu thất bại",
-  "serverConnectionError": "Lỗi kết nối máy chủ",
   "emailSubjectHelp": "Hỗ Trợ Gia Tộc Việt",
   "accountSectionTitle": "Tài Khoản",
   "allLabel": "Tất cả",
   "biographySectionTitle": "Tiểu Sử & Ghi Chú",
-  "branchCountLabel": "{count} Chi tộc",
   "branchLabel": "Chi tộc",
   "branchTabLabel": "Chi Tộc / Nhánh",
-  "congratulateActionMessage": "Bạn đã gửi một lời chúc mừng.",
-  "congratulateButton": "Chúc Mừng ({count})",
-  "currentDateDisplay": "Ngày {day}/{month}/{year} (Nhằm 12/05 Âm Lịch)",
   "dateOfBirthLabel": "Ngày sinh",
   "dateOfDeathLabel": "Ngày mất",
-  "donateButton": "Đóng góp",
   "eventCountdown": "Còn {days} ngày",
-  "eventDateSample1": "12/05 Âm lịch",
-  "eventDateSample2": "28/06 Dương lịch",
-  "eventDateLabel": "Ngày {date}",
-  "eventDetailFormat": "Đời thứ {gen} • Ngày {date}",
-  "eventSample1": "Giỗ cụ Huỳnh Công Minh",
-  "eventSample2": "Hội thảo Dòng họ Xuân 2026",
-  "eventTypeAncestors": "Giỗ Chạp",
   "eventTypeEvent": "Sự kiện",
-  "eventsSectionTitle": "Sự Kiện & Lễ Giỗ Dòng Họ",
-  "familyFundTitle": "Quỹ Gia Tộc",
   "familyRelationSectionTitle": "Quan Hệ Gia Đình",
-  "familyTreeMapTitle": "Bản Đồ Phả Hệ",
   "familyTreeNameFormat": "Gia Phả Họ {name}",
   "familyTreeTitle": "Gia Phả Dòng Họ",
-  "guideButton": "Hướng dẫn",
-  "guideDrag": "👉 Kéo sơ đồ để di chuyển",
-  "guideTapMember": "👤 Nhấn vào thành viên để xem chi tiết",
-  "guideZoom": "🔍 Phóng to/Thu nhỏ bằng 2 ngón tay",
-  "incenseActionMessage": "Bạn đã thắp một nén nhang thành tâm.",
-  "incenseButton": "Đốt Nhang ({count})",
   "knownLabel": "Đã rõ",
   "logoutConfirmMessage": "Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?",
   "logoutLabel": "Đăng xuất",
-  "memberIdFormat": "Thành viên #{id}",
-  "memberTabLabel": "Thành Viên",
   "noBiographyMessage": "Chưa có thông tin tiểu sử cho thành viên này.",
   "noTreeDataMessage": "Chưa có dữ liệu gia phả",
-  "notificationLabel": "Thông báo",
-  "personalInfoLabel": "Thông tin cá nhân",
   "personalInfoSectionTitle": "Thông Tin Cá Nhân",
   "placeOfBirthLabel": "Nơi sinh",
-  "searchMemberYearHint": "Tìm thành viên, năm sinh...",
-  "seeMoreLabel": "Xem thêm",
   "settingsTitle": "Cài Đặt",
-  "spiritualMotto": "Cội Nguồn Tâm Linh • Vạn Đại Trường Tồn",
   "switchToAdminLabel": "Chuyển sang trang Quản trị",
   "todayLabel": "Hôm nay",
   "wishDialogTitle": "Gửi Lời Chúc",
@@ -588,39 +491,8 @@
   "wishSentMessage": "Lời chúc đã được gửi.",
   "anniversaryDialogTitle": "Gửi Lời Tưởng Nhớ",
   "anniversaryDialogHint": "Viết lời tưởng nhớ...",
-  "anniversarySentMessage": "Lời tưởng nhớ đã được gửi.",
-  "unassignedBranch": "Chưa phân chi",
   "understoodLabel": "Đã rõ",
-  "unknownGeneration": "Chưa rõ đời",
   "unknownLabel": "Chưa rõ",
-  "usageGuideTitle": "Hướng dẫn sử dụng",
-  "@branchCountLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@congratulateButton": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@currentDateDisplay": {
-    "placeholders": {
-      "day": {
-        "type": "int"
-      },
-      "month": {
-        "type": "int"
-      },
-      "year": {
-        "type": "int"
-      }
-    }
-  },
   "@eventCountdown": {
     "placeholders": {
       "days": {
@@ -628,41 +500,10 @@
       }
     }
   },
-  "@eventDateLabel": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "@eventDetailFormat": {
-    "placeholders": {
-      "gen": {
-        "type": "int"
-      },
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "@familyTreeNameFormat": {
     "placeholders": {
       "name": {
         "type": "String"
-      }
-    }
-  },
-  "@incenseButton": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@memberIdFormat": {
-    "placeholders": {
-      "id": {
-        "type": "int"
       }
     }
   },
@@ -682,17 +523,6 @@
   "addEventTitle": "Thêm Sự Kiện",
   "editEventTitle": "Sửa Sự Kiện",
   "selectEventDateError": "Vui lòng chọn ngày diễn ra sự kiện",
-  "eventNameLabel": "Tên sự kiện",
-  "eventNameHint": "VD: Ngày giỗ tổ dòng họ...",
-  "eventNameRequired": "Vui lòng nhập tên sự kiện",
-  "eventNameMinLength": "Tên sự kiện phải từ 2 ký tự",
-  "eventDateFormLabel": "Ngày diễn ra",
-  "selectDateHint": "Chọn ngày...",
-  "selectDateRequired": "Vui lòng chọn ngày",
-  "useLunarCalendar": "Sử dụng ngày âm lịch",
-  "eventDescriptionLabel": "Mô tả chi tiết",
-  "eventDescriptionHint": "Nhập mô tả về sự kiện (địa điểm, nội dung)...",
-  "saveEventButton": "Lưu sự kiện",
   "educationPrimary": "Tiểu học",
   "educationSecondary": "Trung học cơ sở",
   "educationHighSchool": "Trung học phổ thông",
@@ -703,41 +533,27 @@
   "memberDetailTitle": "Chi tiết thành viên",
   "fatherLabel": "Cha",
   "motherLabel": "Mẹ",
-  "addChildTooltip": "Thêm Con",
-  "addSpouseTooltip": "Thêm Vợ/Chồng",
-  "eventTypeArticle": "Tin tức",
   "eventTypeAnnouncement": "Thông báo",
-  "eventTypeAnniversary": "Giỗ chạp / Kỷ niệm",
   "selectPostType": "Chọn loại bài đăng",
-  "eventTitleHintArticle": "Tiêu đề bài viết...",
   "eventTitleHint": "Tên sự kiện...",
-  "eventTitleRequiredArticle": "Vui lòng nhập tiêu đề",
   "eventTitleRequired": "Vui lòng nhập tên sự kiện",
-  "eventAddDescription": "Thêm mô tả...",
   "eventSelectDate": "Chọn ngày tổ chức",
-  "eventAddLocation": "Thêm địa điểm",
-  "eventAddOrganizer": "Người viết",
-  "eventAddAuthor": "Thêm tác giả",
   "eventLocationLabel": "Địa điểm",
   "eventLocationHint": "Nhập địa điểm...",
   "eventOrganizerLabel": "Người viết",
   "eventOrganizerHint": "Tên người viết...",
   "eventAuthorLabel": "Tác giả",
-  "eventAuthorHint": "Tên tác giả...",
   "eventPickPhoto": "Chọn ảnh",
   "eventChangePhoto": "Thay ảnh",
-  "doneLabel": "Xong",
   "eventDetailTitle": "Chi tiết sự kiện",
   "deathAnniversariesSectionTitle": "NGÀY GIỖ DÒNG HỌ",
-  "birthdaysSectionTitle": "NGÀY SINH NHẬT DÒNG HỌ",
   "noBirthdaysMessage": "Chưa có sinh nhật nào sắp tới",
   "noDeathAnniversariesMessage": "Chưa có ngày giỗ nào sắp tới",
-  "newsEventsSectionTitle": "SỰ KIỆN & TIN TỨC",
   "generationLabel": "Đời thứ {gen}",
   "@generationLabel": {
     "placeholders": {
       "gen": {
-        "type": "int"
+        "type": "String"
       }
     }
   },
@@ -765,9 +581,6 @@
   "familyTreeLoadError": "Có lỗi xảy ra khi tải dữ liệu: {error}",
   "eventTypeEventArticle": "Sự kiện / Bài viết",
   "eventImageFormatHint": "Định dạng JPG, PNG (Tối đa 5MB)",
-  "eventTimeLocationSection": "Thời gian & Địa điểm",
-  "eventPublishDateLabel": "Ngày phát thông báo",
-  "eventCreateTitle": "Tạo thông báo gia tộc",
   "eventTitleLabelAnnouncement": "Tiêu đề thông báo",
   "eventTitleLabelEventArticle": "Tên sự kiện / Bài viết",
   "eventTitleHintAnnouncement": "Nhập tiêu đề thông báo ngắn gọn...",
@@ -786,11 +599,7 @@
   "eventDiscardChangesTitle": "Huỷ chỉnh sửa?",
   "eventDiscardChangesMessage": "Các thay đổi chưa lưu sẽ bị mất.",
   "eventDiscardChangesAction": "Huỷ chỉnh sửa",
-  "eventByAuthor": "Bởi ",
   "adminBoard": "Ban Quản Trị",
-  "eventEnded": "Đã kết thúc",
-  "eventOngoing": "Đang diễn ra",
-  "eventUpcoming": "Sắp diễn ra",
   "lunarShortLabel": "LỊCH ÂM",
   "monthLabelFormat": "Tháng {month}",
   "lunarMonthLabelFormat": "Tháng {month}{leap}",
@@ -862,7 +671,6 @@
   "noWishesMessage": "Chưa có lời chúc nào.",
   "beFirstWisher": "Hãy là người đầu tiên gửi lời chúc!",
   "sendWishButton": "Gửi lời chúc",
-  "sendRemembranceButton": "Gửi lời tưởng nhớ",
   "memberLabel": "Thành viên",
   "clearBranchFilterLabel": "Bỏ lọc chi",
   "pendingApprovalRequestSent": "Yêu cầu tham gia dòng họ đã được gửi đi thành công. Vui lòng đợi quản trị phê duyệt hoặc liên hệ ",
@@ -928,7 +736,6 @@
   "errDeleteFamily": "Lỗi xóa dòng họ",
   "errLinkFamilyProfile": "Lỗi liên kết hồ sơ gia phả",
   "errTransferOwnership": "Lỗi chuyển nhượng quyền Trưởng tộc",
-  "eventDetailSemanticLabel": "Sự kiện {title}, Ngày: {date}",
   "linkAccountsTitle": "Quản Lý Tài Khoản & Liên Kết",
   "linkAccountsNodeTitle": "Liên Kết Tài Khoản",
   "linkAccountsLabel": "Liên kết tài khoản",
@@ -940,16 +747,13 @@
   "linkedLabel": "Đã liên kết",
   "invitePendingLabel": "Chờ đăng ký",
   "notLinkedLabel": "Chưa liên kết",
-  "invitePendingDesc": "Đã gửi lời mời tới {email}. Tài khoản sẽ tự liên kết sau khi thành viên đăng ký.",
   "linkSuccess": "Đã liên kết tài khoản {email} thành công.",
   "inviteSentSuccess": "Đã gửi lời mời gia nhập tới {email}.",
   "unlinkSuccess": "Đã gỡ liên kết tài khoản.",
   "confirmUnlinkTitle": "Xác Nhận Gỡ Liên Kết",
   "confirmUnlinkMessage": "Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?",
-
   "trashTitle": "Thùng rác",
   "trashEmpty": "Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.",
-  "trashStatusDeleted": "Đã xóa",
   "trashDeletedAt": "Đã xóa: {time}",
   "trashRestoreButton": "Khôi phục",
   "trashPurgeButton": "Dọn sạch",
@@ -959,60 +763,36 @@
   "trashPurgeTitle": "Xóa Vĩnh Viễn",
   "trashPurgeMessage": "Xóa vĩnh viễn toàn bộ thành viên trong thùng rác quá 30 ngày? Hành động này không thể hoàn tác.",
   "trashPurgeSuccess": "Đã xóa vĩnh viễn {count} thành viên.",
-
   "auditLogsTitle": "Nhật ký biên soạn",
   "auditLogsEmpty": "Chưa có hoạt động biên soạn nào.",
-  "auditActionCreate": "{actor} đã thêm một thành viên mới",
-  "auditActionUpdate": "{actor} đã chỉnh sửa thành viên",
-  "auditActionDelete": "{actor} đã đưa thành viên vào thùng rác",
-  "auditActionRestore": "{actor} đã khôi phục thành viên",
-  "auditActionPurge": "{actor} đã dọn dẹp thùng rác",
   "auditUnknownActor": "Không xác định",
   "auditChangedFields": "{name} · sửa: {fields}",
-
   "@trashDeletedAt": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "@trashRestoreMessage": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "@trashRestoreSuccess": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "@trashPurgeSuccess": {
     "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-  "@auditActionCreate": {
-    "placeholders": {
-      "actor": { "type": "String" }
-    }
-  },
-  "@auditActionUpdate": {
-    "placeholders": {
-      "actor": { "type": "String" }
-    }
-  },
-  "@auditActionDelete": {
-    "placeholders": {
-      "actor": { "type": "String" }
-    }
-  },
-  "@auditActionRestore": {
-    "placeholders": {
-      "actor": { "type": "String" }
-    }
-  },
-  "@auditActionPurge": {
-    "placeholders": {
-      "actor": { "type": "String" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "unlinkFailed": "Gỡ liên kết tài khoản thất bại",
@@ -1024,14 +804,13 @@
   "auditChangedFieldsTitle": "Chi tiết các trường thay đổi:",
   "viewMemberPage": "Xem trang thành viên",
   "memberNoLongerExists": "Thành viên này có thể đã bị xóa hoặc không còn tồn tại.",
-  "filterCreate": "Thêm mới",
-  "filterUpdate": "Cập nhật",
-  "restoreLabel": "Khôi phục",
   "disabledLabel": "Đã tắt",
   "enabledCountFormat": "Đang bật ({count}/4)",
   "@enabledCountFormat": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "notifEventSubtitle": "Cập nhật lịch sự kiện và họp mặt dòng tộc",
@@ -1041,13 +820,17 @@
   "imageTooLargeFormat": "Ảnh phải nhỏ hơn {size}MB",
   "@imageTooLargeFormat": {
     "placeholders": {
-      "size": { "type": "int" }
+      "size": {
+        "type": "int"
+      }
     }
   },
   "generationTooHighFormat": "Thế hệ không thể vượt quá thế hệ hiện tại + 1 (tối đa: {max})",
   "@generationTooHighFormat": {
     "placeholders": {
-      "max": { "type": "int" }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "closeSearchTooltip": "Đóng tìm kiếm",
@@ -1055,21 +838,17 @@
   "hideGenBadges": "Ẩn nhãn thế hệ",
   "showGenBadges": "Hiện nhãn thế hệ",
   "treeOverviewTooltip": "Tổng quan sơ đồ",
-  "announcementBadge": "THÔNG BÁO",
   "generationLevelFormat": "Đời {gen}",
   "@generationLevelFormat": {
     "placeholders": {
-      "gen": { "type": "String" }
+      "gen": {
+        "type": "String"
+      }
     }
   },
-  "memberSearchNoResult": "Không tìm thấy thành viên phù hợp",
-  "deleteAccountTitle": "Xóa tài khoản",
-  "deleteAccountConfirmMessage": "Toàn bộ dữ liệu cá nhân của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục. Bạn sẽ mất quyền truy cập vào dòng họ.\n\nBạn có chắc chắn muốn tiếp tục không?",
   "deleteAccountSuccess": "Tài khoản của bạn đã được xóa.",
   "deleteAccountFailed": "Không thể xóa tài khoản.",
   "deleteAccountButton": "Xóa tài khoản",
-  "deleteAccountDeleting": "Đang xóa…",
-  "dangerZoneTitle": "Khu vực nguy hiểm",
   "dangerZoneDesc": "Sau khi xóa tài khoản, toàn bộ dữ liệu cá nhân sẽ bị xóa vĩnh viễn và không thể khôi phục.",
   "reportContentTitle": "Báo cáo vi phạm",
   "selectReportReason": "Chọn lý do báo cáo",
@@ -1083,17 +862,16 @@
   "otpResendCountdownFormat": "Gửi lại mã sau {seconds} giây",
   "@otpResendCountdownFormat": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "typeConfirmToTransfer": "Nhập \"XÁC NHẬN\" để đồng ý chuyển quyền Trưởng tộc:",
   "confirmWord": "XÁC NHẬN",
   "dissolveWord": "GIẢI TÁN",
-  "copyInfoTooltip": "Sao chép thông tin",
-  "copyInfoSuccess": "Đã sao chép thông tin thành viên!",
-  "rolePermissionDenied": "Tài khoản của bạn không có quyền truy cập trang này."
-,
-"notifWishTitle": "Lời chúc",
+  "rolePermissionDenied": "Tài khoản của bạn không có quyền truy cập trang này.",
+  "notifWishTitle": "Lời chúc",
   "notifBirthdayTitle": "Sinh nhật hôm nay",
   "notifDeathAnniversaryTitle": "Ngày giỗ hôm nay",
   "notifAnnouncementTitle": "Thông báo mới từ dòng họ",
@@ -1102,20 +880,26 @@
   "notifDeathOfPart": "ngày giỗ của {names}",
   "@notifDeathOfPart": {
     "placeholders": {
-      "names": { "type": "String" }
+      "names": {
+        "type": "String"
+      }
     }
   },
   "notifBirthdayOfPart": "sinh nhật của {names}",
   "@notifBirthdayOfPart": {
     "placeholders": {
-      "names": { "type": "String" }
+      "names": {
+        "type": "String"
+      }
     }
   },
   "notifAnniversariesTodayTitle": "Giỗ & Sinh nhật hôm nay",
   "notifTodayBody": "Hôm nay là {parts}.",
   "@notifTodayBody": {
     "placeholders": {
-      "parts": { "type": "String" }
+      "parts": {
+        "type": "String"
+      }
     }
   },
   "optionsLabel": "Tuỳ chọn",
@@ -1125,7 +909,9 @@
   "incenseLitFor": "Đã thắp nén tâm nhang tưởng nhớ {name} thành kính!",
   "@incenseLitFor": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "anniversariesTitle": "Giỗ & Sinh Nhật",
@@ -1150,7 +936,9 @@
   "memorialCeremonyGenerationLabel": "Lễ tưởng niệm tiền nhân đời thứ {generation}",
   "@memorialCeremonyGenerationLabel": {
     "placeholders": {
-      "generation": { "type": "int" }
+      "generation": {
+        "type": "int"
+      }
     }
   },
   "memorialCeremonyLabel": "Lễ giỗ tưởng niệm tiền nhân",
@@ -1162,7 +950,9 @@
   "commentsCountLabel": "Bình luận ({count})",
   "@commentsCountLabel": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "noCommentsMessage": "Chưa có bình luận nào.",
@@ -1174,7 +964,9 @@
   "likeCountLabel": "Thích ({count})",
   "@likeCountLabel": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "likeLabel": "Thích",
@@ -1187,7 +979,9 @@
   "memberDiedLabel": "Mất: {date}",
   "@memberDiedLabel": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "addChildLabel": "Thêm con",
@@ -1209,7 +1003,9 @@
   "familyNamePrefix": "Họ {name}",
   "@familyNamePrefix": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "orLabel": " hoặc ",
@@ -1222,7 +1018,6 @@
   "roleFieldLabel": "Vai trò",
   "titleFieldLabel": "Tiêu đề",
   "dateFieldLabel": "Ngày",
-  "locationFieldLabel": "Địa điểm",
   "contentFieldLabel": "Nội dung",
   "newOwnerFieldLabel": "Trưởng tộc mới",
   "auditSearchHint": "Tìm theo người thực hiện, đối tượng...",
@@ -1230,141 +1025,191 @@
   "auditActionMemberCreate": "{actor} đã thêm thành viên mới",
   "@auditActionMemberCreate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionMemberUpdate": "{actor} đã cập nhật thành viên",
   "@auditActionMemberUpdate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionMemberSoftDelete": "{actor} đã đưa thành viên vào thùng rác",
   "@auditActionMemberSoftDelete": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionMemberRestore": "{actor} đã khôi phục thành viên",
   "@auditActionMemberRestore": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionMemberPurge": "{actor} đã dọn dẹp thùng rác",
   "@auditActionMemberPurge": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionInvite": "{actor} đã gửi lời mời gia nhập gia tộc",
   "@auditActionInvite": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionRoleChange": "{actor} đã thay đổi phân quyền thành viên",
   "@auditActionRoleChange": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionLinkAccount": "{actor} đã liên kết tài khoản cho thành viên",
   "@auditActionLinkAccount": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionUnlinkAccount": "{actor} đã gỡ liên kết tài khoản",
   "@auditActionUnlinkAccount": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionTransferOwnership": "{actor} đã chuyển nhượng quyền Trưởng tộc",
   "@auditActionTransferOwnership": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionFamilyCreate": "{actor} đã khởi tạo dòng họ",
   "@auditActionFamilyCreate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionFamilyUpdate": "{actor} đã cập nhật thông tin dòng họ",
   "@auditActionFamilyUpdate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionFamilyDissolve": "{actor} đã giải tán dòng họ",
   "@auditActionFamilyDissolve": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionBranchCreate": "{actor} đã thêm chi tộc mới",
   "@auditActionBranchCreate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionBranchUpdate": "{actor} đã cập nhật chi tộc",
   "@auditActionBranchUpdate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionBranchDelete": "{actor} đã xoá chi tộc",
   "@auditActionBranchDelete": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionEventCreate": "{actor} đã tạo sự kiện mới",
   "@auditActionEventCreate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionEventUpdate": "{actor} đã cập nhật sự kiện",
   "@auditActionEventUpdate": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionEventDelete": "{actor} đã xoá sự kiện",
   "@auditActionEventDelete": {
     "placeholders": {
-      "actor": { "type": "String" }
+      "actor": {
+        "type": "String"
+      }
     }
   },
   "auditActionGeneric": "{actor} đã thực hiện: {action}",
   "@auditActionGeneric": {
     "placeholders": {
-      "actor": { "type": "String" },
-      "action": { "type": "String" }
+      "actor": {
+        "type": "String"
+      },
+      "action": {
+        "type": "String"
+      }
     }
   },
   "auditDetailEdit": "{name} · Sửa: {fields}",
   "@auditDetailEdit": {
     "placeholders": {
-      "name": { "type": "String" },
-      "fields": { "type": "String" }
+      "name": {
+        "type": "String"
+      },
+      "fields": {
+        "type": "String"
+      }
     }
   },
   "auditDetailChanges": "Thay đổi: {fields}",
   "@auditDetailChanges": {
     "placeholders": {
-      "fields": { "type": "String" }
+      "fields": {
+        "type": "String"
+      }
     }
   },
   "auditDetailTarget": "Đối tượng: {name}",
   "@auditDetailTarget": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "supremeRoleLabel": "Tối cao",

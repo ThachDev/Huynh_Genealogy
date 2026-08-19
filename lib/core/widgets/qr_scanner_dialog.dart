@@ -190,13 +190,13 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
                               color: Colors.white70);
                         case TorchState.on:
                           return const Icon(LucideIcons.zap,
-                              color: AppColors.gold);
+                              color: AppColors.goldLight);
                         case TorchState.unavailable:
                           return const Icon(LucideIcons.zapOff,
                               color: Colors.white30);
                         case TorchState.auto:
                           return const Icon(LucideIcons.zap,
-                              color: AppColors.gold);
+                              color: AppColors.goldLight);
                       }
                     },
                   ),

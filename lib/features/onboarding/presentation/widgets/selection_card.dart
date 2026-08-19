@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/theme_extensions.dart';
 
 class SelectionCard extends StatelessWidget {
@@ -31,7 +30,7 @@ class SelectionCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: isSelected
-                ? AppColors.crimson.withValues(alpha: 0.12)
+                ? context.primary.withValues(alpha: 0.18)
                 : context.resolve(
                     Colors.black.withValues(alpha: 0.04), Colors.transparent),
             blurRadius: isSelected ? 20 : 12,

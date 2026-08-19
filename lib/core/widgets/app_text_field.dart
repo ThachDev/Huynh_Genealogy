@@ -104,11 +104,11 @@ class AppTextField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.error),
+              borderSide: BorderSide(color: context.error),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+              borderSide: BorderSide(color: context.error, width: 1.5),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -118,7 +118,7 @@ class AppTextField extends StatelessWidget {
                     : context.textSecondary.withValues(alpha: 0.15),
               ),
             ),
-            errorStyle: GoogleFonts.inter(color: AppColors.error, fontSize: 12),
+            errorStyle: GoogleFonts.inter(color: context.error, fontSize: 12),
           ),
           validator: validator,
         ),
@@ -226,13 +226,13 @@ class AppTextFieldLight extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.error),
+              borderSide: BorderSide(color: context.error),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+              borderSide: BorderSide(color: context.error, width: 1.5),
             ),
-            errorStyle: GoogleFonts.inter(color: AppColors.error, fontSize: 12),
+            errorStyle: GoogleFonts.inter(color: context.error, fontSize: 12),
           ),
           validator: validator,
         ),
@@ -320,11 +320,11 @@ class AppOutlineTextField extends StatelessWidget {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+          borderSide: BorderSide(color: context.error, width: 1.2),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.2),
+          borderSide: BorderSide(color: context.error, width: 1.2),
         ),
       ),
     );

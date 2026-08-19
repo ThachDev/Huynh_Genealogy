@@ -145,7 +145,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 _buildBadge(
-                                  l10n.generationBadge(
+                                  l10n.generationLabel(
                                       '${widget.member.generation ?? "?"}'),
                                   context.accent,
                                 ),

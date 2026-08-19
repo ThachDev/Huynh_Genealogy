@@ -158,7 +158,7 @@ class MemberItemWidget extends StatelessWidget {
                         color: context.textSecondary.withValues(alpha: 0.7)),
                     const SizedBox(width: 4),
                     Text(
-                      l10n.generationBadge('${member.generation ?? "?"}'),
+                      l10n.generationLabel('${member.generation ?? "?"}'),
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 12,
                         color: context.textSecondary,

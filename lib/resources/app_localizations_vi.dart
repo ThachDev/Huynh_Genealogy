@@ -12,9 +12,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get loginTitle => 'Đăng Nhập';
 
   @override
-  String get clanAndPersonalInfoTitle => 'Thông tin dòng tộc và cá nhân';
-
-  @override
   String get loginSubtitle => 'Kết nối với cội nguồn dòng tộc của bạn';
 
   @override
@@ -34,12 +31,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get loginButton => 'Đăng nhập';
-
-  @override
-  String get orDivider => 'Hoặc';
-
-  @override
-  String get googleLoginButton => 'Đăng nhập với Google';
 
   @override
   String get noAccountText => 'Chưa có tài khoản? ';
@@ -66,9 +57,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get confirmPasswordLabel => 'Xác nhận mật khẩu';
 
   @override
-  String get confirmPasswordHint => '••••••••';
-
-  @override
   String get registerButton => 'Đăng ký';
 
   @override
@@ -76,9 +64,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get loginNow => 'Đăng nhập ngay';
-
-  @override
-  String get registerAsCreator => 'Đăng ký với tư cách Trưởng tộc';
 
   @override
   String get acceptTermsText => 'Tôi đồng ý với ';
@@ -117,21 +102,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cancelLabel => 'Hủy';
 
   @override
-  String get closeLabel => 'Đóng';
-
-  @override
-  String get okLabel => 'Đóng';
+  String get okLabel => 'OK';
 
   @override
   String get loadingMessage => 'Đang xử lý...';
-
-  @override
-  String get emailLoginFeatureNotice =>
-      'Tính năng Đăng nhập Email đang được phát triển. Vui lòng sử dụng Đăng nhập với Google.';
-
-  @override
-  String get forgotPasswordNotice =>
-      'Vui lòng liên hệ Chủ quản dòng họ để được cấp lại mật khẩu.';
 
   @override
   String get forgotPasswordTitle => 'Quên mật khẩu';
@@ -142,10 +116,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get forgotPasswordButton => 'Gửi Mã Xác Thực';
-
-  @override
-  String get forgotPasswordSuccess =>
-      'Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư (kể cả thư mục spam).';
 
   @override
   String get backToLogin => 'Quay lại đăng nhập';
@@ -204,12 +174,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get onboardingTitle => 'Thiết Lập Gia Tộc';
 
   @override
-  String get logoutTooltip => 'Đăng xuất';
-
-  @override
-  String get createFamilySuccess => 'Tạo dòng họ thành công!';
-
-  @override
   String verifyInviteSuccess(String familyName) {
     return 'Xác thực mã mời thành công: $familyName';
   }
@@ -231,15 +195,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get checkStatusButton => 'Kiểm tra trạng thái';
-
-  @override
-  String welcomeCreatorTitle(String name) {
-    return 'Chào Trưởng tộc, $name!';
-  }
-
-  @override
-  String get welcomeCreatorSubtitle =>
-      'Nhập thông tin bên dưới để bắt đầu khởi tạo cây gia phả dòng tộc của bạn.';
 
   @override
   String get familyNameLabel => 'Tên Gia tộc';
@@ -276,13 +231,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Nhập Mã mời do Trưởng tộc cung cấp để gia nhập và xem cây gia phả dòng tộc.';
 
   @override
-  String get inviteCodeLabel => 'Mã Mời Gia Tộc';
-
-  @override
   String get inviteCodeHint => 'Nhập mã 6 ký tự';
-
-  @override
-  String get verifyButton => 'Xác thực';
 
   @override
   String familyFoundTitle(String name) {
@@ -292,9 +241,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get selectMemberPrompt =>
       'Chọn tên của bạn trong danh sách dưới đây để liên kết với cây gia phả (nếu có):';
-
-  @override
-  String get whoAreYouDropdownHint => 'Bạn là ai trên cây gia phả?';
 
   @override
   String get sendJoinRequestButton => 'Gửi Yêu Cầu Gia Nhập';
@@ -477,9 +423,6 @@ class AppLocalizationsVi extends AppLocalizations {
       'Nhập mã định danh 6 ký tự được cung cấp bởi trưởng tộc hoặc người quản lý gia tộc.';
 
   @override
-  String get connectFamilySectionTitle => 'Kết nối dòng tộc';
-
-  @override
   String get copiedShareContent => 'Đã sao chép nội dung chia sẻ!';
 
   @override
@@ -493,9 +436,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get navFamilyTree => 'Cây gia phả';
-
-  @override
-  String get navFamilyFund => 'Quỹ gia tộc';
 
   @override
   String get navEvents => 'Sự kiện';
@@ -584,13 +524,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get notificationsSectionTitle => 'Thông báo';
 
   @override
-  String get notifyEventLabel => 'Sự kiện mới';
-
-  @override
   String get notifyAnnouncementLabel => 'Thông báo từ dòng họ';
-
-  @override
-  String get notifyWishLabel => 'Lời chúc';
 
   @override
   String get notifyAnniversaryLabel => 'Giỗ & sinh nhật';
@@ -611,15 +545,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tabAboutLabel => 'Giới thiệu';
 
   @override
-  String get regulationsLabel => 'Quy định & Điều khoản';
-
-  @override
-  String get helpCenterLabel => 'Trung tâm hỗ trợ';
-
-  @override
-  String get aboutUsLabel => 'Về chúng tôi';
-
-  @override
   String get advancedAdminSection => 'Quản Trị Nâng Cao';
 
   @override
@@ -630,9 +555,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tabMemberRoles => 'Phân quyền';
-
-  @override
-  String get memberRolesLabel => 'Phân quyền thành viên';
 
   @override
   String get transferOwnershipLabel => 'Chuyển nhượng quyền Trưởng tộc';
@@ -701,9 +623,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get reenterClanNameLabel => 'Nhập lại tên dòng họ';
 
   @override
-  String get reenterClanNameHint => 'Nhập đúng từng chữ để xác nhận';
-
-  @override
   String get dissolvePermanentButton => 'Giải Tán Dòng Họ Vĩnh Viễn';
 
   @override
@@ -722,13 +641,6 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đã xóa gia phả. Toàn bộ dữ liệu đã được xóa khỏi hệ thống.';
 
   @override
-  String get chooseRecipientLabel => 'Chọn người nhận quyền';
-
-  @override
-  String get transferDesc =>
-      'Chỉ những thành viên đã kích hoạt tài khoản và có vai trò khác Trưởng tộc mới xuất hiện trong danh sách dưới đây:';
-
-  @override
   String get searchMemberHint => 'Tìm thành viên...';
 
   @override
@@ -738,18 +650,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noSearchResultsMessage => 'Không tìm thấy kết quả phù hợp.';
 
   @override
-  String get noEligibleMembers =>
-      'Không có thành viên nào đủ điều kiện nhận chuyển nhượng.';
-
-  @override
-  String get proceedTransferButton => 'Tiến Hành Chuyển Nhượng';
-
-  @override
   String get warningDialogTitle => 'Cảnh báo quan trọng';
-
-  @override
-  String get warningDialogMessage =>
-      'Quyền Trưởng tộc là quyền hạn cao nhất trong hệ thống gia phả. Khi chuyển nhượng thành công, bạn sẽ mất quyền chỉnh sửa cấu trúc dòng họ cao cấp và các thiết lập bảo mật.';
 
   @override
   String warningDialogConfirmMessage(String name) {
@@ -763,30 +664,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get transferSuccess => 'Chuyển nhượng quyền Trưởng tộc thành công!';
 
   @override
-  String get transferProcessing => 'Đang xử lý chuyển nhượng...';
-
-  @override
-  String get memberRolesTitle => 'Phân Quyền Thành Viên';
-
-  @override
   String roleOfUser(String name) {
     return 'Vai trò của $name';
   }
-
-  @override
-  String get roleBranchAdminTitle => 'Trưởng chi';
-
-  @override
-  String get roleBranchAdminDesc => 'Quản lý nhân sự và nội dung của chi tộc.';
 
   @override
   String get roleEditorTitle => 'Biên tập viên';
 
   @override
   String get roleEditorDesc => 'Đóng góp và chỉnh sửa thông tin gia phả.';
-
-  @override
-  String get roleViewerTitle => 'Thành viên';
 
   @override
   String get roleViewerDesc => 'Chỉ được xem thông tin gia tộc.';
@@ -800,12 +686,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get cannotSelfChange =>
       'Bạn không thể tự thay đổi quyền của chính mình. Hãy dùng tính năng \"Chuyển nhượng quyền Trưởng tộc\".';
-
-  @override
-  String get accountInfoTitle => 'Thông Tin Cá Nhân';
-
-  @override
-  String get emailAccountLabel => 'Email (Tài khoản)';
 
   @override
   String get noProfileLink => 'Chưa liên kết hồ sơ gia phả';
@@ -846,12 +726,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get clanDescHint => 'Tóm tắt lịch sử, gia phong dòng họ';
-
-  @override
-  String get editTooltip => 'Chỉnh sửa';
-
-  @override
-  String get doneTooltip => 'Hoàn tất';
 
   @override
   String get noFamilyInfo => 'Không tìm thấy thông tin dòng họ để cập nhật';
@@ -943,31 +817,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get copyrightText => '© 2026 ThachDev. Bảo lưu mọi quyền.';
 
   @override
-  String get helpCenterTitle => 'Trung Tâm Hỗ Trợ';
-
-  @override
-  String get helpDragInstruction => '👉 Kéo sơ đồ để di chuyển';
-
-  @override
-  String get helpTapInstruction => '👤 Nhấn vào thành viên để xem chi tiết';
-
-  @override
-  String get helpTooltip => 'Hướng dẫn';
-
-  @override
-  String get helpZoomInstruction => '🔍 Phóng to/Thu nhỏ bằng 2 ngón tay';
-
-  @override
   String get contactSection => 'Liên hệ trực tiếp';
-
-  @override
-  String get hotlineTitle => 'Hotline hỗ trợ';
-
-  @override
-  String get hotlineValue => '1900 8888';
-
-  @override
-  String get hotlineSubtitle => '8:00 - 17:30 (T2-T6)';
 
   @override
   String get supportEmailTitle => 'Email hỗ trợ';
@@ -977,9 +827,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get supportEmailSubtitle => 'Phản hồi trong 24h';
-
-  @override
-  String get accountLoginSection => 'Tài khoản & Đăng nhập';
 
   @override
   String get genealogyMemberSection => 'Phả Hệ & Liên Kết';
@@ -1071,28 +918,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get contactEmailLabel => 'Email';
 
   @override
-  String get adminDashboardTitle => 'Bảng Quản Trị';
-
-  @override
   String get roleOwner => 'Trưởng Tộc';
-
-  @override
-  String get roleBranchAdmin => 'Trưởng Chi';
 
   @override
   String get roleEditor => 'Biên Tập Viên';
 
   @override
   String get roleViewer => 'Thành Viên';
-
-  @override
-  String get memberListTitle => 'Danh Sách Thành Viên';
-
-  @override
-  String get branchListTitle => 'Danh Sách Chi Tộc';
-
-  @override
-  String get pendingRequestTitle => 'Yêu Cầu Chờ Duyệt';
 
   @override
   String get searchMembersHint => 'Tìm kiếm thành viên...';
@@ -1109,12 +941,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get emptyPendingRequests =>
       'Không có yêu cầu tham gia nào đang chờ duyệt';
-
-  @override
-  String get addMemberLabel => 'Thêm thành viên';
-
-  @override
-  String get addBranchLabel => 'Thêm chi tộc';
 
   @override
   String get statMembers => 'Thành Viên';
@@ -1135,9 +961,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get copyCodeTooltip => 'Sao chép mã';
-
-  @override
-  String get qrCodeTooltip => 'Mã QR';
 
   @override
   String get qrDialogTitle => 'Mã QR Gia Tộc';
@@ -1166,11 +989,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get deceasedLabel => 'Đã mất';
-
-  @override
-  String generationBadge(Object gen) {
-    return 'Đời thứ $gen';
-  }
 
   @override
   String branchBadge(Object name) {
@@ -1266,9 +1084,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get branchNameHint => 'VD: Chi Trưởng, Chi Hai...';
 
   @override
-  String get branchNameRequired => 'Tên chi tộc';
-
-  @override
   String get branchNameEmptyError => 'Không được để trống';
 
   @override
@@ -1352,9 +1167,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get maritalWidowed => 'Góa phụ';
 
   @override
-  String get maritalUnknown => 'Chưa rõ';
-
-  @override
   String get genderLabel => 'Giới Tính';
 
   @override
@@ -1362,9 +1174,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get genderFemale => 'Nữ';
-
-  @override
-  String get genderUnknown => 'Chưa rõ';
 
   @override
   String get dobLabel => 'Ngày sinh';
@@ -1377,9 +1186,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get dodLabel => 'Ngày mất';
-
-  @override
-  String get dodHint => 'dd/mm/yyyy';
 
   @override
   String get phoneLabel => 'Số điện thoại';
@@ -1456,9 +1262,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get passwordChangeFailed => 'Thay đổi mật khẩu thất bại';
 
   @override
-  String get serverConnectionError => 'Lỗi kết nối máy chủ';
-
-  @override
   String get emailSubjectHelp => 'Hỗ Trợ Gia Tộc Việt';
 
   @override
@@ -1471,28 +1274,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get biographySectionTitle => 'Tiểu Sử & Ghi Chú';
 
   @override
-  String branchCountLabel(int count) {
-    return '$count Chi tộc';
-  }
-
-  @override
   String get branchLabel => 'Chi tộc';
 
   @override
   String get branchTabLabel => 'Chi Tộc / Nhánh';
-
-  @override
-  String get congratulateActionMessage => 'Bạn đã gửi một lời chúc mừng.';
-
-  @override
-  String congratulateButton(int count) {
-    return 'Chúc Mừng ($count)';
-  }
-
-  @override
-  String currentDateDisplay(int day, int month, int year) {
-    return 'Ngày $day/$month/$year (Nhằm 12/05 Âm Lịch)';
-  }
 
   @override
   String get dateOfBirthLabel => 'Ngày sinh';
@@ -1501,52 +1286,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get dateOfDeathLabel => 'Ngày mất';
 
   @override
-  String get donateButton => 'Đóng góp';
-
-  @override
   String eventCountdown(int days) {
     return 'Còn $days ngày';
   }
 
   @override
-  String get eventDateSample1 => '12/05 Âm lịch';
-
-  @override
-  String get eventDateSample2 => '28/06 Dương lịch';
-
-  @override
-  String eventDateLabel(String date) {
-    return 'Ngày $date';
-  }
-
-  @override
-  String eventDetailFormat(int gen, String date) {
-    return 'Đời thứ $gen • Ngày $date';
-  }
-
-  @override
-  String get eventSample1 => 'Giỗ cụ Huỳnh Công Minh';
-
-  @override
-  String get eventSample2 => 'Hội thảo Dòng họ Xuân 2026';
-
-  @override
-  String get eventTypeAncestors => 'Giỗ Chạp';
-
-  @override
   String get eventTypeEvent => 'Sự kiện';
 
   @override
-  String get eventsSectionTitle => 'Sự Kiện & Lễ Giỗ Dòng Họ';
-
-  @override
-  String get familyFundTitle => 'Quỹ Gia Tộc';
-
-  @override
   String get familyRelationSectionTitle => 'Quan Hệ Gia Đình';
-
-  @override
-  String get familyTreeMapTitle => 'Bản Đồ Phả Hệ';
 
   @override
   String familyTreeNameFormat(String name) {
@@ -1555,26 +1303,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get familyTreeTitle => 'Gia Phả Dòng Họ';
-
-  @override
-  String get guideButton => 'Hướng dẫn';
-
-  @override
-  String get guideDrag => '👉 Kéo sơ đồ để di chuyển';
-
-  @override
-  String get guideTapMember => '👤 Nhấn vào thành viên để xem chi tiết';
-
-  @override
-  String get guideZoom => '🔍 Phóng to/Thu nhỏ bằng 2 ngón tay';
-
-  @override
-  String get incenseActionMessage => 'Bạn đã thắp một nén nhang thành tâm.';
-
-  @override
-  String incenseButton(int count) {
-    return 'Đốt Nhang ($count)';
-  }
 
   @override
   String get knownLabel => 'Đã rõ';
@@ -1587,25 +1315,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get logoutLabel => 'Đăng xuất';
 
   @override
-  String memberIdFormat(int id) {
-    return 'Thành viên #$id';
-  }
-
-  @override
-  String get memberTabLabel => 'Thành Viên';
-
-  @override
   String get noBiographyMessage =>
       'Chưa có thông tin tiểu sử cho thành viên này.';
 
   @override
   String get noTreeDataMessage => 'Chưa có dữ liệu gia phả';
-
-  @override
-  String get notificationLabel => 'Thông báo';
-
-  @override
-  String get personalInfoLabel => 'Thông tin cá nhân';
 
   @override
   String get personalInfoSectionTitle => 'Thông Tin Cá Nhân';
@@ -1614,16 +1328,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get placeOfBirthLabel => 'Nơi sinh';
 
   @override
-  String get searchMemberYearHint => 'Tìm thành viên, năm sinh...';
-
-  @override
-  String get seeMoreLabel => 'Xem thêm';
-
-  @override
   String get settingsTitle => 'Cài Đặt';
-
-  @override
-  String get spiritualMotto => 'Cội Nguồn Tâm Linh • Vạn Đại Trường Tồn';
 
   @override
   String get switchToAdminLabel => 'Chuyển sang trang Quản trị';
@@ -1650,22 +1355,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get anniversaryDialogHint => 'Viết lời tưởng nhớ...';
 
   @override
-  String get anniversarySentMessage => 'Lời tưởng nhớ đã được gửi.';
-
-  @override
-  String get unassignedBranch => 'Chưa phân chi';
-
-  @override
   String get understoodLabel => 'Đã rõ';
 
   @override
-  String get unknownGeneration => 'Chưa rõ đời';
-
-  @override
   String get unknownLabel => 'Chưa rõ';
-
-  @override
-  String get usageGuideTitle => 'Hướng dẫn sử dụng';
 
   @override
   String get eventsListTitle => 'Sự Kiện Dòng Tộc';
@@ -1695,40 +1388,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get selectEventDateError => 'Vui lòng chọn ngày diễn ra sự kiện';
-
-  @override
-  String get eventNameLabel => 'Tên sự kiện';
-
-  @override
-  String get eventNameHint => 'VD: Ngày giỗ tổ dòng họ...';
-
-  @override
-  String get eventNameRequired => 'Vui lòng nhập tên sự kiện';
-
-  @override
-  String get eventNameMinLength => 'Tên sự kiện phải từ 2 ký tự';
-
-  @override
-  String get eventDateFormLabel => 'Ngày diễn ra';
-
-  @override
-  String get selectDateHint => 'Chọn ngày...';
-
-  @override
-  String get selectDateRequired => 'Vui lòng chọn ngày';
-
-  @override
-  String get useLunarCalendar => 'Sử dụng ngày âm lịch';
-
-  @override
-  String get eventDescriptionLabel => 'Mô tả chi tiết';
-
-  @override
-  String get eventDescriptionHint =>
-      'Nhập mô tả về sự kiện (địa điểm, nội dung)...';
-
-  @override
-  String get saveEventButton => 'Lưu sự kiện';
 
   @override
   String get educationPrimary => 'Tiểu học';
@@ -1761,49 +1420,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get motherLabel => 'Mẹ';
 
   @override
-  String get addChildTooltip => 'Thêm Con';
-
-  @override
-  String get addSpouseTooltip => 'Thêm Vợ/Chồng';
-
-  @override
-  String get eventTypeArticle => 'Tin tức';
-
-  @override
   String get eventTypeAnnouncement => 'Thông báo';
-
-  @override
-  String get eventTypeAnniversary => 'Giỗ chạp / Kỷ niệm';
 
   @override
   String get selectPostType => 'Chọn loại bài đăng';
 
   @override
-  String get eventTitleHintArticle => 'Tiêu đề bài viết...';
-
-  @override
   String get eventTitleHint => 'Tên sự kiện...';
-
-  @override
-  String get eventTitleRequiredArticle => 'Vui lòng nhập tiêu đề';
 
   @override
   String get eventTitleRequired => 'Vui lòng nhập tên sự kiện';
 
   @override
-  String get eventAddDescription => 'Thêm mô tả...';
-
-  @override
   String get eventSelectDate => 'Chọn ngày tổ chức';
-
-  @override
-  String get eventAddLocation => 'Thêm địa điểm';
-
-  @override
-  String get eventAddOrganizer => 'Người viết';
-
-  @override
-  String get eventAddAuthor => 'Thêm tác giả';
 
   @override
   String get eventLocationLabel => 'Địa điểm';
@@ -1821,16 +1450,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String get eventAuthorLabel => 'Tác giả';
 
   @override
-  String get eventAuthorHint => 'Tên tác giả...';
-
-  @override
   String get eventPickPhoto => 'Chọn ảnh';
 
   @override
   String get eventChangePhoto => 'Thay ảnh';
-
-  @override
-  String get doneLabel => 'Xong';
 
   @override
   String get eventDetailTitle => 'Chi tiết sự kiện';
@@ -1839,19 +1462,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get deathAnniversariesSectionTitle => 'NGÀY GIỖ DÒNG HỌ';
 
   @override
-  String get birthdaysSectionTitle => 'NGÀY SINH NHẬT DÒNG HỌ';
-
-  @override
   String get noBirthdaysMessage => 'Chưa có sinh nhật nào sắp tới';
 
   @override
   String get noDeathAnniversariesMessage => 'Chưa có ngày giỗ nào sắp tới';
 
   @override
-  String get newsEventsSectionTitle => 'SỰ KIỆN & TIN TỨC';
-
-  @override
-  String generationLabel(int gen) {
+  String generationLabel(String gen) {
     return 'Đời thứ $gen';
   }
 
@@ -1931,15 +1548,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get eventImageFormatHint => 'Định dạng JPG, PNG (Tối đa 5MB)';
 
   @override
-  String get eventTimeLocationSection => 'Thời gian & Địa điểm';
-
-  @override
-  String get eventPublishDateLabel => 'Ngày phát thông báo';
-
-  @override
-  String get eventCreateTitle => 'Tạo thông báo gia tộc';
-
-  @override
   String get eventTitleLabelAnnouncement => 'Tiêu đề thông báo';
 
   @override
@@ -1999,19 +1607,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get eventDiscardChangesAction => 'Huỷ chỉnh sửa';
 
   @override
-  String get eventByAuthor => 'Bởi ';
-
-  @override
   String get adminBoard => 'Ban Quản Trị';
-
-  @override
-  String get eventEnded => 'Đã kết thúc';
-
-  @override
-  String get eventOngoing => 'Đang diễn ra';
-
-  @override
-  String get eventUpcoming => 'Sắp diễn ra';
 
   @override
   String get lunarShortLabel => 'LỊCH ÂM';
@@ -2262,9 +1858,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get sendWishButton => 'Gửi lời chúc';
 
   @override
-  String get sendRemembranceButton => 'Gửi lời tưởng nhớ';
-
-  @override
   String get memberLabel => 'Thành viên';
 
   @override
@@ -2488,11 +2081,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errTransferOwnership => 'Lỗi chuyển nhượng quyền Trưởng tộc';
 
   @override
-  String eventDetailSemanticLabel(Object date, Object title) {
-    return 'Sự kiện $title, Ngày: $date';
-  }
-
-  @override
   String get linkAccountsTitle => 'Quản Lý Tài Khoản & Liên Kết';
 
   @override
@@ -2527,11 +2115,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get notLinkedLabel => 'Chưa liên kết';
 
   @override
-  String invitePendingDesc(Object email) {
-    return 'Đã gửi lời mời tới $email. Tài khoản sẽ tự liên kết sau khi thành viên đăng ký.';
-  }
-
-  @override
   String linkSuccess(Object email) {
     return 'Đã liên kết tài khoản $email thành công.';
   }
@@ -2558,9 +2141,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get trashEmpty =>
       'Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.';
-
-  @override
-  String get trashStatusDeleted => 'Đã xóa';
 
   @override
   String trashDeletedAt(String time) {
@@ -2605,31 +2185,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get auditLogsEmpty => 'Chưa có hoạt động biên soạn nào.';
 
   @override
-  String auditActionCreate(String actor) {
-    return '$actor đã thêm một thành viên mới';
-  }
-
-  @override
-  String auditActionUpdate(String actor) {
-    return '$actor đã chỉnh sửa thành viên';
-  }
-
-  @override
-  String auditActionDelete(String actor) {
-    return '$actor đã đưa thành viên vào thùng rác';
-  }
-
-  @override
-  String auditActionRestore(String actor) {
-    return '$actor đã khôi phục thành viên';
-  }
-
-  @override
-  String auditActionPurge(String actor) {
-    return '$actor đã dọn dẹp thùng rác';
-  }
-
-  @override
   String get auditUnknownActor => 'Không xác định';
 
   @override
@@ -2664,15 +2219,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get memberNoLongerExists =>
       'Thành viên này có thể đã bị xóa hoặc không còn tồn tại.';
-
-  @override
-  String get filterCreate => 'Thêm mới';
-
-  @override
-  String get filterUpdate => 'Cập nhật';
-
-  @override
-  String get restoreLabel => 'Khôi phục';
 
   @override
   String get disabledLabel => 'Đã tắt';
@@ -2723,22 +2269,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get treeOverviewTooltip => 'Tổng quan sơ đồ';
 
   @override
-  String get announcementBadge => 'THÔNG BÁO';
-
-  @override
   String generationLevelFormat(String gen) {
     return 'Đời $gen';
   }
-
-  @override
-  String get memberSearchNoResult => 'Không tìm thấy thành viên phù hợp';
-
-  @override
-  String get deleteAccountTitle => 'Xóa tài khoản';
-
-  @override
-  String get deleteAccountConfirmMessage =>
-      'Toàn bộ dữ liệu cá nhân của bạn sẽ bị xóa vĩnh viễn và không thể khôi phục. Bạn sẽ mất quyền truy cập vào dòng họ.\n\nBạn có chắc chắn muốn tiếp tục không?';
 
   @override
   String get deleteAccountSuccess => 'Tài khoản của bạn đã được xóa.';
@@ -2748,12 +2281,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get deleteAccountButton => 'Xóa tài khoản';
-
-  @override
-  String get deleteAccountDeleting => 'Đang xóa…';
-
-  @override
-  String get dangerZoneTitle => 'Khu vực nguy hiểm';
 
   @override
   String get dangerZoneDesc =>
@@ -2800,12 +2327,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get dissolveWord => 'GIẢI TÁN';
-
-  @override
-  String get copyInfoTooltip => 'Sao chép thông tin';
-
-  @override
-  String get copyInfoSuccess => 'Đã sao chép thông tin thành viên!';
 
   @override
   String get rolePermissionDenied =>
@@ -3086,9 +2607,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get dateFieldLabel => 'Ngày';
-
-  @override
-  String get locationFieldLabel => 'Địa điểm';
 
   @override
   String get contentFieldLabel => 'Nội dung';

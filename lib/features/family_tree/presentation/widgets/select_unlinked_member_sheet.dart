@@ -64,7 +64,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
       final query = _searchQuery.trim().toLowerCase();
       final nameMatches = m.fullName.toLowerCase().contains(query);
       final genMatches = m.generation != null &&
-          l10n.generationBadge(m.generation!).contains(query);
+          l10n.generationLabel('${m.generation!}').contains(query);
       return nameMatches || genMatches;
     }).toList();
 

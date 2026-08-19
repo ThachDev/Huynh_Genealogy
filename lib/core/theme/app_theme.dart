@@ -49,6 +49,7 @@ class AppColors {
   // Status Colors
   static const Color success = Color(0xFF4CAF50);
   static const Color error = Color(0xFFD32F2F);
+  static const Color errorDark = Color(0xFFE53935);
 }
 
 class AppTheme {
@@ -149,14 +150,23 @@ class AppTheme {
         primary: AppColors.crimsonLight,
         secondary: AppColors.goldLight,
         surface: AppColors.surfaceDark,
-        error: AppColors.error,
         onPrimary: AppColors.textOnPrimary,
+        onSurface: Colors.white,
+        error: AppColors.errorDark,
+        onError: Colors.white,
+        surfaceContainerLowest: const Color(0xFF0C0C0C),
+        surfaceContainerLow: const Color(0xFF1A1A1A),
+        surfaceContainer: const Color(0xFF1E1E1E),
+        surfaceContainerHigh: const Color(0xFF2A2A2A),
+        surfaceContainerHighest: const Color(0xFF353535),
+        outline: const Color(0xFF4A4A4A),
+        outlineVariant: const Color(0xFF2E2E2E),
       ),
       scaffoldBackgroundColor: AppColors.parchmentDark,
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.wood,
+        backgroundColor: AppColors.surfaceDark,
         foregroundColor: Colors.white,
-        elevation: 4,
+        elevation: 0,
         centerTitle: true,
         titleTextStyle: GoogleFonts.beVietnamPro(
           fontSize: 20,
@@ -169,15 +179,23 @@ class AppTheme {
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AppColors.gold, width: 0.5),
+          side: BorderSide(
+            color: AppColors.goldLight.withValues(alpha: 0.35),
+            width: 0.5,
+          ),
         ),
+      ),
+      dividerTheme: DividerThemeData(
+        color: Colors.white.withValues(alpha: 0.12),
+        thickness: 1,
+        space: 1,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.crimsonLight,
           foregroundColor: Colors.white,
           elevation: 4,
-          shadowColor: AppColors.gold.withValues(alpha: 0.5),
+          shadowColor: Colors.black,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: GoogleFonts.inter(fontWeight: FontWeight.bold),
         ),
@@ -186,12 +204,12 @@ class AppTheme {
         displayLarge: GoogleFonts.beVietnamPro(
           fontSize: 32,
           fontWeight: FontWeight.bold,
-          color: AppColors.gold,
+          color: AppColors.goldLight,
         ),
         headlineMedium: GoogleFonts.beVietnamPro(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: AppColors.gold,
+          color: AppColors.goldLight,
         ),
         titleLarge: GoogleFonts.beVietnamPro(
           fontSize: 20,

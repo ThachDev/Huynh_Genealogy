@@ -413,7 +413,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  l10n.memberTabLabel.toUpperCase(),
+                                  l10n.statMembers.toUpperCase(),
                                   style: GoogleFonts.beVietnamPro(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -944,8 +944,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   right: -6,
                   child: Container(
                     padding: const EdgeInsets.all(3),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
+                    decoration: BoxDecoration(
+                      color: context.error,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(

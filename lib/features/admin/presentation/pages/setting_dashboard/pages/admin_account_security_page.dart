@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:dio/dio.dart';
 import '../../../../../../core/network/dio_client.dart';
 import '../../../../../../core/constants/app_constants.dart';
-import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
@@ -81,7 +80,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
         if (mounted) {
           setState(() => _isSaving = false);
           final errorMsg = e.response?.data['message'] ??
-              AppLocalizations.of(context)!.serverConnectionError;
+              AppLocalizations.of(context)!.errServerConnection;
           AppSnackBar.error(context, errorMsg);
         }
       } catch (e) {
@@ -154,7 +153,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
       }
     } on DioException catch (e) {
       if (mounted) {
-        final msg = e.response?.data['message'] ?? l10n.serverConnectionError;
+        final msg = e.response?.data['message'] ?? l10n.errServerConnection;
         AppSnackBar.error(context, msg);
       }
     } catch (e) {
@@ -325,7 +324,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                                 icon: Icon(
                                   LucideIcons.trash2,
                                   size: 15,
-                                  color: AppColors.error.withValues(alpha: 0.8),
+                                  color: context.error.withValues(alpha: 0.8),
                                 ),
                                 label: Text(
                                   l10n.deleteAccountButton,
@@ -333,16 +332,16 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                     color:
-                                        AppColors.error.withValues(alpha: 0.8),
+                                        context.error.withValues(alpha: 0.8),
                                     decoration: TextDecoration.underline,
                                     decorationColor:
-                                        AppColors.error.withValues(alpha: 0.4),
+                                        context.error.withValues(alpha: 0.4),
                                   ),
                                 ),
                                 style: TextButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16, vertical: 8),
-                                  foregroundColor: AppColors.error,
+                                  foregroundColor: context.error,
                                 ),
                               ),
                             ),

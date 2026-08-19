@@ -227,7 +227,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
           ),
           if (isEdit)
             IconButton(
-              icon: const Icon(LucideIcons.trash2, color: Colors.redAccent),
+              icon: Icon(LucideIcons.trash2, color: context.error),
               tooltip: l10n.deleteBranchTooltip,
               onPressed: _showDeleteConfirmDialog,
             ),
@@ -333,7 +333,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                     DropdownItem<String?>(
                                                       value: m.fullName,
                                                       child: Text(
-                                                          '${m.fullName} (${l10n.generationBadge('${m.generation}')})'),
+                                                          '${m.fullName} (${l10n.generationLabel('${m.generation}')})'),
                                                     )),
                                               ],
                                               onChanged: (val) {

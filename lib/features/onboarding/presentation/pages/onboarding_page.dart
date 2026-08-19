@@ -75,7 +75,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           if (_selectedPath == null)
             IconButton(
               icon: Icon(LucideIcons.logOut, color: context.textPrimary),
-              tooltip: l10n.logoutTooltip,
+              tooltip: l10n.logoutLabel,
               onPressed: () {
                 // Đăng xuất ứng dụng từ AuthBloc
                 context.read<AuthBloc>().add(AuthLogoutRequested());

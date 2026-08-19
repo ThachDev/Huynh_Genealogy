@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:giatocviet/core/theme/app_theme.dart';
 import 'package:giatocviet/core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/widgets/widgets.dart';
 import 'package:giatocviet/resources/app_localizations.dart';
@@ -207,7 +206,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                           'email': 'Email',
                           'title': l10n.titleFieldLabel,
                           'date': l10n.dateFieldLabel,
-                          'location': l10n.locationFieldLabel,
+                          'location': l10n.eventLocationLabel,
                           'content': l10n.contentFieldLabel,
                           'newOwnerUserId': l10n.newOwnerFieldLabel,
                         };
@@ -428,7 +427,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                             key: 'delete',
                             label: l10n.deletedLabel,
                             icon: LucideIcons.trash2,
-                            iconColor: AppColors.error,
+                            iconColor: context.error,
                           ),
                         ],
                       ),
@@ -731,7 +730,7 @@ class _AuditLogItem extends StatelessWidget {
       'email': 'Email',
       'title': l10n.titleFieldLabel,
       'date': l10n.dateFieldLabel,
-      'location': l10n.locationFieldLabel,
+      'location': l10n.eventLocationLabel,
       'content': l10n.contentFieldLabel,
       'newOwnerUserId': l10n.newOwnerFieldLabel,
     };
@@ -802,7 +801,7 @@ class _AuditLogItem extends StatelessWidget {
     if (action.contains('delete') ||
         action.contains('purge') ||
         action.contains('dissolve')) {
-      return AppColors.error;
+      return context.error;
     }
     if (action.contains('restore')) {
       return context.primary;

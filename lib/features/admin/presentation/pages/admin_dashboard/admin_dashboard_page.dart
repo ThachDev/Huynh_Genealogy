@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -52,16 +51,16 @@ class AdminDashboardPage extends StatefulWidget {
     }
   }
 
-  static Color roleColor(String role) {
+  static Color roleColor(String role, BuildContext context) {
     switch (role.toUpperCase()) {
       case 'OWNER':
       case 'CREATOR':
-        return AppColors.crimson;
+        return context.primary;
       case 'BRANCH_ADMIN':
       case 'EDITOR':
-        return Colors.indigo.shade600;
+        return context.resolve(Colors.indigo.shade600, Colors.indigo.shade300);
       default:
-        return Colors.teal;
+        return context.resolve(Colors.teal, Colors.teal.shade300);
     }
   }
 
@@ -862,7 +861,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   child: Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.04),
+                      color: ctx.error.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -871,11 +870,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.red.withValues(alpha: 0.1),
+                            color: ctx.error.withValues(alpha: 0.14),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const Icon(LucideIcons.gitBranch,
-                              color: Colors.redAccent, size: 18),
+                          child: Icon(LucideIcons.gitBranch,
+                              color: ctx.error, size: 18),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -887,7 +886,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 style: GoogleFonts.beVietnamPro(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: Colors.redAccent,
+                                  color: ctx.error,
                                 ),
                               ),
                               const SizedBox(height: 4),

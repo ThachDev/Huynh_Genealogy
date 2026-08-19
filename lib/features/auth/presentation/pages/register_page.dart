@@ -240,7 +240,7 @@ class _RegisterPageState extends State<RegisterPage> {
       controller: _confirmPasswordController,
       obscureText: _isConfirmPasswordObscure,
       enabled: !isLoading,
-      hintText: l10n.confirmPasswordHint,
+      hintText: l10n.passwordHint,
       suffixIcon: IconButton(
         icon: Icon(
           _isConfirmPasswordObscure ? LucideIcons.eyeOff : LucideIcons.eye,

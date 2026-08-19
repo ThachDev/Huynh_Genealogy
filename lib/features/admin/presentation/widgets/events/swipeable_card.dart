@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/theme_extensions.dart';
 
 class SwipeableCard extends StatefulWidget {
   final Widget child;
@@ -83,7 +83,7 @@ class _SwipeableCardState extends State<SwipeableCard>
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Material(
-                  color: AppColors.error.withValues(alpha: 0.12),
+                  color: context.error.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(14),
@@ -94,9 +94,9 @@ class _SwipeableCardState extends State<SwipeableCard>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           LucideIcons.trash2,
-                          color: AppColors.error,
+                          color: context.error,
                           size: 22,
                         ),
                         const SizedBox(height: 4),
@@ -104,7 +104,7 @@ class _SwipeableCardState extends State<SwipeableCard>
                           widget.deleteLabel,
                           style: GoogleFonts.beVietnamPro(
                             fontSize: 12,
-                            color: AppColors.error,
+                            color: context.error,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

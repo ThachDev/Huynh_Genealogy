@@ -153,7 +153,7 @@ class _PendingApprovalWidgetState extends State<PendingApprovalWidget> {
           ),
           const SizedBox(height: 16),
           AppButton(
-            label: l10n.logoutTooltip,
+            label: l10n.logoutLabel,
             variant: AppButtonVariant.outline,
             color: context.textPrimary,
             onPressed: () {

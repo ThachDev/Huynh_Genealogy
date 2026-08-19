@@ -177,7 +177,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         type: HighlightEventType.birthday,
         title: upcomingBirthday.title,
         description: upcomingBirthday.member.generation != null
-            ? l10n.generationLabel(upcomingBirthday.member.generation!)
+            ? l10n.generationLabel('${upcomingBirthday.member.generation!}')
             : l10n.clanMemberLabel,
         location: null,
         date: bDate,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../core/data/repository/notification_settings_store.dart';
@@ -382,8 +381,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         familyId: family?.id ?? 0,
                         familyName: family?.name ?? l10n.appTitle,
                       ),
-                      titleColor: AppColors.error,
-                      iconColor: AppColors.error,
+                      titleColor: context.error,
+                      iconColor: context.error,
                       showDivider: false,
                     ),
                   ],
@@ -583,7 +582,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   _buildBottomSheetNotificationItem(
                     context: context,
                     icon: LucideIcons.calendar,
-                    title: l10n.notifyEventLabel,
+                    title: l10n.notifNewEventTitle,
                     subtitle: l10n.notifEventSubtitle,
                     value: _ntfEvents,
                     onChanged: (v) {
@@ -607,7 +606,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   _buildBottomSheetNotificationItem(
                     context: context,
                     icon: LucideIcons.heart,
-                    title: l10n.notifyWishLabel,
+                    title: l10n.notifWishTitle,
                     subtitle: l10n.notifWishSubtitle,
                     value: _ntfWishes,
                     onChanged: (v) {

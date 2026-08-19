@@ -72,7 +72,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
         ? 'Nam'
         : widget.member.gender == Gender.female
             ? l10n.genderFemale
-            : l10n.genderUnknown;
+            : l10n.unknownLabel;
 
     final hasActions =
         widget.onAddChildTap != null || widget.onAddSpouseTap != null;

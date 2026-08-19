@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../../core/theme/app_theme.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../resources/app_localizations.dart';
@@ -241,7 +240,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
                       fullWidth: true,
                       size: AppButtonSize.large,
                       variant: AppButtonVariant.danger,
-                      color: AppColors.crimson,
+                      color: context.primary,
                     ),
                   ],
                 ),

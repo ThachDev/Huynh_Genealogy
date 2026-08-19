@@ -526,9 +526,9 @@ class _PendingRequestDetailSheet extends StatelessWidget {
         return context.primary;
       case 'BRANCH_ADMIN':
       case 'EDITOR':
-        return Colors.indigo.shade600;
+        return context.resolve(Colors.indigo.shade600, Colors.indigo.shade300);
       default:
-        return context.textSecondary;
+        return context.resolve(Colors.teal, Colors.teal.shade300);
     }
   }
 

@@ -302,9 +302,9 @@ class _AppDialogWidget extends StatelessWidget {
   Color _accentColor(BuildContext context) {
     switch (type) {
       case AppDialogType.danger:
-        return AppColors.error;
+        return context.error;
       case AppDialogType.warning:
-        return AppColors.gold;
+        return context.accent;
       case AppDialogType.success:
         return AppColors.success;
       case AppDialogType.info:
@@ -379,7 +379,7 @@ class _AppInputDialogWidgetState extends State<_AppInputDialogWidget> {
     final titleColor = widget.type == AppDialogType.danger
         ? context.primary
         : (widget.type == AppDialogType.warning
-            ? AppColors.gold
+            ? context.accent
             : context.textPrimary);
 
     // Tách chuỗi instruction để in đậm từ khoá cần nhập (ví dụ "XÁC NHẬN")

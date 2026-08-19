@@ -313,9 +313,9 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                                         Container(
                                           width: 6,
                                           height: 6,
-                                          decoration: const BoxDecoration(
+                                          decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: Color(0xFFEF4444),
+                                            color: context.error,
                                           ),
                                         ),
                                         const SizedBox(width: 5),
@@ -403,7 +403,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                               ),
                             ),
                             child: Text(
-                              l10n.closeLabel,
+                              l10n.closeButton,
                               style: GoogleFonts.inter(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,

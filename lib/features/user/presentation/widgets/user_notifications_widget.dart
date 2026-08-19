@@ -253,7 +253,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                               width: 10,
                               height: 10,
                               decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: context.error,
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                     color: context.surface, width: 1.5),

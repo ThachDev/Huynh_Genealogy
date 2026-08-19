@@ -165,7 +165,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSectionHeader(
-            title: l10n.connectFamilySectionTitle,
+            title: l10n.joinFamilyCardTitle,
             description: l10n.welcomeViewerSubtitle,
             titleSize: 20,
             indicatorHeight: 20,
@@ -397,7 +397,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                             .map((m) => DropdownItem<MemberEntity?>(
                                   value: m,
                                   child: Text(
-                                    '${m.fullName}${m.generation != null ? " (${l10n.generationLabel(m.generation!)})" : ""}',
+                                    '${m.fullName}${m.generation != null ? " (${l10n.generationLabel('${m.generation!}')})" : ""}',
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: context.textPrimary,

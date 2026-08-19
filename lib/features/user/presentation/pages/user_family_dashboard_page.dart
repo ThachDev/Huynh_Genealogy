@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:vnlunar/vnlunar.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
-
 import '../../../family_tree/family_tree.dart';
 import '../widgets/user_branch_card.dart';
 import '../../../auth/auth.dart';
@@ -21,7 +19,7 @@ import '../widgets/user_notifications_widget.dart';
 import '../../data/source/wish_api_service.dart';
 import '../models/wish_message.dart';
 import 'user_anniversary_list_page.dart';
-import '../models/upcoming_anniversary.dart';
+import '../../domain/services/anniversary_calculator.dart';
 
 class UserFamilyDashboardPage extends StatefulWidget {
   const UserFamilyDashboardPage({super.key});
@@ -80,125 +78,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     }
   }
 
-  int? _familyId() {
+int? _familyId() {
     final authState = context.read<AuthBloc>().state;
     return authState is Authenticated ? authState.user.familyId : null;
-  }
-
-  List<UpcomingAnniversary> _calculateDeathAnniversaries(
-      List<MemberEntity> members) {
-    final List<UpcomingAnniversary> anniversaries = [];
-    final today = DateTime.now();
-    final todayOnlyDate = DateTime(today.year, today.month, today.day);
-
-    for (final member in members) {
-      if (member.isAlive) continue;
-
-      int? lunarDay;
-      int? lunarMonth;
-
-      if (member.lunarDeathDate != null && member.lunarDeathDate!.isNotEmpty) {
-        final match =
-            RegExp(r'(\d+)\/(\d+)').firstMatch(member.lunarDeathDate!);
-        if (match != null) {
-          lunarDay = int.tryParse(match.group(1) ?? '');
-          lunarMonth = int.tryParse(match.group(2) ?? '');
-        }
-      }
-
-      if (lunarDay == null || lunarMonth == null) {
-        if (member.dateOfDeath != null && member.dateOfDeath!.isNotEmpty) {
-          try {
-            final parts = member.dateOfDeath!.split('-');
-            if (parts.length == 3) {
-              final year = int.tryParse(parts[0]);
-              final month = int.tryParse(parts[1]);
-              final day = int.tryParse(parts[2]);
-              if (year != null && month != null && day != null) {
-                final dt = DateTime(year, month, day);
-                final lunar = Lunar(createdFromSolar: true, date: dt);
-                lunarDay = lunar.day;
-                lunarMonth = lunar.month;
-              }
-            }
-          } catch (_) {}
-        }
-      }
-
-      if (lunarDay != null && lunarMonth != null) {
-        try {
-          final todayLunar = Lunar(createdFromSolar: true, date: today);
-          final currentLunarYear = todayLunar.year;
-
-          final listSolar = convertLunar2Solar(
-              lunarDay, lunarMonth, currentLunarYear, false);
-          var solarAnniversary =
-              DateTime(listSolar[2], listSolar[1], listSolar[0]);
-
-          if (solarAnniversary.isBefore(todayOnlyDate)) {
-            final nextListSolar = convertLunar2Solar(
-                lunarDay, lunarMonth, currentLunarYear + 1, false);
-            solarAnniversary =
-                DateTime(nextListSolar[2], nextListSolar[1], nextListSolar[0]);
-          }
-
-          final days = solarAnniversary.difference(todayOnlyDate).inDays;
-          final solarLabel =
-              '${solarAnniversary.day.toString().padLeft(2, '0')}/${solarAnniversary.month.toString().padLeft(2, '0')}';
-          final lunarLabel =
-              '${lunarDay.toString().padLeft(2, '0')}/${lunarMonth.toString().padLeft(2, '0')} ÂL';
-
-          anniversaries.add(UpcomingAnniversary(
-            member: member,
-            title: member.fullName,
-            solarDateLabel: solarLabel,
-            lunarDateLabel: lunarLabel,
-            daysRemaining: days,
-            isBirthday: false,
-            targetDate: solarAnniversary,
-          ));
-        } catch (_) {}
-      }
-    }
-
-    anniversaries.sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
-    return anniversaries;
-  }
-
-  List<UpcomingAnniversary> _calculateBirthdays(List<MemberEntity> members) {
-    final birthdays = members
-        .where((m) =>
-            m.isAlive && m.dateOfBirth != null && m.dateOfBirth!.isNotEmpty)
-        .map((m) {
-          final today = DateTime.now();
-          final parts = m.dateOfBirth!.split('-');
-          if (parts.length != 3) return null;
-          final month = int.tryParse(parts[1]);
-          final day = int.tryParse(parts[2]);
-          if (month == null || day == null) {
-            return null;
-          }
-          var bd = DateTime(today.year, month, day);
-          if (bd.isBefore(DateTime(today.year, today.month, today.day))) {
-            bd = DateTime(today.year + 1, month, day);
-          }
-          final daysLeft = bd
-              .difference(DateTime(today.year, today.month, today.day))
-              .inDays;
-          return UpcomingAnniversary(
-            member: m,
-            title: m.fullName,
-            solarDateLabel:
-                '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}',
-            daysRemaining: daysLeft,
-            isBirthday: true,
-            targetDate: bd,
-          );
-        })
-        .whereType<UpcomingAnniversary>()
-        .toList()
-      ..sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
-    return birthdays;
   }
 
   @override
@@ -270,11 +152,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                       .tabIndexNotifier.value = 1;
                                 },
                                 onGoToAnniversaries: () {
-                                  final anniversaries =
-                                      _calculateDeathAnniversaries(
-                                          state.members);
-                                  final birthdays =
-                                      _calculateBirthdays(state.members);
+                                  final anniversaries = AnniversaryCalculator
+                                      .calculateDeathAnniversaries(state.members);
+                                  final birthdays = AnniversaryCalculator
+                                      .calculateBirthdays(state.members);
                                   Navigator.push(
                                     context,
                                     SereneFadeSlidePageRoute(
@@ -286,11 +167,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                   );
                                 },
                                 onGoToBirthdays: () {
-                                  final anniversaries =
-                                      _calculateDeathAnniversaries(
-                                          state.members);
-                                  final birthdays =
-                                      _calculateBirthdays(state.members);
+                                  final anniversaries = AnniversaryCalculator
+                                      .calculateDeathAnniversaries(state.members);
+                                  final birthdays = AnniversaryCalculator
+                                      .calculateBirthdays(state.members);
                                   Navigator.push(
                                     context,
                                     SereneFadeSlidePageRoute(

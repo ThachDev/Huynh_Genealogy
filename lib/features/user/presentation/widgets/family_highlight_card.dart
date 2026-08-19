@@ -61,8 +61,8 @@ class FamilyHighlightCard extends StatelessWidget {
           bgLight: ctx.primary.withValues(alpha: 0.06),
           headerIcon: LucideIcons.calendarDays,
           ctaIcon: LucideIcons.arrowRight,
-          typeLabel: 'SỰ KIỆN DÒNG TỘC',
-          ctaLabel: 'Xem chi tiết sự kiện',
+          typeLabel: l10n.highlightTypeEventLabel,
+          ctaLabel: l10n.viewEventDetailsLabel,
         );
       case HighlightEventType.birthday:
         return (
@@ -71,8 +71,8 @@ class FamilyHighlightCard extends StatelessWidget {
           bgLight: ctx.primary.withValues(alpha: 0.06),
           headerIcon: LucideIcons.cake,
           ctaIcon: LucideIcons.heart,
-          typeLabel: 'SINH NHẬT THÀNH VIÊN',
-          ctaLabel: 'Gửi lời chúc sinh nhật',
+          typeLabel: l10n.highlightTypeBirthdayLabel,
+          ctaLabel: l10n.sendBirthdayWishLabel,
         );
       case HighlightEventType.anniversary:
         return (
@@ -82,7 +82,7 @@ class FamilyHighlightCard extends StatelessWidget {
           headerIcon: LucideIcons.flame,
           ctaIcon: LucideIcons.flame,
           typeLabel: l10n.deathAnniversariesSectionTitle.toUpperCase(),
-          ctaLabel: 'Thắp nén tâm nhang',
+          ctaLabel: l10n.lightIncenseLabel,
         );
     }
   }

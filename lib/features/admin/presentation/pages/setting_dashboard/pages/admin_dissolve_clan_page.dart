@@ -207,7 +207,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
                               color: context.primary,
                             ),
                           ),
-                          const TextSpan(text: ' hoặc '),
+                          TextSpan(text: l10n.orLabel),
                           TextSpan(
                             text: '"${l10n.dissolveWord}"',
                             style: GoogleFonts.beVietnamPro(

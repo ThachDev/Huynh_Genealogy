@@ -34,6 +34,7 @@
   "appTitle": "Gia Toc Viet",
   "confirmLabel": "Confirm",
   "cancelLabel": "Cancel",
+  "closeLabel": "Close",
   "okLabel": "Close",
   "loadingMessage": "Processing...",
   "emailLoginFeatureNotice": "Email Login feature is under development. Please use Login with Google.",
@@ -972,7 +973,6 @@
   "auditActionDelete": "{actor} moved a member to trash",
   "auditActionRestore": "{actor} restored a member",
   "auditActionPurge": "{actor} cleared the trash",
-  "auditActionGeneric": "{actor} · {action}",
   "auditUnknownActor": "Unknown",
   "auditChangedFields": "{name} · changed: {fields}",
 
@@ -1019,12 +1019,6 @@
   "@auditActionPurge": {
     "placeholders": {
       "actor": { "type": "String" }
-    }
-  },
-  "@auditActionGeneric": {
-    "placeholders": {
-      "actor": { "type": "String" },
-      "action": { "type": "String" }
     }
   },
   "unlinkFailed": "Failed to unlink account",
@@ -1104,4 +1098,283 @@
   "copyInfoTooltip": "Copy member info",
   "copyInfoSuccess": "Member info copied to clipboard!",
   "rolePermissionDenied": "Your account does not have permission to access this page."
+,
+"notifWishTitle": "Wish",
+  "notifBirthdayTitle": "Birthday today",
+  "notifDeathAnniversaryTitle": "Death anniversary today",
+  "notifAnnouncementTitle": "New announcement from your clan",
+  "notifNewEventTitle": "New event",
+  "notifGenericBody": "You have a new notification from your clan",
+  "notifDeathOfPart": "death anniversary of {names}",
+  "@notifDeathOfPart": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "notifBirthdayOfPart": "birthday of {names}",
+  "@notifBirthdayOfPart": {
+    "placeholders": {
+      "names": { "type": "String" }
+    }
+  },
+  "notifAnniversariesTodayTitle": "Death anniversaries & birthdays today",
+  "notifTodayBody": "Today is {parts}.",
+  "@notifTodayBody": {
+    "placeholders": {
+      "parts": { "type": "String" }
+    }
+  },
+  "optionsLabel": "Options",
+  "resetFilterLabel": "Reset",
+  "incenseSubtitleRemember": "Remembering our clan ancestors",
+  "incenseDefaultPrayer": "Lighting incense to honor our ancestors.",
+  "incenseLitFor": "Lit incense to honor {name}!",
+  "@incenseLitFor": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "anniversariesTitle": "Death Anniversaries & Birthdays",
+  "incenseLitStatus": "Lit",
+  "incenseLightingStatus": "Lighting",
+  "incensePrayerHint": "Enter your sincere prayer...",
+  "incenseOfferedLabel": "Incense Offered",
+  "incenseOfferingLabel": "Offering incense...",
+  "incenseLightButton": "Light Incense",
+  "clearAllLabel": "Clear all",
+  "sortByLabel": "Sort by",
+  "sortNewestLabel": "Newest",
+  "sortOldestLabel": "Oldest",
+  "sortNearestLabel": "Nearest",
+  "sortFurthestLabel": "Furthest",
+  "searchDeathAnniversaryHint": "Search death anniversaries...",
+  "searchBirthdayHint": "Search birthdays...",
+  "deathAnniversaryTab": "Death anniversary",
+  "birthdayTab": "Birthday",
+  "notificationDeletedMessage": "Notification deleted",
+  "clanMemberLabel": "Clan member",
+  "memorialCeremonyGenerationLabel": "Memorial ceremony for ancestor of generation {generation}",
+  "@memorialCeremonyGenerationLabel": {
+    "placeholders": {
+      "generation": { "type": "int" }
+    }
+  },
+  "memorialCeremonyLabel": "Memorial ceremony for ancestors",
+  "highlightTypeEventLabel": "CLAN EVENT",
+  "viewEventDetailsLabel": "View event details",
+  "highlightTypeBirthdayLabel": "MEMBER BIRTHDAY",
+  "sendBirthdayWishLabel": "Send birthday wish",
+  "lightIncenseLabel": "Light incense",
+  "commentsCountLabel": "Comments ({count})",
+  "@commentsCountLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noCommentsMessage": "No comments yet.",
+  "beFirstCommentMessage": "Be the first to leave a comment!",
+  "anonymousLabel": "Anonymous",
+  "writeCommentHint": "Write a comment...",
+  "collapseLabel": "Collapse",
+  "viewMoreLabel": "View more",
+  "likeCountLabel": "Like ({count})",
+  "@likeCountLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "likeLabel": "Like",
+  "commentLabel": "Comment",
+  "memberBirthdayLabel": "Member birthday",
+  "deathAnniversaryMemorialLabel": "Death anniversary memorial",
+  "happyBirthdayTitle": "Happy Birthday!",
+  "noIncenseWishesMessage": "No incense lit yet",
+  "beFirstIncenseMessage": "Be the first to light incense in memory.",
+  "memberDiedLabel": "Died: {date}",
+  "@memberDiedLabel": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "addChildLabel": "Add child",
+  "addHusbandLabel": "Add husband",
+  "addWifeLabel": "Add wife",
+  "cannotDeleteAccountTitle": "Unable to delete account",
+  "cannotDeleteAccountContent": "You currently hold the Clan Leader role. To keep clan data safe, transfer the leadership role to another member before deleting your account.",
+  "transferOwnershipShortLabel": "Transfer ownership",
+  "deleteAccountPermanentTitle": "Delete account permanently",
+  "deleteAccountPermanentContent": "All of your personal information, permissions and genealogy links will be permanently deleted and cannot be restored.",
+  "deleteAccountRequiredWord": "DELETE ACCOUNT",
+  "deleteAccountInputInstruction": "Type \"DELETE ACCOUNT\" exactly to confirm:",
+  "confirmDeleteLabel": "Confirm delete",
+  "clanCodeLabel": "Clan code:",
+  "qrCodeLabel": "QR Code",
+  "helloLabel": "Hello, ",
+  "youLabel": "You",
+  "clanLabel": "Clan",
+  "familyNamePrefix": "{name} Clan",
+  "@familyNamePrefix": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "orLabel": " or ",
+  "founderLabel": "Founder",
+  "establishedYearLabel": "Established year",
+  "regionLabel": "Region / Area",
+  "memberCountLabel": "Number of members",
+  "roleColonLabel": "Role:",
+  "clanLeaderAdminLabel": "Clan Leader / Administrator",
+  "roleFieldLabel": "Role",
+  "titleFieldLabel": "Title",
+  "dateFieldLabel": "Date",
+  "locationFieldLabel": "Location",
+  "contentFieldLabel": "Content",
+  "newOwnerFieldLabel": "New clan leader",
+  "auditSearchHint": "Search by actor, target...",
+  "deletedLabel": "Deleted",
+  "auditActionMemberCreate": "{actor} added a new member",
+  "@auditActionMemberCreate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionMemberUpdate": "{actor} updated a member",
+  "@auditActionMemberUpdate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionMemberSoftDelete": "{actor} moved a member to trash",
+  "@auditActionMemberSoftDelete": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionMemberRestore": "{actor} restored a member",
+  "@auditActionMemberRestore": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionMemberPurge": "{actor} cleaned the trash",
+  "@auditActionMemberPurge": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionInvite": "{actor} sent a clan invitation",
+  "@auditActionInvite": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionRoleChange": "{actor} changed member roles",
+  "@auditActionRoleChange": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionLinkAccount": "{actor} linked an account to a member",
+  "@auditActionLinkAccount": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionUnlinkAccount": "{actor} unlinked an account",
+  "@auditActionUnlinkAccount": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionTransferOwnership": "{actor} transferred clan leadership",
+  "@auditActionTransferOwnership": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionFamilyCreate": "{actor} created the clan",
+  "@auditActionFamilyCreate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionFamilyUpdate": "{actor} updated clan information",
+  "@auditActionFamilyUpdate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionFamilyDissolve": "{actor} dissolved the clan",
+  "@auditActionFamilyDissolve": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionBranchCreate": "{actor} added a new branch",
+  "@auditActionBranchCreate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionBranchUpdate": "{actor} updated a branch",
+  "@auditActionBranchUpdate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionBranchDelete": "{actor} deleted a branch",
+  "@auditActionBranchDelete": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionEventCreate": "{actor} created a new event",
+  "@auditActionEventCreate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionEventUpdate": "{actor} updated an event",
+  "@auditActionEventUpdate": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionEventDelete": "{actor} deleted an event",
+  "@auditActionEventDelete": {
+    "placeholders": {
+      "actor": { "type": "String" }
+    }
+  },
+  "auditActionGeneric": "{actor} performed: {action}",
+  "@auditActionGeneric": {
+    "placeholders": {
+      "actor": { "type": "String" },
+      "action": { "type": "String" }
+    }
+  },
+  "auditDetailEdit": "{name} · Edited: {fields}",
+  "@auditDetailEdit": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "fields": { "type": "String" }
+    }
+  },
+  "auditDetailChanges": "Changes: {fields}",
+  "@auditDetailChanges": {
+    "placeholders": {
+      "fields": { "type": "String" }
+    }
+  },
+  "auditDetailTarget": "Target: {name}",
+  "@auditDetailTarget": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "supremeRoleLabel": "Supreme",
+  "transferFullOwnershipLabel": "Transfer full clan management to this person",
+  "darkModeLabel": "Dark",
+  "lightModeLabel": "Light"
 }

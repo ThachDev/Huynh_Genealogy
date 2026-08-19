@@ -259,7 +259,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
-              'Tối cao',
+              l10n.supremeRoleLabel,
               style: GoogleFonts.inter(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
@@ -270,7 +270,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
         ],
       ),
       subtitle: Text(
-        'Chuyển giao toàn quyền quản trị dòng họ cho người này',
+        l10n.transferFullOwnershipLabel,
         style: GoogleFonts.inter(
           fontSize: 12,
           color: context.textSecondary,

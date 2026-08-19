@@ -117,6 +117,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cancelLabel => 'Hủy';
 
   @override
+  String get closeLabel => 'Đóng';
+
+  @override
   String get okLabel => 'Đóng';
 
   @override
@@ -2627,11 +2630,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String auditActionGeneric(String actor, String action) {
-    return '$actor · $action';
-  }
-
-  @override
   String get auditUnknownActor => 'Không xác định';
 
   @override
@@ -2812,4 +2810,423 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get rolePermissionDenied =>
       'Tài khoản của bạn không có quyền truy cập trang này.';
+
+  @override
+  String get notifWishTitle => 'Lời chúc';
+
+  @override
+  String get notifBirthdayTitle => 'Sinh nhật hôm nay';
+
+  @override
+  String get notifDeathAnniversaryTitle => 'Ngày giỗ hôm nay';
+
+  @override
+  String get notifAnnouncementTitle => 'Thông báo mới từ dòng họ';
+
+  @override
+  String get notifNewEventTitle => 'Sự kiện mới';
+
+  @override
+  String get notifGenericBody => 'Có thông báo mới từ dòng họ';
+
+  @override
+  String notifDeathOfPart(String names) {
+    return 'ngày giỗ của $names';
+  }
+
+  @override
+  String notifBirthdayOfPart(String names) {
+    return 'sinh nhật của $names';
+  }
+
+  @override
+  String get notifAnniversariesTodayTitle => 'Giỗ & Sinh nhật hôm nay';
+
+  @override
+  String notifTodayBody(String parts) {
+    return 'Hôm nay là $parts.';
+  }
+
+  @override
+  String get optionsLabel => 'Tuỳ chọn';
+
+  @override
+  String get resetFilterLabel => 'Đặt lại';
+
+  @override
+  String get incenseSubtitleRemember => 'Tưởng nhớ tiền nhân dòng tộc';
+
+  @override
+  String get incenseDefaultPrayer =>
+      'Thắp nén tâm nhang tưởng nhớ tiền nhân thành kính.';
+
+  @override
+  String incenseLitFor(String name) {
+    return 'Đã thắp nén tâm nhang tưởng nhớ $name thành kính!';
+  }
+
+  @override
+  String get anniversariesTitle => 'Giỗ & Sinh Nhật';
+
+  @override
+  String get incenseLitStatus => 'Đã thắp';
+
+  @override
+  String get incenseLightingStatus => 'Đang thắp';
+
+  @override
+  String get incensePrayerHint =>
+      'Nhập lời khấn nguyện / tâm nguyện thành kính...';
+
+  @override
+  String get incenseOfferedLabel => 'Đã Dâng Hương';
+
+  @override
+  String get incenseOfferingLabel => 'Đang Dâng Hương...';
+
+  @override
+  String get incenseLightButton => 'Thắp Nhang Thành Kính';
+
+  @override
+  String get clearAllLabel => 'Bỏ chọn tất cả';
+
+  @override
+  String get sortByLabel => 'Sắp xếp';
+
+  @override
+  String get sortNewestLabel => 'Mới nhất';
+
+  @override
+  String get sortOldestLabel => 'Cũ nhất';
+
+  @override
+  String get sortNearestLabel => 'Gần nhất';
+
+  @override
+  String get sortFurthestLabel => 'Xa nhất';
+
+  @override
+  String get searchDeathAnniversaryHint => 'Tìm kiếm ngày giỗ...';
+
+  @override
+  String get searchBirthdayHint => 'Tìm kiếm ngày sinh nhật...';
+
+  @override
+  String get deathAnniversaryTab => 'Ngày giỗ';
+
+  @override
+  String get birthdayTab => 'Sinh nhật';
+
+  @override
+  String get notificationDeletedMessage => 'Đã xoá thông báo';
+
+  @override
+  String get clanMemberLabel => 'Thành viên dòng họ';
+
+  @override
+  String memorialCeremonyGenerationLabel(int generation) {
+    return 'Lễ tưởng niệm tiền nhân đời thứ $generation';
+  }
+
+  @override
+  String get memorialCeremonyLabel => 'Lễ giỗ tưởng niệm tiền nhân';
+
+  @override
+  String get highlightTypeEventLabel => 'SỰ KIỆN DÒNG TỘC';
+
+  @override
+  String get viewEventDetailsLabel => 'Xem chi tiết sự kiện';
+
+  @override
+  String get highlightTypeBirthdayLabel => 'SINH NHẬT THÀNH VIÊN';
+
+  @override
+  String get sendBirthdayWishLabel => 'Gửi lời chúc sinh nhật';
+
+  @override
+  String get lightIncenseLabel => 'Thắp nén tâm nhang';
+
+  @override
+  String commentsCountLabel(int count) {
+    return 'Bình luận ($count)';
+  }
+
+  @override
+  String get noCommentsMessage => 'Chưa có bình luận nào.';
+
+  @override
+  String get beFirstCommentMessage => 'Hãy là người đầu tiên để lại ý kiến!';
+
+  @override
+  String get anonymousLabel => 'Ẩn danh';
+
+  @override
+  String get writeCommentHint => 'Viết bình luận...';
+
+  @override
+  String get collapseLabel => 'Thu gọn';
+
+  @override
+  String get viewMoreLabel => 'Xem thêm';
+
+  @override
+  String likeCountLabel(int count) {
+    return 'Thích ($count)';
+  }
+
+  @override
+  String get likeLabel => 'Thích';
+
+  @override
+  String get commentLabel => 'Bình luận';
+
+  @override
+  String get memberBirthdayLabel => 'Sinh nhật thành viên';
+
+  @override
+  String get deathAnniversaryMemorialLabel => 'Ngày giỗ tưởng niệm';
+
+  @override
+  String get happyBirthdayTitle => 'Chúc mừng sinh nhật!';
+
+  @override
+  String get noIncenseWishesMessage => 'Chưa có nén tâm nhang nào';
+
+  @override
+  String get beFirstIncenseMessage =>
+      'Hãy là người đầu tiên thắp nén tâm nhang tưởng nhớ.';
+
+  @override
+  String memberDiedLabel(String date) {
+    return 'Mất: $date';
+  }
+
+  @override
+  String get addChildLabel => 'Thêm con';
+
+  @override
+  String get addHusbandLabel => 'Thêm chồng';
+
+  @override
+  String get addWifeLabel => 'Thêm vợ';
+
+  @override
+  String get cannotDeleteAccountTitle => 'Chưa thể xóa tài khoản';
+
+  @override
+  String get cannotDeleteAccountContent =>
+      'Bạn đang giữ vai trò Trưởng tộc của dòng họ. Để đảm bảo an toàn cho dữ liệu dòng tộc, bạn cần chuyển nhượng quyền Trưởng tộc cho thành viên khác trước khi xóa tài khoản.';
+
+  @override
+  String get transferOwnershipShortLabel => 'Chuyển nhượng quyền';
+
+  @override
+  String get deleteAccountPermanentTitle => 'Xóa tài khoản vĩnh viễn';
+
+  @override
+  String get deleteAccountPermanentContent =>
+      'Toàn bộ thông tin cá nhân, quyền hạn và liên kết gia phả của bạn sẽ bị xóa vĩnh viễn không thể khôi phục.';
+
+  @override
+  String get deleteAccountRequiredWord => 'XÓA TÀI KHOẢN';
+
+  @override
+  String get deleteAccountInputInstruction =>
+      'Nhập chính xác cụm từ \"XÓA TÀI KHOẢN\" để xác nhận:';
+
+  @override
+  String get confirmDeleteLabel => 'Xác nhận xóa';
+
+  @override
+  String get clanCodeLabel => 'Mã gia tộc:';
+
+  @override
+  String get qrCodeLabel => 'Mã QR';
+
+  @override
+  String get helloLabel => 'Xin chào, ';
+
+  @override
+  String get youLabel => 'Bạn';
+
+  @override
+  String get clanLabel => 'Gia tộc';
+
+  @override
+  String familyNamePrefix(String name) {
+    return 'Họ $name';
+  }
+
+  @override
+  String get orLabel => ' hoặc ';
+
+  @override
+  String get founderLabel => 'Người sáng lập';
+
+  @override
+  String get establishedYearLabel => 'Năm thành lập';
+
+  @override
+  String get regionLabel => 'Khu vực / Địa bàn';
+
+  @override
+  String get memberCountLabel => 'Số lượng thành viên';
+
+  @override
+  String get roleColonLabel => 'Vai trò:';
+
+  @override
+  String get clanLeaderAdminLabel => 'Trưởng tộc / Quản trị viên';
+
+  @override
+  String get roleFieldLabel => 'Vai trò';
+
+  @override
+  String get titleFieldLabel => 'Tiêu đề';
+
+  @override
+  String get dateFieldLabel => 'Ngày';
+
+  @override
+  String get locationFieldLabel => 'Địa điểm';
+
+  @override
+  String get contentFieldLabel => 'Nội dung';
+
+  @override
+  String get newOwnerFieldLabel => 'Trưởng tộc mới';
+
+  @override
+  String get auditSearchHint => 'Tìm theo người thực hiện, đối tượng...';
+
+  @override
+  String get deletedLabel => 'Đã xoá';
+
+  @override
+  String auditActionMemberCreate(String actor) {
+    return '$actor đã thêm thành viên mới';
+  }
+
+  @override
+  String auditActionMemberUpdate(String actor) {
+    return '$actor đã cập nhật thành viên';
+  }
+
+  @override
+  String auditActionMemberSoftDelete(String actor) {
+    return '$actor đã đưa thành viên vào thùng rác';
+  }
+
+  @override
+  String auditActionMemberRestore(String actor) {
+    return '$actor đã khôi phục thành viên';
+  }
+
+  @override
+  String auditActionMemberPurge(String actor) {
+    return '$actor đã dọn dẹp thùng rác';
+  }
+
+  @override
+  String auditActionInvite(String actor) {
+    return '$actor đã gửi lời mời gia nhập gia tộc';
+  }
+
+  @override
+  String auditActionRoleChange(String actor) {
+    return '$actor đã thay đổi phân quyền thành viên';
+  }
+
+  @override
+  String auditActionLinkAccount(String actor) {
+    return '$actor đã liên kết tài khoản cho thành viên';
+  }
+
+  @override
+  String auditActionUnlinkAccount(String actor) {
+    return '$actor đã gỡ liên kết tài khoản';
+  }
+
+  @override
+  String auditActionTransferOwnership(String actor) {
+    return '$actor đã chuyển nhượng quyền Trưởng tộc';
+  }
+
+  @override
+  String auditActionFamilyCreate(String actor) {
+    return '$actor đã khởi tạo dòng họ';
+  }
+
+  @override
+  String auditActionFamilyUpdate(String actor) {
+    return '$actor đã cập nhật thông tin dòng họ';
+  }
+
+  @override
+  String auditActionFamilyDissolve(String actor) {
+    return '$actor đã giải tán dòng họ';
+  }
+
+  @override
+  String auditActionBranchCreate(String actor) {
+    return '$actor đã thêm chi tộc mới';
+  }
+
+  @override
+  String auditActionBranchUpdate(String actor) {
+    return '$actor đã cập nhật chi tộc';
+  }
+
+  @override
+  String auditActionBranchDelete(String actor) {
+    return '$actor đã xoá chi tộc';
+  }
+
+  @override
+  String auditActionEventCreate(String actor) {
+    return '$actor đã tạo sự kiện mới';
+  }
+
+  @override
+  String auditActionEventUpdate(String actor) {
+    return '$actor đã cập nhật sự kiện';
+  }
+
+  @override
+  String auditActionEventDelete(String actor) {
+    return '$actor đã xoá sự kiện';
+  }
+
+  @override
+  String auditActionGeneric(String actor, String action) {
+    return '$actor đã thực hiện: $action';
+  }
+
+  @override
+  String auditDetailEdit(String name, String fields) {
+    return '$name · Sửa: $fields';
+  }
+
+  @override
+  String auditDetailChanges(String fields) {
+    return 'Thay đổi: $fields';
+  }
+
+  @override
+  String auditDetailTarget(String name) {
+    return 'Đối tượng: $name';
+  }
+
+  @override
+  String get supremeRoleLabel => 'Tối cao';
+
+  @override
+  String get transferFullOwnershipLabel =>
+      'Chuyển giao toàn quyền quản trị dòng họ cho người này';
+
+  @override
+  String get darkModeLabel => 'Tối';
+
+  @override
+  String get lightModeLabel => 'Sáng';
 }

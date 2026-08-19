@@ -95,7 +95,7 @@ class _UserEventListPageState extends State<UserEventListPage> {
                               color: context.textPrimary, size: 18),
                           const SizedBox(width: 8),
                           Text(
-                            'Bỏ chọn tất cả',
+                            l10n.clearAllLabel,
                             style: GoogleFonts.beVietnamPro(
                                 fontSize: 13,
                                 color: context.textPrimary),
@@ -120,7 +120,7 @@ class _UserEventListPageState extends State<UserEventListPage> {
                                 CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Sắp xếp',
+                              Text(l10n.sortByLabel,
                                   style: GoogleFonts.beVietnamPro(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -140,7 +140,7 @@ class _UserEventListPageState extends State<UserEventListPage> {
                                     'newest': Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                       child: Text(
-                                        'Mới nhất',
+                                        l10n.sortNewestLabel,
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.beVietnamPro(
                                           fontSize: 12,
@@ -151,7 +151,7 @@ class _UserEventListPageState extends State<UserEventListPage> {
                                     'oldest': Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                       child: Text(
-                                        'Cũ nhất',
+                                        l10n.sortOldestLabel,
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.beVietnamPro(
                                           fontSize: 12,

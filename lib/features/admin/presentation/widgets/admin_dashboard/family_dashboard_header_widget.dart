@@ -204,9 +204,9 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
       );
     }
 
-    final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
-        ? familyName.trim()
-        : 'Họ ${familyName.trim()}';
+final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
+    ? familyName.trim()
+    : l10n.familyNamePrefix(familyName.trim());
 
     final bool isDark = context.isDarkMode;
     final Color cardBg =
@@ -278,7 +278,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Mã gia tộc:',
+                      l10n.clanCodeLabel,
                       style: GoogleFonts.inter(
                         fontSize: 11,
                         color: context.textSecondary,
@@ -371,7 +371,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Mã QR',
+                  l10n.qrCodeLabel,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 10,
                     color: const Color(0xFF800000),
@@ -388,6 +388,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -417,7 +418,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        'Xin chào, ',
+                        l10n.helloLabel,
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 16,
                           color: context.textSecondary,
@@ -425,7 +426,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          '${user?.fullName ?? "Bạn"}!',
+                          '${user?.fullName ?? l10n.youLabel}!',
                           style: GoogleFonts.beVietnamPro(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -446,7 +447,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                           child: Text(
                             user != null
                                 ? roleLabel(user?.role, context)
-                                : 'Gia tộc',
+                                : l10n.clanLabel,
                             style: GoogleFonts.inter(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,

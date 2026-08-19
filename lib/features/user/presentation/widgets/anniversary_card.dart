@@ -140,8 +140,8 @@ class AnniversaryCard extends StatelessWidget {
                               ? l10n.generationLabel(data.member.generation!)
                               : (data.lunarDateLabel ??
                                   (isBirthday
-                                      ? 'Sinh nhật thành viên'
-                                      : 'Ngày giỗ tưởng niệm')),
+                                      ? l10n.memberBirthdayLabel
+                                      : l10n.deathAnniversaryMemorialLabel)),
                           style: GoogleFonts.inter(
                             fontSize: 12,
                             color: context.textSecondary,

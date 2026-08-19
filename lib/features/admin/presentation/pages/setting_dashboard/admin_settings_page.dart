@@ -271,8 +271,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                             final mode = val ? ThemeMode.dark : ThemeMode.light;
                             FamilyTreeApp.setThemeMode(context, mode);
                           },
-                          activeText: 'Dark',
-                          inactiveText: 'Light',
+                          activeText: l10n.darkModeLabel,
+                          inactiveText: l10n.lightModeLabel,
                           activeIcon: Icon(LucideIcons.moon,
                               size: 14, color: context.primary),
                           inactiveIcon: const Icon(LucideIcons.sun,

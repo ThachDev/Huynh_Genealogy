@@ -106,29 +106,29 @@ class AdminBranchDetailPage extends StatelessWidget {
                       const SizedBox(height: 8),
                       _buildInfoRow(
                         LucideIcons.userCheck,
-                        'Người sáng lập',
+                        l10n.founderLabel,
                         (branch.founderName?.isNotEmpty == true)
                             ? branch.founderName!
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.calendar,
-                        'Năm thành lập',
+                        l10n.establishedYearLabel,
                         branch.foundingYear != null
                             ? '${branch.foundingYear}'
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.mapPin,
-                        'Khu vực / Địa bàn',
+                        l10n.regionLabel,
                         (branch.region?.isNotEmpty == true)
                             ? branch.region!
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.users,
-                        'Số lượng thành viên',
-                        '${branchMembers.length} thành viên',
+                        l10n.memberCountLabel,
+                        l10n.memberCountBadge(branchMembers.length),
                       ),
                       const SizedBox(height: 24),
                       const Divider(height: 1),
@@ -141,7 +141,7 @@ class AdminBranchDetailPage extends StatelessWidget {
                         branch.description != null &&
                                 branch.description!.isNotEmpty
                             ? branch.description!
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           color: context.textPrimary,

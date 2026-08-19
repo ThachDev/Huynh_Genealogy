@@ -75,8 +75,11 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
   }
 
   Widget _buildSearchBar(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDeathTab = _tabController.index == 0;
-    final hint = isDeathTab ? 'Tìm kiếm ngày giỗ...' : 'Tìm kiếm ngày sinh nhật...';
+    final hint = isDeathTab
+        ? l10n.searchDeathAnniversaryHint
+        : l10n.searchBirthdayHint;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
@@ -119,7 +122,7 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                               color: context.textPrimary, size: 18),
                           const SizedBox(width: 8),
                           Text(
-                            'Bỏ chọn tất cả',
+                            l10n.clearAllLabel,
                             style: GoogleFonts.beVietnamPro(
                                 fontSize: 13, color: context.textPrimary),
                           ),
@@ -142,7 +145,7 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Sắp xếp',
+                              Text(l10n.sortByLabel,
                                   style: GoogleFonts.beVietnamPro(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -163,7 +166,7 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 12, vertical: 8),
                                       child: Text(
-                                        'Gần nhất',
+                                        l10n.sortNearestLabel,
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.beVietnamPro(
                                           fontSize: 12,
@@ -175,7 +178,7 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 12, vertical: 8),
                                       child: Text(
-                                        'Xa nhất',
+                                        l10n.sortFurthestLabel,
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.beVietnamPro(
                                           fontSize: 12,
@@ -248,8 +251,8 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: const AppAppBar(
-        title: 'Giỗ & Sinh Nhật',
+      appBar: AppAppBar(
+        title: l10n.anniversariesTitle,
       ),
       body: AppBackgroundBody(
         child: Column(
@@ -303,18 +306,18 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                     fontSize: 12.5,
                     fontWeight: FontWeight.w500,
                   ),
-                  tabs: const [
+                  tabs: [
                     Tab(
                       height: 34,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(LucideIcons.flame, size: 14),
-                          SizedBox(width: 5),
+                          const Icon(LucideIcons.flame, size: 14),
+                          const SizedBox(width: 5),
                           Flexible(
                             child: Text(
-                              'Ngày giỗ',
+                              l10n.deathAnniversaryTab,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -328,11 +331,11 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(LucideIcons.cake, size: 14),
-                          SizedBox(width: 5),
+                          const Icon(LucideIcons.cake, size: 14),
+                          const SizedBox(width: 5),
                           Flexible(
                             child: Text(
-                              'Sinh nhật',
+                              l10n.birthdayTab,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

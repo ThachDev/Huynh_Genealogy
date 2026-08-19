@@ -157,7 +157,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
 
                 // Thông tin chi tiết
                 _buildDetailRow(ctx, l10n.auditActorLabel, actor),
-                _buildDetailRow(ctx, 'Vai trò:', 'Trưởng tộc / Quản trị viên'),
+                _buildDetailRow(ctx, l10n.roleColonLabel, l10n.clanLeaderAdminLabel),
                 if (log.actorEmail != null && log.actorEmail!.isNotEmpty)
                   _buildDetailRow(ctx, l10n.auditEmailLabel, log.actorEmail!),
                 _buildDetailRow(ctx, l10n.auditActionLabel,
@@ -194,22 +194,22 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                       children: changes.entries.map((e) {
                         final keyStr = e.key.toString();
                         final fieldTranslations = {
-                          'fullName': 'Họ và tên',
-                          'gender': 'Giới tính',
-                          'birthDate': 'Ngày sinh',
-                          'deathDate': 'Ngày mất',
-                          'generation': 'Đời thứ',
-                          'branchId': 'Chi tộc',
-                          'fatherId': 'Cha',
-                          'motherId': 'Mẹ',
-                          'spouseId': 'Vợ/Chồng',
-                          'role': 'Vai trò',
+                          'fullName': l10n.fullNameLabel,
+                          'gender': l10n.genderLabel,
+                          'birthDate': l10n.dateOfBirthLabel,
+                          'deathDate': l10n.dateOfDeathLabel,
+                          'generation': l10n.generationFieldLabel,
+                          'branchId': l10n.branchLabel,
+                          'fatherId': l10n.fatherLabel,
+                          'motherId': l10n.motherLabel,
+                          'spouseId': l10n.spouseLabel,
+                          'role': l10n.roleFieldLabel,
                           'email': 'Email',
-                          'title': 'Tiêu đề',
-                          'date': 'Ngày',
-                          'location': 'Địa điểm',
-                          'content': 'Nội dung',
-                          'newOwnerUserId': 'Trưởng tộc mới',
+                          'title': l10n.titleFieldLabel,
+                          'date': l10n.dateFieldLabel,
+                          'location': l10n.locationFieldLabel,
+                          'content': l10n.contentFieldLabel,
+                          'newOwnerUserId': l10n.newOwnerFieldLabel,
                         };
                         final friendlyKey = fieldTranslations[keyStr] ?? keyStr;
                         return Padding(
@@ -360,7 +360,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: AppSearchBar(
                   controller: _searchController,
-                  hintText: 'Tìm theo người thực hiện, đối tượng...',
+                  hintText: l10n.auditSearchHint,
                   onChanged: (_) => setState(() {}),
                   trailing: [
                     Theme(
@@ -414,19 +414,19 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                           const PopupMenuDivider(),
                           _buildPopupMenuItem(
                             key: 'create',
-                            label: 'Thêm mới',
+                            label: l10n.addNewLabel,
                             icon: LucideIcons.userPlus,
                             iconColor: Colors.green,
                           ),
                           _buildPopupMenuItem(
                             key: 'update',
-                            label: 'Chỉnh sửa',
+                            label: l10n.editLabel,
                             icon: LucideIcons.pencil,
                             iconColor: context.accent,
                           ),
                           _buildPopupMenuItem(
                             key: 'delete',
-                            label: 'Đã xoá',
+                            label: l10n.deletedLabel,
                             icon: LucideIcons.trash2,
                             iconColor: AppColors.error,
                           ),
@@ -630,71 +630,71 @@ class _AuditLogItem extends StatelessWidget {
 
     // 1. Member actions
     if (rawAction == 'member.create' || rawAction == 'member_create') {
-      return '$actor đã thêm thành viên mới';
+      return l10n.auditActionMemberCreate(actor);
     }
     if (rawAction == 'member.update' || rawAction == 'member_update') {
-      return '$actor đã cập nhật thành viên';
+      return l10n.auditActionMemberUpdate(actor);
     }
     if (rawAction == 'member.soft_delete' || rawAction == 'member.delete') {
-      return '$actor đã đưa thành viên vào thùng rác';
+      return l10n.auditActionMemberSoftDelete(actor);
     }
     if (rawAction == 'member.restore') {
-      return '$actor đã khôi phục thành viên';
+      return l10n.auditActionMemberRestore(actor);
     }
     if (rawAction == 'member.purge_trash' || rawAction == 'member.purge') {
-      return '$actor đã dọn dẹp thùng rác';
+      return l10n.auditActionMemberPurge(actor);
     }
 
     // 2. Family Invite & Account Link
     if (rawAction.contains('send_invite') || rawAction.contains('invite')) {
-      return '$actor đã gửi lời mời gia nhập gia tộc';
+      return l10n.auditActionInvite(actor);
     }
     if (rawAction.contains('role_change') ||
         rawAction.contains('update_role') ||
         rawAction.contains('role.update')) {
-      return '$actor đã thay đổi phân quyền thành viên';
+      return l10n.auditActionRoleChange(actor);
     }
     if (rawAction.contains('link_account') || rawAction == 'account.link') {
-      return '$actor đã liên kết tài khoản cho thành viên';
+      return l10n.auditActionLinkAccount(actor);
     }
     if (rawAction.contains('unlink_account') || rawAction == 'account.unlink') {
-      return '$actor đã gỡ liên kết tài khoản';
+      return l10n.auditActionUnlinkAccount(actor);
     }
 
     // 3. Family & Ownership
     if (rawAction.contains('transfer_ownership')) {
-      return '$actor đã chuyển nhượng quyền Trưởng tộc';
+      return l10n.auditActionTransferOwnership(actor);
     }
     if (rawAction == 'family.create') {
-      return '$actor đã khởi tạo dòng họ';
+      return l10n.auditActionFamilyCreate(actor);
     }
     if (rawAction == 'family.update') {
-      return '$actor đã cập nhật thông tin dòng họ';
+      return l10n.auditActionFamilyUpdate(actor);
     }
     if (rawAction == 'family.dissolve') {
-      return '$actor đã giải tán dòng họ';
+      return l10n.auditActionFamilyDissolve(actor);
     }
 
     // 4. Branch
     if (rawAction.startsWith('branch.create')) {
-      return '$actor đã thêm chi tộc mới';
+      return l10n.auditActionBranchCreate(actor);
     }
     if (rawAction.startsWith('branch.update')) {
-      return '$actor đã cập nhật chi tộc';
+      return l10n.auditActionBranchUpdate(actor);
     }
     if (rawAction.startsWith('branch.delete')) {
-      return '$actor đã xoá chi tộc';
+      return l10n.auditActionBranchDelete(actor);
     }
 
     // 5. Events
     if (rawAction.startsWith('event.create')) {
-      return '$actor đã tạo sự kiện mới';
+      return l10n.auditActionEventCreate(actor);
     }
     if (rawAction.startsWith('event.update')) {
-      return '$actor đã cập nhật sự kiện';
+      return l10n.auditActionEventUpdate(actor);
     }
     if (rawAction.startsWith('event.delete')) {
-      return '$actor đã xoá sự kiện';
+      return l10n.auditActionEventDelete(actor);
     }
 
     // Fallback: chuyển đổi action dạng snake/dot sang tiếng Việt dễ hiểu
@@ -707,7 +707,7 @@ class _AuditLogItem extends StatelessWidget {
         .replaceAll('.', ' ')
         .trim();
 
-    return '$actor đã thực hiện: $friendlyAction';
+    return l10n.auditActionGeneric(actor, friendlyAction);
   }
 
   String _detailText(AppLocalizations l10n) {
@@ -718,22 +718,22 @@ class _AuditLogItem extends StatelessWidget {
 
     // Map tên các trường kỹ thuật sang tiếng Việt thân thiện
     final fieldTranslations = {
-      'fullName': 'Họ và tên',
-      'gender': 'Giới tính',
-      'birthDate': 'Ngày sinh',
-      'deathDate': 'Ngày mất',
-      'generation': 'Đời thứ',
-      'branchId': 'Chi tộc',
-      'fatherId': 'Cha',
-      'motherId': 'Mẹ',
-      'spouseId': 'Vợ/Chồng',
-      'role': 'Vai trò',
+      'fullName': l10n.fullNameLabel,
+      'gender': l10n.genderLabel,
+      'birthDate': l10n.dateOfBirthLabel,
+      'deathDate': l10n.dateOfDeathLabel,
+      'generation': l10n.generationFieldLabel,
+      'branchId': l10n.branchLabel,
+      'fatherId': l10n.fatherLabel,
+      'motherId': l10n.motherLabel,
+      'spouseId': l10n.spouseLabel,
+      'role': l10n.roleFieldLabel,
       'email': 'Email',
-      'title': 'Tiêu đề',
-      'date': 'Ngày',
-      'location': 'Địa điểm',
-      'content': 'Nội dung',
-      'newOwnerUserId': 'Trưởng tộc mới',
+      'title': l10n.titleFieldLabel,
+      'date': l10n.dateFieldLabel,
+      'location': l10n.locationFieldLabel,
+      'content': l10n.contentFieldLabel,
+      'newOwnerUserId': l10n.newOwnerFieldLabel,
     };
 
     if (changes is Map && changes.isNotEmpty) {
@@ -743,9 +743,9 @@ class _AuditLogItem extends StatelessWidget {
       }).toList();
 
       if (name != null && name.isNotEmpty) {
-        return '$name · Sửa: ${translatedKeys.join(', ')}';
+        return l10n.auditDetailEdit(name, translatedKeys.join(', '));
       }
-      return 'Thay đổi: ${translatedKeys.join(', ')}';
+      return l10n.auditDetailChanges(translatedKeys.join(', '));
     }
 
     // Nếu không có changes mà có targetName
@@ -753,7 +753,7 @@ class _AuditLogItem extends StatelessWidget {
       // Tránh trùng lặp nếu name trùng với actor
       final actor = log.actorName ?? log.actorEmail ?? '';
       if (name != actor) {
-        return 'Đối tượng: $name';
+        return l10n.auditDetailTarget(name);
       }
     }
 

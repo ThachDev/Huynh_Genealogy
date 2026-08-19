@@ -7,6 +7,7 @@ import 'package:vnlunar/vnlunar.dart';
 
 import '../data/repository/notification_settings_store.dart';
 import '../domain/entity/member_entity.dart';
+import '../errors/failures.dart';
 
 /// Loại thông báo truyền trong `data` của FCM / local push.
 class NotifType {
@@ -122,24 +123,28 @@ class NotificationService {
 
   String _titleFor(Map<String, String> data) {
     final eventType = (data['eventType'] ?? '').toLowerCase();
-    if (data['type'] == NotifType.wish) return 'Lời chúc';
+    if (data['type'] == NotifType.wish) {
+      return AppLanguage.current?.notifWishTitle ?? 'Lời chúc';
+    }
     if (data['type'] == NotifType.anniversary) {
       return data['isBirthday'] == 'true'
-          ? 'Sinh nhật hôm nay'
-          : 'Ngày giỗ hôm nay';
+          ? AppLanguage.current?.notifBirthdayTitle ?? 'Sinh nhật hôm nay'
+          : AppLanguage.current?.notifDeathAnniversaryTitle ??
+              'Ngày giỗ hôm nay';
     }
     if (eventType == 'announcement' ||
         eventType == 'notification' ||
         eventType == 'thông báo') {
-      return 'Thông báo mới từ dòng họ';
+      return AppLanguage.current?.notifAnnouncementTitle ??
+          'Thông báo mới từ dòng họ';
     }
-    return 'Sự kiện mới';
+    return AppLanguage.current?.notifNewEventTitle ?? 'Sự kiện mới';
   }
 
   String _bodyFor(Map<String, String> data) {
     final custom = data['body'] ?? data['title'];
     if (custom != null && custom.isNotEmpty) return custom;
-    return 'Có thông báo mới từ dòng họ';
+    return AppLanguage.current?.notifGenericBody ?? 'Có thông báo mới từ dòng họ';
   }
 
   Future<void> _show(
@@ -278,13 +283,27 @@ class NotificationService {
     if (deaths.isEmpty && births.isEmpty) return;
 
     final parts = <String>[];
-    if (deaths.isNotEmpty) parts.add('ngày giỗ của ${deaths.join(', ')}');
-    if (births.isNotEmpty) parts.add('sinh nhật của ${births.join(', ')}');
+    if (deaths.isNotEmpty) {
+      final joined = deaths.join(', ');
+      parts.add(AppLanguage.current?.notifDeathOfPart(joined) ??
+          'ngày giỗ của $joined');
+    }
+    if (births.isNotEmpty) {
+      final joined = births.join(', ');
+      parts.add(AppLanguage.current?.notifBirthdayOfPart(joined) ??
+          'sinh nhật của $joined');
+    }
 
+    final joinedParts = parts.join(' và ');
     final title = (deaths.isNotEmpty && births.isNotEmpty)
-        ? 'Giỗ & Sinh nhật hôm nay'
-        : (deaths.isNotEmpty ? 'Ngày giỗ hôm nay' : 'Sinh nhật hôm nay');
-    final body = 'Hôm nay là ${parts.join(' và ')}.';
+        ? AppLanguage.current?.notifAnniversariesTodayTitle ??
+            'Giỗ & Sinh nhật hôm nay'
+        : (deaths.isNotEmpty
+            ? AppLanguage.current?.notifDeathAnniversaryTitle ??
+                'Ngày giỗ hôm nay'
+            : AppLanguage.current?.notifBirthdayTitle ?? 'Sinh nhật hôm nay');
+    final body = AppLanguage.current?.notifTodayBody(joinedParts) ??
+        'Hôm nay là $joinedParts.';
 
     final now = tz.TZDateTime.now(tz.local);
     var fire = tz.TZDateTime(tz.local, now.year, now.month, now.day, 8);
@@ -349,8 +368,12 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
   }
   if (enabled != true) return;
 
-  final title = data['title'] ?? 'Gia Tộc Việt';
-  final body = data['body'] ?? 'Có thông báo mới từ dòng họ';
+  final title = data['title'] ??
+    AppLanguage.current?.appTitle ??
+    'Gia Tộc Việt';
+  final body = data['body'] ??
+      AppLanguage.current?.notifGenericBody ??
+      'Có thông báo mới từ dòng họ';
   final id = (data['id'] ?? data['memberId'] ?? data['type'] ?? 'x').hashCode;
 
   await plugin.show(

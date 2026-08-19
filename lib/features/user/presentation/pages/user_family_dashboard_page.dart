@@ -559,7 +559,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                                           Row(
                                                             children: [
                                                               Text(
-                                                                'Tuỳ chọn',
+                                                                l10n.optionsLabel,
                                                                 style: GoogleFonts
                                                                     .beVietnamPro(
                                                                   fontSize: 12,
@@ -588,7 +588,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                                                         () {});
                                                                   },
                                                                   child: Text(
-                                                                    'Đặt lại',
+                                                                    l10n.resetFilterLabel,
                                                                     style: GoogleFonts
                                                                         .inter(
                                                                       fontSize:
@@ -608,7 +608,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
                                                           // ── 1. Switch: Còn sống / Đã mất ──
                                                           Text(
-                                                            'Trạng thái',
+                                                            l10n.statusLabel,
                                                             style: GoogleFonts
                                                                 .inter(
                                                               fontSize: 11,
@@ -684,7 +684,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
                                                           // ── 2. Switch: Giới tính Nam / Nữ ──
                                                           Text(
-                                                            'Giới tính',
+                                                            l10n.genderLabel,
                                                             style: GoogleFonts
                                                                 .inter(
                                                               fontSize: 11,
@@ -717,7 +717,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                                             child: Row(
                                                               children: [
                                                                 _buildSwitchOption(
-                                                                  label: 'Nam',
+                                                                  label: l10n.genderMale,
                                                                   isSelected:
                                                                       _genderFilter ==
                                                                           'male',
@@ -734,7 +734,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                                                   },
                                                                 ),
                                                                 _buildSwitchOption(
-                                                                  label: 'Nữ',
+                                                                  label: l10n.genderFemale,
                                                                   isSelected:
                                                                       _genderFilter ==
                                                                           'female',
@@ -999,10 +999,11 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   void _showIncenseDialog(BuildContext context, String targetName) async {
+    final l10n = AppLocalizations.of(context)!;
     final result = await showIncenseDialog(
       context,
       targetName: targetName,
-      subtitle: 'Tưởng nhớ tiền nhân dòng tộc',
+      subtitle: l10n.incenseSubtitleRemember,
     );
     if (result != null && context.mounted) {
       final authState = context.read<AuthBloc>().state;
@@ -1015,7 +1016,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
       if (userProfile != null) {
         final prayerContent = result.trim().isNotEmpty
             ? result.trim()
-            : 'Thắp nén tâm nhang tưởng nhớ tiền nhân thành kính.';
+            : l10n.incenseDefaultPrayer;
 
         final newWish = WishMessage(
           id: 0,
@@ -1036,7 +1037,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
       if (context.mounted) {
         AppSnackBar.show(
           context,
-          message: 'Đã thắp nén tâm nhang tưởng nhớ $targetName thành kính!',
+          message: l10n.incenseLitFor(targetName),
           type: SnackBarType.success,
         );
       }

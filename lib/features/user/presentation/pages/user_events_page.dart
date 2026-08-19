@@ -323,7 +323,7 @@ class _UserEventsPageState extends State<UserEventsPage>
                         ),
                       );
                     },
-                    tooltip: 'Giỗ & Sinh Nhật',
+                    tooltip: l10n.anniversariesTitle,
                   ),
                   IconButton(
                     icon: Stack(

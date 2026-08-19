@@ -308,6 +308,12 @@ abstract class AppLocalizations {
   /// **'Hủy'**
   String get cancelLabel;
 
+  /// No description provided for @closeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get closeLabel;
+
   /// No description provided for @okLabel.
   ///
   /// In vi, this message translates to:
@@ -4832,12 +4838,6 @@ abstract class AppLocalizations {
   /// **'{actor} đã dọn dẹp thùng rác'**
   String auditActionPurge(String actor);
 
-  /// No description provided for @auditActionGeneric.
-  ///
-  /// In vi, this message translates to:
-  /// **'{actor} · {action}'**
-  String auditActionGeneric(String actor, String action);
-
   /// No description provided for @auditUnknownActor.
   ///
   /// In vi, this message translates to:
@@ -5161,6 +5161,702 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tài khoản của bạn không có quyền truy cập trang này.'**
   String get rolePermissionDenied;
+
+  /// No description provided for @notifWishTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời chúc'**
+  String get notifWishTitle;
+
+  /// No description provided for @notifBirthdayTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh nhật hôm nay'**
+  String get notifBirthdayTitle;
+
+  /// No description provided for @notifDeathAnniversaryTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày giỗ hôm nay'**
+  String get notifDeathAnniversaryTitle;
+
+  /// No description provided for @notifAnnouncementTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo mới từ dòng họ'**
+  String get notifAnnouncementTitle;
+
+  /// No description provided for @notifNewEventTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sự kiện mới'**
+  String get notifNewEventTitle;
+
+  /// No description provided for @notifGenericBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có thông báo mới từ dòng họ'**
+  String get notifGenericBody;
+
+  /// No description provided for @notifDeathOfPart.
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày giỗ của {names}'**
+  String notifDeathOfPart(String names);
+
+  /// No description provided for @notifBirthdayOfPart.
+  ///
+  /// In vi, this message translates to:
+  /// **'sinh nhật của {names}'**
+  String notifBirthdayOfPart(String names);
+
+  /// No description provided for @notifAnniversariesTodayTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giỗ & Sinh nhật hôm nay'**
+  String get notifAnniversariesTodayTitle;
+
+  /// No description provided for @notifTodayBody.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hôm nay là {parts}.'**
+  String notifTodayBody(String parts);
+
+  /// No description provided for @optionsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuỳ chọn'**
+  String get optionsLabel;
+
+  /// No description provided for @resetFilterLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt lại'**
+  String get resetFilterLabel;
+
+  /// No description provided for @incenseSubtitleRemember.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tưởng nhớ tiền nhân dòng tộc'**
+  String get incenseSubtitleRemember;
+
+  /// No description provided for @incenseDefaultPrayer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thắp nén tâm nhang tưởng nhớ tiền nhân thành kính.'**
+  String get incenseDefaultPrayer;
+
+  /// No description provided for @incenseLitFor.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thắp nén tâm nhang tưởng nhớ {name} thành kính!'**
+  String incenseLitFor(String name);
+
+  /// No description provided for @anniversariesTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giỗ & Sinh Nhật'**
+  String get anniversariesTitle;
+
+  /// No description provided for @incenseLitStatus.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã thắp'**
+  String get incenseLitStatus;
+
+  /// No description provided for @incenseLightingStatus.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang thắp'**
+  String get incenseLightingStatus;
+
+  /// No description provided for @incensePrayerHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập lời khấn nguyện / tâm nguyện thành kính...'**
+  String get incensePrayerHint;
+
+  /// No description provided for @incenseOfferedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã Dâng Hương'**
+  String get incenseOfferedLabel;
+
+  /// No description provided for @incenseOfferingLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang Dâng Hương...'**
+  String get incenseOfferingLabel;
+
+  /// No description provided for @incenseLightButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thắp Nhang Thành Kính'**
+  String get incenseLightButton;
+
+  /// No description provided for @clearAllLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ chọn tất cả'**
+  String get clearAllLabel;
+
+  /// No description provided for @sortByLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sắp xếp'**
+  String get sortByLabel;
+
+  /// No description provided for @sortNewestLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mới nhất'**
+  String get sortNewestLabel;
+
+  /// No description provided for @sortOldestLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cũ nhất'**
+  String get sortOldestLabel;
+
+  /// No description provided for @sortNearestLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần nhất'**
+  String get sortNearestLabel;
+
+  /// No description provided for @sortFurthestLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xa nhất'**
+  String get sortFurthestLabel;
+
+  /// No description provided for @searchDeathAnniversaryHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm ngày giỗ...'**
+  String get searchDeathAnniversaryHint;
+
+  /// No description provided for @searchBirthdayHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm ngày sinh nhật...'**
+  String get searchBirthdayHint;
+
+  /// No description provided for @deathAnniversaryTab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày giỗ'**
+  String get deathAnniversaryTab;
+
+  /// No description provided for @birthdayTab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh nhật'**
+  String get birthdayTab;
+
+  /// No description provided for @notificationDeletedMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá thông báo'**
+  String get notificationDeletedMessage;
+
+  /// No description provided for @clanMemberLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên dòng họ'**
+  String get clanMemberLabel;
+
+  /// No description provided for @memorialCeremonyGenerationLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lễ tưởng niệm tiền nhân đời thứ {generation}'**
+  String memorialCeremonyGenerationLabel(int generation);
+
+  /// No description provided for @memorialCeremonyLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lễ giỗ tưởng niệm tiền nhân'**
+  String get memorialCeremonyLabel;
+
+  /// No description provided for @highlightTypeEventLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'SỰ KIỆN DÒNG TỘC'**
+  String get highlightTypeEventLabel;
+
+  /// No description provided for @viewEventDetailsLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem chi tiết sự kiện'**
+  String get viewEventDetailsLabel;
+
+  /// No description provided for @highlightTypeBirthdayLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'SINH NHẬT THÀNH VIÊN'**
+  String get highlightTypeBirthdayLabel;
+
+  /// No description provided for @sendBirthdayWishLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi lời chúc sinh nhật'**
+  String get sendBirthdayWishLabel;
+
+  /// No description provided for @lightIncenseLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thắp nén tâm nhang'**
+  String get lightIncenseLabel;
+
+  /// No description provided for @commentsCountLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bình luận ({count})'**
+  String commentsCountLabel(int count);
+
+  /// No description provided for @noCommentsMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có bình luận nào.'**
+  String get noCommentsMessage;
+
+  /// No description provided for @beFirstCommentMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy là người đầu tiên để lại ý kiến!'**
+  String get beFirstCommentMessage;
+
+  /// No description provided for @anonymousLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ẩn danh'**
+  String get anonymousLabel;
+
+  /// No description provided for @writeCommentHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viết bình luận...'**
+  String get writeCommentHint;
+
+  /// No description provided for @collapseLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thu gọn'**
+  String get collapseLabel;
+
+  /// No description provided for @viewMoreLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thêm'**
+  String get viewMoreLabel;
+
+  /// No description provided for @likeCountLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thích ({count})'**
+  String likeCountLabel(int count);
+
+  /// No description provided for @likeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thích'**
+  String get likeLabel;
+
+  /// No description provided for @commentLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bình luận'**
+  String get commentLabel;
+
+  /// No description provided for @memberBirthdayLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh nhật thành viên'**
+  String get memberBirthdayLabel;
+
+  /// No description provided for @deathAnniversaryMemorialLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày giỗ tưởng niệm'**
+  String get deathAnniversaryMemorialLabel;
+
+  /// No description provided for @happyBirthdayTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúc mừng sinh nhật!'**
+  String get happyBirthdayTitle;
+
+  /// No description provided for @noIncenseWishesMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có nén tâm nhang nào'**
+  String get noIncenseWishesMessage;
+
+  /// No description provided for @beFirstIncenseMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hãy là người đầu tiên thắp nén tâm nhang tưởng nhớ.'**
+  String get beFirstIncenseMessage;
+
+  /// No description provided for @memberDiedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mất: {date}'**
+  String memberDiedLabel(String date);
+
+  /// No description provided for @addChildLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm con'**
+  String get addChildLabel;
+
+  /// No description provided for @addHusbandLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm chồng'**
+  String get addHusbandLabel;
+
+  /// No description provided for @addWifeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm vợ'**
+  String get addWifeLabel;
+
+  /// No description provided for @cannotDeleteAccountTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa thể xóa tài khoản'**
+  String get cannotDeleteAccountTitle;
+
+  /// No description provided for @cannotDeleteAccountContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn đang giữ vai trò Trưởng tộc của dòng họ. Để đảm bảo an toàn cho dữ liệu dòng tộc, bạn cần chuyển nhượng quyền Trưởng tộc cho thành viên khác trước khi xóa tài khoản.'**
+  String get cannotDeleteAccountContent;
+
+  /// No description provided for @transferOwnershipShortLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển nhượng quyền'**
+  String get transferOwnershipShortLabel;
+
+  /// No description provided for @deleteAccountPermanentTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa tài khoản vĩnh viễn'**
+  String get deleteAccountPermanentTitle;
+
+  /// No description provided for @deleteAccountPermanentContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'Toàn bộ thông tin cá nhân, quyền hạn và liên kết gia phả của bạn sẽ bị xóa vĩnh viễn không thể khôi phục.'**
+  String get deleteAccountPermanentContent;
+
+  /// No description provided for @deleteAccountRequiredWord.
+  ///
+  /// In vi, this message translates to:
+  /// **'XÓA TÀI KHOẢN'**
+  String get deleteAccountRequiredWord;
+
+  /// No description provided for @deleteAccountInputInstruction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập chính xác cụm từ \"XÓA TÀI KHOẢN\" để xác nhận:'**
+  String get deleteAccountInputInstruction;
+
+  /// No description provided for @confirmDeleteLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xác nhận xóa'**
+  String get confirmDeleteLabel;
+
+  /// No description provided for @clanCodeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã gia tộc:'**
+  String get clanCodeLabel;
+
+  /// No description provided for @qrCodeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mã QR'**
+  String get qrCodeLabel;
+
+  /// No description provided for @helloLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xin chào, '**
+  String get helloLabel;
+
+  /// No description provided for @youLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn'**
+  String get youLabel;
+
+  /// No description provided for @clanLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gia tộc'**
+  String get clanLabel;
+
+  /// No description provided for @familyNamePrefix.
+  ///
+  /// In vi, this message translates to:
+  /// **'Họ {name}'**
+  String familyNamePrefix(String name);
+
+  /// No description provided for @orLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **' hoặc '**
+  String get orLabel;
+
+  /// No description provided for @founderLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Người sáng lập'**
+  String get founderLabel;
+
+  /// No description provided for @establishedYearLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Năm thành lập'**
+  String get establishedYearLabel;
+
+  /// No description provided for @regionLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khu vực / Địa bàn'**
+  String get regionLabel;
+
+  /// No description provided for @memberCountLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số lượng thành viên'**
+  String get memberCountLabel;
+
+  /// No description provided for @roleColonLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò:'**
+  String get roleColonLabel;
+
+  /// No description provided for @clanLeaderAdminLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trưởng tộc / Quản trị viên'**
+  String get clanLeaderAdminLabel;
+
+  /// No description provided for @roleFieldLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò'**
+  String get roleFieldLabel;
+
+  /// No description provided for @titleFieldLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề'**
+  String get titleFieldLabel;
+
+  /// No description provided for @dateFieldLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngày'**
+  String get dateFieldLabel;
+
+  /// No description provided for @locationFieldLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa điểm'**
+  String get locationFieldLabel;
+
+  /// No description provided for @contentFieldLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung'**
+  String get contentFieldLabel;
+
+  /// No description provided for @newOwnerFieldLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trưởng tộc mới'**
+  String get newOwnerFieldLabel;
+
+  /// No description provided for @auditSearchHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm theo người thực hiện, đối tượng...'**
+  String get auditSearchHint;
+
+  /// No description provided for @deletedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá'**
+  String get deletedLabel;
+
+  /// No description provided for @auditActionMemberCreate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã thêm thành viên mới'**
+  String auditActionMemberCreate(String actor);
+
+  /// No description provided for @auditActionMemberUpdate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã cập nhật thành viên'**
+  String auditActionMemberUpdate(String actor);
+
+  /// No description provided for @auditActionMemberSoftDelete.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã đưa thành viên vào thùng rác'**
+  String auditActionMemberSoftDelete(String actor);
+
+  /// No description provided for @auditActionMemberRestore.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã khôi phục thành viên'**
+  String auditActionMemberRestore(String actor);
+
+  /// No description provided for @auditActionMemberPurge.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã dọn dẹp thùng rác'**
+  String auditActionMemberPurge(String actor);
+
+  /// No description provided for @auditActionInvite.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã gửi lời mời gia nhập gia tộc'**
+  String auditActionInvite(String actor);
+
+  /// No description provided for @auditActionRoleChange.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã thay đổi phân quyền thành viên'**
+  String auditActionRoleChange(String actor);
+
+  /// No description provided for @auditActionLinkAccount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã liên kết tài khoản cho thành viên'**
+  String auditActionLinkAccount(String actor);
+
+  /// No description provided for @auditActionUnlinkAccount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã gỡ liên kết tài khoản'**
+  String auditActionUnlinkAccount(String actor);
+
+  /// No description provided for @auditActionTransferOwnership.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã chuyển nhượng quyền Trưởng tộc'**
+  String auditActionTransferOwnership(String actor);
+
+  /// No description provided for @auditActionFamilyCreate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã khởi tạo dòng họ'**
+  String auditActionFamilyCreate(String actor);
+
+  /// No description provided for @auditActionFamilyUpdate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã cập nhật thông tin dòng họ'**
+  String auditActionFamilyUpdate(String actor);
+
+  /// No description provided for @auditActionFamilyDissolve.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã giải tán dòng họ'**
+  String auditActionFamilyDissolve(String actor);
+
+  /// No description provided for @auditActionBranchCreate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã thêm chi tộc mới'**
+  String auditActionBranchCreate(String actor);
+
+  /// No description provided for @auditActionBranchUpdate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã cập nhật chi tộc'**
+  String auditActionBranchUpdate(String actor);
+
+  /// No description provided for @auditActionBranchDelete.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã xoá chi tộc'**
+  String auditActionBranchDelete(String actor);
+
+  /// No description provided for @auditActionEventCreate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã tạo sự kiện mới'**
+  String auditActionEventCreate(String actor);
+
+  /// No description provided for @auditActionEventUpdate.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã cập nhật sự kiện'**
+  String auditActionEventUpdate(String actor);
+
+  /// No description provided for @auditActionEventDelete.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã xoá sự kiện'**
+  String auditActionEventDelete(String actor);
+
+  /// No description provided for @auditActionGeneric.
+  ///
+  /// In vi, this message translates to:
+  /// **'{actor} đã thực hiện: {action}'**
+  String auditActionGeneric(String actor, String action);
+
+  /// No description provided for @auditDetailEdit.
+  ///
+  /// In vi, this message translates to:
+  /// **'{name} · Sửa: {fields}'**
+  String auditDetailEdit(String name, String fields);
+
+  /// No description provided for @auditDetailChanges.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thay đổi: {fields}'**
+  String auditDetailChanges(String fields);
+
+  /// No description provided for @auditDetailTarget.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đối tượng: {name}'**
+  String auditDetailTarget(String name);
+
+  /// No description provided for @supremeRoleLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối cao'**
+  String get supremeRoleLabel;
+
+  /// No description provided for @transferFullOwnershipLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuyển giao toàn quyền quản trị dòng họ cho người này'**
+  String get transferFullOwnershipLabel;
+
+  /// No description provided for @darkModeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối'**
+  String get darkModeLabel;
+
+  /// No description provided for @lightModeLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sáng'**
+  String get lightModeLabel;
 }
 
 class _AppLocalizationsDelegate

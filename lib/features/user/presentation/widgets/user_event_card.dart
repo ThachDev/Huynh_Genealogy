@@ -145,6 +145,7 @@ class _UserEventCardState extends State<UserEventCard> {
       builder: (bottomSheetContext) {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
+            final l10n = AppLocalizations.of(ctx)!;
             return Padding(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(ctx).viewInsets.bottom,
@@ -168,7 +169,7 @@ class _UserEventCardState extends State<UserEventCard> {
                         child: Row(
                           children: [
                             Text(
-                              'Bình luận (${_comments.length})',
+                              l10n.commentsCountLabel(_comments.length),
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -187,13 +188,12 @@ class _UserEventCardState extends State<UserEventCard> {
                       // Danh sách bình luận
                       Expanded(
                         child: _comments.isEmpty
-                            ? const Center(
+                            ? Center(
                                 child: AppEmptyState(
                                   icon: LucideIcons.messageSquare,
                                   iconSize: 48,
-                                  message: 'Chưa có bình luận nào.',
-                                  subMessage:
-                                      'Hãy là người đầu tiên để lại ý kiến!',
+                                  message: l10n.noCommentsMessage,
+                                  subMessage: l10n.beFirstCommentMessage,
                                 ),
                               )
                             : ListView.builder(
@@ -203,7 +203,7 @@ class _UserEventCardState extends State<UserEventCard> {
                                   final item = _comments[i];
                                   final author = item.authorName.isNotEmpty
                                       ? item.authorName
-                                      : 'Ẩn danh';
+                                      : l10n.anonymousLabel;
                                   final text = item.content;
                                   return Padding(
                                     padding: const EdgeInsets.only(bottom: 12),
@@ -286,7 +286,7 @@ class _UserEventCardState extends State<UserEventCard> {
                               child: TextField(
                                 controller: controller,
                                 decoration: InputDecoration(
-                                  hintText: 'Viết bình luận...',
+                                  hintText: l10n.writeCommentHint,
                                   hintStyle: GoogleFonts.inter(
                                     fontSize: 13,
                                     color: ctx.textSecondary,
@@ -589,7 +589,9 @@ class _UserEventCardState extends State<UserEventCard> {
                                 });
                               },
                               child: Text(
-                                _isExpanded ? 'Thu gọn' : 'Xem thêm',
+                                _isExpanded
+                                    ? l10n.collapseLabel
+                                    : l10n.viewMoreLabel,
                                 style: GoogleFonts.inter(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
@@ -639,7 +641,9 @@ class _UserEventCardState extends State<UserEventCard> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          _likeCount > 0 ? 'Thích ($_likeCount)' : 'Thích',
+                          _likeCount > 0
+                              ? l10n.likeCountLabel(_likeCount)
+                              : l10n.likeLabel,
                           style: GoogleFonts.inter(
                             fontSize: 12.5,
                             fontWeight:
@@ -671,10 +675,11 @@ class _UserEventCardState extends State<UserEventCard> {
                         const SizedBox(width: 6),
                         Text(
                           _comments.isNotEmpty
-                              ? 'Bình luận (${_comments.length})'
+                              ? l10n.commentsCountLabel(_comments.length)
                               : (widget.event.commentCount > 0
-                                  ? 'Bình luận (${widget.event.commentCount})'
-                                  : 'Bình luận'),
+                                  ? l10n
+                                      .commentsCountLabel(widget.event.commentCount)
+                                  : l10n.commentLabel),
                           style: GoogleFonts.inter(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w500,
@@ -711,7 +716,7 @@ class _UserEventCardState extends State<UserEventCard> {
                               ),
                         const SizedBox(width: 6),
                         Text(
-                          'Chia sẻ',
+                          l10n.shareLabel,
                           style: GoogleFonts.inter(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w500,

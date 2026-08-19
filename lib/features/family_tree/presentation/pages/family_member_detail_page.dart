@@ -178,7 +178,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                         l10n.dateOfBirthLabel,
                         DateFormatter.formatForDisplay(
                                 widget.member.dateOfBirth) ??
-                            'Không rõ',
+                            l10n.unknownLabel,
                       ),
                       if (!widget.member.isAlive)
                         _buildInfoRow(
@@ -186,7 +186,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                           l10n.dateOfDeathLabel,
                           DateFormatter.formatForDisplay(
                                   widget.member.dateOfDeath) ??
-                              'Không rõ',
+                              l10n.unknownLabel,
                         ),
                       _buildInfoRow(
                         LucideIcons.user,
@@ -200,21 +200,21 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                         l10n.placeOfBirthLabel,
                         (widget.member.placeOfBirth?.isNotEmpty == true)
                             ? widget.member.placeOfBirth!
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.bookOpen,
                         l10n.educationLabel,
                         (widget.member.education?.isNotEmpty == true)
                             ? widget.member.education!
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.briefcase,
                         l10n.occupationLabel,
                         (widget.member.occupation?.isNotEmpty == true)
                             ? widget.member.occupation!
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                       ),
                       const SizedBox(height: 24),
                       const Divider(height: 1),
@@ -226,24 +226,24 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                       _buildInfoRow(
                         LucideIcons.user,
                         l10n.fatherLabel,
-                        father?.fullName ?? 'Không rõ',
+                        father?.fullName ?? l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.user,
                         l10n.motherLabel,
-                        mother?.fullName ?? 'Không rõ',
+                        mother?.fullName ?? l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.heart,
                         l10n.spouseLabel,
-                        spouse?.fullName ?? 'Không rõ',
+                        spouse?.fullName ?? l10n.unknownLabel,
                       ),
                       _buildInfoRow(
                         LucideIcons.gitCommit,
                         l10n.branchLabel,
                         (widget.member.branchName?.isNotEmpty == true)
                             ? widget.member.branchName!
-                            : 'Không rõ',
+                            : l10n.unknownLabel,
                       ),
                       const SizedBox(height: 24),
                       const Divider(height: 1),

@@ -297,7 +297,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                             const SizedBox(width: 4),
                                             Flexible(
                                               child: Text(
-                                                'Mất: ${DateFormatter.formatForDisplay(widget.member.dateOfDeath) ?? l10n.unknownLabel}',
+                                                l10n.memberDiedLabel(DateFormatter.formatForDisplay(widget.member.dateOfDeath) ?? l10n.unknownLabel),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.inter(
@@ -352,7 +352,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                                   child: FittedBox(
                                                     fit: BoxFit.scaleDown,
                                                     child: Text(
-                                                      'Thêm con',
+                                                      l10n.addChildLabel,
                                                       style: GoogleFonts
                                                           .beVietnamPro(
                                                         fontSize: 8.5,
@@ -408,8 +408,8 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                                     child: Text(
                                                       widget.member.gender ==
                                                               Gender.female
-                                                          ? 'Thêm chồng'
-                                                          : 'Thêm vợ',
+                                                          ? l10n.addHusbandLabel
+                                                          : l10n.addWifeLabel,
                                                       style: GoogleFonts
                                                           .beVietnamPro(
                                                         fontSize: 8.5,

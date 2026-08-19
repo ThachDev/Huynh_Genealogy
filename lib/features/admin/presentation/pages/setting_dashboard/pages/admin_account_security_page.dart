@@ -105,11 +105,10 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
     if (isOwner && user?.familyId != null && user!.familyId! > 0) {
       final shouldGoToTransfer = await AppDialog.confirm(
         context,
-        title: 'Chưa thể xóa tài khoản',
-        message:
-            'Bạn đang giữ vai trò Trưởng tộc của dòng họ. Để đảm bảo an toàn cho dữ liệu dòng tộc, bạn cần chuyển nhượng quyền Trưởng tộc cho thành viên khác trước khi xóa tài khoản.',
-        confirmLabel: 'Chuyển nhượng quyền',
-        cancelLabel: 'Đã hiểu',
+        title: l10n.cannotDeleteAccountTitle,
+        message: l10n.cannotDeleteAccountContent,
+        confirmLabel: l10n.transferOwnershipShortLabel,
+        cancelLabel: l10n.understoodLabel,
         type: AppDialogType.warning,
       );
 
@@ -127,12 +126,11 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
     // ── 2. Xác nhận bảo mật 2 bước: Bắt buộc nhập chữ xác nhận ──
     final confirmed = await AppDialog.confirmWithInput(
       context,
-      title: 'Xóa tài khoản vĩnh viễn',
-      message:
-          'Toàn bộ thông tin cá nhân, quyền hạn và liên kết gia phả của bạn sẽ bị xóa vĩnh viễn không thể khôi phục.',
-      requiredWord: 'XÓA TÀI KHOẢN',
-      inputInstruction: 'Nhập chính xác cụm từ "XÓA TÀI KHOẢN" để xác nhận:',
-      confirmLabel: 'Xác nhận xóa',
+      title: l10n.deleteAccountPermanentTitle,
+      message: l10n.deleteAccountPermanentContent,
+      requiredWord: l10n.deleteAccountRequiredWord,
+      inputInstruction: l10n.deleteAccountInputInstruction,
+      confirmLabel: l10n.confirmDeleteLabel,
       cancelLabel: l10n.cancelLabel,
       type: AppDialogType.danger,
     );

@@ -369,7 +369,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                                 .dismiss(item.id.toString());
                             AppSnackBar.show(
                               context,
-                              message: 'Đã xoá thông báo',
+                              message: l10n.notificationDeletedMessage,
                               type: SnackBarType.success,
                             );
                           }

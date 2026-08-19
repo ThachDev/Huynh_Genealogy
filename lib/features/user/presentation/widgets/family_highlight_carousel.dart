@@ -91,6 +91,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
 
   // ── Build danh sách slides ───────────────────────────────────────────────
   List<_HighlightSlide> _buildSlides() {
+    final l10n = AppLocalizations.of(context)!;
     final slides = <_HighlightSlide>[];
     final today = DateTime.now();
     final todayDate = DateTime(today.year, today.month, today.day);
@@ -176,8 +177,8 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         type: HighlightEventType.birthday,
         title: upcomingBirthday.title,
         description: upcomingBirthday.member.generation != null
-            ? 'Đời thứ ${upcomingBirthday.member.generation}'
-            : 'Thành viên dòng họ',
+            ? l10n.generationLabel(upcomingBirthday.member.generation!)
+            : l10n.clanMemberLabel,
         location: null,
         date: bDate,
         dateLabel: upcomingBirthday.solarDateLabel,
@@ -209,8 +210,8 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         type: HighlightEventType.anniversary,
         title: ann.title,
         description: ann.member.generation != null
-            ? 'Lễ tưởng niệm tiền nhân đời thứ ${ann.member.generation}'
-            : 'Lễ giỗ tưởng niệm tiền nhân',
+            ? l10n.memorialCeremonyGenerationLabel(ann.member.generation!)
+            : l10n.memorialCeremonyLabel,
         location: null,
         date: aDate,
         dateLabel: ann.solarDateLabel,
@@ -489,7 +490,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
     if (message != null && mounted) {
       final prayerContent = message.trim().isNotEmpty
           ? message.trim()
-          : 'Thắp nén tâm nhang tưởng nhớ tiền nhân thành kính.';
+          : l10n.incenseDefaultPrayer;
 
       final newWish = WishMessage(
         id: 0,
@@ -510,7 +511,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         if (created != null) {
           AppSnackBar.show(
             context,
-            message: 'Đã thắp nén tâm nhang tưởng nhớ ${data.title} thành kính!',
+            message: l10n.incenseLitFor(data.title),
             type: SnackBarType.success,
           );
         } else {

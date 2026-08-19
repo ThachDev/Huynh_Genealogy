@@ -117,6 +117,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelLabel => 'Cancel';
 
   @override
+  String get closeLabel => 'Close';
+
+  @override
   String get okLabel => 'Close';
 
   @override
@@ -2628,11 +2631,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String auditActionGeneric(String actor, String action) {
-    return '$actor · $action';
-  }
-
-  @override
   String get auditUnknownActor => 'Unknown';
 
   @override
@@ -2814,4 +2812,422 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get rolePermissionDenied =>
       'Your account does not have permission to access this page.';
+
+  @override
+  String get notifWishTitle => 'Wish';
+
+  @override
+  String get notifBirthdayTitle => 'Birthday today';
+
+  @override
+  String get notifDeathAnniversaryTitle => 'Death anniversary today';
+
+  @override
+  String get notifAnnouncementTitle => 'New announcement from your clan';
+
+  @override
+  String get notifNewEventTitle => 'New event';
+
+  @override
+  String get notifGenericBody => 'You have a new notification from your clan';
+
+  @override
+  String notifDeathOfPart(String names) {
+    return 'death anniversary of $names';
+  }
+
+  @override
+  String notifBirthdayOfPart(String names) {
+    return 'birthday of $names';
+  }
+
+  @override
+  String get notifAnniversariesTodayTitle =>
+      'Death anniversaries & birthdays today';
+
+  @override
+  String notifTodayBody(String parts) {
+    return 'Today is $parts.';
+  }
+
+  @override
+  String get optionsLabel => 'Options';
+
+  @override
+  String get resetFilterLabel => 'Reset';
+
+  @override
+  String get incenseSubtitleRemember => 'Remembering our clan ancestors';
+
+  @override
+  String get incenseDefaultPrayer => 'Lighting incense to honor our ancestors.';
+
+  @override
+  String incenseLitFor(String name) {
+    return 'Lit incense to honor $name!';
+  }
+
+  @override
+  String get anniversariesTitle => 'Death Anniversaries & Birthdays';
+
+  @override
+  String get incenseLitStatus => 'Lit';
+
+  @override
+  String get incenseLightingStatus => 'Lighting';
+
+  @override
+  String get incensePrayerHint => 'Enter your sincere prayer...';
+
+  @override
+  String get incenseOfferedLabel => 'Incense Offered';
+
+  @override
+  String get incenseOfferingLabel => 'Offering incense...';
+
+  @override
+  String get incenseLightButton => 'Light Incense';
+
+  @override
+  String get clearAllLabel => 'Clear all';
+
+  @override
+  String get sortByLabel => 'Sort by';
+
+  @override
+  String get sortNewestLabel => 'Newest';
+
+  @override
+  String get sortOldestLabel => 'Oldest';
+
+  @override
+  String get sortNearestLabel => 'Nearest';
+
+  @override
+  String get sortFurthestLabel => 'Furthest';
+
+  @override
+  String get searchDeathAnniversaryHint => 'Search death anniversaries...';
+
+  @override
+  String get searchBirthdayHint => 'Search birthdays...';
+
+  @override
+  String get deathAnniversaryTab => 'Death anniversary';
+
+  @override
+  String get birthdayTab => 'Birthday';
+
+  @override
+  String get notificationDeletedMessage => 'Notification deleted';
+
+  @override
+  String get clanMemberLabel => 'Clan member';
+
+  @override
+  String memorialCeremonyGenerationLabel(int generation) {
+    return 'Memorial ceremony for ancestor of generation $generation';
+  }
+
+  @override
+  String get memorialCeremonyLabel => 'Memorial ceremony for ancestors';
+
+  @override
+  String get highlightTypeEventLabel => 'CLAN EVENT';
+
+  @override
+  String get viewEventDetailsLabel => 'View event details';
+
+  @override
+  String get highlightTypeBirthdayLabel => 'MEMBER BIRTHDAY';
+
+  @override
+  String get sendBirthdayWishLabel => 'Send birthday wish';
+
+  @override
+  String get lightIncenseLabel => 'Light incense';
+
+  @override
+  String commentsCountLabel(int count) {
+    return 'Comments ($count)';
+  }
+
+  @override
+  String get noCommentsMessage => 'No comments yet.';
+
+  @override
+  String get beFirstCommentMessage => 'Be the first to leave a comment!';
+
+  @override
+  String get anonymousLabel => 'Anonymous';
+
+  @override
+  String get writeCommentHint => 'Write a comment...';
+
+  @override
+  String get collapseLabel => 'Collapse';
+
+  @override
+  String get viewMoreLabel => 'View more';
+
+  @override
+  String likeCountLabel(int count) {
+    return 'Like ($count)';
+  }
+
+  @override
+  String get likeLabel => 'Like';
+
+  @override
+  String get commentLabel => 'Comment';
+
+  @override
+  String get memberBirthdayLabel => 'Member birthday';
+
+  @override
+  String get deathAnniversaryMemorialLabel => 'Death anniversary memorial';
+
+  @override
+  String get happyBirthdayTitle => 'Happy Birthday!';
+
+  @override
+  String get noIncenseWishesMessage => 'No incense lit yet';
+
+  @override
+  String get beFirstIncenseMessage =>
+      'Be the first to light incense in memory.';
+
+  @override
+  String memberDiedLabel(String date) {
+    return 'Died: $date';
+  }
+
+  @override
+  String get addChildLabel => 'Add child';
+
+  @override
+  String get addHusbandLabel => 'Add husband';
+
+  @override
+  String get addWifeLabel => 'Add wife';
+
+  @override
+  String get cannotDeleteAccountTitle => 'Unable to delete account';
+
+  @override
+  String get cannotDeleteAccountContent =>
+      'You currently hold the Clan Leader role. To keep clan data safe, transfer the leadership role to another member before deleting your account.';
+
+  @override
+  String get transferOwnershipShortLabel => 'Transfer ownership';
+
+  @override
+  String get deleteAccountPermanentTitle => 'Delete account permanently';
+
+  @override
+  String get deleteAccountPermanentContent =>
+      'All of your personal information, permissions and genealogy links will be permanently deleted and cannot be restored.';
+
+  @override
+  String get deleteAccountRequiredWord => 'DELETE ACCOUNT';
+
+  @override
+  String get deleteAccountInputInstruction =>
+      'Type \"DELETE ACCOUNT\" exactly to confirm:';
+
+  @override
+  String get confirmDeleteLabel => 'Confirm delete';
+
+  @override
+  String get clanCodeLabel => 'Clan code:';
+
+  @override
+  String get qrCodeLabel => 'QR Code';
+
+  @override
+  String get helloLabel => 'Hello, ';
+
+  @override
+  String get youLabel => 'You';
+
+  @override
+  String get clanLabel => 'Clan';
+
+  @override
+  String familyNamePrefix(String name) {
+    return '$name Clan';
+  }
+
+  @override
+  String get orLabel => ' or ';
+
+  @override
+  String get founderLabel => 'Founder';
+
+  @override
+  String get establishedYearLabel => 'Established year';
+
+  @override
+  String get regionLabel => 'Region / Area';
+
+  @override
+  String get memberCountLabel => 'Number of members';
+
+  @override
+  String get roleColonLabel => 'Role:';
+
+  @override
+  String get clanLeaderAdminLabel => 'Clan Leader / Administrator';
+
+  @override
+  String get roleFieldLabel => 'Role';
+
+  @override
+  String get titleFieldLabel => 'Title';
+
+  @override
+  String get dateFieldLabel => 'Date';
+
+  @override
+  String get locationFieldLabel => 'Location';
+
+  @override
+  String get contentFieldLabel => 'Content';
+
+  @override
+  String get newOwnerFieldLabel => 'New clan leader';
+
+  @override
+  String get auditSearchHint => 'Search by actor, target...';
+
+  @override
+  String get deletedLabel => 'Deleted';
+
+  @override
+  String auditActionMemberCreate(String actor) {
+    return '$actor added a new member';
+  }
+
+  @override
+  String auditActionMemberUpdate(String actor) {
+    return '$actor updated a member';
+  }
+
+  @override
+  String auditActionMemberSoftDelete(String actor) {
+    return '$actor moved a member to trash';
+  }
+
+  @override
+  String auditActionMemberRestore(String actor) {
+    return '$actor restored a member';
+  }
+
+  @override
+  String auditActionMemberPurge(String actor) {
+    return '$actor cleaned the trash';
+  }
+
+  @override
+  String auditActionInvite(String actor) {
+    return '$actor sent a clan invitation';
+  }
+
+  @override
+  String auditActionRoleChange(String actor) {
+    return '$actor changed member roles';
+  }
+
+  @override
+  String auditActionLinkAccount(String actor) {
+    return '$actor linked an account to a member';
+  }
+
+  @override
+  String auditActionUnlinkAccount(String actor) {
+    return '$actor unlinked an account';
+  }
+
+  @override
+  String auditActionTransferOwnership(String actor) {
+    return '$actor transferred clan leadership';
+  }
+
+  @override
+  String auditActionFamilyCreate(String actor) {
+    return '$actor created the clan';
+  }
+
+  @override
+  String auditActionFamilyUpdate(String actor) {
+    return '$actor updated clan information';
+  }
+
+  @override
+  String auditActionFamilyDissolve(String actor) {
+    return '$actor dissolved the clan';
+  }
+
+  @override
+  String auditActionBranchCreate(String actor) {
+    return '$actor added a new branch';
+  }
+
+  @override
+  String auditActionBranchUpdate(String actor) {
+    return '$actor updated a branch';
+  }
+
+  @override
+  String auditActionBranchDelete(String actor) {
+    return '$actor deleted a branch';
+  }
+
+  @override
+  String auditActionEventCreate(String actor) {
+    return '$actor created a new event';
+  }
+
+  @override
+  String auditActionEventUpdate(String actor) {
+    return '$actor updated an event';
+  }
+
+  @override
+  String auditActionEventDelete(String actor) {
+    return '$actor deleted an event';
+  }
+
+  @override
+  String auditActionGeneric(String actor, String action) {
+    return '$actor performed: $action';
+  }
+
+  @override
+  String auditDetailEdit(String name, String fields) {
+    return '$name · Edited: $fields';
+  }
+
+  @override
+  String auditDetailChanges(String fields) {
+    return 'Changes: $fields';
+  }
+
+  @override
+  String auditDetailTarget(String name) {
+    return 'Target: $name';
+  }
+
+  @override
+  String get supremeRoleLabel => 'Supreme';
+
+  @override
+  String get transferFullOwnershipLabel =>
+      'Transfer full clan management to this person';
+
+  @override
+  String get darkModeLabel => 'Dark';
+
+  @override
+  String get lightModeLabel => 'Light';
 }

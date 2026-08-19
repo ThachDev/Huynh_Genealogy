@@ -638,7 +638,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSearchBar("Tìm kiếm..."),
+            _buildSearchBar(l10n.searchHint),
             if (filteredRequests.isEmpty)
               _buildEmptyWidget(l10n.emptyPendingRequests)
             else
@@ -977,6 +977,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildSearchBar(String hintText, {bool showFilter = false}) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: AppSearchBar(
@@ -1020,7 +1021,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         Icon(LucideIcons.filterX,
                             color: context.textPrimary, size: 18),
                         const SizedBox(width: 8),
-                        Text('Bỏ chọn tất cả',
+                        Text(l10n.clearAllLabel,
                             style: GoogleFonts.beVietnamPro(
                                 fontSize: 13, color: context.textPrimary)),
                       ],
@@ -1037,7 +1038,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('Giới tính',
+                            Text(l10n.genderLabel,
                                 style: GoogleFonts.beVietnamPro(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -1057,7 +1058,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                   'MALE': Padding(
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Nam',
+                                    child: Text(l10n.genderMale,
                                         style: GoogleFonts.beVietnamPro(
                                             fontSize: 12,
                                             color: context.textPrimary)),
@@ -1065,7 +1066,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                   'FEMALE': Padding(
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Nữ',
+                                    child: Text(l10n.genderFemale,
                                         style: GoogleFonts.beVietnamPro(
                                             fontSize: 12,
                                             color: context.textPrimary)),
@@ -1088,7 +1089,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            Text('Tình trạng',
+                            Text(l10n.statusLabel,
                                 style: GoogleFonts.beVietnamPro(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -1110,7 +1111,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                   'ALIVE': Padding(
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Còn sống',
+                                    child: Text(l10n.aliveLabel,
                                         style: GoogleFonts.beVietnamPro(
                                             fontSize: 12,
                                             color: context.textPrimary)),
@@ -1118,7 +1119,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                   'DECEASED': Padding(
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text('Đã mất',
+                                    child: Text(l10n.deceasedLabel,
                                         style: GoogleFonts.beVietnamPro(
                                             fontSize: 12,
                                             color: context.textPrimary)),

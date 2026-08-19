@@ -119,8 +119,8 @@ class _WishWallPageState extends State<WishWallPage> {
 
     if (message != null && mounted) {
       final defaultContent = widget.data.isBirthday
-          ? 'Chúc mừng sinh nhật!'
-          : 'Thắp nén tâm nhang tưởng nhớ tiền nhân thành kính.';
+          ? l10n.happyBirthdayTitle
+          : l10n.incenseDefaultPrayer;
       final prayerContent =
           message.trim().isNotEmpty ? message.trim() : defaultContent;
 
@@ -154,7 +154,7 @@ class _WishWallPageState extends State<WishWallPage> {
           context,
           message: widget.data.isBirthday
               ? l10n.wishSentMessage
-              : 'Đã thắp nén tâm nhang tưởng nhớ ${widget.data.title} thành kính!',
+              : l10n.incenseLitFor(widget.data.title),
           type: SnackBarType.success,
         );
       }
@@ -307,10 +307,10 @@ class _WishWallPageState extends State<WishWallPage> {
                   icon: isBirthday ? LucideIcons.mail : LucideIcons.flame,
                   message: isBirthday
                       ? l10n.noWishesMessage
-                      : 'Chưa có nén tâm nhang nào',
+                      : l10n.noIncenseWishesMessage,
                   subMessage: isBirthday
                       ? l10n.beFirstWisher
-                      : 'Hãy là người đầu tiên thắp nén tâm nhang tưởng nhớ.',
+                      : l10n.beFirstIncenseMessage,
                 ),
               )
             else
@@ -343,7 +343,7 @@ class _WishWallPageState extends State<WishWallPage> {
         elevation: 4,
         icon: Icon(isBirthday ? LucideIcons.gift : LucideIcons.flame),
         label: Text(
-          isBirthday ? l10n.sendWishButton : 'Thắp nén tâm nhang',
+          isBirthday ? l10n.sendWishButton : l10n.lightIncenseLabel,
           style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
         ),
       ),
@@ -548,8 +548,8 @@ class _WishCard extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text(
                           reactionCount > 0
-                              ? 'Thích ($reactionCount)'
-                              : 'Thích',
+                              ? l10n.likeCountLabel(reactionCount)
+                              : l10n.likeLabel,
                           style: GoogleFonts.inter(
                             fontSize: 12.5,
                             fontWeight:

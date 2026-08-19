@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
+import '../../../../resources/app_localizations.dart';
 
 /// Mở popup thắp nén nhang với hiệu ứng thắp nén hương, khói tỏa và tàn nhang nhẹ nhàng.
 Future<String?> showIncenseDialog(
@@ -119,6 +120,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
   Widget build(BuildContext context) {
     final primaryColor = context.primary;
     final accentGold = context.accent;
+    final l10n = AppLocalizations.of(context)!;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -318,7 +320,9 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                                         ),
                                         const SizedBox(width: 5),
                                         Text(
-                                          _isFinished ? 'Đã thắp' : 'Đang thắp',
+                                          _isFinished
+                                              ? l10n.incenseLitStatus
+                                              : l10n.incenseLightingStatus,
                                           style: GoogleFonts.inter(
                                             fontSize: 10.5,
                                             fontWeight: FontWeight.w600,
@@ -347,8 +351,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                         color: context.textPrimary,
                       ),
                       decoration: InputDecoration(
-                        hintText:
-                            'Nhập lời khấn nguyện / tâm nguyện thành kính...',
+                        hintText: l10n.incensePrayerHint,
                         hintStyle: GoogleFonts.inter(
                           fontSize: 12,
                           color: context.textSecondary.withValues(alpha: 0.55),
@@ -400,7 +403,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                               ),
                             ),
                             child: Text(
-                              'Đóng',
+                              l10n.closeLabel,
                               style: GoogleFonts.inter(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -422,9 +425,9 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                             label: Text(
                               _isLit
                                   ? (_isFinished
-                                      ? 'Đã Dâng Hương'
-                                      : 'Đang Dâng Hương...')
-                                  : 'Thắp Nhang Thành Kính',
+                                      ? l10n.incenseOfferedLabel
+                                      : l10n.incenseOfferingLabel)
+                                  : l10n.incenseLightButton,
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w800,

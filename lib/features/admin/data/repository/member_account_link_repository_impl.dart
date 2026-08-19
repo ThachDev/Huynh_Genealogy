@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/member_account_link_entity.dart';
 import '../../domain/repository/member_account_link_repository.dart';
@@ -17,10 +17,8 @@ class MemberAccountLinkRepositoryImpl implements MemberAccountLinkRepository {
     try {
       final result = await remoteDataSource.getAccountLinks(familyId);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -36,10 +34,8 @@ class MemberAccountLinkRepositoryImpl implements MemberAccountLinkRepository {
         email: email,
       );
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -51,10 +47,8 @@ class MemberAccountLinkRepositoryImpl implements MemberAccountLinkRepository {
     try {
       final result = await remoteDataSource.unlinkMember(memberId: memberId);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 }

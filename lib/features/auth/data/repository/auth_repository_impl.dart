@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/data/repository/logout_cache_cleaner.dart';
@@ -31,9 +32,9 @@ class AuthRepositoryImpl implements AuthRepository {
       await _persistSessionToken();
       return Right(userModel);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return Left(ErrorHandler.map(e));
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errLoginFormat(e) ?? 'Lỗi đăng nhập: $e'));
@@ -54,9 +55,9 @@ class AuthRepositoryImpl implements AuthRepository {
       await _persistSessionToken();
       return Right(userModel);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return Left(ErrorHandler.map(e));
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errLoginFormat(e) ?? 'Lỗi đăng nhập: $e'));
@@ -73,7 +74,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await LogoutCacheCleaner.clearAll();
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errLogoutFormat(e) ?? 'Lỗi đăng xuất: $e'));
@@ -86,7 +87,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final cachedUser = await localDataSource.getCachedUser();
       return Right(cachedUser);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -108,9 +109,9 @@ class AuthRepositoryImpl implements AuthRepository {
       await _persistSessionToken();
       return Right(userModel);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return Left(ErrorHandler.map(e));
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errRegisterFormat(e) ?? 'Lỗi đăng ký: $e'));
@@ -124,7 +125,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _persistSessionToken();
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(CacheFailure(
           message: AppLanguage.current?.errSaveInfoFormat(e) ?? 'Lỗi lưu thông tin: $e'));
@@ -140,7 +141,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.cacheCredentials(email: email, password: password);
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(CacheFailure(
           message: AppLanguage.current?.errCacheCredentialsFormat(e) ??
@@ -154,7 +155,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final result = await localDataSource.getCachedCredentials();
       return Right(result);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -164,7 +165,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.clearCredentials();
       return const Right(null);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -174,7 +175,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.forgotPassword(email: email);
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errSendResetEmailFormat(e) ??
@@ -191,7 +192,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.verifyOtp(email: email, otp: otp);
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errOtpVerifyFormat(e) ?? 'Lỗi xác thực OTP: $e'));
@@ -212,7 +213,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errResetPasswordFormat(e) ??
@@ -226,7 +227,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final cached = await localDataSource.getCachedToken();
       return Right(cached);
     } on CacheException catch (e) {
-      return Left(CacheFailure(message: e.message));
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -262,7 +263,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await cacheUser(userModel); // Cache the fresh user info locally
       return Right(userModel);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
+      return Left(ErrorHandler.map(e));
     } catch (e) {
       return Left(ServerFailure(
           message: AppLanguage.current?.errReloadProfileFormat(e) ??

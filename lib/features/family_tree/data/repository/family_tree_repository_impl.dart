@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
@@ -62,10 +63,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       return Right(model);
     } on NotFoundException catch (e) {
       return Left(NotFoundFailure(message: e.message));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -76,10 +75,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       final saved = await remoteDataSource.saveMember(model);
       await localDataSource.clearAll();
       return Right(saved);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -89,10 +86,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       final result = await remoteDataSource.deleteMember(id, reassignChildrenToParent: reassignChildrenToParent);
       await localDataSource.clearAll();
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -101,10 +96,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
     try {
       final models = await remoteDataSource.getTrashedMembers(familyId: familyId, branchId: branchId);
       return Right(models);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -114,10 +107,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       final model = await remoteDataSource.restoreMember(id);
       await localDataSource.clearAll();
       return Right(model);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -127,10 +118,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       final count = await remoteDataSource.purgeTrash(days: days);
       await localDataSource.clearAll();
       return Right(count);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -139,10 +128,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
     try {
       final models = await remoteDataSource.getAuditLogs(familyId: familyId, limit: limit);
       return Right(models);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -184,10 +171,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       return Right(model);
     } on NotFoundException catch (e) {
       return Left(NotFoundFailure(message: e.message));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -197,10 +182,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       final saved = await remoteDataSource.saveBranch(branch);
       await localDataSource.clearAll();
       return Right(saved);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -210,10 +193,8 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
       final result = await remoteDataSource.deleteBranch(id);
       await localDataSource.clearAll();
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 }

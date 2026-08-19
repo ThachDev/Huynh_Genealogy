@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/event_entity.dart';
 import '../../domain/repositories/events_repository.dart';
@@ -15,10 +15,8 @@ class EventsRepositoryImpl implements EventsRepository {
     try {
       final events = await remoteDataSource.getEvents(familyId: familyId);
       return Right(events);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -27,10 +25,8 @@ class EventsRepositoryImpl implements EventsRepository {
     try {
       final saved = await remoteDataSource.saveEvent(event);
       return Right(saved);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -39,10 +35,8 @@ class EventsRepositoryImpl implements EventsRepository {
     try {
       final success = await remoteDataSource.deleteEvent(id);
       return Right(success);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 }

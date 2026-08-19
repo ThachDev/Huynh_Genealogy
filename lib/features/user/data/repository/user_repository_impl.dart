@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/domain/entity/user_entity.dart';
 import '../../domain/repository/user_repository.dart';
@@ -15,12 +15,8 @@ class UserRepositoryImpl implements UserRepository {
     try {
       final profile = await remoteDataSource.getUserProfile();
       return Right(profile);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -29,12 +25,8 @@ class UserRepositoryImpl implements UserRepository {
     try {
       final updated = await remoteDataSource.updateUserProfile(profile);
       return Right(updated);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
+      return Left(ErrorHandler.map(e));
     }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/domain/entity/family_entity.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
@@ -43,12 +43,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       );
       // Trả về Right(FamilyModel) — FamilyModel kế thừa từ FamilyEntity (Polymorphism)
       return Right(familyModel);
-    } on ServerException catch (e) {
-      // Bắt lỗi ServerException từ DataSource -> Trả về Left(ServerFailure)
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      // Bắt lỗi Mạng -> Trả về Left(NetworkFailure)
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -62,10 +58,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final result = await remoteDataSource.verifyInviteCode(code);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -102,10 +96,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         notes: notes,
       );
       return Right(familyUserModel);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -116,10 +108,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final list = await remoteDataSource.getPendingRequests(familyId);
       return Right(list);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -130,10 +120,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final result = await remoteDataSource.approveRequest(requestId);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -144,10 +132,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final result = await remoteDataSource.rejectRequest(requestId);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -158,10 +144,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final familyModel = await remoteDataSource.getFamilyDetail(familyId);
       return Right(familyModel);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -182,10 +166,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         logoUrl: logoUrl,
       );
       return Right(familyModel);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -196,10 +178,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final list = await remoteDataSource.getApprovedMembers(familyId);
       return Right(list);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -216,10 +196,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         role: role,
       );
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -230,10 +208,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       final result = await remoteDataSource.deleteFamily(familyId);
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -248,10 +224,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         memberId: memberId,
       );
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 
@@ -266,10 +240,8 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         newOwnerUserId: newOwnerUserId,
       );
       return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message, statusCode: e.statusCode));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
     }
   }
 }

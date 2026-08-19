@@ -22,9 +22,9 @@ abstract class AuthLocalDataSource {
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  final FlutterSecureStorage secureStorage;
 
   AuthLocalDataSourceImpl({required this.secureStorage});
+  final FlutterSecureStorage secureStorage;
 
   @override
   Future<void> cacheUser(UserModel userToCache) async {

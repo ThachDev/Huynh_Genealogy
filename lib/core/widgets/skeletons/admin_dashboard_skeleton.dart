@@ -59,7 +59,7 @@ class _MemberCardSkeleton extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SkeletonLine(width: double.infinity, height: 15),
+                SkeletonLine(height: 15),
                 SizedBox(height: 8),
                 SkeletonLine(width: 110, height: 11),
                 SizedBox(height: 8),

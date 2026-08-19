@@ -4,13 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/theme_extensions.dart';
 
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final Widget? titleWidget;
-  final List<Widget>? actions;
-  final Widget? leading;
-  final bool automaticallyImplyLeading;
-  final PreferredSizeWidget? bottom;
-  final bool transparent;
 
   const AppAppBar({
     super.key,
@@ -22,6 +15,13 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottom,
     this.transparent = false,
   });
+  final String title;
+  final Widget? titleWidget;
+  final List<Widget>? actions;
+  final Widget? leading;
+  final bool automaticallyImplyLeading;
+  final PreferredSizeWidget? bottom;
+  final bool transparent;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,6 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
           : Border(
               bottom: BorderSide(
                 color: Colors.white.withValues(alpha: 0.08),
-                width: 1.0,
               ),
             ),
       iconTheme: IconThemeData(color: context.textPrimary),

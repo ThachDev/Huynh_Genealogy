@@ -5,9 +5,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class DeleteMember implements UseCase<bool, DeleteMemberParams> {
-  final FamilyTreeRepository repository;
 
   DeleteMember(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(DeleteMemberParams params) {
@@ -16,13 +16,13 @@ class DeleteMember implements UseCase<bool, DeleteMemberParams> {
 }
 
 class DeleteMemberParams extends Equatable {
-  final int id;
-  final bool reassignChildrenToParent;
 
   const DeleteMemberParams({
     required this.id,
     this.reassignChildrenToParent = false,
   });
+  final int id;
+  final bool reassignChildrenToParent;
 
   @override
   List<Object?> get props => [id, reassignChildrenToParent];

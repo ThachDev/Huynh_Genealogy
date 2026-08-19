@@ -17,13 +17,13 @@ class AuthProfileRefreshSilent extends AuthEvent {}
 class AuthLoginRequested extends AuthEvent {}
 
 class AuthLoginWithEmailRequested extends AuthEvent {
-  final String email;
-  final String password;
 
   const AuthLoginWithEmailRequested({
     required this.email,
     required this.password,
   });
+  final String email;
+  final String password;
 
   @override
   List<Object?> get props => [email, password];
@@ -32,10 +32,6 @@ class AuthLoginWithEmailRequested extends AuthEvent {
 class AuthLogoutRequested extends AuthEvent {}
 
 class AuthRegisterRequested extends AuthEvent {
-  final String email;
-  final String password;
-  final String fullName;
-  final String role;
 
   const AuthRegisterRequested({
     required this.email,
@@ -43,15 +39,19 @@ class AuthRegisterRequested extends AuthEvent {
     required this.fullName,
     required this.role,
   });
+  final String email;
+  final String password;
+  final String fullName;
+  final String role;
 
   @override
   List<Object?> get props => [email, password, fullName, role];
 }
 
 class AuthUserUpdated extends AuthEvent {
-  final UserEntity user;
 
   const AuthUserUpdated({required this.user});
+  final UserEntity user;
 
   @override
   List<Object?> get props => [user];
@@ -60,13 +60,13 @@ class AuthUserUpdated extends AuthEvent {
 class AuthLoadCredentialsRequested extends AuthEvent {}
 
 class AuthCacheCredentialsRequested extends AuthEvent {
-  final String email;
-  final String password;
 
   const AuthCacheCredentialsRequested({
     required this.email,
     required this.password,
   });
+  final String email;
+  final String password;
 
   @override
   List<Object?> get props => [email, password];
@@ -75,34 +75,34 @@ class AuthCacheCredentialsRequested extends AuthEvent {
 class AuthClearCredentialsRequested extends AuthEvent {}
 
 class AuthForgotPasswordRequested extends AuthEvent {
-  final String email;
 
   const AuthForgotPasswordRequested({required this.email});
+  final String email;
 
   @override
   List<Object?> get props => [email];
 }
 
 class AuthVerifyOtpRequested extends AuthEvent {
-  final String email;
-  final String otp;
 
   const AuthVerifyOtpRequested({required this.email, required this.otp});
+  final String email;
+  final String otp;
 
   @override
   List<Object?> get props => [email, otp];
 }
 
 class AuthResetPasswordRequested extends AuthEvent {
-  final String email;
-  final String otp;
-  final String newPassword;
 
   const AuthResetPasswordRequested({
     required this.email,
     required this.otp,
     required this.newPassword,
   });
+  final String email;
+  final String otp;
+  final String newPassword;
 
   @override
   List<Object?> get props => [email, otp, newPassword];

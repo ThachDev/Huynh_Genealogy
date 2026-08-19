@@ -5,9 +5,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class PurgeTrash implements UseCase<int, PurgeTrashParams> {
-  final FamilyTreeRepository repository;
 
   PurgeTrash(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, int>> call(PurgeTrashParams params) {
@@ -16,9 +16,9 @@ class PurgeTrash implements UseCase<int, PurgeTrashParams> {
 }
 
 class PurgeTrashParams extends Equatable {
-  final int days;
 
   const PurgeTrashParams({this.days = 30});
+  final int days;
 
   @override
   List<Object?> get props => [days];

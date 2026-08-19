@@ -26,13 +26,13 @@ abstract class MemberAccountLinkRepository {
 }
 
 class LinkAccountResult {
-  final bool linked;
-  final bool invited;
-  final String email;
 
   const LinkAccountResult({
     required this.linked,
     required this.invited,
     required this.email,
   });
+  final bool linked;
+  final bool invited;
+  final String email;
 }

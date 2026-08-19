@@ -10,9 +10,6 @@ import '../widgets/anniversary_card.dart';
 
 /// Trang hiển thị danh sách Ngày Giỗ & Ngày Sinh Nhật theo 2 Tab.
 class UserAnniversaryListPage extends StatefulWidget {
-  final List<UpcomingAnniversary> deathAnniversaries;
-  final List<UpcomingAnniversary> birthdays;
-  final int initialTabIndex;
 
   const UserAnniversaryListPage({
     super.key,
@@ -20,6 +17,9 @@ class UserAnniversaryListPage extends StatefulWidget {
     required this.birthdays,
     this.initialTabIndex = 0,
   });
+  final List<UpcomingAnniversary> deathAnniversaries;
+  final List<UpcomingAnniversary> birthdays;
+  final int initialTabIndex;
 
   @override
   State<UserAnniversaryListPage> createState() =>
@@ -75,7 +75,7 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isDeathTab = _tabController.index == 0;
     final hint = isDeathTab
         ? l10n.searchDeathAnniversaryHint
@@ -248,7 +248,7 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppAppBar(

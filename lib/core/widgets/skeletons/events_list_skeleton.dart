@@ -74,7 +74,7 @@ class _EventCardSkeleton extends StatelessWidget {
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(aspectRatio: 16 / 9, child: SkeletonBox(height: null)),
+          AspectRatio(aspectRatio: 16 / 9, child: SkeletonBox()),
           Padding(
             padding: EdgeInsets.all(12),
             child: Column(

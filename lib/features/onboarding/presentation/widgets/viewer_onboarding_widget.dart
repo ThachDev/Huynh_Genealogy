@@ -16,12 +16,12 @@ import '../bloc/onboarding_state.dart';
 import 'new_member_registration_form.dart';
 
 class ViewerOnboardingWidget extends StatefulWidget {
-  final UserEntity user;
 
   const ViewerOnboardingWidget({
     super.key,
     required this.user,
   });
+  final UserEntity user;
 
   @override
   State<ViewerOnboardingWidget> createState() => _ViewerOnboardingWidgetState();
@@ -75,7 +75,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
     if (code.isNotEmpty) {
       context.read<OnboardingBloc>().add(VerifyInviteCodeEvent(code: code));
     } else {
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = AppLocalizations.of(context);
       AppSnackBar.warning(context, l10n.enterInviteCodeWarning);
     }
   }
@@ -149,7 +149,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return BlocListener<OnboardingBloc, OnboardingState>(
       listener: (context, state) {
         if (state is InviteCodeVerifiedState) {
@@ -167,9 +167,6 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
           AppSectionHeader(
             title: l10n.joinFamilyCardTitle,
             description: l10n.welcomeViewerSubtitle,
-            titleSize: 20,
-            indicatorHeight: 20,
-            spacing: 8,
           ),
           const SizedBox(height: 28),
           Container(
@@ -384,7 +381,6 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                       searchHint: l10n.searchNameHint,
                       items: [
                         DropdownItem<MemberEntity?>(
-                          value: null,
                           child: Text(
                             l10n.selectMemberHint,
                             style: GoogleFonts.inter(

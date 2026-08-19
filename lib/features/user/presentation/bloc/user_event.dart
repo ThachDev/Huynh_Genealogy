@@ -13,9 +13,9 @@ class FetchUserProfileEvent extends UserEvent {
 }
 
 class UpdateUserProfileEvent extends UserEvent {
-  final UserEntity profile;
 
   const UpdateUserProfileEvent(this.profile);
+  final UserEntity profile;
 
   @override
   List<Object?> get props => [profile];

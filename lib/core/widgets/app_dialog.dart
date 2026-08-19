@@ -24,7 +24,7 @@ class AppDialog {
     bool showIcon = true,
     Color? confirmColor,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -53,7 +53,7 @@ class AppDialog {
     String? cancelLabel,
     AppDialogType type = AppDialogType.danger,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -77,7 +77,7 @@ class AppDialog {
     String? okLabel,
     AppDialogType type = AppDialogType.info,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<void>(
       context: context,
       builder: (_) => _AppDialogWidget(
@@ -95,7 +95,7 @@ class AppDialog {
     BuildContext context, {
     String? message,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -155,15 +155,6 @@ class AppDialog {
 }
 
 class _AppDialogWidget extends StatelessWidget {
-  final String title;
-  final String message;
-  final InlineSpan? messageSpan;
-  final String confirmLabel;
-  final String? cancelLabel;
-  final AppDialogType type;
-  final bool showCancel;
-  final bool showIcon;
-  final Color? confirmColor;
 
   const _AppDialogWidget({
     required this.title,
@@ -176,6 +167,15 @@ class _AppDialogWidget extends StatelessWidget {
     this.cancelLabel,
     this.confirmColor,
   });
+  final String title;
+  final String message;
+  final InlineSpan? messageSpan;
+  final String confirmLabel;
+  final String? cancelLabel;
+  final AppDialogType type;
+  final bool showCancel;
+  final bool showIcon;
+  final Color? confirmColor;
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +252,7 @@ class _AppDialogWidget extends StatelessWidget {
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
                     child: Text(
-                      cancelLabel ?? AppLocalizations.of(context)!.cancelLabel,
+                      cancelLabel ?? AppLocalizations.of(context).cancelLabel,
                       style: GoogleFonts.inter(
                         color: context.textSecondary,
                         fontWeight: FontWeight.w600,
@@ -264,7 +264,6 @@ class _AppDialogWidget extends StatelessWidget {
                   AppButton(
                     label: confirmLabel,
                     onPressed: () => Navigator.of(context).pop(true),
-                    variant: AppButtonVariant.primary,
                     color: accentColor,
                     size: AppButtonSize.small,
                   ),
@@ -327,13 +326,6 @@ class _AppDialogWidget extends StatelessWidget {
 }
 
 class _AppInputDialogWidget extends StatefulWidget {
-  final String title;
-  final String message;
-  final String requiredWord;
-  final String inputInstruction;
-  final String confirmLabel;
-  final String cancelLabel;
-  final AppDialogType type;
 
   const _AppInputDialogWidget({
     required this.title,
@@ -344,6 +336,13 @@ class _AppInputDialogWidget extends StatefulWidget {
     required this.cancelLabel,
     required this.type,
   });
+  final String title;
+  final String message;
+  final String requiredWord;
+  final String inputInstruction;
+  final String confirmLabel;
+  final String cancelLabel;
+  final AppDialogType type;
 
   @override
   State<_AppInputDialogWidget> createState() => _AppInputDialogWidgetState();
@@ -385,7 +384,7 @@ class _AppInputDialogWidgetState extends State<_AppInputDialogWidget> {
     // Tách chuỗi instruction để in đậm từ khoá cần nhập (ví dụ "XÁC NHẬN")
     final word = widget.requiredWord;
     final instruction = widget.inputInstruction;
-    List<InlineSpan> instructionSpans = [];
+    final List<InlineSpan> instructionSpans = [];
 
     if (instruction.contains(word)) {
       final parts = instruction.split(word);
@@ -486,7 +485,6 @@ class _AppInputDialogWidgetState extends State<_AppInputDialogWidget> {
                   label: widget.confirmLabel,
                   onPressed:
                       _isValid ? () => Navigator.of(context).pop(true) : null,
-                  variant: AppButtonVariant.primary,
                   size: AppButtonSize.small,
                 ),
               ],

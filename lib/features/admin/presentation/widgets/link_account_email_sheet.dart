@@ -23,9 +23,9 @@ Future<String?> showLinkAccountEmailSheet(
 }
 
 class _LinkAccountEmailSheetWidget extends StatefulWidget {
-  final String memberName;
 
   const _LinkAccountEmailSheetWidget({required this.memberName});
+  final String memberName;
 
   @override
   State<_LinkAccountEmailSheetWidget> createState() =>
@@ -51,7 +51,7 @@ class __LinkAccountEmailSheetWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
@@ -62,7 +62,6 @@ class __LinkAccountEmailSheetWidgetState
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
             color: context.primary.withValues(alpha: 0.2),
-            width: 1,
           ),
         ),
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),

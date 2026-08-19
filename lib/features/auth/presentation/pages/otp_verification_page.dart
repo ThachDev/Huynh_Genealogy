@@ -13,9 +13,9 @@ import '../bloc/auth_state.dart';
 import 'reset_password_page.dart';
 
 class OtpVerificationPage extends StatefulWidget {
-  final String email;
 
   const OtpVerificationPage({super.key, required this.email});
+  final String email;
 
   @override
   State<OtpVerificationPage> createState() => _OtpVerificationPageState();
@@ -83,7 +83,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final canResend = _secondsLeft == 0;
 
     return Scaffold(
@@ -130,7 +130,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       child: Form(
                         key: _formKey,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const SizedBox(height: 24),
                             Center(

@@ -17,13 +17,6 @@ import '../../../../auth/domain/entities/user_entity.dart';
 
 /// Widget Header dùng chung cho cả Admin Dashboard và User Dashboard
 class FamilyDashboardHeaderWidget extends StatelessWidget {
-  final UserEntity? user;
-  final String familyName;
-  final String inviteCode;
-  final String? logoUrl;
-  final bool isLoading;
-  final bool showRoleTag;
-  final Widget? trailingAction;
 
   const FamilyDashboardHeaderWidget({
     super.key,
@@ -35,9 +28,16 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
     this.showRoleTag = false,
     this.trailingAction,
   });
+  final UserEntity? user;
+  final String familyName;
+  final String inviteCode;
+  final String? logoUrl;
+  final bool isLoading;
+  final bool showRoleTag;
+  final Widget? trailingAction;
 
   static String roleLabel(String? role, BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (role?.toUpperCase()) {
       case 'OWNER':
       case 'CREATOR':
@@ -91,7 +91,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx)!;
+        final l10n = AppLocalizations.of(ctx);
         return Dialog(
           backgroundColor: ctx.surface,
           shape:
@@ -122,7 +122,6 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                         color: Colors.white,
                         child: QrImageView(
                           data: code,
-                          version: QrVersions.auto,
                           size: 260.0,
                           gapless: false,
                         ),
@@ -152,7 +151,6 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                             prefixIcon:
                                 const Icon(LucideIcons.download, size: 16),
                             variant: AppButtonVariant.secondary,
-                            size: AppButtonSize.medium,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -169,8 +167,6 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                             },
                             prefixIcon: const Icon(LucideIcons.copy,
                                 size: 16, color: Colors.white),
-                            variant: AppButtonVariant.primary,
-                            size: AppButtonSize.medium,
                           ),
                         ),
                       ],
@@ -194,7 +190,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
   }
 
   Widget _buildInviteCodeCard(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (isLoading) {
       return const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -229,7 +225,6 @@ final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
         ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Left Seal Logo
           Container(
@@ -250,7 +245,6 @@ final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
               child: (logoUrl != null && logoUrl!.isNotEmpty)
                   ? AppNetworkImage(
                       url: logoUrl!,
-                      fit: BoxFit.cover,
                       errorBuilder: (context) => _buildFallbackLogo(),
                     )
                   : _buildFallbackLogo(),
@@ -360,13 +354,8 @@ final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
                   ),
                   child: QrImageView(
                     data: inviteCode.isEmpty ? 'GIA_TOC_VIET' : inviteCode,
-                    version: QrVersions.auto,
                     size: 42.0,
                     padding: EdgeInsets.zero,
-                    dataModuleStyle: const QrDataModuleStyle(
-                      dataModuleShape: QrDataModuleShape.square,
-                      color: Colors.black,
-                    ),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -388,7 +377,7 @@ final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

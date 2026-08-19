@@ -8,10 +8,10 @@ abstract class AuditLogsEvent extends Equatable {
 }
 
 class LoadAuditLogsEvent extends AuditLogsEvent {
-  final int? familyId;
-  final int? limit;
 
   const LoadAuditLogsEvent({this.familyId, this.limit});
+  final int? familyId;
+  final int? limit;
 
   @override
   List<Object?> get props => [familyId, limit];

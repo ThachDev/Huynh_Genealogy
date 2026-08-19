@@ -35,7 +35,7 @@ class UserFamilyDashboardSkeleton extends StatelessWidget {
           for (var i = 0; i < 4; i++) ...[
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 8),
-              child: SkeletonListTile(avatarRadius: 24),
+              child: SkeletonListTile(),
             ),
             const SizedBox(height: 4),
           ],

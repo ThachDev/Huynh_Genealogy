@@ -9,15 +9,6 @@ enum AppButtonVariant { primary, secondary, outline, ghost, danger }
 enum AppButtonSize { small, medium, large }
 
 class AppButton extends StatelessWidget {
-  final String label;
-  final VoidCallback? onPressed;
-  final AppButtonVariant variant;
-  final AppButtonSize size;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final bool isLoading;
-  final bool fullWidth;
-  final Color? color;
 
   const AppButton({
     super.key,
@@ -31,6 +22,15 @@ class AppButton extends StatelessWidget {
     this.fullWidth = false,
     this.color,
   });
+  final String label;
+  final VoidCallback? onPressed;
+  final AppButtonVariant variant;
+  final AppButtonSize size;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool isLoading;
+  final bool fullWidth;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +157,15 @@ class AppButton extends StatelessWidget {
 }
 
 class AppFormActionButtons extends StatelessWidget {
+
+  const AppFormActionButtons({
+    super.key,
+    this.saveLabel,
+    this.cancelLabel,
+    this.onSave,
+    this.onCancel,
+    this.isLoading = false,
+  });
   /// Nhãn nút lưu (mặc định 'LƯU LẠI')
   final String? saveLabel;
 
@@ -172,18 +181,9 @@ class AppFormActionButtons extends StatelessWidget {
   /// Hiển thị loading trên nút lưu
   final bool isLoading;
 
-  const AppFormActionButtons({
-    super.key,
-    this.saveLabel,
-    this.cancelLabel,
-    this.onSave,
-    this.onCancel,
-    this.isLoading = false,
-  });
-
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final save = saveLabel ?? l10n.formSave;
     final cancel = cancelLabel ?? l10n.formCancel;
     final cancelColor = context.textSecondary;
@@ -245,12 +245,6 @@ class AppFormActionButtons extends StatelessWidget {
 
 /// Icon button tròn dùng chung
 class AppIconButton extends StatelessWidget {
-  final Widget icon;
-  final VoidCallback? onPressed;
-  final Color? backgroundColor;
-  final Color? iconColor;
-  final double size;
-  final String? tooltip;
 
   const AppIconButton({
     super.key,
@@ -261,6 +255,12 @@ class AppIconButton extends StatelessWidget {
     this.size = 40,
     this.tooltip,
   });
+  final Widget icon;
+  final VoidCallback? onPressed;
+  final Color? backgroundColor;
+  final Color? iconColor;
+  final double size;
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {

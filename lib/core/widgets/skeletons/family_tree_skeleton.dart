@@ -42,9 +42,9 @@ class FamilyTreeSkeleton extends StatelessWidget {
 }
 
 class _TreeNodeSkeleton extends StatelessWidget {
-  final double width;
 
   const _TreeNodeSkeleton({required this.width});
+  final double width;
 
   @override
   Widget build(BuildContext context) {

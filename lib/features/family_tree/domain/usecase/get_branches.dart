@@ -6,9 +6,9 @@ import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 import '../repository/family_tree_repository.dart';
 
 class GetBranches implements UseCase<List<BranchEntity>, GetBranchesParams> {
-  final FamilyTreeRepository repository;
 
   GetBranches(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, List<BranchEntity>>> call(GetBranchesParams params) {
@@ -17,9 +17,9 @@ class GetBranches implements UseCase<List<BranchEntity>, GetBranchesParams> {
 }
 
 class GetBranchesParams extends Equatable {
-  final int? familyId;
 
   const GetBranchesParams({this.familyId});
+  final int? familyId;
 
   @override
   List<Object?> get props => [familyId];

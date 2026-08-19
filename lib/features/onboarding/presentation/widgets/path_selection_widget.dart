@@ -7,9 +7,6 @@ import '../../../auth/auth.dart';
 import 'selection_card.dart';
 
 class PathSelectionWidget extends StatelessWidget {
-  final UserEntity user;
-  final ValueChanged<int> onPathSelected;
-  final int? selectedPath;
 
   const PathSelectionWidget({
     super.key,
@@ -17,19 +14,19 @@ class PathSelectionWidget extends StatelessWidget {
     required this.onPathSelected,
     required this.selectedPath,
   });
+  final UserEntity user;
+  final ValueChanged<int> onPathSelected;
+  final int? selectedPath;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppSectionHeader(
           title: l10n.welcomeViewerTitle(user.fullName),
           description: l10n.chooseOnboardingSubtitle,
-          titleSize: 20,
-          indicatorHeight: 20,
-          spacing: 8,
         ),
         const SizedBox(height: 32),
 

@@ -82,9 +82,9 @@ abstract class OnboardingRemoteDataSource {
 /// Xử lý Multipart/FormData đối với file ảnh và chuẩn hóa Exception khi có lỗi.
 /// ============================================================================
 class OnboardingRemoteDataSourceImpl implements OnboardingRemoteDataSource {
-  final Dio dio;
 
   OnboardingRemoteDataSourceImpl({required this.dio});
+  final Dio dio;
 
   /// --------------------------------------------------------------------------
   /// API 1: POST /api/v1/families (Tạo dòng họ mới)

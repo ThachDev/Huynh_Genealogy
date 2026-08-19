@@ -5,29 +5,6 @@ enum Gender { male, female, unknown }
 enum MaritalStatus { single, married, divorced, widowed, unknown }
 
 class MemberEntity extends Equatable {
-  final int id;
-  final String fullName;
-  final Gender gender;
-  final String? dateOfBirth;
-  final String? placeOfBirth;
-  final bool isAlive;
-  final String? dateOfDeath;
-  final MaritalStatus maritalStatus;
-  final int? generation;
-  final int? branchId;
-  final String? branchName;
-  final int? parentId;
-  final int? motherId;
-  final int? spouseId;
-  final String? notes;
-  final String? avatarUrl;
-  final int? familyId;
-  final String? lunarBirthDate;
-  final String? lunarDeathDate;
-  final String? phone;
-  final String? education;
-  final String? occupation;
-  final String? deletedAt;
 
   const MemberEntity({
     required this.id,
@@ -54,6 +31,29 @@ class MemberEntity extends Equatable {
     this.occupation,
     this.deletedAt,
   });
+  final int id;
+  final String fullName;
+  final Gender gender;
+  final String? dateOfBirth;
+  final String? placeOfBirth;
+  final bool isAlive;
+  final String? dateOfDeath;
+  final MaritalStatus maritalStatus;
+  final int? generation;
+  final int? branchId;
+  final String? branchName;
+  final int? parentId;
+  final int? motherId;
+  final int? spouseId;
+  final String? notes;
+  final String? avatarUrl;
+  final int? familyId;
+  final String? lunarBirthDate;
+  final String? lunarDeathDate;
+  final String? phone;
+  final String? education;
+  final String? occupation;
+  final String? deletedAt;
 
   @override
   List<Object?> get props => [

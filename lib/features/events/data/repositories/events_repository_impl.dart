@@ -6,9 +6,9 @@ import '../../domain/repositories/events_repository.dart';
 import '../datasources/events_remote_data_source.dart';
 
 class EventsRepositoryImpl implements EventsRepository {
-  final EventsRemoteDataSource remoteDataSource;
 
   EventsRepositoryImpl({required this.remoteDataSource});
+  final EventsRemoteDataSource remoteDataSource;
 
   @override
   Future<Either<Failure, List<EventEntity>>> getEvents({required int familyId}) async {

@@ -11,14 +11,14 @@ import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 
 class ResetPasswordPage extends StatefulWidget {
-  final String email;
-  final String otp;
 
   const ResetPasswordPage({
     super.key,
     required this.email,
     required this.otp,
   });
+  final String email;
+  final String otp;
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -122,7 +122,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: context.background,
@@ -160,7 +160,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       child: Form(
                         key: _formKey,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const SizedBox(height: 24),
                             Center(

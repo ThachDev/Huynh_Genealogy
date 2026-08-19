@@ -5,9 +5,9 @@ import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../repository/auth_repository.dart';
 
 class LoginWithGoogle implements UseCase<UserEntity, NoParams> {
-  final AuthRepository repository;
 
   LoginWithGoogle(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, UserEntity>> call(NoParams params) {

@@ -5,13 +5,6 @@ import '../theme/theme_extensions.dart';
 
 /// Reusable AppAvatar widget displaying NetworkImage or last word's initial letter.
 class AppAvatar extends StatelessWidget {
-  final String? avatarUrl;
-  final String? fullName;
-  final double radius;
-  final Color? backgroundColor;
-  final Color? textColor;
-  final double? fontSize;
-  final String fallbackInitial;
 
   const AppAvatar({
     super.key,
@@ -23,6 +16,13 @@ class AppAvatar extends StatelessWidget {
     this.fontSize,
     this.fallbackInitial = 'M',
   });
+  final String? avatarUrl;
+  final String? fullName;
+  final double radius;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double? fontSize;
+  final String fallbackInitial;
 
   /// Extraction logic: First letter of the LAST word of [fullName]
   static String getInitialLetter(String? fullName, {String fallback = 'M'}) {

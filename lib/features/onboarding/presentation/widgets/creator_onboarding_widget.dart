@@ -16,12 +16,12 @@ import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_event.dart';
 
 class CreatorOnboardingWidget extends StatefulWidget {
-  final UserEntity user;
 
   const CreatorOnboardingWidget({
     super.key,
     required this.user,
   });
+  final UserEntity user;
 
   @override
   State<CreatorOnboardingWidget> createState() =>
@@ -48,7 +48,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
         if (await exceedsMaxFileSize(pickedFile, 10)) {
           if (!mounted) return;
           AppSnackBar.error(
-              context, AppLocalizations.of(context)!.imageTooLargeFormat(10));
+              context, AppLocalizations.of(context).imageTooLargeFormat(10));
           return;
         }
         setState(() {
@@ -56,7 +56,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
         });
       }
     } catch (e) {
-      debugPrint("Error picking image: $e");
+      debugPrint('Error picking image: $e');
     }
   }
 
@@ -128,7 +128,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
   }
 
   void _showTermsDialog() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     AppDialog.custom(
       context,
       child: Container(
@@ -195,7 +195,7 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Form(
       key: _createFormKey,
       child: Column(
@@ -204,8 +204,6 @@ class _CreatorOnboardingWidgetState extends State<CreatorOnboardingWidget> {
           AppSectionHeader(
             title: l10n.initFamilySectionTitle,
             description: l10n.initFamilySectionDesc,
-            titleSize: 20,
-            spacing: 8,
           ),
           const SizedBox(height: 28),
           Container(

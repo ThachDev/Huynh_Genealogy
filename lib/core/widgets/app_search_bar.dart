@@ -5,11 +5,6 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../theme/theme_extensions.dart';
 
 class AppSearchBar extends StatelessWidget {
-  final TextEditingController controller;
-  final String hintText;
-  final List<Widget>? trailing;
-  final ValueChanged<String>? onChanged;
-  final double? height;
 
   const AppSearchBar({
     super.key,
@@ -19,6 +14,11 @@ class AppSearchBar extends StatelessWidget {
     this.onChanged,
     this.height,
   });
+  final TextEditingController controller;
+  final String hintText;
+  final List<Widget>? trailing;
+  final ValueChanged<String>? onChanged;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class AppSearchBar extends StatelessWidget {
             maxHeight: h,
           ),
           padding: const WidgetStatePropertyAll(
-            EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+            EdgeInsets.symmetric(horizontal: 10.0),
           ),
           leading: Padding(
             padding: const EdgeInsets.only(left: 2.0, right: 4.0),

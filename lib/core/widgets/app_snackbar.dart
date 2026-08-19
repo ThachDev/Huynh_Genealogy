@@ -76,7 +76,6 @@ class AppSnackBar {
           {String? actionLabel, VoidCallback? onAction}) =>
       show(context,
           message: message,
-          type: SnackBarType.info,
           actionLabel: actionLabel,
           onAction: onAction);
 
@@ -132,12 +131,12 @@ class AppSnackBar {
 }
 
 class _SnackBarColors {
-  final Color background;
-  final Color icon;
-  final Color text;
   const _SnackBarColors({
     required this.background,
     required this.icon,
     required this.text,
   });
+  final Color background;
+  final Color icon;
+  final Color text;
 }

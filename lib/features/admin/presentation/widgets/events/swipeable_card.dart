@@ -4,10 +4,6 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
 
 class SwipeableCard extends StatefulWidget {
-  final Widget child;
-  final VoidCallback onDelete;
-  final VoidCallback onTap;
-  final String deleteLabel;
 
   const SwipeableCard({
     super.key,
@@ -16,6 +12,10 @@ class SwipeableCard extends StatefulWidget {
     required this.onTap,
     required this.deleteLabel,
   });
+  final Widget child;
+  final VoidCallback onDelete;
+  final VoidCallback onTap;
+  final String deleteLabel;
 
   @override
   State<SwipeableCard> createState() => _SwipeableCardState();

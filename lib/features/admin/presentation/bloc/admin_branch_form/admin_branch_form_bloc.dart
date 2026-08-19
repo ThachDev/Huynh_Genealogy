@@ -7,8 +7,6 @@ part 'admin_branch_form_event.dart';
 part 'admin_branch_form_state.dart';
 
 class AdminBranchFormBloc extends Bloc<AdminBranchFormEvent, AdminBranchFormState> {
-  final SaveBranch saveBranch;
-  final DeleteBranch deleteBranch;
 
   AdminBranchFormBloc({
     required this.saveBranch,
@@ -17,6 +15,8 @@ class AdminBranchFormBloc extends Bloc<AdminBranchFormEvent, AdminBranchFormStat
     on<SaveAdminBranchFormEvent>(_onSaveBranch);
     on<DeleteAdminBranchFormEvent>(_onDeleteBranch);
   }
+  final SaveBranch saveBranch;
+  final DeleteBranch deleteBranch;
 
   Future<void> _onSaveBranch(
     SaveAdminBranchFormEvent event,
@@ -26,7 +26,7 @@ class AdminBranchFormBloc extends Bloc<AdminBranchFormEvent, AdminBranchFormStat
     final failureOrBranch = await saveBranch(event.branch);
     failureOrBranch.fold(
       (failure) => emit(AdminBranchFormError(failure.message)),
-      (_) => emit(const AdminBranchFormSuccess(isDeleted: false)),
+      (_) => emit(const AdminBranchFormSuccess()),
     );
   }
 

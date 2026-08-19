@@ -6,12 +6,6 @@ import '../../pages/admin_dashboard/admin_dashboard_page.dart';
 import '../../../../../resources/app_localizations.dart';
 
 class QuickStatsRow extends StatelessWidget {
-  final String memberCount;
-  final String branchCount;
-  final String pendingCount;
-  final AdminDashboardTab selectedTab;
-  final ValueChanged<AdminDashboardTab> onTabChanged;
-  final bool showPending;
 
   const QuickStatsRow({
     super.key,
@@ -22,10 +16,16 @@ class QuickStatsRow extends StatelessWidget {
     required this.onTabChanged,
     this.showPending = true,
   });
+  final String memberCount;
+  final String branchCount;
+  final String pendingCount;
+  final AdminDashboardTab selectedTab;
+  final ValueChanged<AdminDashboardTab> onTabChanged;
+  final bool showPending;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -68,11 +68,6 @@ class QuickStatsRow extends StatelessWidget {
 }
 
 class StatCardItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final bool isSelected;
-  final VoidCallback onTap;
 
   const StatCardItem({
     super.key,
@@ -82,6 +77,11 @@ class StatCardItem extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,6 @@ class StatCardItem extends StatelessWidget {
                 ? null
                 : Border.all(
                     color: borderColor,
-                    width: 1.0,
                   ),
             boxShadow: [
               BoxShadow(

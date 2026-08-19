@@ -5,9 +5,9 @@ import '../../../../core/domain/entity/branch_entity.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class SaveBranch implements UseCase<BranchEntity, BranchEntity> {
-  final FamilyTreeRepository repository;
 
   SaveBranch(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, BranchEntity>> call(BranchEntity branch) {

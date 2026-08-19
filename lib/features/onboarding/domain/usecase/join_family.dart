@@ -6,9 +6,9 @@ import '../../../../core/domain/entity/family_user_entity.dart';
 import '../repository/onboarding_repository.dart';
 
 class JoinFamily implements UseCase<FamilyUserEntity, JoinFamilyParams> {
-  final OnboardingRepository repository;
 
   JoinFamily(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, FamilyUserEntity>> call(JoinFamilyParams params) {
@@ -31,19 +31,6 @@ class JoinFamily implements UseCase<FamilyUserEntity, JoinFamilyParams> {
 }
 
 class JoinFamilyParams extends Equatable {
-  final int userId;
-  final int familyId;
-  final int? memberNodeId;
-  final String? fullName;
-  final String? gender;
-  final String? dateOfBirth;
-  final String? placeOfBirth;
-  final String? maritalStatus;
-  final String? education;
-  final String? avatarUrl;
-  final int? parentId;
-  final int? spouseId;
-  final String? notes;
 
   const JoinFamilyParams({
     required this.userId,
@@ -60,6 +47,19 @@ class JoinFamilyParams extends Equatable {
     this.spouseId,
     this.notes,
   });
+  final int userId;
+  final int familyId;
+  final int? memberNodeId;
+  final String? fullName;
+  final String? gender;
+  final String? dateOfBirth;
+  final String? placeOfBirth;
+  final String? maritalStatus;
+  final String? education;
+  final String? avatarUrl;
+  final int? parentId;
+  final int? spouseId;
+  final String? notes;
 
   @override
   List<Object?> get props => [

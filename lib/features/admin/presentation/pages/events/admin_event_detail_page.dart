@@ -15,9 +15,6 @@ import '../../../../auth/auth.dart';
 import '../../../../events/events.dart';
 
 class AdminEventDetailPage extends StatefulWidget {
-  final int familyId;
-  final EventEntity event;
-  final bool isUserView;
 
   const AdminEventDetailPage({
     super.key,
@@ -25,6 +22,9 @@ class AdminEventDetailPage extends StatefulWidget {
     required this.event,
     this.isUserView = false,
   });
+  final int familyId;
+  final EventEntity event;
+  final bool isUserView;
 
   @override
   State<AdminEventDetailPage> createState() => _AdminEventDetailPageState();
@@ -136,7 +136,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
         if (await exceedsMaxFileSize(pickedFile, 10)) {
           if (!mounted) return;
           AppSnackBar.error(
-              context, AppLocalizations.of(context)!.imageTooLargeFormat(10));
+              context, AppLocalizations.of(context).imageTooLargeFormat(10));
           return;
         }
         final tempDir = await getTemporaryDirectory();
@@ -445,7 +445,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
   }
 
   void _submitForm() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (!_formKey.currentState!.validate()) return;
     if (_selectedDate.isEmpty) {
       AppSnackBar.error(context, l10n.selectEventDateError);
@@ -455,7 +455,6 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
           event: EventEntity(
             id: widget.event.id,
             title: _titleController.text.trim(),
-            description: null,
             content: _contentController.text.trim().isEmpty
                 ? null
                 : _contentController.text.trim(),
@@ -475,7 +474,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
   }
 
   Future<void> _onDeleteEvent() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final confirm = await AppDialog.confirm(
       context,
       title: l10n.deleteEventTitle,
@@ -524,7 +523,6 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
               const Color(0xFFE8D4C8),
               context.textSecondary.withValues(alpha: 0.2),
             ),
-            width: 1.0,
           ),
           boxShadow: [
             BoxShadow(
@@ -554,7 +552,6 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                       border: Border.all(
                         color: context.resolve(
                             Colors.grey.shade300, Colors.grey.shade700),
-                        width: 1.0,
                       ),
                     ),
                     child: CircleAvatar(
@@ -687,7 +684,6 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                     child: isNetwork
                         ? AppNetworkImage(
                             url: _localImagePath!,
-                            fit: BoxFit.cover,
                             errorBuilder: (_) => const SizedBox.shrink(),
                           )
                         : (isLocal
@@ -885,7 +881,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.watch<AuthBloc>().state;
     final canEdit = !widget.isUserView &&
         authState is Authenticated &&
@@ -898,7 +894,6 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: pageTitle,
-        transparent: false,
         leading: !_isReadOnly
             ? IconButton(
                 icon: const Icon(LucideIcons.arrowLeft),

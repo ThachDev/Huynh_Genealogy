@@ -6,9 +6,9 @@ import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../repository/auth_repository.dart';
 
 class LoginWithEmail implements UseCase<UserEntity, LoginWithEmailParams> {
-  final AuthRepository repository;
 
   LoginWithEmail(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, UserEntity>> call(LoginWithEmailParams params) {
@@ -20,13 +20,13 @@ class LoginWithEmail implements UseCase<UserEntity, LoginWithEmailParams> {
 }
 
 class LoginWithEmailParams extends Equatable {
-  final String email;
-  final String password;
 
   const LoginWithEmailParams({
     required this.email,
     required this.password,
   });
+  final String email;
+  final String password;
 
   @override
   List<Object?> get props => [email, password];

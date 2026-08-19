@@ -12,9 +12,6 @@ import '../../../../core/widgets/widgets.dart';
 
 /// Card dùng cho Ngày Giỗ và Sinh Nhật theo phong cách Lịch Khối bên trái + Thông tin bên phải.
 class AnniversaryCard extends StatelessWidget {
-  final UpcomingAnniversary data;
-  final bool fullWidth;
-  final VoidCallback? onTap;
 
   const AnniversaryCard({
     super.key,
@@ -22,6 +19,9 @@ class AnniversaryCard extends StatelessWidget {
     this.fullWidth = false,
     this.onTap,
   });
+  final UpcomingAnniversary data;
+  final bool fullWidth;
+  final VoidCallback? onTap;
 
   Future<void> _openWish(BuildContext context) async {
     Navigator.of(context).push(
@@ -59,7 +59,7 @@ class AnniversaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isBirthday = data.isBirthday;
     final icon = isBirthday ? LucideIcons.cake : LucideIcons.flame;
     final dateStr = _formatDateForCalendar();
@@ -78,7 +78,6 @@ class AnniversaryCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: context.textSecondary.withValues(alpha: 0.12),
-            width: 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -91,7 +90,6 @@ class AnniversaryCard extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // ── Bên trái: Lịch Khối EventCalendarWidget (Hỗ trợ Âm/Dương) ──
             SizedBox(

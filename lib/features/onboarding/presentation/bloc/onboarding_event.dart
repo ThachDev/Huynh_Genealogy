@@ -20,10 +20,6 @@ abstract class OnboardingEvent extends Equatable {
 /// Event 1: Tạo dòng họ mới (Dành cho Người tạo / Creator / Trưởng tộc)
 /// ----------------------------------------------------------------------------
 class CreateFamilyEvent extends OnboardingEvent {
-  final String name;
-  final String? description;
-  final String? logoUrl;
-  final int userId;
 
   const CreateFamilyEvent({
     required this.name,
@@ -31,6 +27,10 @@ class CreateFamilyEvent extends OnboardingEvent {
     this.logoUrl,
     required this.userId,
   });
+  final String name;
+  final String? description;
+  final String? logoUrl;
+  final int userId;
 
   @override
   List<Object?> get props => [name, description, logoUrl, userId];
@@ -40,9 +40,9 @@ class CreateFamilyEvent extends OnboardingEvent {
 /// Event 2: Xác nhận Mã mời gia nhập dòng họ (Verify Invite Code)
 /// ----------------------------------------------------------------------------
 class VerifyInviteCodeEvent extends OnboardingEvent {
-  final String code;
 
   const VerifyInviteCodeEvent({required this.code});
+  final String code;
 
   @override
   List<Object?> get props => [code];
@@ -54,19 +54,6 @@ class VerifyInviteCodeEvent extends OnboardingEvent {
 /// hoặc đăng ký mới với thông tin cá nhân/quan hệ gia đình.
 /// ----------------------------------------------------------------------------
 class JoinFamilyEvent extends OnboardingEvent {
-  final int userId;
-  final int familyId;
-  final int? memberNodeId;
-  final String? fullName;
-  final String? gender;
-  final String? dateOfBirth;
-  final String? placeOfBirth;
-  final String? maritalStatus;
-  final String? education;
-  final String? avatarUrl;
-  final int? parentId;
-  final int? spouseId;
-  final String? notes;
 
   const JoinFamilyEvent({
     required this.userId,
@@ -83,6 +70,19 @@ class JoinFamilyEvent extends OnboardingEvent {
     this.spouseId,
     this.notes,
   });
+  final int userId;
+  final int familyId;
+  final int? memberNodeId;
+  final String? fullName;
+  final String? gender;
+  final String? dateOfBirth;
+  final String? placeOfBirth;
+  final String? maritalStatus;
+  final String? education;
+  final String? avatarUrl;
+  final int? parentId;
+  final int? spouseId;
+  final String? notes;
 
   @override
   List<Object?> get props => [

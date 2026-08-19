@@ -8,12 +8,12 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../resources/app_localizations.dart';
 
 class AdminHelpCenterPage extends StatefulWidget {
-  final int initialTabIndex;
 
   const AdminHelpCenterPage({
     super.key,
     this.initialTabIndex = 0,
   });
+  final int initialTabIndex;
 
   @override
   State<AdminHelpCenterPage> createState() => _AdminHelpCenterPageState();
@@ -53,7 +53,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: context.background,
@@ -499,7 +499,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
   }
 
   Widget _buildContactRow(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -544,7 +544,6 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: context.primary.withValues(alpha: 0.15),
-                      width: 1,
                     ),
                   ),
                   child: Center(
@@ -653,7 +652,6 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
                         child: Text(
@@ -752,7 +750,6 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         width: 26,

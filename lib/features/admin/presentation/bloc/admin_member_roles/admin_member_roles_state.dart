@@ -9,18 +9,18 @@ class AdminMemberRolesInitial extends AdminMemberRolesState {}
 class AdminMemberRolesLoading extends AdminMemberRolesState {}
 
 class AdminMemberRolesLoaded extends AdminMemberRolesState {
-  final List<FamilyUserEntity> members;
   const AdminMemberRolesLoaded({required this.members});
+  final List<FamilyUserEntity> members;
 }
 
 class AdminMemberRolesFailure extends AdminMemberRolesState {
-  final String message;
   const AdminMemberRolesFailure({required this.message});
+  final String message;
 }
 
 class AdminMemberRoleUpdatedSuccess extends AdminMemberRolesState {
-  final int userId;
-  final String role;
   const AdminMemberRoleUpdatedSuccess(
       {required this.userId, required this.role});
+  final int userId;
+  final String role;
 }

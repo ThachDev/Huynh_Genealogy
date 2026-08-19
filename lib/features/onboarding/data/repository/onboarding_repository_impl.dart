@@ -20,9 +20,9 @@ import '../source/onboarding_remote_data_source.dart';
 ///      - `Right(Result)`: Chứa dữ liệu thành công.
 /// ============================================================================
 class OnboardingRepositoryImpl implements OnboardingRepository {
-  final OnboardingRemoteDataSource remoteDataSource;
 
   OnboardingRepositoryImpl({required this.remoteDataSource});
+  final OnboardingRemoteDataSource remoteDataSource;
 
   /// --------------------------------------------------------------------------
   /// 1. Tạo dòng họ mới

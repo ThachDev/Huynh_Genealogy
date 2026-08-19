@@ -9,11 +9,11 @@ class AdminBranchFormInitial extends AdminBranchFormState {}
 class AdminBranchFormLoading extends AdminBranchFormState {}
 
 class AdminBranchFormSuccess extends AdminBranchFormState {
-  final bool isDeleted;
   const AdminBranchFormSuccess({this.isDeleted = false});
+  final bool isDeleted;
 }
 
 class AdminBranchFormError extends AdminBranchFormState {
-  final String message;
   const AdminBranchFormError(this.message);
+  final String message;
 }

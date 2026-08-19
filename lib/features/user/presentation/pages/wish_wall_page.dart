@@ -16,14 +16,14 @@ import '../widgets/incense_offering_dialog.dart';
 import '../../data/source/wish_api_service.dart';
 
 class WishWallPage extends StatefulWidget {
-  final UpcomingAnniversary data;
-  final WishApiService apiService;
 
   const WishWallPage({
     super.key,
     required this.data,
     required this.apiService,
   });
+  final UpcomingAnniversary data;
+  final WishApiService apiService;
 
   @override
   State<WishWallPage> createState() => _WishWallPageState();
@@ -80,7 +80,7 @@ class _WishWallPageState extends State<WishWallPage> {
   }
 
   Future<void> _sendWish() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     UserEntity? userProfile;
 
@@ -182,7 +182,7 @@ class _WishWallPageState extends State<WishWallPage> {
   }
 
   Future<void> _reportWish(int wishId) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final reasons = [
       l10n.reportReasonInappropriate,
       l10n.reportReasonAbusive,
@@ -288,7 +288,7 @@ class _WishWallPageState extends State<WishWallPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isBirthday = widget.data.isBirthday;
 
     return Scaffold(
@@ -352,12 +352,6 @@ class _WishWallPageState extends State<WishWallPage> {
 }
 
 class _WishCard extends StatelessWidget {
-  final WishMessage wish;
-  final bool isBirthday;
-  final int reactionCount;
-  final bool isReacted;
-  final VoidCallback onReact;
-  final VoidCallback onReport;
 
   const _WishCard({
     required this.wish,
@@ -367,10 +361,16 @@ class _WishCard extends StatelessWidget {
     required this.onReact,
     required this.onReport,
   });
+  final WishMessage wish;
+  final bool isBirthday;
+  final int reactionCount;
+  final bool isReacted;
+  final VoidCallback onReact;
+  final VoidCallback onReport;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final senderName =
         (wish.senderName != null && wish.senderName!.trim().isNotEmpty)
             ? wish.senderName!.trim()
@@ -382,7 +382,6 @@ class _WishCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: context.textSecondary.withValues(alpha: 0.12),
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -419,7 +418,6 @@ class _WishCard extends StatelessWidget {
                             url: wish.senderAvatar!.trim(),
                             width: 28,
                             height: 28,
-                            fit: BoxFit.cover,
                           ),
                         )
                       : Text(

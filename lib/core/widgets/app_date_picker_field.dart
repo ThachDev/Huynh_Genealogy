@@ -7,11 +7,6 @@ import '../../resources/app_localizations.dart';
 import 'app_lunar_calendar_picker.dart';
 
 class AppDatePickerField extends StatelessWidget {
-  final String? dateString;
-  final String label;
-  final String hintText;
-  final ValueChanged<DateTime> onDateSelected;
-  final bool showLunar;
 
   const AppDatePickerField({
     super.key,
@@ -21,6 +16,11 @@ class AppDatePickerField extends StatelessWidget {
     required this.onDateSelected,
     this.showLunar = true,
   });
+  final String? dateString;
+  final String label;
+  final String hintText;
+  final ValueChanged<DateTime> onDateSelected;
+  final bool showLunar;
 
   /// Returns {solar, lunar} or null if can't parse
   Map<String, String>? _parseDateParts(BuildContext context) {
@@ -38,7 +38,7 @@ class AppDatePickerField extends StatelessWidget {
       final sm = month.toString().padLeft(2, '0');
       final ld = lunar.day.toString().padLeft(2, '0');
       final lm = lunar.month.toString().padLeft(2, '0');
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = AppLocalizations.of(context);
       final leap = lunar.leapMonth == true ? l10n.leapMonthInline : '';
       return {
         'solar': '$sd/$sm/$year',
@@ -118,7 +118,7 @@ class AppDatePickerField extends StatelessWidget {
         final picked = await showLunarCalendarPicker(
           context: context,
           initialDate: initialDate,
-          firstDate: DateTime(1800, 1, 1),
+          firstDate: DateTime(1800),
           lastDate: now,
         );
         if (picked != null) {

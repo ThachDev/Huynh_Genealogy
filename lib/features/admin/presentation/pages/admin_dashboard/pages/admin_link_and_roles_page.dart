@@ -19,14 +19,14 @@ import 'package:giatocviet/features/admin/presentation/widgets/link_account_emai
 enum LinkStatusFilter { all, linked, unlinked }
 
 class AdminLinkAndRolesPage extends StatefulWidget {
-  final int initialTabIndex;
-  final int? memberId;
 
   const AdminLinkAndRolesPage({
     super.key,
     this.initialTabIndex = 0,
     this.memberId,
   });
+  final int initialTabIndex;
+  final int? memberId;
 
   @override
   State<AdminLinkAndRolesPage> createState() => _AdminLinkAndRolesPageState();
@@ -135,7 +135,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
   // ACTIONS: ROLES
   // ══════════════════════════════════════════════════════════════════════════
   void _showRoleSelector(FamilyUserEntity user, int familyId) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: context.background,
@@ -288,7 +288,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
     int newOwnerUserId,
     String newOwnerName,
   ) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final confirmed = await AppDialog.confirmWithInput(
       context,
@@ -298,7 +298,6 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
       inputInstruction: l10n.typeConfirmToTransfer,
       confirmLabel: l10n.confirmTransferButton,
       cancelLabel: l10n.formCancel,
-      type: AppDialogType.danger,
     );
 
     if (confirmed == true && mounted) {
@@ -316,7 +315,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
   // ══════════════════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.watch<AuthBloc>().state;
     final familyId =
         authState is Authenticated ? authState.user.familyId : null;
@@ -448,7 +447,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
             state is MemberAccountLinksInitial) {
           return const Padding(
             padding: EdgeInsets.all(16),
-            child: ListPageSkeleton(itemCount: 8),
+            child: ListPageSkeleton(),
           );
         }
 
@@ -653,7 +652,6 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: context.accent.withValues(alpha: 0.15),
-          width: 1,
         ),
       ),
       child: Column(
@@ -747,7 +745,6 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                 Expanded(
                   child: AppButton(
                     label: l10n.unlinkButton,
-                    variant: AppButtonVariant.primary,
                     color: context.primary,
                     size: AppButtonSize.small,
                     prefixIcon: const Icon(LucideIcons.unlink, size: 14),
@@ -838,7 +835,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
             state is AdminMemberRolesInitial) {
           return const Padding(
             padding: EdgeInsets.all(16),
-            child: ListPageSkeleton(itemCount: 8),
+            child: ListPageSkeleton(),
           );
         }
 
@@ -1017,7 +1014,6 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
                               color: context.accent.withValues(alpha: 0.15),
-                              width: 1,
                             ),
                           ),
                           child: Material(

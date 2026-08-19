@@ -19,13 +19,6 @@ import '../../../events/events.dart';
 /// - Banner Ảnh sắc nét, hiển thị trọn vẹn (có thể chạm để xem ảnh lớn)
 /// - Footer Tương tác: Thích / Tim, Bình luận (Bottom Sheet), Chia sẻ thẻ ảnh (Card Snapshot Share)
 class UserEventCard extends StatefulWidget {
-  final EventEntity event;
-  final int familyId;
-  final bool isAdminMode;
-  final VoidCallback? onTap;
-  final VoidCallback? onChanged;
-  final bool tappable;
-  final String? heroTag;
 
   const UserEventCard({
     super.key,
@@ -37,6 +30,13 @@ class UserEventCard extends StatefulWidget {
     this.tappable = true,
     this.heroTag = '',
   });
+  final EventEntity event;
+  final int familyId;
+  final bool isAdminMode;
+  final VoidCallback? onTap;
+  final VoidCallback? onChanged;
+  final bool tappable;
+  final String? heroTag;
 
   @override
   State<UserEventCard> createState() => _UserEventCardState();
@@ -145,7 +145,7 @@ class _UserEventCardState extends State<UserEventCard> {
       builder: (bottomSheetContext) {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
-            final l10n = AppLocalizations.of(ctx)!;
+            final l10n = AppLocalizations.of(ctx);
             return Padding(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(ctx).viewInsets.bottom,
@@ -372,7 +372,7 @@ class _UserEventCardState extends State<UserEventCard> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final event = widget.event;
 
     final imageUrl = event.imageUrl;
@@ -407,7 +407,6 @@ class _UserEventCardState extends State<UserEventCard> {
           child: isNetworkImage
               ? AppNetworkImage(
                   url: imageUrl,
-                  fit: BoxFit.cover,
                   width: double.infinity,
                 )
               : Image.file(
@@ -431,7 +430,6 @@ class _UserEventCardState extends State<UserEventCard> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: context.textSecondary.withValues(alpha: 0.12),
-          width: 1,
         ),
         boxShadow: [
           BoxShadow(

@@ -131,13 +131,13 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           final currentLunarYear = todayLunar.year;
 
           final listSolar = convertLunar2Solar(
-              lunarDay, lunarMonth, currentLunarYear, false, 7);
+              lunarDay, lunarMonth, currentLunarYear, false);
           var solarAnniversary =
               DateTime(listSolar[2], listSolar[1], listSolar[0]);
 
           if (solarAnniversary.isBefore(todayOnlyDate)) {
             final nextListSolar = convertLunar2Solar(
-                lunarDay, lunarMonth, currentLunarYear + 1, false, 7);
+                lunarDay, lunarMonth, currentLunarYear + 1, false);
             solarAnniversary =
                 DateTime(nextListSolar[2], nextListSolar[1], nextListSolar[0]);
           }
@@ -203,7 +203,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
@@ -281,7 +281,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                       page: UserAnniversaryListPage(
                                         deathAnniversaries: anniversaries,
                                         birthdays: birthdays,
-                                        initialTabIndex: 0,
                                       ),
                                     ),
                                   );
@@ -882,7 +881,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     final authState = context.watch<AuthBloc>().state;
     final user = (authState is Authenticated) ? authState.user : null;
 
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     String familyName = l10n.familyTreeTitle;
     String inviteCode = '';
     String? logoUrl;
@@ -976,7 +975,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                   page: UserNotificationsPage(
                     familyId: famId,
                     announcements: announcements,
-                    isAdminMode: false,
                   ),
                 ),
               );
@@ -991,7 +989,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           inviteCode: inviteCode,
           logoUrl: logoUrl,
           isLoading: state is FamilyTreeLoading,
-          showRoleTag: false, // Ẩn role tag ở user dashboard theo yêu cầu
           trailingAction: bellButton,
         );
       },
@@ -999,7 +996,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   }
 
   void _showIncenseDialog(BuildContext context, String targetName) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final result = await showIncenseDialog(
       context,
       targetName: targetName,

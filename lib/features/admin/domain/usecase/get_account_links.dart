@@ -5,9 +5,9 @@ import '../entities/member_account_link_entity.dart';
 import '../repository/member_account_link_repository.dart';
 
 class GetAccountLinks implements UseCase<List<MemberAccountLinkEntity>, int> {
-  final MemberAccountLinkRepository repository;
 
   GetAccountLinks(this.repository);
+  final MemberAccountLinkRepository repository;
 
   @override
   Future<Either<Failure, List<MemberAccountLinkEntity>>> call(int familyId) {

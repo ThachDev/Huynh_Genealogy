@@ -10,9 +10,6 @@ import '../widgets/user_event_card.dart';
 
 /// Trang hiển thị danh sách đầy đủ Sự Kiện Dòng Tộc.
 class UserEventListPage extends StatefulWidget {
-  final int familyId;
-  final bool isAdminMode;
-  final List<EventEntity> events;
 
   const UserEventListPage({
     super.key,
@@ -20,6 +17,9 @@ class UserEventListPage extends StatefulWidget {
     required this.isAdminMode,
     required this.events,
   });
+  final int familyId;
+  final bool isAdminMode;
+  final List<EventEntity> events;
 
   @override
   State<UserEventListPage> createState() => _UserEventListPageState();
@@ -57,7 +57,7 @@ class _UserEventListPageState extends State<UserEventListPage> {
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(25, 8, 25, 4),
       child: Center(
@@ -185,7 +185,7 @@ class _UserEventListPageState extends State<UserEventListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final filtered = _filteredList;
 
     return Scaffold(

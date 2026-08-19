@@ -22,14 +22,14 @@ Future<String?> showIncenseDialog(
 }
 
 class IncenseOfferingDialog extends StatefulWidget {
-  final String targetName;
-  final String? subtitle;
 
   const IncenseOfferingDialog({
     super.key,
     required this.targetName,
     this.subtitle,
   });
+  final String targetName;
+  final String? subtitle;
 
   @override
   State<IncenseOfferingDialog> createState() => _IncenseOfferingDialogState();
@@ -120,7 +120,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
   Widget build(BuildContext context) {
     final primaryColor = context.primary;
     final accentGold = context.accent;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -228,7 +228,6 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                           border: Border.all(
                             color:
                                 context.textSecondary.withValues(alpha: 0.15),
-                            width: 1,
                           ),
                         ),
                         clipBehavior: Clip.antiAlias,
@@ -244,7 +243,6 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                                           key: ValueKey(
                                               'bat_huong_mem_$_burnKey'),
                                           fit: BoxFit.contain,
-                                          gaplessPlayback: false,
                                         )
                                       : Image.asset(
                                           'assets/images/bat_huong.webp',

@@ -6,11 +6,6 @@ import '../../../../../core/domain/entity/branch_entity.dart';
 import '../../../../../resources/app_localizations.dart';
 
 class BranchItemWidget extends StatelessWidget {
-  final BranchEntity branch;
-  final int memberCount;
-  final VoidCallback onEdit;
-  final VoidCallback? onDelete;
-  final VoidCallback? onTap;
 
   const BranchItemWidget({
     super.key,
@@ -20,10 +15,15 @@ class BranchItemWidget extends StatelessWidget {
     this.onDelete,
     this.onTap,
   });
+  final BranchEntity branch;
+  final int memberCount;
+  final VoidCallback onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final bool isDark = context.isDarkMode;
     final Color cardBg =
         isDark ? const Color(0xFF261F1B) : const Color(0xFFFFFDF8);
@@ -41,7 +41,6 @@ class BranchItemWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: borderColor,
-              width: 1.0,
             ),
             boxShadow: [
               BoxShadow(
@@ -54,7 +53,6 @@ class BranchItemWidget extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -62,7 +60,6 @@ class BranchItemWidget extends StatelessWidget {
                     border: Border.all(
                       color: context.resolve(
                           Colors.grey.shade300, Colors.grey.shade700),
-                      width: 1.0,
                     ),
                   ),
                   child: CircleAvatar(
@@ -83,7 +80,6 @@ class BranchItemWidget extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Flexible(
                             child: Text(
@@ -102,7 +98,6 @@ class BranchItemWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(
                             LucideIcons.users,
@@ -170,7 +165,7 @@ class BranchItemWidget extends StatelessWidget {
                       onDelete?.call();
                     }
                   },
-                  itemBuilder: (BuildContext context) => [
+                  itemBuilder: (context) => [
                     PopupMenuItem<String>(
                       value: 'edit',
                       height: 38,

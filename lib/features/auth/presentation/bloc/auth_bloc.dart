@@ -17,19 +17,6 @@ import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final LoginWithGoogle loginWithGoogle;
-  final LoginWithEmail loginWithEmail;
-  final Logout logout;
-  final GetCachedUser getCachedUser;
-  final RegisterWithEmail registerWithEmail;
-  final GetCachedCredentials getCachedCredentials;
-  final CacheCredentials cacheCredentials;
-  final ClearCredentials clearCredentials;
-  final ForgotPassword forgotPassword;
-  final VerifyOtp verifyOtp;
-  final ResetPasswordWithOtp resetPasswordWithOtp;
-  final AuthRepository authRepository;
-  final RefreshProfile refreshProfile;
 
   AuthBloc({
     required this.loginWithGoogle,
@@ -61,6 +48,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthProfileRefreshRequested>(_onAuthProfileRefreshRequested);
     on<AuthProfileRefreshSilent>(_onAuthProfileRefreshSilent);
   }
+  final LoginWithGoogle loginWithGoogle;
+  final LoginWithEmail loginWithEmail;
+  final Logout logout;
+  final GetCachedUser getCachedUser;
+  final RegisterWithEmail registerWithEmail;
+  final GetCachedCredentials getCachedCredentials;
+  final CacheCredentials cacheCredentials;
+  final ClearCredentials clearCredentials;
+  final ForgotPassword forgotPassword;
+  final VerifyOtp verifyOtp;
+  final ResetPasswordWithOtp resetPasswordWithOtp;
+  final AuthRepository authRepository;
+  final RefreshProfile refreshProfile;
 
   Future<void> _onAuthCheckRequested(
     AuthCheckRequested event,

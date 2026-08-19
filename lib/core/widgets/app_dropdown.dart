@@ -7,16 +7,6 @@ import '../theme/app_theme.dart';
 import '../theme/theme_extensions.dart';
 
 class AppDropdown<T> extends StatefulWidget {
-  final T value;
-  final List<DropdownItem<T>> items;
-  final ValueChanged<T?> onChanged;
-  final bool showSearchBox;
-  final String? searchHint;
-  final String? label;
-  final double? buttonHeight;
-  final EdgeInsetsGeometry? itemPadding;
-  final bool showIcon;
-  final TextAlign? textAlign;
 
   const AppDropdown({
     super.key,
@@ -31,6 +21,16 @@ class AppDropdown<T> extends StatefulWidget {
     this.showIcon = true,
     this.textAlign,
   });
+  final T value;
+  final List<DropdownItem<T>> items;
+  final ValueChanged<T?> onChanged;
+  final bool showSearchBox;
+  final String? searchHint;
+  final String? label;
+  final double? buttonHeight;
+  final EdgeInsetsGeometry? itemPadding;
+  final bool showIcon;
+  final TextAlign? textAlign;
 
   @override
   State<AppDropdown<T>> createState() => _AppDropdownState<T>();
@@ -54,7 +54,6 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
           ? (context) {
               return widget.items.map((item) {
                 return Align(
-                  alignment: Alignment.center,
                   child: item.child,
                 );
               }).toList();
@@ -82,7 +81,6 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
           borderRadius: BorderRadius.circular(16),
           color: context.surface,
         ),
-        elevation: 8,
       ),
       menuItemStyleData: MenuItemStyleData(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -119,7 +117,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                       horizontal: 10,
                       vertical: 8,
                     ),
-                    hintText: widget.searchHint ?? AppLocalizations.of(context)!.searchHint,
+                    hintText: widget.searchHint ?? AppLocalizations.of(context).searchHint,
                     hintStyle: GoogleFonts.beVietnamPro(fontSize: 13),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),

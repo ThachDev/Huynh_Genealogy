@@ -6,9 +6,9 @@ import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../repository/auth_repository.dart';
 
 class RegisterWithEmail implements UseCase<UserEntity, RegisterParams> {
-  final AuthRepository repository;
 
   RegisterWithEmail(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, UserEntity>> call(RegisterParams params) {
@@ -22,10 +22,6 @@ class RegisterWithEmail implements UseCase<UserEntity, RegisterParams> {
 }
 
 class RegisterParams extends Equatable {
-  final String email;
-  final String password;
-  final String fullName;
-  final String role;
 
   const RegisterParams({
     required this.email,
@@ -33,6 +29,10 @@ class RegisterParams extends Equatable {
     required this.fullName,
     required this.role,
   });
+  final String email;
+  final String password;
+  final String fullName;
+  final String role;
 
   @override
   List<Object?> get props => [email, password, fullName, role];

@@ -12,15 +12,15 @@ import '../../../../../core/routes/app_router.dart';
 import '../../pages/admin_dashboard/pages/admin_member_form_page.dart';
 
 class PendingRequestItemWidget extends StatelessWidget {
-  final FamilyUserEntity request;
 
   const PendingRequestItemWidget({
     super.key,
     required this.request,
   });
+  final FamilyUserEntity request;
 
   void _showDetailBottomSheet(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -34,7 +34,7 @@ class PendingRequestItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => _showDetailBottomSheet(context),
       child: Padding(
@@ -48,7 +48,6 @@ class PendingRequestItemWidget extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // ── Avatar ──
                 Container(
@@ -57,7 +56,6 @@ class PendingRequestItemWidget extends StatelessWidget {
                     border: Border.all(
                       color: context.resolve(
                           Colors.grey.shade300, Colors.grey.shade700),
-                      width: 1.0,
                     ),
                   ),
                   child: CircleAvatar(
@@ -137,7 +135,6 @@ class PendingRequestItemWidget extends StatelessWidget {
                               );
                         },
                         size: AppButtonSize.small,
-                        variant: AppButtonVariant.primary,
                         fullWidth: true,
                       ),
                       const SizedBox(height: 6),
@@ -165,13 +162,13 @@ class PendingRequestItemWidget extends StatelessWidget {
 }
 
 class _PendingRequestDetailSheet extends StatelessWidget {
-  final FamilyUserEntity request;
-  final AppLocalizations l10n;
 
   const _PendingRequestDetailSheet({
     required this.request,
     required this.l10n,
   });
+  final FamilyUserEntity request;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +200,6 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                 border: Border.all(
                   color: context.resolve(
                       Colors.grey.shade300, Colors.grey.shade700),
-                  width: 1.0,
                 ),
               ),
               child: CircleAvatar(
@@ -398,7 +394,6 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                           _showPostApprovalDialog(userName, notes);
                         }
                       },
-                      variant: AppButtonVariant.primary,
                     ),
                   ),
                 ],
@@ -573,11 +568,6 @@ class _PendingRequestDetailSheet extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color? valueColor;
-  final BuildContext context;
 
   const _InfoRow({
     required this.icon,
@@ -586,6 +576,11 @@ class _InfoRow extends StatelessWidget {
     this.valueColor,
     required this.context,
   });
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color? valueColor;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext outerContext) {
@@ -635,10 +630,10 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _SectionLabel extends StatelessWidget {
-  final String label;
-  final BuildContext context;
 
   const _SectionLabel({required this.label, required this.context});
+  final String label;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext outerContext) {

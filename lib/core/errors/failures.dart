@@ -15,14 +15,14 @@ class AppLanguage {
 
 // ─── Base failures ────────────────────────────────────────────────────────────
 abstract class Failure extends Equatable {
-  final String? customMessage;
   const Failure({this.customMessage});
+  final String? customMessage;
 
   String get message =>
       _sanitizeRawMessage(customMessage, 'Có lỗi xảy ra. Vui lòng thử lại.');
 
   String getMessage(BuildContext context) {
-    return _sanitizeMessage(context, AppLocalizations.of(context)!.errUnknown);
+    return _sanitizeMessage(context, AppLocalizations.of(context).errUnknown);
   }
 
   /// Làm sạch các thông điệp lỗi kỹ thuật không cần BuildContext (sử dụng AppLanguage.current)
@@ -150,30 +150,30 @@ abstract class Failure extends Equatable {
         msg.contains('forbidden')) {
       // Ánh xạ các trường hợp đặc biệt sang chuỗi dịch thân thiện tương ứng
       if (msg.contains('invalid-email') || msg.contains('invalid email')) {
-        return AppLocalizations.of(context)!.errEmailInvalid;
+        return AppLocalizations.of(context).errEmailInvalid;
       }
       if (msg.contains('wrong-password') ||
           msg.contains('invalid-credential') ||
           msg.contains('user-not-found')) {
-        return AppLocalizations.of(context)!.errAuth;
+        return AppLocalizations.of(context).errAuth;
       }
       if (msg.contains('email-already-in-use')) {
-        return AppLocalizations.of(context)!.errValidation;
+        return AppLocalizations.of(context).errValidation;
       }
       if (msg.contains('socketexception') ||
           msg.contains('failed host lookup') ||
           msg.contains('network_error') ||
           msg.contains('connection refused')) {
-        return AppLocalizations.of(context)!.errNetwork;
+        return AppLocalizations.of(context).errNetwork;
       }
       if (msg.contains('timeout') || msg.contains('deadline exceeded')) {
-        return AppLocalizations.of(context)!.errTimeout;
+        return AppLocalizations.of(context).errTimeout;
       }
       if (msg.contains('permission') ||
           msg.contains('access denied') ||
           msg.contains('forbidden') ||
           msg.contains('unauthorized')) {
-        return AppLocalizations.of(context)!.errPermission;
+        return AppLocalizations.of(context).errPermission;
       }
 
       return fallback;
@@ -189,9 +189,9 @@ abstract class Failure extends Equatable {
 // ─── Concrete failures ────────────────────────────────────────────────────────
 
 class ServerFailure extends Failure {
-  final int? statusCode;
   const ServerFailure({String? message, this.statusCode})
       : super(customMessage: message);
+  final int? statusCode;
 
   @override
   String get message {
@@ -214,9 +214,9 @@ class ServerFailure extends Failure {
       return 'Quá nhiều lần thử. Vui lòng đợi một lúc rồi thử lại.';
     }
     if (statusCode == 401) {
-      return AppLocalizations.of(context)!.errAuth;
+      return AppLocalizations.of(context).errAuth;
     }
-    return _sanitizeMessage(context, AppLocalizations.of(context)!.errServer);
+    return _sanitizeMessage(context, AppLocalizations.of(context).errServer);
   }
 
   @override
@@ -237,7 +237,7 @@ class NetworkFailure extends Failure {
 
   @override
   String getMessage(BuildContext context) {
-    return _sanitizeMessage(context, AppLocalizations.of(context)!.errNetwork);
+    return _sanitizeMessage(context, AppLocalizations.of(context).errNetwork);
   }
 }
 
@@ -255,7 +255,7 @@ class CacheFailure extends Failure {
 
   @override
   String getMessage(BuildContext context) {
-    return _sanitizeMessage(context, AppLocalizations.of(context)!.errCache);
+    return _sanitizeMessage(context, AppLocalizations.of(context).errCache);
   }
 }
 
@@ -273,7 +273,7 @@ class NotFoundFailure extends Failure {
 
   @override
   String getMessage(BuildContext context) {
-    return _sanitizeMessage(context, AppLocalizations.of(context)!.errNotFound);
+    return _sanitizeMessage(context, AppLocalizations.of(context).errNotFound);
   }
 }
 
@@ -292,7 +292,7 @@ class ValidationFailure extends Failure {
   @override
   String getMessage(BuildContext context) {
     return _sanitizeMessage(
-        context, AppLocalizations.of(context)!.errValidation);
+        context, AppLocalizations.of(context).errValidation);
   }
 }
 
@@ -310,7 +310,7 @@ class AuthFailure extends Failure {
 
   @override
   String getMessage(BuildContext context) {
-    return _sanitizeMessage(context, AppLocalizations.of(context)!.errAuth);
+    return _sanitizeMessage(context, AppLocalizations.of(context).errAuth);
   }
 }
 
@@ -329,7 +329,7 @@ class PermissionFailure extends Failure {
   @override
   String getMessage(BuildContext context) {
     return _sanitizeMessage(
-        context, AppLocalizations.of(context)!.errPermission);
+        context, AppLocalizations.of(context).errPermission);
   }
 }
 
@@ -347,6 +347,6 @@ class TimeoutFailure extends Failure {
 
   @override
   String getMessage(BuildContext context) {
-    return _sanitizeMessage(context, AppLocalizations.of(context)!.errTimeout);
+    return _sanitizeMessage(context, AppLocalizations.of(context).errTimeout);
   }
 }

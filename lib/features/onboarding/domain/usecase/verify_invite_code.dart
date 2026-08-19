@@ -4,9 +4,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repository/onboarding_repository.dart';
 
 class VerifyInviteCode implements UseCase<Map<String, dynamic>, String> {
-  final OnboardingRepository repository;
 
   VerifyInviteCode(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, Map<String, dynamic>>> call(String code) {

@@ -3,14 +3,14 @@ import '../app_shimmer.dart';
 
 /// Skeleton dùng chung cho trang danh sách ListTile (search bar + rows).
 class ListPageSkeleton extends StatelessWidget {
-  final bool showBottomButton;
-  final int itemCount;
 
   const ListPageSkeleton({
     super.key,
     this.showBottomButton = false,
     this.itemCount = 8,
   });
+  final bool showBottomButton;
+  final int itemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ListPageSkeleton extends StatelessWidget {
           if (showBottomButton)
             const Padding(
               padding: EdgeInsets.all(16),
-              child: SkeletonBox(height: 52, borderRadius: 8),
+              child: SkeletonBox(height: 52),
             ),
         ],
       ),

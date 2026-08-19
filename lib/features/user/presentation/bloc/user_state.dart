@@ -17,9 +17,9 @@ class UserLoadingState extends UserState {
 }
 
 class UserLoadedState extends UserState {
-  final UserEntity profile;
 
   const UserLoadedState({required this.profile});
+  final UserEntity profile;
 
   @override
   List<Object?> get props => [profile];
@@ -30,22 +30,22 @@ class UserUpdatingState extends UserState {
 }
 
 class UserUpdateSuccessState extends UserState {
-  final UserEntity profile;
-  final String message;
 
   const UserUpdateSuccessState({
     required this.profile,
     required this.message,
   });
+  final UserEntity profile;
+  final String message;
 
   @override
   List<Object?> get props => [profile, message];
 }
 
 class UserErrorState extends UserState {
-  final String message;
 
   const UserErrorState({required this.message});
+  final String message;
 
   @override
   List<Object?> get props => [message];

@@ -92,9 +92,7 @@ class NotificationService {
   Future<void> _ensurePermission() async {
     try {
       await _messaging.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
+        
       );
       await _local
           .resolvePlatformSpecificImplementation<

@@ -10,13 +10,13 @@ import '../source/family_tree_remote_data_source.dart';
 import '../source/family_tree_local_data_source.dart';
 
 class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
-  final FamilyTreeRemoteDataSource remoteDataSource;
-  final FamilyTreeLocalDataSource localDataSource;
 
   FamilyTreeRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
   });
+  final FamilyTreeRemoteDataSource remoteDataSource;
+  final FamilyTreeLocalDataSource localDataSource;
 
   // ---------- Members ----------
 

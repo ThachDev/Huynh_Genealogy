@@ -36,7 +36,7 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final sections = [
       (l10n.regSection1Title, l10n.regSection1Content),
@@ -204,7 +204,6 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Number badge
                       Container(

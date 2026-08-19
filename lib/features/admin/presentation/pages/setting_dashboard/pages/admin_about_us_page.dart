@@ -58,7 +58,7 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: context.background,

@@ -7,9 +7,6 @@ import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class SelectUnlinkedMemberSheet extends StatefulWidget {
-  final List<MemberEntity> candidateMembers;
-  final String title;
-  final String? subtitle;
 
   const SelectUnlinkedMemberSheet({
     super.key,
@@ -17,6 +14,9 @@ class SelectUnlinkedMemberSheet extends StatefulWidget {
     required this.title,
     this.subtitle,
   });
+  final List<MemberEntity> candidateMembers;
+  final String title;
+  final String? subtitle;
 
   static Future<MemberEntity?> show(
     BuildContext context, {
@@ -53,7 +53,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final cardBg = context.surface;
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
@@ -189,7 +189,6 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                             leading: AppAvatar(
                               avatarUrl: member.avatarUrl,
                               fullName: member.fullName,
-                              radius: 20,
                               backgroundColor:
                                   primaryColor.withValues(alpha: 0.1),
                               textColor: primaryColor,

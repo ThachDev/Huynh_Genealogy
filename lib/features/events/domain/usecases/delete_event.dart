@@ -5,9 +5,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repositories/events_repository.dart';
 
 class DeleteEvent implements UseCase<bool, DeleteEventParams> {
-  final EventsRepository repository;
 
   DeleteEvent(this.repository);
+  final EventsRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(DeleteEventParams params) {
@@ -16,9 +16,9 @@ class DeleteEvent implements UseCase<bool, DeleteEventParams> {
 }
 
 class DeleteEventParams extends Equatable {
-  final int id;
 
   const DeleteEventParams({required this.id});
+  final int id;
 
   @override
   List<Object?> get props => [id];

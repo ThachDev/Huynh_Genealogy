@@ -9,10 +9,6 @@ import 'event_calendar_widget.dart';
 /// Card thông báo — hiển thị block lịch thông minh (chuyển đổi Âm/Dương) bên trái,
 /// bên phải: Tiêu đề -> Nội dung (tối đa 2 dòng) -> Người thông báo.
 class AnnouncementItemCard extends StatelessWidget {
-  final EventEntity event;
-  final bool canEdit;
-  final VoidCallback onTap;
-  final VoidCallback onDelete;
 
   const AnnouncementItemCard({
     super.key,
@@ -21,10 +17,14 @@ class AnnouncementItemCard extends StatelessWidget {
     required this.onTap,
     required this.onDelete,
   });
+  final EventEntity event;
+  final bool canEdit;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -46,7 +46,6 @@ class AnnouncementItemCard extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // ── Launcher Cuốn Lịch (Âm / Dương khi tap) ──
             SizedBox(

@@ -6,9 +6,9 @@ import '../../../../core/domain/entity/user_entity.dart';
 import '../repository/user_repository.dart';
 
 class UpdateUserProfile implements UseCase<UserEntity, UpdateUserProfileParams> {
-  final UserRepository repository;
 
   UpdateUserProfile(this.repository);
+  final UserRepository repository;
 
   @override
   Future<Either<Failure, UserEntity>> call(UpdateUserProfileParams params) {
@@ -17,9 +17,9 @@ class UpdateUserProfile implements UseCase<UserEntity, UpdateUserProfileParams> 
 }
 
 class UpdateUserProfileParams extends Equatable {
-  final UserEntity profile;
 
   const UpdateUserProfileParams({required this.profile});
+  final UserEntity profile;
 
   @override
   List<Object?> get props => [profile];

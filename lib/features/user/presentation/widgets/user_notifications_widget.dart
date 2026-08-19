@@ -10,9 +10,6 @@ import '../../../events/events.dart';
 
 /// Trang Thông Báo dòng họ thiết kế theo UI/UX chuẩn hiện đại.
 class UserNotificationsPage extends StatefulWidget {
-  final int familyId;
-  final List<EventEntity> announcements;
-  final bool isAdminMode;
 
   const UserNotificationsPage({
     super.key,
@@ -20,6 +17,9 @@ class UserNotificationsPage extends StatefulWidget {
     this.announcements = const [],
     this.isAdminMode = false,
   });
+  final int familyId;
+  final List<EventEntity> announcements;
+  final bool isAdminMode;
 
   @override
   State<UserNotificationsPage> createState() => _UserNotificationsPageState();
@@ -37,7 +37,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
   }
 
   void _markAllAsRead(List<EventEntity> items) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     NotificationReadController.instance.markAllRead(
       items.map((e) => e.id.toString()).toList(),
     );
@@ -52,7 +52,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return ListenableBuilder(
       listenable: NotificationReadController.instance,
@@ -78,7 +78,6 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
             backgroundColor: Colors.transparent,
             appBar: AppAppBar(
               title: l10n.eventTypeAnnouncement,
-              automaticallyImplyLeading: true,
             ),
             body: AppBackgroundBody(
               child: Column(
@@ -170,7 +169,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
   /// Widget cho từng Item Thông Báo
   Widget _buildNotificationCard(
       BuildContext context, EventEntity item, bool isRead) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final String? organizer = item.organizer?.trim();
     final bool hasOrganizer = organizer != null && organizer.isNotEmpty;
     final String initialLetter =
@@ -211,7 +210,6 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Avatar người đăng bên trái (kèm chấm đỏ chưa đọc)
                     Stack(
@@ -225,7 +223,6 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: context.primary.withValues(alpha: 0.3),
-                              width: 1,
                             ),
                           ),
                           child: Center(

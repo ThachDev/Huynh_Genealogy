@@ -5,9 +5,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repository/auth_repository.dart';
 
 class CacheCredentials implements UseCase<void, CacheCredentialsParams> {
-  final AuthRepository repository;
 
   CacheCredentials(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, void>> call(CacheCredentialsParams params) {
@@ -19,13 +19,13 @@ class CacheCredentials implements UseCase<void, CacheCredentialsParams> {
 }
 
 class CacheCredentialsParams extends Equatable {
-  final String email;
-  final String password;
 
   const CacheCredentialsParams({
     required this.email,
     required this.password,
   });
+  final String email;
+  final String password;
 
   @override
   List<Object?> get props => [email, password];

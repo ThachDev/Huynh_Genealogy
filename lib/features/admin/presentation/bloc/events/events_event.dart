@@ -9,28 +9,28 @@ abstract class EventsEvent extends Equatable {
 }
 
 class LoadEventsEvent extends EventsEvent {
-  final int familyId;
 
   const LoadEventsEvent({required this.familyId});
+  final int familyId;
 
   @override
   List<Object?> get props => [familyId];
 }
 
 class SaveEventEvent extends EventsEvent {
-  final EventEntity event;
 
   const SaveEventEvent({required this.event});
+  final EventEntity event;
 
   @override
   List<Object?> get props => [event];
 }
 
 class DeleteEventEvent extends EventsEvent {
-  final int id;
-  final int familyId;
 
   const DeleteEventEvent({required this.id, required this.familyId});
+  final int id;
+  final int familyId;
 
   @override
   List<Object?> get props => [id, familyId];

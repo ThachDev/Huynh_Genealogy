@@ -5,11 +5,6 @@ import '../../../../core/domain/entity/family_entity.dart';
 import '../../../onboarding/domain/repository/onboarding_repository.dart';
 
 class UpdateFamilyParams {
-  final int id;
-  final String? name;
-  final String? description;
-  final String? origin;
-  final String? logoUrl;
 
   UpdateFamilyParams({
     required this.id,
@@ -18,12 +13,17 @@ class UpdateFamilyParams {
     this.origin,
     this.logoUrl,
   });
+  final int id;
+  final String? name;
+  final String? description;
+  final String? origin;
+  final String? logoUrl;
 }
 
 class UpdateFamily implements UseCase<FamilyEntity, UpdateFamilyParams> {
-  final OnboardingRepository repository;
 
   UpdateFamily(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, FamilyEntity>> call(UpdateFamilyParams params) {

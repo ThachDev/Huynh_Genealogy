@@ -53,7 +53,7 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
   }
 
   Future<void> _confirmRestore(MemberEntity member) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final confirmed = await AppDialog.confirm(
       context,
       title: l10n.trashRestoreTitle,
@@ -65,20 +65,20 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
   }
 
   Future<void> _confirmPurge() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final confirmed = await AppDialog.confirm(
       context,
       title: l10n.trashPurgeTitle,
       message: l10n.trashPurgeMessage,
     );
     if (confirmed == true && mounted) {
-      context.read<MemberTrashBloc>().add(const PurgeTrashEvent(days: 30));
+      context.read<MemberTrashBloc>().add(const PurgeTrashEvent());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     final role = authState is Authenticated
         ? authState.user.role.toUpperCase()
@@ -156,7 +156,7 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
               if (state is MemberTrashLoading) {
                 return const Padding(
                   padding: EdgeInsets.all(16),
-                  child: ListPageSkeleton(itemCount: 8),
+                  child: ListPageSkeleton(),
                 );
               }
               if (state is MemberTrashFailure) {
@@ -199,14 +199,14 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
 }
 
 class _TrashItem extends StatelessWidget {
+
+  const _TrashItem({required this.member, required this.onRestore});
   final MemberEntity member;
   final VoidCallback onRestore;
 
-  const _TrashItem({required this.member, required this.onRestore});
-
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final genderColor = member.gender == Gender.male
         ? context.genderMale
         : member.gender == Gender.female

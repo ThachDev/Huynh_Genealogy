@@ -2,3 +2,5 @@ arb-dir: lib/resources
 template-arb-file: app_vi.arb
 output-class: AppLocalizations
 output-dir: lib/resources
+nullable-getter: false
+untranslated-messages-file: untranslated_messages.txt

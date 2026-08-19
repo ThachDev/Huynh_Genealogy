@@ -7,9 +7,6 @@ import 'events_event.dart';
 import 'events_state.dart';
 
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
-  final GetEvents getEvents;
-  final SaveEvent saveEvent;
-  final DeleteEvent deleteEvent;
 
   EventsBloc({
     required this.getEvents,
@@ -20,6 +17,9 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     on<SaveEventEvent>(_onSaveEvent);
     on<DeleteEventEvent>(_onDeleteEvent);
   }
+  final GetEvents getEvents;
+  final SaveEvent saveEvent;
+  final DeleteEvent deleteEvent;
 
   Future<void> _onLoadEvents(LoadEventsEvent event, Emitter<EventsState> emit) async {
     emit(EventsLoading());

@@ -5,7 +5,7 @@ class AppValidators {
   AppValidators._();
 
   static String? validateEmail(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errEmailRequired;
     }
@@ -20,7 +20,7 @@ class AppValidators {
   }
 
   static String? validatePassword(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
       return l10n.errPasswordRequired;
     }
@@ -31,7 +31,7 @@ class AppValidators {
   }
 
   static String? validateStrongPassword(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
       return l10n.errPasswordRequired;
     }
@@ -51,7 +51,7 @@ class AppValidators {
   }
 
   static String? validateConfirmPassword(BuildContext context, String? value, String password) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.isEmpty) {
       return l10n.errConfirmPasswordRequired;
     }
@@ -62,7 +62,7 @@ class AppValidators {
   }
 
   static String? validateFullName(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errFullNameRequired;
     }
@@ -81,7 +81,7 @@ class AppValidators {
   }
 
   static String? validatePhoneNumber(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errPhoneNumberRequired;
     }
@@ -94,7 +94,7 @@ class AppValidators {
   }
 
   static String? validateYear(BuildContext context, String? value, {int? minYear}) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errYearRequired;
     }
@@ -116,7 +116,7 @@ class AppValidators {
   }
 
   static String? validateRequired(BuildContext context, String? value, String fieldName) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errRequiredField(fieldName);
     }
@@ -124,7 +124,7 @@ class AppValidators {
   }
 
   static String? validateGeneration(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errGenerationRequired;
     }
@@ -135,7 +135,7 @@ class AppValidators {
   }
 
   static String? validatePlaceOfBirth(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errPlaceOfBirthRequired;
     }
@@ -143,7 +143,7 @@ class AppValidators {
   }
 
   static String? validateDateOfBirth(BuildContext context, String? value) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
       return l10n.errDateOfBirthRequired;
     }
@@ -151,7 +151,7 @@ class AppValidators {
   }
 
   static String? validateDateOfDeath(BuildContext context, String? value, bool isAlive) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (!isAlive && (value == null || value.trim().isEmpty)) {
       return l10n.errDateOfDeathRequired;
     }

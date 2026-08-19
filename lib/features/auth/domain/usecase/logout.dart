@@ -4,9 +4,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repository/auth_repository.dart';
 
 class Logout implements UseCase<void, NoParams> {
-  final AuthRepository repository;
 
   Logout(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, void>> call(NoParams params) {

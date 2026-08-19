@@ -10,10 +10,6 @@ import '../../../../core/domain/usecase/get_family_detail.dart';
 import '../../../auth/auth.dart';
 
 class PendingApprovalWidget extends StatefulWidget {
-  final UserEntity user;
-  final String? clanLeaderName;
-  final String? clanLeaderPhone;
-  final int? familyId;
 
   const PendingApprovalWidget({
     super.key,
@@ -22,6 +18,10 @@ class PendingApprovalWidget extends StatefulWidget {
     this.clanLeaderPhone,
     this.familyId,
   });
+  final UserEntity user;
+  final String? clanLeaderName;
+  final String? clanLeaderPhone;
+  final int? familyId;
 
   @override
   State<PendingApprovalWidget> createState() => _PendingApprovalWidgetState();
@@ -72,7 +72,7 @@ class _PendingApprovalWidgetState extends State<PendingApprovalWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final hasLeaderInfo = _leaderName != null &&
         _leaderName!.isNotEmpty &&

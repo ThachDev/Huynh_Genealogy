@@ -16,18 +16,18 @@ class AuditLogsLoading extends AuditLogsState {
 }
 
 class AuditLogsLoaded extends AuditLogsState {
-  final List<AuditLogEntity> logs;
 
   const AuditLogsLoaded({required this.logs});
+  final List<AuditLogEntity> logs;
 
   @override
   List<Object?> get props => [logs];
 }
 
 class AuditLogsFailure extends AuditLogsState {
-  final String message;
 
   const AuditLogsFailure({required this.message});
+  final String message;
 
   @override
   List<Object?> get props => [message];

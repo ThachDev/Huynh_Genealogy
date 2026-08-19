@@ -18,12 +18,12 @@ import '../../../../domain/usecase/get_member_detail.dart';
 import '../../../../domain/usecase/save_member.dart';
 
 class AdminSettingsProfileCard extends StatefulWidget {
-  final dynamic user;
 
   const AdminSettingsProfileCard({
     super.key,
     required this.user,
   });
+  final dynamic user;
 
   @override
   State<AdminSettingsProfileCard> createState() =>
@@ -71,7 +71,7 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
         if (await exceedsMaxFileSize(picked, 5)) {
           if (!mounted) return;
           AppSnackBar.error(
-              context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
+              context, AppLocalizations.of(context).imageTooLargeFormat(5));
           return;
         }
         setState(() {
@@ -84,7 +84,7 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
   }
 
   Future<void> _saveChanges(int? memberId) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final newName = _nameController.text.trim();
     if (newName.isEmpty) {
       AppSnackBar.error(context, l10n.errNameEmpty);

@@ -13,11 +13,11 @@ class LunarDateHelper {
       final dayStr = lunar.day.toString().padLeft(2, '0');
       final monthStr = lunar.month.toString().padLeft(2, '0');
       final leapStr = lunar.leapMonth == true ? ' $leapSuffix' : '';
-      return "$dayStr/$monthStr$leapStr $lunarSuffix";
+      return '$dayStr/$monthStr$leapStr $lunarSuffix';
     } catch (_) {
       final dayStr = solarDate.day.toString().padLeft(2, '0');
       final monthStr = solarDate.month.toString().padLeft(2, '0');
-      return "$dayStr/$monthStr $lunarSuffix";
+      return '$dayStr/$monthStr $lunarSuffix';
     }
   }
 }

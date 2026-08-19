@@ -19,22 +19,22 @@ Future<DateTime?> showLunarCalendarPicker({
         : Colors.black.withValues(alpha: 0.3),
     builder: (_) => _LunarCalendarPickerDialog(
       initialDate: initialDate ?? now,
-      firstDate: firstDate ?? DateTime(1800, 1, 1),
+      firstDate: firstDate ?? DateTime(1800),
       lastDate: lastDate ?? now,
     ),
   );
 }
 
 class _LunarCalendarPickerDialog extends StatefulWidget {
-  final DateTime initialDate;
-  final DateTime firstDate;
-  final DateTime lastDate;
 
   const _LunarCalendarPickerDialog({
     required this.initialDate,
     required this.firstDate,
     required this.lastDate,
   });
+  final DateTime initialDate;
+  final DateTime firstDate;
+  final DateTime lastDate;
 
   @override
   State<_LunarCalendarPickerDialog> createState() =>
@@ -153,7 +153,7 @@ class _LunarCalendarPickerDialogState
 
   Widget _buildDayLabels(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
-    final start = DateTime(2024, 1, 1);
+    final start = DateTime(2024);
     final labels = List.generate(7, (i) {
       return DateFormat.E(locale).format(start.add(Duration(days: i)));
     });
@@ -177,8 +177,8 @@ class _LunarCalendarPickerDialogState
   }
 
   Widget _buildCalendarGrid(BuildContext context) {
-    final firstDay = DateTime(_displayMonth.year, _displayMonth.month, 1);
-    int startWeekday = firstDay.weekday - 1;
+    final firstDay = DateTime(_displayMonth.year, _displayMonth.month);
+    final int startWeekday = firstDay.weekday - 1;
     final daysInMonth =
         DateUtils.getDaysInMonth(_displayMonth.year, _displayMonth.month);
 
@@ -242,7 +242,7 @@ class _LunarCalendarPickerDialogState
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           border: isToday && !isSelected
-              ? Border.all(color: context.primary, width: 1)
+              ? Border.all(color: context.primary)
               : null,
         ),
         child: Column(
@@ -277,7 +277,7 @@ class _LunarCalendarPickerDialogState
   }
 
   Widget _buildFooter(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
@@ -320,7 +320,7 @@ class _LunarCalendarPickerDialogState
   }
 
   void _showYearMonthPicker() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       backgroundColor: context.surface,

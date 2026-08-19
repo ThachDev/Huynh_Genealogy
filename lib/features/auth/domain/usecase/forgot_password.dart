@@ -5,9 +5,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repository/auth_repository.dart';
 
 class ForgotPassword implements UseCase<void, ForgotPasswordParams> {
-  final AuthRepository repository;
 
   ForgotPassword(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, void>> call(ForgotPasswordParams params) {
@@ -16,9 +16,9 @@ class ForgotPassword implements UseCase<void, ForgotPasswordParams> {
 }
 
 class ForgotPasswordParams extends Equatable {
-  final String email;
 
   const ForgotPasswordParams({required this.email});
+  final String email;
 
   @override
   List<Object?> get props => [email];

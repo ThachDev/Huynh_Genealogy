@@ -7,12 +7,6 @@ class FamilyTreeInitial extends FamilyTreeState {}
 class FamilyTreeLoading extends FamilyTreeState {}
 
 class FamilyTreeLoaded extends FamilyTreeState {
-  final List<MemberEntity> members;
-  final List<BranchEntity> branches;
-  final int? selectedMemberId;
-  final int? filterBranchId;
-  final int? familyId;
-  final FamilyEntity? family;
 
   FamilyTreeLoaded({
     required this.members,
@@ -22,6 +16,12 @@ class FamilyTreeLoaded extends FamilyTreeState {
     this.familyId,
     this.family,
   });
+  final List<MemberEntity> members;
+  final List<BranchEntity> branches;
+  final int? selectedMemberId;
+  final int? filterBranchId;
+  final int? familyId;
+  final FamilyEntity? family;
 
   FamilyTreeLoaded copyWith({
     List<MemberEntity>? members,
@@ -43,6 +43,6 @@ class FamilyTreeLoaded extends FamilyTreeState {
 }
 
 class FamilyTreeError extends FamilyTreeState {
-  final String message;
   FamilyTreeError(this.message);
+  final String message;
 }

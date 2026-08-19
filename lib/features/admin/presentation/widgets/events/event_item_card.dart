@@ -10,10 +10,6 @@ import '../../../../events/events.dart';
 /// Card sự kiện kiểu compact — thumbnail 84×84 bên trái, nội dung bên phải.
 /// Dùng trong AdminEventsListPage.
 class EventItemCard extends StatelessWidget {
-  final EventEntity event;
-  final bool canEdit;
-  final VoidCallback onTap;
-  final VoidCallback onDelete;
 
   const EventItemCard({
     super.key,
@@ -22,6 +18,10 @@ class EventItemCard extends StatelessWidget {
     required this.onTap,
     required this.onDelete,
   });
+  final EventEntity event;
+  final bool canEdit;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   // ── Thumbnail ────────────────────────────────────────────────
   Widget _thumbnail(BuildContext context) {
@@ -31,7 +31,7 @@ class EventItemCard extends StatelessWidget {
     final isLocal =
         imageUrl != null && !isNetwork && File(imageUrl).existsSync();
 
-    Widget placeholder = Container(
+    final Widget placeholder = Container(
       width: 84,
       height: 84,
       decoration: BoxDecoration(
@@ -54,7 +54,6 @@ class EventItemCard extends StatelessWidget {
           url: imageUrl,
           width: 84,
           height: 84,
-          fit: BoxFit.cover,
           errorBuilder: (_) => placeholder,
         ),
       );
@@ -78,7 +77,7 @@ class EventItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -100,7 +99,6 @@ class EventItemCard extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // ── Thumbnail ──
             _thumbnail(context),

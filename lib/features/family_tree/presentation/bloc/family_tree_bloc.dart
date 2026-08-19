@@ -13,11 +13,6 @@ part 'family_tree_event.dart';
 part 'family_tree_state.dart';
 
 class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
-  final GetMembers getMembers;
-  final GetBranches getBranches;
-  final GetFamilyDetail getFamilyDetail;
-  final GetCachedMembers getCachedMembers;
-  final GetCachedBranches getCachedBranches;
 
   FamilyTreeBloc({
     required this.getMembers,
@@ -30,6 +25,11 @@ class FamilyTreeBloc extends Bloc<FamilyTreeEvent, FamilyTreeState> {
     on<FamilyTreeSelectMemberEvent>(_onSelectMember);
     on<FamilyTreeFilterByBranchEvent>(_onFilterByBranch);
   }
+  final GetMembers getMembers;
+  final GetBranches getBranches;
+  final GetFamilyDetail getFamilyDetail;
+  final GetCachedMembers getCachedMembers;
+  final GetCachedBranches getCachedBranches;
 
   Future<void> _onLoadTree(
       FamilyTreeLoadEvent event, Emitter<FamilyTreeState> emit) async {

@@ -19,16 +19,6 @@ import 'family_highlight_card.dart';
 
 // ── Data model cho 1 slide ────────────────────────────────────────────────────
 class _HighlightSlide {
-  final HighlightEventType type;
-  final String title;
-  final String? description;
-  final String? location;
-  final DateTime? date;
-  final String dateLabel;
-  final String? lunarDateLabel;
-  final int daysRemaining;
-  final VoidCallback onTap;
-  final VoidCallback? onActionTap;
 
   const _HighlightSlide({
     required this.type,
@@ -42,6 +32,16 @@ class _HighlightSlide {
     required this.onTap,
     this.onActionTap,
   });
+  final HighlightEventType type;
+  final String title;
+  final String? description;
+  final String? location;
+  final DateTime? date;
+  final String dateLabel;
+  final String? lunarDateLabel;
+  final int daysRemaining;
+  final VoidCallback onTap;
+  final VoidCallback? onActionTap;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -55,13 +55,6 @@ class _HighlightSlide {
 /// Ẩn hoàn toàn nếu không có slide nào.
 // ═════════════════════════════════════════════════════════════════════════════
 class FamilyHighlightCarousel extends StatefulWidget {
-  final List<EventEntity> events;
-  final List<MemberEntity> members;
-  final VoidCallback onGoToEvents;
-  final void Function(EventEntity event)? onGoToEventDetail;
-  final VoidCallback onGoToAnniversaries;
-  final VoidCallback onGoToBirthdays;
-  final void Function(String memberName)? onIncenseTap;
 
   const FamilyHighlightCarousel({
     super.key,
@@ -73,6 +66,13 @@ class FamilyHighlightCarousel extends StatefulWidget {
     required this.onGoToBirthdays,
     this.onIncenseTap,
   });
+  final List<EventEntity> events;
+  final List<MemberEntity> members;
+  final VoidCallback onGoToEvents;
+  final void Function(EventEntity event)? onGoToEventDetail;
+  final VoidCallback onGoToAnniversaries;
+  final VoidCallback onGoToBirthdays;
+  final void Function(String memberName)? onIncenseTap;
 
   @override
   State<FamilyHighlightCarousel> createState() =>
@@ -80,7 +80,7 @@ class FamilyHighlightCarousel extends StatefulWidget {
 }
 
 class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
-  final PageController _pageController = PageController(viewportFraction: 1.0);
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
@@ -91,7 +91,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
 
   // ── Build danh sách slides ───────────────────────────────────────────────
   List<_HighlightSlide> _buildSlides() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final slides = <_HighlightSlide>[];
     final today = DateTime.now();
     final todayDate = DateTime(today.year, today.month, today.day);
@@ -179,7 +179,6 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         description: upcomingBirthday.member.generation != null
             ? l10n.generationLabel('${upcomingBirthday.member.generation!}')
             : l10n.clanMemberLabel,
-        location: null,
         date: bDate,
         dateLabel: upcomingBirthday.solarDateLabel,
         lunarDateLabel: upcomingBirthday.lunarDateLabel,
@@ -212,7 +211,6 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         description: ann.member.generation != null
             ? l10n.memorialCeremonyGenerationLabel(ann.member.generation!)
             : l10n.memorialCeremonyLabel,
-        location: null,
         date: aDate,
         dateLabel: ann.solarDateLabel,
         lunarDateLabel: ann.lunarDateLabel,
@@ -325,13 +323,13 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
           final currentLunarYear = todayLunar.year;
 
           final listSolar = convertLunar2Solar(
-              lunarDay, lunarMonth, currentLunarYear, false, 7);
+              lunarDay, lunarMonth, currentLunarYear, false);
           var solarAnniversary =
               DateTime(listSolar[2], listSolar[1], listSolar[0]);
 
           if (solarAnniversary.isBefore(todayDate)) {
             final nextListSolar = convertLunar2Solar(
-                lunarDay, lunarMonth, currentLunarYear + 1, false, 7);
+                lunarDay, lunarMonth, currentLunarYear + 1, false);
             solarAnniversary =
                 DateTime(nextListSolar[2], nextListSolar[1], nextListSolar[0]);
           }
@@ -405,7 +403,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
   }
 
   Future<void> _openWishDialog(UpcomingAnniversary data) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     UserEntity? userProfile;
 
@@ -464,7 +462,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
   }
 
   Future<void> _openIncenseDialog(UpcomingAnniversary data) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     UserEntity? userProfile;
 
@@ -528,15 +526,15 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
 
 // ── Dot Indicator ─────────────────────────────────────────────────────────────
 class _DotIndicator extends StatelessWidget {
-  final int count;
-  final int current;
-  final Color activeColor;
 
   const _DotIndicator({
     required this.count,
     required this.current,
     required this.activeColor,
   });
+  final int count;
+  final int current;
+  final Color activeColor;
 
   @override
   Widget build(BuildContext context) {

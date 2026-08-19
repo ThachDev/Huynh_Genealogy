@@ -54,7 +54,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
 
     final user = authState.user;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

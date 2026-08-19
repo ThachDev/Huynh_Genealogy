@@ -19,9 +19,9 @@ abstract class MemberAccountLinkRemoteDataSource {
 
 class MemberAccountLinkRemoteDataSourceImpl
     implements MemberAccountLinkRemoteDataSource {
-  final Dio dio;
 
   MemberAccountLinkRemoteDataSourceImpl({required this.dio});
+  final Dio dio;
 
   @override
   Future<List<MemberAccountLinkEntity>> getAccountLinks(int familyId) async {

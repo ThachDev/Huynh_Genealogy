@@ -9,10 +9,6 @@ part 'admin_member_form_state.dart';
 
 class AdminMemberFormBloc
     extends Bloc<AdminMemberFormEvent, AdminMemberFormState> {
-  final GetMembers getMembers;
-  final GetBranches getBranches;
-  final SaveMember saveMember;
-  final DeleteMember deleteMember;
 
   AdminMemberFormBloc({
     required this.getMembers,
@@ -25,6 +21,10 @@ class AdminMemberFormBloc
     on<DeleteAdminMemberFormEvent>(_onDelete, transformer: droppable());
     on<ResetAdminMemberFormEvent>(_onReset);
   }
+  final GetMembers getMembers;
+  final GetBranches getBranches;
+  final SaveMember saveMember;
+  final DeleteMember deleteMember;
 
   Future<void> _onLoad(LoadAdminMemberFormEvent event,
       Emitter<AdminMemberFormState> emit) async {
@@ -51,7 +51,7 @@ class AdminMemberFormBloc
     if (event.memberId == null) {
       // Create mode
       emit(AdminMemberFormReady(
-          member: null, members: allMembers, branches: allBranches));
+          members: allMembers, branches: allBranches));
       return;
     }
 

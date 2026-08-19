@@ -17,14 +17,14 @@ import '../../../../admin.dart';
 import '../../../../../../core/domain/entity/user_entity.dart';
 
 class AdminClanInfoPage extends StatefulWidget {
-  final FamilyEntity? family;
-  final UserEntity? user;
 
   const AdminClanInfoPage({
     super.key,
     this.family,
     this.user,
   });
+  final FamilyEntity? family;
+  final UserEntity? user;
 
   @override
   State<AdminClanInfoPage> createState() => _AdminClanInfoPageState();
@@ -80,7 +80,7 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
       if (pickedFile != null) {
         if (await exceedsMaxFileSize(pickedFile, 10)) {
           if (!mounted) return;
-          AppSnackBar.error(context, AppLocalizations.of(context)!.imageTooLargeFormat(10));
+          AppSnackBar.error(context, AppLocalizations.of(context).imageTooLargeFormat(10));
           return;
         }
         final tempDir = await getTemporaryDirectory();
@@ -109,7 +109,7 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
   }
 
   void _saveClanChanges() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (widget.family == null) {
       AppSnackBar.error(context, l10n.noFamilyInfo);
       return;
@@ -168,13 +168,12 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: l10n.clanInfoSettingsTitle,
-        transparent: false,
         actions: [
           if (widget.family != null && _isOwner)
             IconButton(

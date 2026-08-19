@@ -5,9 +5,9 @@ import 'package:giatocviet/core/domain/entity/user_entity.dart';
 import '../repository/auth_repository.dart';
 
 class GetCachedUser implements UseCase<UserEntity?, NoParams> {
-  final AuthRepository repository;
 
   GetCachedUser(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, UserEntity?>> call(NoParams params) {

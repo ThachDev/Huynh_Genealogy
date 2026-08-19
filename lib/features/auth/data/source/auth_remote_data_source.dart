@@ -30,15 +30,15 @@ abstract class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final Dio dio;
-  final FirebaseAuth firebaseAuth;
-  final GoogleSignIn googleSignIn;
 
   AuthRemoteDataSourceImpl({
     required this.dio,
     required this.firebaseAuth,
     required this.googleSignIn,
   });
+  final Dio dio;
+  final FirebaseAuth firebaseAuth;
+  final GoogleSignIn googleSignIn;
 
   @override
   Future<UserModel> loginWithGoogle() async {

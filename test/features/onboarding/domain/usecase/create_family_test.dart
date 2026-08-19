@@ -25,8 +25,6 @@ void main() {
     // Arrange
     when(() => mockRepository.createFamily(
           name: tName,
-          description: null,
-          logoUrl: null,
           userId: tUserId,
         )).thenAnswer((_) async => const Right(tFamily));
 
@@ -37,8 +35,6 @@ void main() {
     expect(result, const Right(tFamily));
     verify(() => mockRepository.createFamily(
           name: tName,
-          description: null,
-          logoUrl: null,
           userId: tUserId,
         )).called(1);
     verifyNoMoreInteractions(mockRepository);

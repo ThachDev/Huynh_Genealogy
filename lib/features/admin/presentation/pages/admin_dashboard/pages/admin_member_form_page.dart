@@ -24,17 +24,6 @@ import '../../../../domain/usecase/save_member.dart';
 import '../../../../../../resources/app_localizations.dart';
 
 class AdminMemberFormPage extends StatefulWidget {
-  final int? memberId;
-  final bool isOwnerSelfSetup;
-  final int? ownerUserId;
-  final String? initialFullName;
-  final String? initialAvatarUrl;
-  final int? initialParentId;
-  final int? initialMotherId;
-  final int? initialSpouseId;
-  final int? initialGeneration;
-  final bool isLockedContext;
-  final int? pendingChildMemberId;
 
   const AdminMemberFormPage({
     super.key,
@@ -50,6 +39,17 @@ class AdminMemberFormPage extends StatefulWidget {
     this.isLockedContext = false,
     this.pendingChildMemberId,
   });
+  final int? memberId;
+  final bool isOwnerSelfSetup;
+  final int? ownerUserId;
+  final String? initialFullName;
+  final String? initialAvatarUrl;
+  final int? initialParentId;
+  final int? initialMotherId;
+  final int? initialSpouseId;
+  final int? initialGeneration;
+  final bool isLockedContext;
+  final int? pendingChildMemberId;
 
   @override
   State<AdminMemberFormPage> createState() => _AdminMemberFormPageState();
@@ -212,7 +212,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
         if (await exceedsMaxFileSize(pickedFile, 5)) {
           if (!mounted) return;
           AppSnackBar.error(
-              context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
+              context, AppLocalizations.of(context).imageTooLargeFormat(5));
           return;
         }
         // Copy file sang thư mục tạm của app để tránh bị xóa khỏi cache picker
@@ -226,7 +226,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
         });
       }
     } catch (e) {
-      debugPrint("Error picking avatar: $e");
+      debugPrint('Error picking avatar: $e');
     }
   }
 
@@ -342,7 +342,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
       if (maxGen != null && inputGen > maxGen + 1) {
         AppSnackBar.error(
           context,
-          AppLocalizations.of(context)!.generationTooHighFormat(maxGen + 1),
+          AppLocalizations.of(context).generationTooHighFormat(maxGen + 1),
         );
         return;
       }
@@ -402,7 +402,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.memberId != null;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final title = isEdit ? l10n.editMemberTitle : l10n.addMemberTitle;
 
     return Scaffold(
@@ -697,7 +697,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                     child: Form(
                       key: _formKey,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Stack: avatar nổi trên viền trên của card
                           Stack(
@@ -990,7 +989,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       value: _selectedEducationOption,
                                       items: [
                                         DropdownItem<String?>(
-                                          value: null,
                                           child: Text(l10n.noSelectionLabel),
                                         ),
                                         ..._predefinedEducation.map((edu) =>
@@ -1033,7 +1031,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                       locked: widget.isLockedContext,
                                       items: [
                                         DropdownItem<int?>(
-                                            value: null,
                                             child: Text(l10n.noSelectionLabel)),
                                         ...parentOptions
                                             .map((m) => DropdownItem<int?>(
@@ -1078,7 +1075,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                             widget.initialSpouseId != null,
                                         items: [
                                           DropdownItem<int?>(
-                                              value: null,
                                               child:
                                                   Text(l10n.noSelectionLabel)),
                                           ...spouseOptions
@@ -1158,7 +1154,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                             : null,
                                         items: [
                                           DropdownItem<int?>(
-                                              value: null,
                                               child: Text(l10n.noBranchLabel)),
                                           ...sortedBranches
                                               .map((b) => DropdownItem<int?>(
@@ -1209,7 +1204,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   }
 
   Widget _buildAvatarSection(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final avatarPath = _avatarUrlController.text.trim();
     Widget avatarWidget = Icon(
       LucideIcons.user,
@@ -1224,7 +1219,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             url: avatarPath,
             width: 110,
             height: 110,
-            fit: BoxFit.cover,
             errorBuilder: (context) => Icon(
               LucideIcons.user,
               size: 50,
@@ -1366,7 +1360,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     String? label,
     bool locked = false,
   }) {
-    Widget dropdown = AppDropdown<T>(
+    final Widget dropdown = AppDropdown<T>(
       value: value,
       items: items,
       onChanged: onChanged,
@@ -1375,7 +1369,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
     );
     if (locked) {
       return IgnorePointer(
-        ignoring: true,
         child: Opacity(opacity: 0.6, child: dropdown),
       );
     }
@@ -1383,8 +1376,8 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
   }
 
   Widget _buildGenerationField() {
-    final l10n = AppLocalizations.of(context)!;
-    Widget field = AppOutlineTextField(
+    final l10n = AppLocalizations.of(context);
+    final Widget field = AppOutlineTextField(
       controller: _generationController,
       label: l10n.generationFieldLabel,
       hintText: l10n.generationFieldHint,
@@ -1394,7 +1387,6 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
 
     if (widget.isLockedContext && widget.initialGeneration != null) {
       return IgnorePointer(
-        ignoring: true,
         child: Opacity(opacity: 0.6, child: field),
       );
     }

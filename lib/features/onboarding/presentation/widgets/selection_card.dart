@@ -4,12 +4,6 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 
 class SelectionCard extends StatelessWidget {
-  final String iconAssetPath;
-  final Color iconColor;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-  final bool isSelected;
 
   const SelectionCard({
     super.key,
@@ -20,6 +14,12 @@ class SelectionCard extends StatelessWidget {
     required this.onTap,
     this.isSelected = false,
   });
+  final String iconAssetPath;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,6 @@ class SelectionCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   iconAssetPath,

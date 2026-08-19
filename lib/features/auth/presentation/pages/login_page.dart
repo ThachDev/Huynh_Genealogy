@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isEnglish = Localizations.localeOf(context).languageCode == 'en';
 
     return Scaffold(
@@ -323,7 +323,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildRegisterFooter(bool isLoading, AppLocalizations l10n) {
     return Align(
-      alignment: Alignment.center,
       child: GestureDetector(
         onTap: isLoading
             ? null
@@ -374,7 +373,6 @@ class _LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.circular(13.0),
             border: Border.all(
               color: context.textSecondary.withValues(alpha: 0.12),
-              width: 1,
             ),
           ),
           child: Stack(

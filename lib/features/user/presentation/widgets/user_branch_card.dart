@@ -6,9 +6,6 @@ import '../../../../core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/domain/entity/branch_entity.dart';
 
 class UserBranchCard extends StatelessWidget {
-  final BranchEntity branch;
-  final bool isSelected;
-  final VoidCallback? onTap;
 
   const UserBranchCard({
     super.key,
@@ -16,10 +13,13 @@ class UserBranchCard extends StatelessWidget {
     this.isSelected = false,
     this.onTap,
   });
+  final BranchEntity branch;
+  final bool isSelected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final borderColor = isSelected
         ? context.primary
@@ -47,7 +47,6 @@ class UserBranchCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Icon trơn
               Icon(
@@ -64,7 +63,6 @@ class UserBranchCard extends StatelessWidget {
                   children: [
                     // Hàng 1: Tên chi tộc + Năm (top-right)
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Text(

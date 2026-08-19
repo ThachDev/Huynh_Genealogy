@@ -3,9 +3,9 @@ import '../../../../core/constants/app_constants.dart';
 import '../../presentation/models/wish_message.dart';
 
 class WishApiService {
-  final Dio dio;
 
   WishApiService({required this.dio});
+  final Dio dio;
 
   Future<List<WishMessage>> getWishesByMember(int memberId) async {
     try {

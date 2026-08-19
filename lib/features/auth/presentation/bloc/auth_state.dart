@@ -13,9 +13,9 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class Authenticated extends AuthState {
-  final UserEntity user;
 
   const Authenticated({required this.user});
+  final UserEntity user;
 
   @override
   List<Object?> get props => [user];
@@ -24,19 +24,19 @@ class Authenticated extends AuthState {
 class Unauthenticated extends AuthState {}
 
 class AuthError extends AuthState {
-  final String message;
 
   const AuthError({required this.message});
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class AuthCredentialsLoaded extends AuthState {
-  final String? email;
-  final String? password;
 
   const AuthCredentialsLoaded({this.email, this.password});
+  final String? email;
+  final String? password;
 
   @override
   List<Object?> get props => [email, password];

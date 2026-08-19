@@ -6,9 +6,9 @@ import '../../domain/repository/member_account_link_repository.dart';
 import '../source/member_account_link_remote_data_source.dart';
 
 class MemberAccountLinkRepositoryImpl implements MemberAccountLinkRepository {
-  final MemberAccountLinkRemoteDataSource remoteDataSource;
 
   MemberAccountLinkRepositoryImpl({required this.remoteDataSource});
+  final MemberAccountLinkRemoteDataSource remoteDataSource;
 
   @override
   Future<Either<Failure, List<MemberAccountLinkEntity>>> getAccountLinks(

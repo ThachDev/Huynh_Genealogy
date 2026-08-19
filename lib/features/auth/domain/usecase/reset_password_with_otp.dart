@@ -6,9 +6,9 @@ import '../repository/auth_repository.dart';
 
 class ResetPasswordWithOtp
     implements UseCase<void, ResetPasswordWithOtpParams> {
-  final AuthRepository repository;
 
   ResetPasswordWithOtp(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, void>> call(ResetPasswordWithOtpParams params) {
@@ -21,15 +21,15 @@ class ResetPasswordWithOtp
 }
 
 class ResetPasswordWithOtpParams extends Equatable {
-  final String email;
-  final String otp;
-  final String newPassword;
 
   const ResetPasswordWithOtpParams({
     required this.email,
     required this.otp,
     required this.newPassword,
   });
+  final String email;
+  final String otp;
+  final String newPassword;
 
   @override
   List<Object?> get props => [email, otp, newPassword];

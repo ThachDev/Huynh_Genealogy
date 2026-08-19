@@ -27,16 +27,16 @@ import '../../widgets/admin_dashboard/family_dashboard_header_widget.dart';
 enum AdminDashboardTab { members, branches, pending }
 
 class AdminDashboardPage extends StatefulWidget {
-  final bool isActive;
 
   const AdminDashboardPage({
     super.key,
     this.isActive = false,
   });
+  final bool isActive;
 
   /// Role label & color helper
   static String roleLabel(String role, BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     switch (role.toUpperCase()) {
       case 'OWNER':
       case 'CREATOR':
@@ -90,7 +90,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   void _updateFAB() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (!widget.isActive) return;
 
     final authState = context.read<AuthBloc>().state;
@@ -282,7 +282,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget build(BuildContext context) {
     final authState = context.watch<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
 
     // Resolve family name & invite code dynamically
@@ -338,7 +338,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       listeners: [
         BlocListener<AdminPendingRequestsBloc, AdminPendingRequestsState>(
           listener: (context, state) {
-            final l10n = AppLocalizations.of(context)!;
+            final l10n = AppLocalizations.of(context);
             if (state is AdminRequestApprovedSuccess) {
               AppSnackBar.success(context, l10n.approveSuccess);
               _loadPendingRequests();
@@ -353,7 +353,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
         BlocListener<AdminMemberFormBloc, AdminMemberFormState>(
           listener: (context, state) {
-            final l10n = AppLocalizations.of(context)!;
+            final l10n = AppLocalizations.of(context);
             if (state is AdminMemberFormSuccess) {
               if (state.isDeleted) {
                 AppSnackBar.success(context, l10n.deleteMemberSuccess);
@@ -368,7 +368,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
         BlocListener<AdminBranchFormBloc, AdminBranchFormState>(
           listener: (context, state) {
-            final l10n = AppLocalizations.of(context)!;
+            final l10n = AppLocalizations.of(context);
             if (state is AdminBranchFormSuccess) {
               if (state.isDeleted) {
                 AppSnackBar.success(context, l10n.deleteBranchSuccess);
@@ -396,7 +396,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 pendingState: pendingState,
               ),
               QuickStatsRow(
-                showPending: true,
                 memberCount: memberCount,
                 branchCount: branchCount,
                 pendingCount: pendingCount,
@@ -459,7 +458,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     required List<BranchEntity> branches,
     required List<FamilyUserEntity> requests,
   }) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     switch (_selectedTab) {
       case AdminDashboardTab.members:
@@ -674,7 +673,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   void _showDeleteConfirmation(
       BuildContext context, MemberEntity member) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final treeState = context.read<FamilyTreeBloc>().state;
     final allMembers =
         treeState is FamilyTreeLoaded ? treeState.members : <MemberEntity>[];
@@ -784,7 +783,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
@@ -854,8 +852,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   onTap: () {
                     Navigator.pop(ctx);
                     context.read<AdminMemberFormBloc>().add(
-                        DeleteAdminMemberFormEvent(member.id,
-                            reassignChildrenToParent: false));
+                        DeleteAdminMemberFormEvent(member.id));
                   },
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
@@ -865,7 +862,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
@@ -940,7 +936,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     showDialog(
       context: context,
       builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx)!;
+        final l10n = AppLocalizations.of(ctx);
         return AlertDialog(
           backgroundColor: ctx.surface,
           title: Text(
@@ -976,7 +972,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildSearchBar(String hintText, {bool showFilter = false}) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: AppSearchBar(
@@ -1010,7 +1006,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   });
                 }
               },
-              itemBuilder: (BuildContext context) {
+              itemBuilder: (context) {
                 return [
                   PopupMenuItem<String>(
                     value: 'clear_all',

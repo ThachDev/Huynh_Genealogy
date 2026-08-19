@@ -4,21 +4,21 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../onboarding/domain/repository/onboarding_repository.dart';
 
 class UpdateMemberRoleParams {
-  final int familyId;
-  final int userId;
-  final String role;
 
   const UpdateMemberRoleParams({
     required this.familyId,
     required this.userId,
     required this.role,
   });
+  final int familyId;
+  final int userId;
+  final String role;
 }
 
 class UpdateMemberRole implements UseCase<bool, UpdateMemberRoleParams> {
-  final OnboardingRepository repository;
 
   UpdateMemberRole(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(UpdateMemberRoleParams params) {

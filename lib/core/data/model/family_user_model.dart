@@ -14,6 +14,21 @@ class FamilyUserModel extends FamilyUserEntity {
     super.memberData,
   });
 
+  factory FamilyUserModel.fromEntity(FamilyUserEntity entity) {
+    return FamilyUserModel(
+      id: entity.id,
+      userId: entity.userId,
+      familyId: entity.familyId,
+      memberNodeId: entity.memberNodeId,
+      role: entity.role,
+      status: entity.status,
+      userFullName: entity.userFullName,
+      userEmail: entity.userEmail,
+      userAvatarUrl: entity.userAvatarUrl,
+      memberData: entity.memberData,
+    );
+  }
+
   factory FamilyUserModel.fromJson(Map<String, dynamic> json) {
     // Thông tin user (từ join với bảng users)
     final userJson = json['user'] as Map<String, dynamic>?;
@@ -68,20 +83,5 @@ class FamilyUserModel extends FamilyUserEntity {
       'userEmail': userEmail,
       'userAvatarUrl': userAvatarUrl,
     };
-  }
-
-  factory FamilyUserModel.fromEntity(FamilyUserEntity entity) {
-    return FamilyUserModel(
-      id: entity.id,
-      userId: entity.userId,
-      familyId: entity.familyId,
-      memberNodeId: entity.memberNodeId,
-      role: entity.role,
-      status: entity.status,
-      userFullName: entity.userFullName,
-      userEmail: entity.userEmail,
-      userAvatarUrl: entity.userAvatarUrl,
-      memberData: entity.memberData,
-    );
   }
 }

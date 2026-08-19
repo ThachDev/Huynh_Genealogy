@@ -28,32 +28,32 @@ const double _padding = 40.0;
 const double _spouseGap = 16.0;
 
 class _EdgeData {
+  _EdgeData({required this.parentId, required this.childId});
   final int parentId;
   final int childId;
-  _EdgeData({required this.parentId, required this.childId});
 }
 
 class _SpouseEdge {
-  final int leftMemberId;
-  final int rightMemberId;
-  final bool isDivorced;
   _SpouseEdge({
     required this.leftMemberId,
     required this.rightMemberId,
     this.isDivorced = false,
   });
+  final int leftMemberId;
+  final int rightMemberId;
+  final bool isDivorced;
 }
 
 /// Nhóm tất cả con của một cặp đôi để vẽ T-bar junction thay vì bezier rời rạc
 class _CoupleEdge {
-  final int primaryId;
-  final int? spouseId;
-  final List<int> childIds;
   _CoupleEdge({
     required this.primaryId,
     this.spouseId,
     required this.childIds,
   });
+  final int primaryId;
+  final int? spouseId;
+  final List<int> childIds;
 }
 
 class FamilyTreeViewPage extends StatefulWidget {
@@ -484,12 +484,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
   }
 
   Widget _buildSearchTitleWidget(BuildContext context, String appBarTitle) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
       switchInCurve: Curves.easeOutCubic,
       switchOutCurve: Curves.easeInCubic,
-      transitionBuilder: (Widget child, Animation<double> animation) {
+      transitionBuilder: (child, animation) {
         return FadeTransition(
           opacity: animation,
           child: SizeTransition(
@@ -582,7 +582,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 
   Widget _buildSearchDropdownOverlay(
       BuildContext context, List<MemberEntity> members) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final filteredMembers = members.where((m) {
       if (_searchQuery.isEmpty) return true;
       final q = _searchQuery.toLowerCase();
@@ -720,7 +720,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.watch<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
@@ -765,7 +765,6 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     return Scaffold(
       backgroundColor: context.appBarBg,
       appBar: AppAppBar(
-        transparent: false,
         titleWidget: _buildSearchTitleWidget(context, appBarTitle),
         actions: appBarActions,
       ),
@@ -1058,7 +1057,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 
   Future<void> _onAddChild(
       MemberEntity parentMember, List<MemberEntity> allMembers) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final candidateMembers = allMembers.where((m) {
       if (m.id == parentMember.id) return false;
       return m.parentId == null && m.motherId == null;
@@ -1140,7 +1139,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 
   Future<void> _onAddSpouse(
       MemberEntity spouseMember, List<MemberEntity> allMembers) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final candidateMembers = allMembers.where((m) {
       if (m.id == spouseMember.id) return false;
       return m.spouseId == null;
@@ -1229,18 +1228,6 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 }
 
 class _TreeEdgePainter extends CustomPainter {
-  final List<_CoupleEdge> coupleEdges;
-  final List<_EdgeData> orphanEdges;
-  final List<_SpouseEdge> spouseEdges;
-  final Map<int, Offset> positions;
-  final Map<int, double> generationLevels;
-  final Paint linePaint;
-  final Paint spousePaint;
-  final double nodeHeight;
-  final Color primaryColor;
-  final Color accentColor;
-  final Color surfaceColor;
-  final Color textColor;
 
   _TreeEdgePainter({
     required this.coupleEdges,
@@ -1256,6 +1243,18 @@ class _TreeEdgePainter extends CustomPainter {
     required this.surfaceColor,
     required this.textColor,
   });
+  final List<_CoupleEdge> coupleEdges;
+  final List<_EdgeData> orphanEdges;
+  final List<_SpouseEdge> spouseEdges;
+  final Map<int, Offset> positions;
+  final Map<int, double> generationLevels;
+  final Paint linePaint;
+  final Paint spousePaint;
+  final double nodeHeight;
+  final Color primaryColor;
+  final Color accentColor;
+  final Color surfaceColor;
+  final Color textColor;
 
   static String toRoman(int gen) {
     const map = {
@@ -1411,9 +1410,9 @@ class _TreeEdgePainter extends CustomPainter {
 }
 
 class MemberSearchDelegate extends SearchDelegate<int?> {
-  final List<MemberEntity> members;
 
   MemberSearchDelegate(this.members);
+  final List<MemberEntity> members;
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -1444,7 +1443,7 @@ class MemberSearchDelegate extends SearchDelegate<int?> {
   }
 
   Widget _buildSuggestions(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final matches = members
         .where((m) => m.fullName.toLowerCase().contains(query.toLowerCase()))
         .toList();

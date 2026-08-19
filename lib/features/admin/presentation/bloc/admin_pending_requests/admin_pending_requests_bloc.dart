@@ -11,10 +11,6 @@ part 'admin_pending_requests_event.dart';
 part 'admin_pending_requests_state.dart';
 
 class AdminPendingRequestsBloc extends Bloc<AdminPendingRequestsEvent, AdminPendingRequestsState> {
-  final GetPendingRequests getPendingRequests;
-  final ApproveRequest approveRequest;
-  final RejectRequest rejectRequest;
-  final GetFamilyDetail getFamilyDetail;
 
   AdminPendingRequestsBloc({
     required this.getPendingRequests,
@@ -26,6 +22,10 @@ class AdminPendingRequestsBloc extends Bloc<AdminPendingRequestsEvent, AdminPend
     on<ApproveAdminRequestEvent>(_onApproveRequest);
     on<RejectAdminRequestEvent>(_onRejectRequest);
   }
+  final GetPendingRequests getPendingRequests;
+  final ApproveRequest approveRequest;
+  final RejectRequest rejectRequest;
+  final GetFamilyDetail getFamilyDetail;
 
   Future<void> _onLoadPendingRequests(
     LoadAdminPendingRequestsEvent event,

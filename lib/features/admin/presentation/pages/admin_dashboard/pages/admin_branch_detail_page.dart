@@ -11,18 +11,18 @@ import '../../../../../auth/auth.dart';
 import 'admin_branch_form_page.dart';
 
 class AdminBranchDetailPage extends StatelessWidget {
-  final BranchEntity branch;
-  final List<MemberEntity> members;
 
   const AdminBranchDetailPage({
     super.key,
     required this.branch,
     this.members = const [],
   });
+  final BranchEntity branch;
+  final List<MemberEntity> members;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.watch<AuthBloc>().state;
     final isAdminMode = UserMainNavigationPage.adminModeNotifier.value;
     final canEdit = isAdminMode &&
@@ -38,7 +38,6 @@ class AdminBranchDetailPage extends StatelessWidget {
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: l10n.branchLabel,
-        transparent: false,
         actions: [
           if (canEdit)
             IconButton(

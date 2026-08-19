@@ -4,13 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 /// Hiển thị ảnh từ mạng có cache cục bộ (cached_network_image).
 /// Tự fallback khi URL rỗng/lỗi tải.
 class AppNetworkImage extends StatelessWidget {
-  final String? url;
-  final BoxFit fit;
-  final double? width;
-  final double? height;
-  final BorderRadius? borderRadius;
-  final WidgetBuilder? placeholderBuilder;
-  final WidgetBuilder? errorBuilder;
 
   const AppNetworkImage({
     super.key,
@@ -22,6 +15,13 @@ class AppNetworkImage extends StatelessWidget {
     this.placeholderBuilder,
     this.errorBuilder,
   });
+  final String? url;
+  final BoxFit fit;
+  final double? width;
+  final double? height;
+  final BorderRadius? borderRadius;
+  final WidgetBuilder? placeholderBuilder;
+  final WidgetBuilder? errorBuilder;
 
   @override
   Widget build(BuildContext context) {

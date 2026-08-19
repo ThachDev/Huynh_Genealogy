@@ -6,12 +6,12 @@ import '../theme/theme_extensions.dart';
 
 /// Loading indicator component using Lottie
 class AppLoading extends StatelessWidget {
-  final double size;
 
   const AppLoading({
     super.key,
     this.size = 120.0,
   });
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +28,6 @@ class AppLoading extends StatelessWidget {
 
 /// Loading overlay toàn màn hình
 class AppLoadingOverlay extends StatelessWidget {
-  final bool isLoading;
-  final Widget child;
-  final String? message;
 
   const AppLoadingOverlay({
     super.key,
@@ -38,6 +35,9 @@ class AppLoadingOverlay extends StatelessWidget {
     required this.child,
     this.message,
   });
+  final bool isLoading;
+  final Widget child;
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -73,13 +73,6 @@ class AppLoadingOverlay extends StatelessWidget {
 
 /// Empty state widget — khi danh sách rỗng
 class AppEmptyState extends StatelessWidget {
-  final String message;
-  final String? subMessage;
-  final IconData icon;
-  final Widget? action;
-  final double iconSize;
-  final bool useCardStyle;
-  final EdgeInsets? padding;
 
   const AppEmptyState({
     super.key,
@@ -91,6 +84,13 @@ class AppEmptyState extends StatelessWidget {
     this.useCardStyle = false,
     this.padding,
   });
+  final String message;
+  final String? subMessage;
+  final IconData icon;
+  final Widget? action;
+  final double iconSize;
+  final bool useCardStyle;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -162,10 +162,6 @@ class AppEmptyState extends StatelessWidget {
 
 /// Error state widget — khi có lỗi
 class AppErrorState extends StatelessWidget {
-  final String message;
-  final String? title;
-  final String? retryLabel;
-  final VoidCallback? onRetry;
 
   const AppErrorState({
     super.key,
@@ -174,11 +170,15 @@ class AppErrorState extends StatelessWidget {
     this.retryLabel,
     this.onRetry,
   });
+  final String message;
+  final String? title;
+  final String? retryLabel;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -235,10 +235,10 @@ class AppErrorState extends StatelessWidget {
 
 /// Divider có label ở giữa
 class AppLabeledDivider extends StatelessWidget {
-  final String label;
-  final bool? isLight;
 
   const AppLabeledDivider({super.key, required this.label, this.isLight});
+  final String label;
+  final bool? isLight;
 
   @override
   Widget build(BuildContext context) {
@@ -281,9 +281,6 @@ class AppLabeledDivider extends StatelessWidget {
 
 /// Badge / chip label nhỏ
 class AppBadge extends StatelessWidget {
-  final String label;
-  final Color? color;
-  final Color? textColor;
 
   const AppBadge({
     super.key,
@@ -291,6 +288,9 @@ class AppBadge extends StatelessWidget {
     this.color,
     this.textColor,
   });
+  final String label;
+  final Color? color;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -317,11 +317,6 @@ class AppBadge extends StatelessWidget {
 
 /// Section Header component with red vertical indicator
 class AppSectionHeader extends StatelessWidget {
-  final String title;
-  final String? description;
-  final double titleSize;
-  final double indicatorHeight;
-  final double spacing;
 
   const AppSectionHeader({
     super.key,
@@ -331,6 +326,11 @@ class AppSectionHeader extends StatelessWidget {
     this.indicatorHeight = 20.0,
     this.spacing = 8.0,
   });
+  final String title;
+  final String? description;
+  final double titleSize;
+  final double indicatorHeight;
+  final double spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -382,14 +382,14 @@ class AppSectionHeader extends StatelessWidget {
 
 /// Section title with side colored line and optional trailing widget
 class AppSectionTitle extends StatelessWidget {
-  final String title;
-  final Widget? trailing;
 
   const AppSectionTitle({
     super.key,
     required this.title,
     this.trailing,
   });
+  final String title;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -424,12 +424,6 @@ class AppSectionTitle extends StatelessWidget {
 
 /// A card with traditional Vietnamese geometric ornamental corner patterns
 class TraditionalOrnamentalCard extends StatelessWidget {
-  final Widget child;
-  final double? width;
-  final double? height;
-  final EdgeInsetsGeometry padding;
-  final Color? fillColor;
-  final Color? borderColor;
 
   const TraditionalOrnamentalCard({
     super.key,
@@ -440,6 +434,12 @@ class TraditionalOrnamentalCard extends StatelessWidget {
     this.fillColor,
     this.borderColor,
   });
+  final Widget child;
+  final double? width;
+  final double? height;
+  final EdgeInsetsGeometry padding;
+  final Color? fillColor;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -462,11 +462,6 @@ class TraditionalOrnamentalCard extends StatelessWidget {
 }
 
 class TraditionalOrnamentalBorderPainter extends CustomPainter {
-  final Color borderColor;
-  final Color fillColor;
-  final double borderRadius;
-  final Color? leftAccentColor;
-  final Color? bottomAccentColor;
 
   TraditionalOrnamentalBorderPainter({
     required this.borderColor,
@@ -475,6 +470,11 @@ class TraditionalOrnamentalBorderPainter extends CustomPainter {
     this.leftAccentColor,
     this.bottomAccentColor,
   });
+  final Color borderColor;
+  final Color fillColor;
+  final double borderRadius;
+  final Color? leftAccentColor;
+  final Color? bottomAccentColor;
 
   @override
   void paint(Canvas canvas, Size size) {

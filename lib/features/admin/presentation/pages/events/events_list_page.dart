@@ -15,14 +15,14 @@ import '../../widgets/events/event_item_card.dart';
 import '../../widgets/events/announcement_item_card.dart';
 
 class EventsListPage extends StatefulWidget {
-  final int familyId;
-  final bool isActive;
 
   const EventsListPage({
     super.key,
     required this.familyId,
     this.isActive = false,
   });
+  final int familyId;
+  final bool isActive;
 
   @override
   State<EventsListPage> createState() => _EventsListPageState();
@@ -113,7 +113,7 @@ class _EventsListPageState extends State<EventsListPage> {
   }
 
   Future<bool?> _showConfirmDeleteDialog(EventEntity event) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -152,7 +152,7 @@ class _EventsListPageState extends State<EventsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.watch<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
         (authState.user.role == 'OWNER' ||
@@ -492,7 +492,7 @@ class _EventsListPageState extends State<EventsListPage> {
   }
 
   Widget _buildSectionHeader(String title, {VoidCallback? onViewAll}) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
       child: Row(

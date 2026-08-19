@@ -6,9 +6,9 @@ import '../repository/member_account_link_repository.dart';
 
 class UnlinkMemberAccount
     implements UseCase<bool, UnlinkMemberAccountParams> {
-  final MemberAccountLinkRepository repository;
 
   UnlinkMemberAccount(this.repository);
+  final MemberAccountLinkRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(UnlinkMemberAccountParams params) {
@@ -20,13 +20,13 @@ class UnlinkMemberAccount
 }
 
 class UnlinkMemberAccountParams extends Equatable {
-  final int familyId;
-  final int memberId;
 
   const UnlinkMemberAccountParams({
     required this.familyId,
     required this.memberId,
   });
+  final int familyId;
+  final int memberId;
 
   @override
   List<Object?> get props => [familyId, memberId];

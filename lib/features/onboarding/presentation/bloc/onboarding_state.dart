@@ -24,9 +24,9 @@ class OnboardingLoading extends OnboardingState {}
 
 /// 3. Trạng thái Tạo dòng họ thành công -> Chứa thông tin Dòng họ mới tạo (`FamilyEntity`)
 class FamilyCreatedState extends OnboardingState {
-  final FamilyEntity family;
 
   const FamilyCreatedState({required this.family});
+  final FamilyEntity family;
 
   @override
   List<Object?> get props => [family];
@@ -34,13 +34,13 @@ class FamilyCreatedState extends OnboardingState {
 
 /// 4. Trạng thái Xác minh mã mời thành công -> Chứa thông tin Dòng họ & Danh sách thành viên gia phả
 class InviteCodeVerifiedState extends OnboardingState {
-  final FamilyEntity family;
-  final List<MemberEntity> members;
 
   const InviteCodeVerifiedState({
     required this.family,
     required this.members,
   });
+  final FamilyEntity family;
+  final List<MemberEntity> members;
 
   @override
   List<Object?> get props => [family, members];
@@ -48,9 +48,9 @@ class InviteCodeVerifiedState extends OnboardingState {
 
 /// 5. Trạng thái Gửi yêu cầu gia nhập thành công -> Chứa thông tin Yêu cầu (`FamilyUserEntity`)
 class JoinRequestSentState extends OnboardingState {
-  final FamilyUserEntity request;
 
   const JoinRequestSentState({required this.request});
+  final FamilyUserEntity request;
 
   @override
   List<Object?> get props => [request];
@@ -58,9 +58,9 @@ class JoinRequestSentState extends OnboardingState {
 
 /// 6. Trạng thái Thất bại -> Chứa thông báo lỗi để hiển thị SnackBar/Toast cho người dùng
 class OnboardingFailureState extends OnboardingState {
-  final String message;
 
   const OnboardingFailureState({required this.message});
+  final String message;
 
   @override
   List<Object?> get props => [message];

@@ -6,14 +6,14 @@ import '../theme/theme_extensions.dart';
 /// Tự thích ứng sáng/tối: dùng `context.textSecondary` làm màu nền placeholder
 /// và chạy một gradient sáng quét qua toàn bộ child.
 class AppShimmer extends StatefulWidget {
-  final Widget child;
-  final Duration duration;
 
   const AppShimmer({
     super.key,
     required this.child,
     this.duration = const Duration(milliseconds: 1200),
   });
+  final Widget child;
+  final Duration duration;
 
   @override
   State<AppShimmer> createState() => _AppShimmerState();
@@ -65,9 +65,9 @@ class _AppShimmerState extends State<AppShimmer>
 
 /// Dịch chuyển gradient để tạo hiệu ứng shimmer quét ngang.
 class _SlidingGradientTransform extends GradientTransform {
-  final double dx;
 
   const _SlidingGradientTransform(this.dx);
+  final double dx;
 
   @override
   Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
@@ -77,9 +77,6 @@ class _SlidingGradientTransform extends GradientTransform {
 
 /// Hình chữ nhật placeholder cho skeleton.
 class SkeletonBox extends StatelessWidget {
-  final double? width;
-  final double? height;
-  final double borderRadius;
 
   const SkeletonBox({
     super.key,
@@ -87,6 +84,9 @@ class SkeletonBox extends StatelessWidget {
     this.height,
     this.borderRadius = 8,
   });
+  final double? width;
+  final double? height;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -103,9 +103,9 @@ class SkeletonBox extends StatelessWidget {
 
 /// Hình tròn placeholder (avatar) cho skeleton.
 class SkeletonCircle extends StatelessWidget {
-  final double radius;
 
   const SkeletonCircle({super.key, this.radius = 24});
+  final double radius;
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +122,6 @@ class SkeletonCircle extends StatelessWidget {
 
 /// Dòng text placeholder cho skeleton.
 class SkeletonLine extends StatelessWidget {
-  final double width;
-  final double height;
-  final double borderRadius;
 
   const SkeletonLine({
     super.key,
@@ -132,6 +129,9 @@ class SkeletonLine extends StatelessWidget {
     this.height = 12,
     this.borderRadius = 6,
   });
+  final double width;
+  final double height;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -141,14 +141,14 @@ class SkeletonLine extends StatelessWidget {
 
 /// Row placeholder chuẩn: avatar tròn + 2 dòng text.
 class SkeletonListTile extends StatelessWidget {
-  final double avatarRadius;
-  final double spacing;
 
   const SkeletonListTile({
     super.key,
     this.avatarRadius = 24,
     this.spacing = 12,
   });
+  final double avatarRadius;
+  final double spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +160,7 @@ class SkeletonListTile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SkeletonLine(width: double.infinity, height: 14),
+              SkeletonLine(height: 14),
               SizedBox(height: 8),
               SkeletonLine(width: 120, height: 11),
             ],

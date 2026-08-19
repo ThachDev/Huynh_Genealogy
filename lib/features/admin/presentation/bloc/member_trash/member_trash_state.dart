@@ -16,36 +16,36 @@ class MemberTrashLoading extends MemberTrashState {
 }
 
 class MemberTrashLoaded extends MemberTrashState {
-  final List<MemberEntity> members;
 
   const MemberTrashLoaded({required this.members});
+  final List<MemberEntity> members;
 
   @override
   List<Object?> get props => [members];
 }
 
 class MemberTrashFailure extends MemberTrashState {
-  final String message;
 
   const MemberTrashFailure({required this.message});
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class MemberRestoredState extends MemberTrashState {
-  final MemberEntity member;
 
   const MemberRestoredState({required this.member});
+  final MemberEntity member;
 
   @override
   List<Object?> get props => [member];
 }
 
 class TrashPurgedState extends MemberTrashState {
-  final int removed;
 
   const TrashPurgedState({required this.removed});
+  final int removed;
 
   @override
   List<Object?> get props => [removed];

@@ -5,9 +5,9 @@ import '../../../../core/domain/entity/family_user_entity.dart';
 import '../../../onboarding/domain/repository/onboarding_repository.dart';
 
 class GetPendingRequests implements UseCase<List<FamilyUserEntity>, int> {
-  final OnboardingRepository repository;
 
   GetPendingRequests(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, List<FamilyUserEntity>>> call(int familyId) {

@@ -12,10 +12,10 @@ import '../../../../../family_tree/family_tree.dart';
 import '../../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
 import 'admin_member_form_page.dart';
 
-class AdminBranchFormPage extends StatefulWidget {
-  final BranchEntity? branch; // null = Thêm mới, có giá trị = Chỉnh sửa
+class AdminBranchFormPage extends StatefulWidget { // null = Thêm mới, có giá trị = Chỉnh sửa
 
   const AdminBranchFormPage({super.key, this.branch});
+  final BranchEntity? branch;
 
   @override
   State<AdminBranchFormPage> createState() => _AdminBranchFormPageState();
@@ -62,7 +62,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     showDialog(
       context: context,
       builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx)!;
+        final l10n = AppLocalizations.of(ctx);
         return AlertDialog(
           backgroundColor: ctx.background,
           title: Text(
@@ -102,8 +102,8 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
     if (_nameController.text.trim().isEmpty) {
       AppSnackBar.error(
           context,
-          AppLocalizations.of(context)!
-              .errRequiredField(AppLocalizations.of(context)!.branchNameLabel));
+          AppLocalizations.of(context)
+              .errRequiredField(AppLocalizations.of(context).branchNameLabel));
       return;
     }
 
@@ -161,7 +161,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       keyboardType: keyboardType,
       maxLines: maxLines,
       validator: (val) {
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
         if (label == l10n.branchNameLabel &&
             (val == null || val.trim().isEmpty)) {
           return l10n.branchNameEmptyError;
@@ -211,7 +211,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isEdit = widget.branch != null;
     final title = isEdit ? l10n.editBranchTitle : l10n.addBranchTitle;
 
@@ -236,7 +236,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
       body: AppBackgroundBody(
         child: BlocConsumer<AdminBranchFormBloc, AdminBranchFormState>(
         listener: (context, state) {
-          final l10n = AppLocalizations.of(context)!;
+          final l10n = AppLocalizations.of(context);
           if (state is AdminBranchFormSuccess) {
             AppSnackBar.success(
               context,
@@ -282,7 +282,6 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                   child: Form(
                     key: _formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         _buildSectionCard(
                           context,
@@ -325,7 +324,6 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                                                   ),
                                                 ),
                                                 DropdownItem<String?>(
-                                                  value: null,
                                                   child: Text(
                                                       l10n.noSelectionLabel),
                                                 ),

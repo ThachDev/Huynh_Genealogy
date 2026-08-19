@@ -6,9 +6,9 @@ import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class SaveMember implements UseCase<MemberEntity, SaveMemberParams> {
-  final FamilyTreeRepository repository;
 
   SaveMember(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, MemberEntity>> call(SaveMemberParams params) {
@@ -17,9 +17,9 @@ class SaveMember implements UseCase<MemberEntity, SaveMemberParams> {
 }
 
 class SaveMemberParams extends Equatable {
-  final MemberEntity member;
 
   const SaveMemberParams({required this.member});
+  final MemberEntity member;
 
   @override
   List<Object?> get props => [member];

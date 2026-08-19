@@ -13,18 +13,18 @@ class EventsInitial extends EventsState {}
 class EventsLoading extends EventsState {}
 
 class EventsLoaded extends EventsState {
-  final List<EventEntity> events;
 
   const EventsLoaded({required this.events});
+  final List<EventEntity> events;
 
   @override
   List<Object?> get props => [events];
 }
 
 class EventsError extends EventsState {
-  final String message;
 
   const EventsError({required this.message});
+  final String message;
 
   @override
   List<Object?> get props => [message];
@@ -34,9 +34,9 @@ class EventsError extends EventsState {
 class EventsSubmitting extends EventsState {}
 
 class EventsSubmitSuccess extends EventsState {
-  final String message;
 
   const EventsSubmitSuccess({required this.message});
+  final String message;
 
   @override
   List<Object?> get props => [message];

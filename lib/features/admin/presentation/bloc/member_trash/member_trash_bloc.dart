@@ -9,9 +9,6 @@ part 'member_trash_event.dart';
 part 'member_trash_state.dart';
 
 class MemberTrashBloc extends Bloc<MemberTrashEvent, MemberTrashState> {
-  final GetTrashedMembers getTrashedMembers;
-  final RestoreMember restoreMember;
-  final PurgeTrash purgeTrash;
 
   MemberTrashBloc({
     required this.getTrashedMembers,
@@ -22,6 +19,9 @@ class MemberTrashBloc extends Bloc<MemberTrashEvent, MemberTrashState> {
     on<RestoreMemberEvent>(_onRestore);
     on<PurgeTrashEvent>(_onPurge);
   }
+  final GetTrashedMembers getTrashedMembers;
+  final RestoreMember restoreMember;
+  final PurgeTrash purgeTrash;
 
   Future<void> _onLoad(
     LoadMemberTrashEvent event,

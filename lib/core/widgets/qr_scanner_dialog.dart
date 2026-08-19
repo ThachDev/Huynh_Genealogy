@@ -14,7 +14,6 @@ class QrScannerDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) {
     return showDialog<String>(
       context: context,
-      barrierDismissible: true,
       builder: (_) => const QrScannerDialog(),
     );
   }
@@ -48,14 +47,14 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
         } else {
           if (mounted) {
             AppSnackBar.warning(
-                context, AppLocalizations.of(context)!.qrScannerNoCodeFound);
+                context, AppLocalizations.of(context).qrScannerNoCodeFound);
           }
         }
       }
     } catch (e) {
-      debugPrint("Error scanning from gallery: $e");
+      debugPrint('Error scanning from gallery: $e');
       if (mounted) {
-        AppSnackBar.error(context, AppLocalizations.of(context)!.qrScannerSelectImageError);
+        AppSnackBar.error(context, AppLocalizations.of(context).qrScannerSelectImageError);
       }
     }
   }
@@ -79,7 +78,7 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.qrScannerTitle,
+                  AppLocalizations.of(context).qrScannerTitle,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -109,7 +108,7 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
                   // Scanner
                   MobileScanner(
                     controller: _controller,
-                    onDetect: (BarcodeCapture capture) {
+                    onDetect: (capture) {
                       if (_hasDetected) return;
                       final List<Barcode> barcodes = capture.barcodes;
                       for (final barcode in barcodes) {
@@ -136,7 +135,6 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
                           ),
                         ),
                         Align(
-                          alignment: Alignment.center,
                           child: Container(
                             width: scanAreaSize,
                             height: scanAreaSize,
@@ -151,7 +149,6 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
                   ),
                   // Border lines for scanning area
                   Align(
-                    alignment: Alignment.center,
                     child: Container(
                       width: scanAreaSize,
                       height: scanAreaSize,
@@ -217,7 +214,7 @@ class _QrScannerDialogState extends State<QrScannerDialog> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
             child: Text(
-              AppLocalizations.of(context)!.qrScannerInstruction,
+              AppLocalizations.of(context).qrScannerInstruction,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
                 fontSize: 12,

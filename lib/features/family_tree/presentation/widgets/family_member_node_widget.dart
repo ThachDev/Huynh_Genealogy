@@ -8,12 +8,6 @@ import '../../../../core/domain/entity/member_entity.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberNodeWidget extends StatefulWidget {
-  final MemberEntity member;
-  final bool isSelected;
-  final bool isCurrentUser;
-  final VoidCallback? onTap;
-  final VoidCallback? onAddChildTap;
-  final VoidCallback? onAddSpouseTap;
 
   const FamilyMemberNodeWidget({
     super.key,
@@ -24,6 +18,12 @@ class FamilyMemberNodeWidget extends StatefulWidget {
     this.onAddChildTap,
     this.onAddSpouseTap,
   });
+  final MemberEntity member;
+  final bool isSelected;
+  final bool isCurrentUser;
+  final VoidCallback? onTap;
+  final VoidCallback? onAddChildTap;
+  final VoidCallback? onAddSpouseTap;
 
   @override
   State<FamilyMemberNodeWidget> createState() => _FamilyMemberNodeWidgetState();
@@ -66,7 +66,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final genderText = widget.member.gender == Gender.male
         ? 'Nam'
@@ -161,13 +161,11 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                     color: context.accent.withValues(
                                         alpha:
                                             context.isDarkMode ? 0.45 : 0.35),
-                                    width: 1.0,
                                   ),
                                 ),
                                 child: AppAvatar(
                                   avatarUrl: widget.member.avatarUrl,
                                   fullName: widget.member.fullName,
-                                  radius: 20,
                                   fontSize: 15,
                                 ),
                               ),
@@ -500,8 +498,8 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
 /// Clipper tạo hình ruy băng thẻ bài phong cách cổ truyền có đuôi vát nhọn chữ V
 /// và bo góc trên bên phải khớp với góc của thẻ card
 class _RibbonClipper extends CustomClipper<Path> {
-  final double topRightRadius;
   const _RibbonClipper({this.topRightRadius = 0});
+  final double topRightRadius;
 
   @override
   Path getClip(Size size) {

@@ -10,14 +10,14 @@ enum AddMemberOption {
 }
 
 class AddMemberOptionDialog extends StatelessWidget {
-  final String title;
-  final int availableCount;
 
   const AddMemberOptionDialog({
     super.key,
     required this.title,
     required this.availableCount,
   });
+  final String title;
+  final int availableCount;
 
   static Future<AddMemberOption?> show(
     BuildContext context, {
@@ -26,7 +26,6 @@ class AddMemberOptionDialog extends StatelessWidget {
   }) {
     return showDialog<AddMemberOption>(
       context: context,
-      barrierDismissible: true,
       builder: (_) => AddMemberOptionDialog(
         title: title,
         availableCount: availableCount,
@@ -36,7 +35,7 @@ class AddMemberOptionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final dialogBg = context.surface;
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
@@ -56,7 +55,6 @@ class AddMemberOptionDialog extends StatelessWidget {
           children: [
             // Header without top-left icon & with Close button
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: Column(
@@ -85,7 +83,7 @@ class AddMemberOptionDialog extends StatelessWidget {
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () => Navigator.pop(context, null),
+                    onTap: () => Navigator.pop(context),
                     borderRadius: BorderRadius.circular(20),
                     child: Padding(
                       padding: const EdgeInsets.all(6.0),
@@ -118,7 +116,6 @@ class AddMemberOptionDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: borderColor,
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -186,7 +183,6 @@ class AddMemberOptionDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: borderColor,
-                      width: 1,
                     ),
                   ),
                   child: Row(

@@ -71,7 +71,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final pendingState = context.watch<AdminPendingRequestsBloc>().state;
     final FamilyEntity? family =
         pendingState is AdminPendingRequestsLoaded ? pendingState.family : null;
@@ -112,7 +112,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: context.primary.withValues(alpha: 0.3),
-                        width: 1,
                       ),
                     ),
                     child: Column(
@@ -405,7 +404,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     }
                   },
                   prefixIcon: const Icon(LucideIcons.logOut, size: 18),
-                  variant: AppButtonVariant.primary,
                   fullWidth: true,
                 ),
                 const SizedBox(height: 32),
@@ -560,7 +558,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     const BorderRadius.vertical(top: Radius.circular(24)),
                 border: Border.all(
                   color: context.primary.withValues(alpha: 0.2),
-                  width: 1,
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

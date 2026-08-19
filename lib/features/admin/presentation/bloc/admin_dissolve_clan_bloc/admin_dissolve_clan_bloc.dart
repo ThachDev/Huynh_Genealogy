@@ -6,11 +6,11 @@ part 'admin_dissolve_clan_event.dart';
 part 'admin_dissolve_clan_state.dart';
 
 class AdminDissolveClanBloc extends Bloc<AdminDissolveClanEvent, AdminDissolveClanState> {
-  final DeleteFamily deleteFamily;
 
   AdminDissolveClanBloc({required this.deleteFamily}) : super(AdminDissolveClanInitial()) {
     on<DeleteFamilyRequested>(_onDeleteFamilyRequested);
   }
+  final DeleteFamily deleteFamily;
 
   Future<void> _onDeleteFamilyRequested(
     DeleteFamilyRequested event,

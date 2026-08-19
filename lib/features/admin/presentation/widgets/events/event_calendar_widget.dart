@@ -5,11 +5,6 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 
 class EventCalendarWidget extends StatefulWidget {
-  final String eventDate;
-  final bool isLunarDefault;
-  final AppLocalizations? l10n;
-  final Color? primaryColor;
-  final Color? lunarColor;
 
   const EventCalendarWidget({
     super.key,
@@ -19,6 +14,11 @@ class EventCalendarWidget extends StatefulWidget {
     this.primaryColor,
     this.lunarColor,
   });
+  final String eventDate;
+  final bool isLunarDefault;
+  final AppLocalizations? l10n;
+  final Color? primaryColor;
+  final Color? lunarColor;
 
   @override
   State<EventCalendarWidget> createState() => _EventCalendarWidgetState();
@@ -84,7 +84,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final monthYearStr = _getMonthYear(widget.eventDate);
     final monthStr = monthYearStr.split('/').first;
     final monthInt = int.tryParse(monthStr) ?? monthStr;
@@ -123,7 +123,6 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: activeColor.withValues(alpha: 0.3),
-            width: 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -165,11 +164,10 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
                 padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  alignment: Alignment.center,
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 400),
                     transitionBuilder:
-                        (Widget child, Animation<double> animation) {
+                        (child, animation) {
                       return FadeTransition(
                         opacity: animation,
                         child: ScaleTransition(scale: animation, child: child),

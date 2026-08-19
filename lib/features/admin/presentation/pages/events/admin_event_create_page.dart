@@ -14,9 +14,9 @@ import '../../../../auth/auth.dart';
 import '../../../../events/events.dart';
 
 class AdminEventCreatePage extends StatefulWidget {
-  final int familyId;
 
   const AdminEventCreatePage({super.key, required this.familyId});
+  final int familyId;
 
   @override
   State<AdminEventCreatePage> createState() => _AdminEventCreatePageState();
@@ -108,7 +108,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
         if (await exceedsMaxFileSize(pickedFile, 10)) {
           if (!mounted) return;
           AppSnackBar.error(
-              context, AppLocalizations.of(context)!.imageTooLargeFormat(10));
+              context, AppLocalizations.of(context).imageTooLargeFormat(10));
           return;
         }
         final tempDir = await getTemporaryDirectory();
@@ -172,7 +172,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
   }
 
   void _submitForm() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (!_formKey.currentState!.validate()) return;
     if (_selectedDate.isEmpty) {
       AppSnackBar.error(context, l10n.selectEventDateError);
@@ -190,7 +190,6 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
           event: EventEntity(
             id: 0,
             title: _titleController.text.trim(),
-            description: null,
             content: contentText.isEmpty ? null : contentText,
             location:
                 _showLocation && _locationController.text.trim().isNotEmpty
@@ -413,13 +412,12 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: l10n.addEventTitle,
-        transparent: false,
         actions: [
           IconButton(
             icon: Icon(LucideIcons.check, color: context.textPrimary),

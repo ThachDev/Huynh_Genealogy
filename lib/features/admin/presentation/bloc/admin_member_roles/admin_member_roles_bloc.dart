@@ -9,8 +9,6 @@ part 'admin_member_roles_state.dart';
 
 class AdminMemberRolesBloc
     extends Bloc<AdminMemberRolesEvent, AdminMemberRolesState> {
-  final GetApprovedMembers getApprovedMembers;
-  final UpdateMemberRole updateMemberRole;
 
   AdminMemberRolesBloc({
     required this.getApprovedMembers,
@@ -19,6 +17,8 @@ class AdminMemberRolesBloc
     on<LoadAdminMemberRolesEvent>(_onLoadAdminMemberRoles);
     on<UpdateAdminMemberRoleEvent>(_onUpdateAdminMemberRole);
   }
+  final GetApprovedMembers getApprovedMembers;
+  final UpdateMemberRole updateMemberRole;
 
   Future<void> _onLoadAdminMemberRoles(
     LoadAdminMemberRolesEvent event,

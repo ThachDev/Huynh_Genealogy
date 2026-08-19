@@ -9,12 +9,6 @@ import '../../../../../core/widgets/widgets.dart';
 import '../../../../family_tree/presentation/pages/family_member_detail_page.dart';
 
 class MemberItemWidget extends StatelessWidget {
-  final MemberEntity member;
-  final List<MemberEntity> allMembers;
-  final VoidCallback? onEdit;
-  final VoidCallback? onDelete;
-  final bool showMenu;
-  final bool useOrnamentalBorder;
 
   const MemberItemWidget({
     super.key,
@@ -25,6 +19,12 @@ class MemberItemWidget extends StatelessWidget {
     this.showMenu = true,
     this.useOrnamentalBorder = true,
   });
+  final MemberEntity member;
+  final List<MemberEntity> allMembers;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final bool showMenu;
+  final bool useOrnamentalBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,6 @@ class MemberItemWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: borderColor,
-              width: 1.0,
             ),
             boxShadow: [
               BoxShadow(
@@ -72,13 +71,12 @@ class MemberItemWidget extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final String aliveText =
         member.isAlive ? l10n.aliveLabel : l10n.deceasedLabel;
     return Padding(
       padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // ── Avatar ──
           Container(
@@ -87,7 +85,6 @@ class MemberItemWidget extends StatelessWidget {
               border: Border.all(
                 color:
                     context.resolve(Colors.grey.shade300, Colors.grey.shade700),
-                width: 1.0,
               ),
             ),
             child: AppAvatar(
@@ -109,7 +106,6 @@ class MemberItemWidget extends StatelessWidget {
               children: [
                 // Row 1: Họ tên + Status
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Text(
@@ -151,7 +147,6 @@ class MemberItemWidget extends StatelessWidget {
 
                 // Row 2: Đời + Chi
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(LucideIcons.users,
                         size: 12,
@@ -217,7 +212,7 @@ class MemberItemWidget extends StatelessWidget {
                   onDelete?.call();
                 }
               },
-              itemBuilder: (BuildContext context) => [
+              itemBuilder: (context) => [
                 if (onEdit != null)
                   PopupMenuItem<String>(
                     value: 'edit',

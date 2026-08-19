@@ -27,13 +27,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Catch Flutter framework errors
-  FlutterError.onError = (FlutterErrorDetails details) {
+  FlutterError.onError = (details) {
     FlutterError.presentError(details);
     debugPrint('Flutter Framework Error: ${details.exceptionAsString()}');
   };
 
   // Catch asynchronous errors outside Flutter framework
-  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+  PlatformDispatcher.instance.onError = (error, stack) {
     debugPrint('Uncaught Async Error: $error\n$stack');
     return true;
   };
@@ -56,13 +56,13 @@ class FamilyTreeApp extends StatefulWidget {
   const FamilyTreeApp({super.key});
 
   static void setLocale(BuildContext context, Locale newLocale) {
-    _FamilyTreeAppState? state =
+    final _FamilyTreeAppState? state =
         context.findAncestorStateOfType<_FamilyTreeAppState>();
     state?.setLocale(newLocale);
   }
 
   static void setThemeMode(BuildContext context, ThemeMode newThemeMode) {
-    _FamilyTreeAppState? state =
+    final _FamilyTreeAppState? state =
         context.findAncestorStateOfType<_FamilyTreeAppState>();
     state?.setThemeMode(newThemeMode);
   }
@@ -152,7 +152,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
       ],
       child: MaterialApp.router(
         routerConfig: _router,
-        onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+        onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,

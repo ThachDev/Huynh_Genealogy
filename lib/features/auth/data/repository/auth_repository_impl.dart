@@ -11,10 +11,6 @@ import '../source/auth_local_data_source.dart';
 import '../source/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteDataSource remoteDataSource;
-  final AuthLocalDataSource localDataSource;
-  final FirebaseAuth firebaseAuth;
-  final GoogleSignIn googleSignIn;
 
   AuthRepositoryImpl({
     required this.remoteDataSource,
@@ -22,6 +18,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.firebaseAuth,
     required this.googleSignIn,
   });
+  final AuthRemoteDataSource remoteDataSource;
+  final AuthLocalDataSource localDataSource;
+  final FirebaseAuth firebaseAuth;
+  final GoogleSignIn googleSignIn;
 
   @override
   Future<Either<Failure, UserEntity>> loginWithGoogle() async {

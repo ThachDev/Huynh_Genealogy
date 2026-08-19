@@ -9,8 +9,6 @@ part 'admin_transfer_ownership_state.dart';
 
 class AdminTransferOwnershipBloc
     extends Bloc<AdminTransferOwnershipEvent, AdminTransferOwnershipState> {
-  final GetApprovedMembers getApprovedMembers;
-  final TransferOwnership transferOwnership;
 
   AdminTransferOwnershipBloc({
     required this.getApprovedMembers,
@@ -19,6 +17,8 @@ class AdminTransferOwnershipBloc
     on<LoadCandidatesEvent>(_onLoadCandidates);
     on<TransferOwnershipEvent>(_onTransferOwnership);
   }
+  final GetApprovedMembers getApprovedMembers;
+  final TransferOwnership transferOwnership;
 
   Future<void> _onLoadCandidates(
     LoadCandidatesEvent event,

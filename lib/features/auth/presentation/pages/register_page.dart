@@ -39,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _onRegisterPressed() {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     if (!_isTermsAccepted) {
       AppSnackBar.warning(context, l10n.termsValidationErr);
       return;
@@ -59,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final isEnglish = Localizations.localeOf(context).languageCode == 'en';
 
     return Scaffold(
@@ -273,7 +273,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildLoginFooter(bool isLoading, AppLocalizations l10n) {
     return Align(
-      alignment: Alignment.center,
       child: GestureDetector(
         onTap: isLoading ? null : () => Navigator.pop(context),
         child: RichText(
@@ -314,7 +313,6 @@ class _RegisterPageState extends State<RegisterPage> {
           borderRadius: BorderRadius.circular(13.0),
           border: Border.all(
             color: context.textSecondary.withValues(alpha: 0.12),
-            width: 1,
           ),
         ),
         child: Stack(
@@ -470,7 +468,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _showTermsDialog(BuildContext context, String title) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -513,7 +511,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _showPrivacyPolicyDialog(BuildContext context, String title) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

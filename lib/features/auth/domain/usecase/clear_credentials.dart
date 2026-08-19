@@ -4,9 +4,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repository/auth_repository.dart';
 
 class ClearCredentials implements UseCase<void, NoParams> {
-  final AuthRepository repository;
 
   ClearCredentials(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, void>> call(NoParams params) {

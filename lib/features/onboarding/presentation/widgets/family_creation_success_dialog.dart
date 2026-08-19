@@ -9,14 +9,14 @@ import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../core/domain/entity/family_entity.dart';
 
 class FamilyCreationSuccessDialog extends StatefulWidget {
-  final FamilyEntity family;
-  final VoidCallback onProceed;
 
   const FamilyCreationSuccessDialog({
     super.key,
     required this.family,
     required this.onProceed,
   });
+  final FamilyEntity family;
+  final VoidCallback onProceed;
 
   @override
   State<FamilyCreationSuccessDialog> createState() =>
@@ -55,7 +55,7 @@ class _FamilyCreationSuccessDialogState
   }
 
   void _copyToClipboard(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     Clipboard.setData(ClipboardData(text: widget.family.inviteCode));
     AppSnackBar.success(
       context,
@@ -65,7 +65,7 @@ class _FamilyCreationSuccessDialogState
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return ScaleTransition(
       scale: _scaleAnimation,
       child: FadeTransition(

@@ -19,9 +19,6 @@ import '../widgets/user_notifications_widget.dart';
 import 'user_anniversary_list_page.dart';
 
 class UserEventsPage extends StatefulWidget {
-  final int familyId;
-  final bool isActive;
-  final bool isAdminMode;
 
   const UserEventsPage({
     super.key,
@@ -29,6 +26,9 @@ class UserEventsPage extends StatefulWidget {
     this.isActive = false,
     this.isAdminMode = false,
   });
+  final int familyId;
+  final bool isActive;
+  final bool isAdminMode;
 
   @override
   State<UserEventsPage> createState() => _UserEventsPageState();
@@ -174,13 +174,13 @@ class _UserEventsPageState extends State<UserEventsPage>
           final currentLunarYear = todayLunar.year;
 
           final listSolar = convertLunar2Solar(
-              lunarDay, lunarMonth, currentLunarYear, false, 7);
+              lunarDay, lunarMonth, currentLunarYear, false);
           var solarAnniversary =
               DateTime(listSolar[2], listSolar[1], listSolar[0]);
 
           if (solarAnniversary.isBefore(todayOnlyDate)) {
             final nextListSolar = convertLunar2Solar(
-                lunarDay, lunarMonth, currentLunarYear + 1, false, 7);
+                lunarDay, lunarMonth, currentLunarYear + 1, false);
             solarAnniversary =
                 DateTime(nextListSolar[2], nextListSolar[1], nextListSolar[0]);
           }
@@ -252,7 +252,7 @@ class _UserEventsPageState extends State<UserEventsPage>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.watch<AuthBloc>().state;
     final canEdit = widget.isAdminMode &&
         authState is Authenticated &&
@@ -318,7 +318,6 @@ class _UserEventsPageState extends State<UserEventsPage>
                           page: UserAnniversaryListPage(
                             deathAnniversaries: deathAnniversaries,
                             birthdays: birthdays,
-                            initialTabIndex: 0,
                           ),
                         ),
                       );
@@ -457,7 +456,7 @@ class _UserEventsPageState extends State<UserEventsPage>
   //  Event Card (swipeable for admin)
   // ────────────────────────────────────────────────────────────────
   Widget _buildEventCard(EventEntity event, bool canEdit) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     Future<void> openDetail() async {
       final result = await Navigator.push(
@@ -512,7 +511,7 @@ class _UserEventsPageState extends State<UserEventsPage>
   // ────────────────────────────────────────────────────────────────
 
   Future<bool?> _showConfirmDeleteDialog(EventEntity event) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(

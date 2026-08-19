@@ -12,14 +12,14 @@ import '../../../admin/presentation/pages/admin_dashboard/pages/admin_link_and_r
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
-  final MemberEntity member;
-  final List<MemberEntity> allMembers;
 
   const FamilyMemberDetailPage({
     super.key,
     required this.member,
     this.allMembers = const [],
   });
+  final MemberEntity member;
+  final List<MemberEntity> allMembers;
 
   @override
   State<FamilyMemberDetailPage> createState() => _FamilyMemberDetailPageState();
@@ -28,7 +28,7 @@ class FamilyMemberDetailPage extends StatefulWidget {
 class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.watch<AuthBloc>().state;
     final isAdminMode = UserMainNavigationPage.adminModeNotifier.value;
     final canEdit = isAdminMode &&
@@ -74,7 +74,6 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: l10n.memberDetailTitle,
-        transparent: false,
         actions: [
           if (canEdit) ...[
             IconButton(
@@ -318,7 +317,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        border: Border.all(color: color.withValues(alpha: 0.4), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

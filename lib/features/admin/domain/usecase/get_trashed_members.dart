@@ -6,9 +6,9 @@ import 'package:giatocviet/core/domain/entity/member_entity.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class GetTrashedMembers implements UseCase<List<MemberEntity>, GetTrashedMembersParams> {
-  final FamilyTreeRepository repository;
 
   GetTrashedMembers(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, List<MemberEntity>>> call(GetTrashedMembersParams params) {
@@ -17,10 +17,10 @@ class GetTrashedMembers implements UseCase<List<MemberEntity>, GetTrashedMembers
 }
 
 class GetTrashedMembersParams extends Equatable {
-  final int? familyId;
-  final int? branchId;
 
   const GetTrashedMembersParams({this.familyId, this.branchId});
+  final int? familyId;
+  final int? branchId;
 
   @override
   List<Object?> get props => [familyId, branchId];

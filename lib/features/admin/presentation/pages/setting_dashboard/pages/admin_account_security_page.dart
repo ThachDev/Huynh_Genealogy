@@ -42,7 +42,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
 
   void _updatePassword() async {
     if (_formKey.currentState!.validate()) {
-      final l10n = AppLocalizations.of(context)!;
+      final l10n = AppLocalizations.of(context);
       setState(() => _isSaving = true);
       try {
         final fbUser = fb.FirebaseAuth.instance.currentUser;
@@ -68,11 +68,11 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
           setState(() => _isSaving = false);
           if (response.statusCode == 200 && response.data['success'] == true) {
             AppSnackBar.success(
-                context, AppLocalizations.of(context)!.changePasswordSuccess);
+                context, AppLocalizations.of(context).changePasswordSuccess);
             Navigator.pop(context);
           } else {
             final msg = response.data['message'] ??
-                AppLocalizations.of(context)!.passwordChangeFailed;
+                AppLocalizations.of(context).passwordChangeFailed;
             AppSnackBar.error(context, msg);
           }
         }
@@ -80,7 +80,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
         if (mounted) {
           setState(() => _isSaving = false);
           final errorMsg = e.response?.data['message'] ??
-              AppLocalizations.of(context)!.errServerConnection;
+              AppLocalizations.of(context).errServerConnection;
           AppSnackBar.error(context, errorMsg);
         }
       } catch (e) {
@@ -94,7 +94,7 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
   }
 
   Future<void> _deleteAccount() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     final user = authState is Authenticated ? authState.user : null;
     final role = (user?.role ?? '').toUpperCase();
@@ -108,7 +108,6 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
         message: l10n.cannotDeleteAccountContent,
         confirmLabel: l10n.transferOwnershipShortLabel,
         cancelLabel: l10n.understoodLabel,
-        type: AppDialogType.warning,
       );
 
       if (shouldGoToTransfer == true && mounted) {
@@ -131,7 +130,6 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
       inputInstruction: l10n.deleteAccountInputInstruction,
       confirmLabel: l10n.confirmDeleteLabel,
       cancelLabel: l10n.cancelLabel,
-      type: AppDialogType.danger,
     );
     if (confirmed != true || !mounted) return;
 
@@ -167,12 +165,11 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: context.background,
       appBar: AppAppBar(
         title: l10n.accountSecurityTitle,
-        transparent: false,
       ),
       body: AppBackgroundBody(
         child: LayoutBuilder(
@@ -308,7 +305,6 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
                             onPressed: _updatePassword,
                             isLoading: _isSaving,
                             fullWidth: true,
-                            size: AppButtonSize.medium,
                           ),
                         ],
                       ),

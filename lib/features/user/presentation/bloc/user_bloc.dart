@@ -7,8 +7,6 @@ import 'user_event.dart';
 import 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final GetUserProfile getUserProfile;
-  final UpdateUserProfile updateUserProfile;
 
   UserBloc({
     required this.getUserProfile,
@@ -17,6 +15,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<FetchUserProfileEvent>(_onFetchUserProfile);
     on<UpdateUserProfileEvent>(_onUpdateUserProfile);
   }
+  final GetUserProfile getUserProfile;
+  final UpdateUserProfile updateUserProfile;
 
   Future<void> _onFetchUserProfile(
       FetchUserProfileEvent event, Emitter<UserState> emit) async {

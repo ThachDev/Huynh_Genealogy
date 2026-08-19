@@ -6,9 +6,9 @@ import 'package:giatocviet/core/domain/entity/audit_log_entity.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class GetAuditLogs implements UseCase<List<AuditLogEntity>, GetAuditLogsParams> {
-  final FamilyTreeRepository repository;
 
   GetAuditLogs(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, List<AuditLogEntity>>> call(GetAuditLogsParams params) {
@@ -17,10 +17,10 @@ class GetAuditLogs implements UseCase<List<AuditLogEntity>, GetAuditLogsParams> 
 }
 
 class GetAuditLogsParams extends Equatable {
-  final int? familyId;
-  final int? limit;
 
   const GetAuditLogsParams({this.familyId, this.limit});
+  final int? familyId;
+  final int? limit;
 
   @override
   List<Object?> get props => [familyId, limit];

@@ -24,9 +24,9 @@ abstract class FamilyTreeRemoteDataSource {
 }
 
 class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
-  final Dio dio;
 
   FamilyTreeRemoteDataSourceImpl({required this.dio});
+  final Dio dio;
 
   @override
   Future<List<MemberModel>> getMembers({int? branchId, int? familyId}) async {
@@ -51,7 +51,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }
@@ -61,7 +60,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     throw ServerException(
       message: AppLanguage.current?.errInvalidDataFormat ??
           'Dữ liệu trả về không đúng định dạng',
-      statusCode: null,
     );
   }
 
@@ -71,7 +69,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     throw ServerException(
       message: AppLanguage.current?.errInvalidDataFormat ??
           'Dữ liệu trả về không đúng định dạng',
-      statusCode: null,
     );
   }
 
@@ -81,7 +78,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     throw ServerException(
       message: AppLanguage.current?.errInvalidListFormat ??
           'Dữ liệu danh sách trả về không đúng định dạng',
-      statusCode: null,
     );
   }
 
@@ -104,7 +100,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }
@@ -187,7 +182,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }
@@ -208,7 +202,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }
@@ -234,7 +227,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
-      throw ServerException(message: e.toString(), statusCode: null);
+      throw ServerException(message: e.toString());
     }
   }
 
@@ -250,7 +243,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
-      throw ServerException(message: e.toString(), statusCode: null);
+      throw ServerException(message: e.toString());
     }
   }
 
@@ -273,7 +266,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
-      throw ServerException(message: e.toString(), statusCode: null);
+      throw ServerException(message: e.toString());
     }
   }
 
@@ -298,7 +291,7 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
         statusCode: e.response?.statusCode,
       );
     } catch (e) {
-      throw ServerException(message: e.toString(), statusCode: null);
+      throw ServerException(message: e.toString());
     }
   }
 
@@ -323,7 +316,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }
@@ -347,7 +339,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }
@@ -393,7 +384,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }
@@ -411,7 +401,6 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
     } catch (e) {
       throw ServerException(
         message: e.toString(),
-        statusCode: null,
       );
     }
   }

@@ -16,16 +16,6 @@ enum HighlightEventType {
 /// Card Banner Tiêu Điểm Dòng Họ – Thiết kế hiện đại, tinh gọn, lịch âm/dương linh hoạt.
 // ═════════════════════════════════════════════════════════════════════════════
 class FamilyHighlightCard extends StatelessWidget {
-  final String title;
-  final String? description;
-  final String? location;
-  final DateTime? date;
-  final String dateLabel;
-  final String? lunarDateLabel;
-  final int daysRemaining;
-  final HighlightEventType eventType;
-  final VoidCallback? onTap;
-  final VoidCallback? onActionTap;
 
   const FamilyHighlightCard({
     super.key,
@@ -40,6 +30,16 @@ class FamilyHighlightCard extends StatelessWidget {
     this.onTap,
     this.onActionTap,
   });
+  final String title;
+  final String? description;
+  final String? location;
+  final DateTime? date;
+  final String dateLabel;
+  final String? lunarDateLabel;
+  final int daysRemaining;
+  final HighlightEventType eventType;
+  final VoidCallback? onTap;
+  final VoidCallback? onActionTap;
 
   bool get _isToday => daysRemaining == 0;
 
@@ -89,7 +89,7 @@ class FamilyHighlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final cfg = _cfg(context, l10n);
 
     return Padding(
@@ -225,7 +225,6 @@ class FamilyHighlightCard extends StatelessWidget {
     BuildContext context,
   ) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Widget Lịch có sẵn của hệ thống (hỗ trợ chuyển đổi Âm / Dương lịch)
         SizedBox(
@@ -337,7 +336,6 @@ class FamilyHighlightCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: cfg.primary.withValues(alpha: 0.35),
-              width: 1,
             ),
             boxShadow: [
               BoxShadow(

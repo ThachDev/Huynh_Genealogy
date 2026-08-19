@@ -4,9 +4,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class DeleteBranch implements UseCase<bool, int> {
-  final FamilyTreeRepository repository;
 
   DeleteBranch(this.repository);
+  final FamilyTreeRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(int id) {

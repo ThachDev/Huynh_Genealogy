@@ -2,12 +2,6 @@ import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 
 class EventInteractionModel {
-  final int id;
-  final int eventId;
-  final int userId;
-  final String authorName;
-  final String content;
-  final String createdAt;
 
   EventInteractionModel({
     required this.id,
@@ -28,12 +22,18 @@ class EventInteractionModel {
       createdAt: json['createdAt'] as String? ?? json['created_at'] as String? ?? '',
     );
   }
+  final int id;
+  final int eventId;
+  final int userId;
+  final String authorName;
+  final String content;
+  final String createdAt;
 }
 
 class EventApiService {
-  final Dio dio;
 
   EventApiService({required this.dio});
+  final Dio dio;
 
   /// Toggle tim/thích bài viết sự kiện
   Future<Map<String, dynamic>?> reactToEvent(int eventId) async {

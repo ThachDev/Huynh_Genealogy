@@ -20,7 +20,7 @@ class FormSkeleton extends StatelessWidget {
                 children: [
                   SkeletonCircle(radius: 44),
                   SizedBox(height: 12),
-                  SkeletonLine(width: 120, height: 12),
+                  SkeletonLine(width: 120),
                 ],
               ),
             ),

@@ -11,9 +11,6 @@ part 'member_account_links_state.dart';
 
 class MemberAccountLinksBloc
     extends Bloc<MemberAccountLinksEvent, MemberAccountLinksState> {
-  final GetAccountLinks getAccountLinks;
-  final LinkMemberAccount linkMemberAccount;
-  final UnlinkMemberAccount unlinkMemberAccount;
 
   MemberAccountLinksBloc({
     required this.getAccountLinks,
@@ -24,6 +21,9 @@ class MemberAccountLinksBloc
     on<LinkMemberEmailEvent>(_onLink);
     on<UnlinkMemberAccountEvent>(_onUnlink);
   }
+  final GetAccountLinks getAccountLinks;
+  final LinkMemberAccount linkMemberAccount;
+  final UnlinkMemberAccount unlinkMemberAccount;
 
   Future<void> _onLoad(
     LoadMemberAccountLinksEvent event,

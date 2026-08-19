@@ -6,9 +6,9 @@ import '../../domain/repository/user_repository.dart';
 import '../source/user_remote_data_source.dart';
 
 class UserRepositoryImpl implements UserRepository {
-  final UserRemoteDataSource remoteDataSource;
 
   UserRepositoryImpl({required this.remoteDataSource});
+  final UserRemoteDataSource remoteDataSource;
 
   @override
   Future<Either<Failure, UserEntity>> getUserProfile() async {

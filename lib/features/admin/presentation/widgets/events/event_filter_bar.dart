@@ -5,9 +5,6 @@ import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../resources/app_localizations.dart';
 
 class EventFilterBar extends StatelessWidget {
-  final String selectedType;
-  final ValueChanged<String> onSelectType;
-  final Map<String, int> counts;
 
   const EventFilterBar({
     super.key,
@@ -15,10 +12,13 @@ class EventFilterBar extends StatelessWidget {
     required this.onSelectType,
     required this.counts,
   });
+  final String selectedType;
+  final ValueChanged<String> onSelectType;
+  final Map<String, int> counts;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final filters = [
       {
         'key': 'all',
@@ -71,11 +71,6 @@ class EventFilterBar extends StatelessWidget {
 }
 
 class StatFilterCardItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final bool isSelected;
-  final VoidCallback onTap;
 
   const StatFilterCardItem({
     super.key,
@@ -85,6 +80,11 @@ class StatFilterCardItem extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +113,6 @@ class StatFilterCardItem extends StatelessWidget {
                 ? null
                 : Border.all(
                     color: borderColor,
-                    width: 1.0,
                   ),
             boxShadow: [
               BoxShadow(

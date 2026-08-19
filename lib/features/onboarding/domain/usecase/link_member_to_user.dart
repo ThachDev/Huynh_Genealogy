@@ -5,9 +5,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repository/onboarding_repository.dart';
 
 class LinkMemberToUser implements UseCase<bool, LinkMemberToUserParams> {
-  final OnboardingRepository repository;
 
   LinkMemberToUser(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(LinkMemberToUserParams params) {
@@ -19,13 +19,13 @@ class LinkMemberToUser implements UseCase<bool, LinkMemberToUserParams> {
 }
 
 class LinkMemberToUserParams extends Equatable {
-  final int userId;
-  final int memberId;
 
   const LinkMemberToUserParams({
     required this.userId,
     required this.memberId,
   });
+  final int userId;
+  final int memberId;
 
   @override
   List<Object?> get props => [userId, memberId];

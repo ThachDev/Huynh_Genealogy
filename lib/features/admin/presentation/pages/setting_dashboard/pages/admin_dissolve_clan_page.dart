@@ -9,14 +9,14 @@ import '../../../../../auth/auth.dart';
 import '../../../bloc/admin_dissolve_clan_bloc/admin_dissolve_clan_bloc.dart';
 
 class AdminDissolveClanPage extends StatefulWidget {
-  final int familyId;
-  final String familyName;
 
   const AdminDissolveClanPage({
     super.key,
     required this.familyId,
     required this.familyName,
   });
+  final int familyId;
+  final String familyName;
 
   @override
   State<AdminDissolveClanPage> createState() => _AdminDissolveClanPageState();
@@ -41,7 +41,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
 
   void _onTextChanged() {
     final text = _confirmController.text.trim().toUpperCase();
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _canDissolve = text == widget.familyName.trim().toUpperCase() ||
           text == l10n.dissolveWord.toUpperCase();
@@ -51,7 +51,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
   void _dissolveClan() async {
     if (!_canDissolve) return;
 
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final confirmed = await AppDialog.confirmWithInput(
       context,
       title: l10n.deletePermanentDialogTitle,
@@ -60,7 +60,6 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
       inputInstruction: l10n.confirmDissolveInstruction,
       confirmLabel: l10n.confirmDeletePermanentLabel,
       cancelLabel: l10n.formCancel,
-      type: AppDialogType.danger,
     );
 
     if (confirmed == true && mounted) {
@@ -72,7 +71,7 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     final role = authState is Authenticated
         ? authState.user.role.toUpperCase()
@@ -142,7 +141,6 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
                   children: [
                     // Warning Section (no card background)
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
                           LucideIcons.alertTriangle,

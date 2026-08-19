@@ -3,14 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/theme_extensions.dart';
 
 class AppCustomSwitch extends StatelessWidget {
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  final String activeText;
-  final String inactiveText;
-  final Widget activeIcon;
-  final Widget inactiveIcon;
-  final Color? activeColor;
-  final Color? inactiveColor;
 
   const AppCustomSwitch({
     super.key,
@@ -23,6 +15,14 @@ class AppCustomSwitch extends StatelessWidget {
     this.activeColor,
     this.inactiveColor,
   });
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final String activeText;
+  final String inactiveText;
+  final Widget activeIcon;
+  final Widget inactiveIcon;
+  final Color? activeColor;
+  final Color? inactiveColor;
 
   @override
   Widget build(BuildContext context) {

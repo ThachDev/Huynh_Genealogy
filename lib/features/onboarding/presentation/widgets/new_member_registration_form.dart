@@ -13,28 +13,6 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
 
 class MemberRegistrationForm extends StatefulWidget {
-  final UserEntity user;
-  final List<MemberEntity> familyMembers;
-  final TextEditingController fullNameController;
-  final TextEditingController placeOfBirthController;
-  final TextEditingController educationController;
-  final TextEditingController parentNameController;
-  final TextEditingController spouseNameController;
-  final TextEditingController notesController;
-  final Gender gender;
-  final ValueChanged<Gender> onGenderChanged;
-  final MaritalStatus maritalStatus;
-  final ValueChanged<MaritalStatus> onMaritalStatusChanged;
-  final String? dateOfBirth;
-  final ValueChanged<String?> onDateOfBirthChanged;
-  final String? avatarPath;
-  final ValueChanged<String?> onAvatarPathChanged;
-  final String? selectedEducationOption;
-  final ValueChanged<String?> onEducationOptionChanged;
-  final int? parentId;
-  final ValueChanged<int?> onParentIdChanged;
-  final int? spouseId;
-  final ValueChanged<int?> onSpouseIdChanged;
 
   const MemberRegistrationForm({
     super.key,
@@ -61,6 +39,28 @@ class MemberRegistrationForm extends StatefulWidget {
     required this.spouseId,
     required this.onSpouseIdChanged,
   });
+  final UserEntity user;
+  final List<MemberEntity> familyMembers;
+  final TextEditingController fullNameController;
+  final TextEditingController placeOfBirthController;
+  final TextEditingController educationController;
+  final TextEditingController parentNameController;
+  final TextEditingController spouseNameController;
+  final TextEditingController notesController;
+  final Gender gender;
+  final ValueChanged<Gender> onGenderChanged;
+  final MaritalStatus maritalStatus;
+  final ValueChanged<MaritalStatus> onMaritalStatusChanged;
+  final String? dateOfBirth;
+  final ValueChanged<String?> onDateOfBirthChanged;
+  final String? avatarPath;
+  final ValueChanged<String?> onAvatarPathChanged;
+  final String? selectedEducationOption;
+  final ValueChanged<String?> onEducationOptionChanged;
+  final int? parentId;
+  final ValueChanged<int?> onParentIdChanged;
+  final int? spouseId;
+  final ValueChanged<int?> onSpouseIdChanged;
 
   @override
   State<MemberRegistrationForm> createState() => _MemberRegistrationFormState();
@@ -112,19 +112,19 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
         if (await exceedsMaxFileSize(pickedFile, 5)) {
           if (!mounted) return;
           AppSnackBar.error(
-              context, AppLocalizations.of(context)!.imageTooLargeFormat(5));
+              context, AppLocalizations.of(context).imageTooLargeFormat(5));
           return;
         }
         widget.onAvatarPathChanged(pickedFile.path);
       }
     } catch (e) {
-      debugPrint("Error picking avatar: $e");
+      debugPrint('Error picking avatar: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
@@ -192,7 +192,6 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
                 value: widget.selectedEducationOption,
                 items: [
                   DropdownItem<String?>(
-                    value: null,
                     child: Text(l10n.noSelectionLabel),
                   ),
                   ..._predefinedEducation.map(
@@ -269,7 +268,6 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
                       color: context.isDarkMode
                           ? Colors.white.withValues(alpha: 0.1)
                           : const Color(0xFFE8D4C8),
-                      width: 1,
                     ),
                   ),
                   child: Column(
@@ -416,7 +414,6 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
                           searchHint: l10n.searchSpouseHint,
                           items: [
                             DropdownItem<int?>(
-                              value: null,
                               child: Text(l10n.noSelectionLabel),
                             ),
                             ...widget.familyMembers.map(
@@ -454,7 +451,6 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
                     color: context.isDarkMode
                         ? Colors.white.withValues(alpha: 0.1)
                         : const Color(0xFFE8D4C8),
-                    width: 1,
                   ),
                 ),
                 child: Column(
@@ -597,7 +593,6 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
                         searchHint: l10n.searchParentHint,
                         items: [
                           DropdownItem<int?>(
-                            value: null,
                             child: Text(l10n.noSelectionLabel),
                           ),
                           ...widget.familyMembers.map(
@@ -632,7 +627,7 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
   }
 
   Widget _buildAvatarSection(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     Widget avatarWidget = Icon(
       LucideIcons.user,
       size: 50,
@@ -647,7 +642,6 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
             url: widget.avatarPath!,
             width: 110,
             height: 110,
-            fit: BoxFit.cover,
             errorBuilder: (context) => Icon(
               LucideIcons.user,
               size: 50,
@@ -677,7 +671,6 @@ class _MemberRegistrationFormState extends State<MemberRegistrationForm> {
           url: widget.user.avatarUrl!,
           width: 110,
           height: 110,
-          fit: BoxFit.cover,
           errorBuilder: (context) => Icon(
             LucideIcons.user,
             size: 50,

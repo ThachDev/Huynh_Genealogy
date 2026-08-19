@@ -27,6 +27,34 @@ class MemberModel extends MemberEntity {
     super.deletedAt,
   });
 
+  factory MemberModel.fromEntity(MemberEntity entity) {
+    return MemberModel(
+      id: entity.id,
+      fullName: entity.fullName,
+      gender: entity.gender,
+      dateOfBirth: entity.dateOfBirth,
+      placeOfBirth: entity.placeOfBirth,
+      isAlive: entity.isAlive,
+      dateOfDeath: entity.dateOfDeath,
+      maritalStatus: entity.maritalStatus,
+      generation: entity.generation,
+      branchId: entity.branchId,
+      branchName: entity.branchName,
+      parentId: entity.parentId,
+      motherId: entity.motherId,
+      spouseId: entity.spouseId,
+      notes: entity.notes,
+      avatarUrl: entity.avatarUrl,
+      familyId: entity.familyId,
+      lunarBirthDate: entity.lunarBirthDate,
+      lunarDeathDate: entity.lunarDeathDate,
+      phone: entity.phone,
+      education: entity.education,
+      occupation: entity.occupation,
+      deletedAt: entity.deletedAt,
+    );
+  }
+
   factory MemberModel.fromJson(Map<String, dynamic> json) {
     return MemberModel(
       id: _parseInt(json['id']) ?? 0,
@@ -80,34 +108,6 @@ class MemberModel extends MemberEntity {
       'occupation': occupation,
       'deletedAt': deletedAt,
     };
-  }
-
-  factory MemberModel.fromEntity(MemberEntity entity) {
-    return MemberModel(
-      id: entity.id,
-      fullName: entity.fullName,
-      gender: entity.gender,
-      dateOfBirth: entity.dateOfBirth,
-      placeOfBirth: entity.placeOfBirth,
-      isAlive: entity.isAlive,
-      dateOfDeath: entity.dateOfDeath,
-      maritalStatus: entity.maritalStatus,
-      generation: entity.generation,
-      branchId: entity.branchId,
-      branchName: entity.branchName,
-      parentId: entity.parentId,
-      motherId: entity.motherId,
-      spouseId: entity.spouseId,
-      notes: entity.notes,
-      avatarUrl: entity.avatarUrl,
-      familyId: entity.familyId,
-      lunarBirthDate: entity.lunarBirthDate,
-      lunarDeathDate: entity.lunarDeathDate,
-      phone: entity.phone,
-      education: entity.education,
-      occupation: entity.occupation,
-      deletedAt: entity.deletedAt,
-    );
   }
 
   static int? _parseInt(dynamic value) {

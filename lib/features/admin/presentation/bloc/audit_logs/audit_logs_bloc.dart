@@ -7,11 +7,11 @@ part 'audit_logs_event.dart';
 part 'audit_logs_state.dart';
 
 class AuditLogsBloc extends Bloc<AuditLogsEvent, AuditLogsState> {
-  final GetAuditLogs getAuditLogs;
 
   AuditLogsBloc({required this.getAuditLogs}) : super(const AuditLogsInitial()) {
     on<LoadAuditLogsEvent>(_onLoad);
   }
+  final GetAuditLogs getAuditLogs;
 
   Future<void> _onLoad(
     LoadAuditLogsEvent event,

@@ -5,9 +5,9 @@ import '../../../../core/usecases/usecase.dart';
 import '../repository/auth_repository.dart';
 
 class VerifyOtp implements UseCase<void, VerifyOtpParams> {
-  final AuthRepository repository;
 
   VerifyOtp(this.repository);
+  final AuthRepository repository;
 
   @override
   Future<Either<Failure, void>> call(VerifyOtpParams params) {
@@ -16,10 +16,10 @@ class VerifyOtp implements UseCase<void, VerifyOtpParams> {
 }
 
 class VerifyOtpParams extends Equatable {
-  final String email;
-  final String otp;
 
   const VerifyOtpParams({required this.email, required this.otp});
+  final String email;
+  final String otp;
 
   @override
   List<Object?> get props => [email, otp];

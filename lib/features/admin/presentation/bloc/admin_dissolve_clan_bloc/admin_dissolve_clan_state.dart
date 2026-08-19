@@ -11,6 +11,6 @@ class AdminDissolveClanLoading extends AdminDissolveClanState {}
 class AdminDissolveClanSuccess extends AdminDissolveClanState {}
 
 class AdminDissolveClanFailure extends AdminDissolveClanState {
-  final String message;
   const AdminDissolveClanFailure({required this.message});
+  final String message;
 }

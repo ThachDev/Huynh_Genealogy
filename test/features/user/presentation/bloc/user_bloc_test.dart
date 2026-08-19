@@ -40,7 +40,6 @@ void main() {
     id: 1,
     email: 'user@example.com',
     fullName: 'Lê Văn C',
-    role: 'VIEWER',
   );
 
   test('state ban đầu phải là UserInitialState', () {

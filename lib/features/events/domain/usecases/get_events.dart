@@ -6,9 +6,9 @@ import '../entities/event_entity.dart';
 import '../repositories/events_repository.dart';
 
 class GetEvents implements UseCase<List<EventEntity>, GetEventsParams> {
-  final EventsRepository repository;
 
   GetEvents(this.repository);
+  final EventsRepository repository;
 
   @override
   Future<Either<Failure, List<EventEntity>>> call(GetEventsParams params) {
@@ -17,9 +17,9 @@ class GetEvents implements UseCase<List<EventEntity>, GetEventsParams> {
 }
 
 class GetEventsParams extends Equatable {
-  final int familyId;
 
   const GetEventsParams({required this.familyId});
+  final int familyId;
 
   @override
   List<Object?> get props => [familyId];

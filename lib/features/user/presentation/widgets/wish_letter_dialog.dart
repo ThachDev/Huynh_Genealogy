@@ -24,9 +24,6 @@ Future<String?> showWishLetterDialog(
 }
 
 class WishLetterDialog extends StatefulWidget {
-  final String title;
-  final String subtitle;
-  final bool isBirthday;
 
   const WishLetterDialog({
     super.key,
@@ -34,6 +31,9 @@ class WishLetterDialog extends StatefulWidget {
     required this.subtitle,
     required this.isBirthday,
   });
+  final String title;
+  final String subtitle;
+  final bool isBirthday;
 
   @override
   State<WishLetterDialog> createState() => _WishLetterDialogState();
@@ -186,7 +186,6 @@ class _WishLetterDialogState extends State<WishLetterDialog>
                                 offset: Offset(0, 22 * fold),
                                 child: Transform.scale(
                                   scaleY: 1 - 0.9 * fold,
-                                  alignment: Alignment.center,
                                   child: _LetterContent(
                                     title: widget.title,
                                     subtitle: widget.subtitle,
@@ -216,13 +215,6 @@ class _WishLetterDialogState extends State<WishLetterDialog>
 
 /// Nội dung lá thư: tiêu đề, tên, ngày và ô nhập lời chúc.
 class _LetterContent extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final bool isBirthday;
-  final IconData icon;
-  final TextEditingController controller;
-  final bool sending;
-  final VoidCallback onSend;
 
   const _LetterContent({
     required this.title,
@@ -233,10 +225,17 @@ class _LetterContent extends StatelessWidget {
     required this.sending,
     required this.onSend,
   });
+  final String title;
+  final String subtitle;
+  final bool isBirthday;
+  final IconData icon;
+  final TextEditingController controller;
+  final bool sending;
+  final VoidCallback onSend;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
 
     final dialogTitle =
         isBirthday ? l10n.wishDialogTitle : l10n.anniversaryDialogTitle;
@@ -456,9 +455,9 @@ class _LetterContent extends StatelessWidget {
 
 /// Hình phong bì vẽ bằng CustomPaint, có nắp đóng dần theo [flapProgress].
 class _Envelope extends StatelessWidget {
-  final double flapProgress;
 
   const _Envelope({required this.flapProgress});
+  final double flapProgress;
 
   @override
   Widget build(BuildContext context) {
@@ -478,10 +477,6 @@ class _Envelope extends StatelessWidget {
 }
 
 class _EnvelopePainter extends CustomPainter {
-  final Color bodyColor;
-  final Color accent;
-  final Color primary;
-  final double flapProgress;
 
   _EnvelopePainter({
     required this.bodyColor,
@@ -489,6 +484,10 @@ class _EnvelopePainter extends CustomPainter {
     required this.primary,
     required this.flapProgress,
   });
+  final Color bodyColor;
+  final Color accent;
+  final Color primary;
+  final double flapProgress;
 
   @override
   void paint(Canvas canvas, Size size) {

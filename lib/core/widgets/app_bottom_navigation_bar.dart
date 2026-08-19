@@ -19,10 +19,6 @@ import '../routes/app_router.dart';
 import 'app_route_transitions.dart';
 
 class FABConfig {
-  final IconData icon;
-  final String label;
-  final VoidCallback? onTap;
-  final bool show;
 
   const FABConfig({
     required this.icon,
@@ -30,6 +26,10 @@ class FABConfig {
     this.onTap,
     this.show = true,
   });
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  final bool show;
 }
 
 class UserMainNavigationPage extends StatefulWidget {
@@ -211,7 +211,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
       valueListenable: UserMainNavigationPage.adminModeNotifier,
       builder: (context, isCurrentlyAdminMode, _) {
         final showAdminInterface = hasAdminPrivileges && isCurrentlyAdminMode;
-        final l10n = AppLocalizations.of(context)!;
+        final l10n = AppLocalizations.of(context);
 
         final safeIndex =
             (_currentIndex < 0 || _currentIndex >= 4) ? 0 : _currentIndex;
@@ -257,8 +257,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
             label: l10n.navEvents,
             page: UserEventsPage(
                 familyId: familyId ?? 0,
-                isActive: safeIndex == 1,
-                isAdminMode: false),
+                isActive: safeIndex == 1),
           ));
 
           tabs.add(_TabConfig(
@@ -380,24 +379,18 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 }
 
 class _TabConfig {
-  final IconData icon;
-  final String label;
-  final Widget page;
 
   _TabConfig({
     required this.icon,
     required this.label,
     required this.page,
   });
+  final IconData icon;
+  final String label;
+  final Widget page;
 }
 
 class _BottomTabItem extends StatefulWidget {
-  final IconData icon;
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-  final Color selectedColor;
-  final Color unselectedColor;
 
   const _BottomTabItem({
     required this.icon,
@@ -407,6 +400,12 @@ class _BottomTabItem extends StatefulWidget {
     required this.selectedColor,
     required this.unselectedColor,
   });
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final Color selectedColor;
+  final Color unselectedColor;
 
   @override
   State<_BottomTabItem> createState() => _BottomTabItemState();
@@ -493,15 +492,15 @@ class _BottomTabItemState extends State<_BottomTabItem>
 }
 
 class BottomNavCurvePainter extends CustomPainter {
-  final Color color;
-  final Color shadowColor;
-  final bool hasCurve;
 
   BottomNavCurvePainter({
     required this.color,
     required this.shadowColor,
     this.hasCurve = true,
   });
+  final Color color;
+  final Color shadowColor;
+  final bool hasCurve;
 
   @override
   void paint(Canvas canvas, Size size) {

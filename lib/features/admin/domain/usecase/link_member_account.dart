@@ -6,9 +6,9 @@ import '../repository/member_account_link_repository.dart';
 
 class LinkMemberAccount
     implements UseCase<LinkAccountResult, LinkMemberAccountParams> {
-  final MemberAccountLinkRepository repository;
 
   LinkMemberAccount(this.repository);
+  final MemberAccountLinkRepository repository;
 
   @override
   Future<Either<Failure, LinkAccountResult>> call(LinkMemberAccountParams params) {
@@ -21,15 +21,15 @@ class LinkMemberAccount
 }
 
 class LinkMemberAccountParams extends Equatable {
-  final int familyId;
-  final int memberId;
-  final String email;
 
   const LinkMemberAccountParams({
     required this.familyId,
     required this.memberId,
     required this.email,
   });
+  final int familyId;
+  final int memberId;
+  final String email;
 
   @override
   List<Object?> get props => [familyId, memberId, email];

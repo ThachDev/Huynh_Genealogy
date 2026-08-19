@@ -5,9 +5,9 @@ import '../entity/family_entity.dart';
 import '../../../features/onboarding/domain/repository/onboarding_repository.dart';
 
 class GetFamilyDetail implements UseCase<FamilyEntity, int> {
-  final OnboardingRepository repository;
 
   GetFamilyDetail(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, FamilyEntity>> call(int familyId) {

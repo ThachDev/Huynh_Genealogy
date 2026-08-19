@@ -6,9 +6,9 @@ import '../entities/event_entity.dart';
 import '../repositories/events_repository.dart';
 
 class SaveEvent implements UseCase<EventEntity, SaveEventParams> {
-  final EventsRepository repository;
 
   SaveEvent(this.repository);
+  final EventsRepository repository;
 
   @override
   Future<Either<Failure, EventEntity>> call(SaveEventParams params) {
@@ -17,9 +17,9 @@ class SaveEvent implements UseCase<EventEntity, SaveEventParams> {
 }
 
 class SaveEventParams extends Equatable {
-  final EventEntity event;
 
   const SaveEventParams({required this.event});
+  final EventEntity event;
 
   @override
   List<Object?> get props => [event];

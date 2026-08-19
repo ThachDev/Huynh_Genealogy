@@ -1,15 +1,4 @@
 class WishMessage {
-  final int id;
-  final int familyId;
-  final int memberId;
-  final int senderId;
-  final String content;
-  final String eventType;
-  final DateTime createdAt;
-  final String? senderName;
-  final String? senderAvatar;
-  final int reactionCount;
-  final bool isReacted;
 
   WishMessage({
     required this.id,
@@ -49,6 +38,17 @@ class WishMessage {
       isReacted: reacted,
     );
   }
+  final int id;
+  final int familyId;
+  final int memberId;
+  final int senderId;
+  final String content;
+  final String eventType;
+  final DateTime createdAt;
+  final String? senderName;
+  final String? senderAvatar;
+  final int reactionCount;
+  final bool isReacted;
 
   Map<String, dynamic> toJson() {
     return {

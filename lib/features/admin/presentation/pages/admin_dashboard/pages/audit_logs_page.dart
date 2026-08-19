@@ -97,7 +97,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
   }
 
   void _showDetailBottomSheet(BuildContext context, AuditLogEntity log) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final actor = (log.actorName?.isNotEmpty ?? false)
         ? log.actorName!
         : (log.actorEmail ?? l10n.auditUnknownActor);
@@ -237,7 +237,6 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                       width: double.infinity,
                       child: AppButton(
                         label: l10n.viewMemberPage,
-                        variant: AppButtonVariant.primary,
                         prefixIcon: const Icon(LucideIcons.user, size: 16),
                         onPressed: () {
                           Navigator.pop(ctx);
@@ -311,7 +310,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     final role =
         authState is Authenticated ? authState.user.role.toUpperCase() : '';
@@ -447,7 +446,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
                         state is AuditLogsInitial) {
                       return const Padding(
                         padding: EdgeInsets.all(16),
-                        child: ListPageSkeleton(itemCount: 8),
+                        child: ListPageSkeleton(),
                       );
                     }
                     if (state is AuditLogsFailure) {
@@ -521,17 +520,17 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
 }
 
 class _AuditLogItem extends StatelessWidget {
-  final AuditLogEntity log;
-  final VoidCallback onTap;
 
   const _AuditLogItem({
     required this.log,
     required this.onTap,
   });
+  final AuditLogEntity log;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final color = getActionColor(context, log.action);
 
     return InkWell(
@@ -544,11 +543,9 @@ class _AuditLogItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: context.accent.withValues(alpha: 0.15),
-            width: 1,
           ),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(
               getActionIcon(log.action),

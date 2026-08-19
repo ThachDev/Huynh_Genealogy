@@ -8,37 +8,37 @@ abstract class MemberTrashEvent extends Equatable {
 }
 
 class LoadMemberTrashEvent extends MemberTrashEvent {
-  final int? familyId;
-  final int? branchId;
 
   const LoadMemberTrashEvent({this.familyId, this.branchId});
+  final int? familyId;
+  final int? branchId;
 
   @override
   List<Object?> get props => [familyId, branchId];
 }
 
 class RestoreMemberEvent extends MemberTrashEvent {
-  final int memberId;
 
   const RestoreMemberEvent(this.memberId);
+  final int memberId;
 
   @override
   List<Object?> get props => [memberId];
 }
 
 class PurgeTrashEvent extends MemberTrashEvent {
-  final int days;
 
   const PurgeTrashEvent({this.days = 30});
+  final int days;
 
   @override
   List<Object?> get props => [days];
 }
 
 class RestoreSuccessEvent extends MemberTrashEvent {
-  final MemberEntity member;
 
   const RestoreSuccessEvent(this.member);
+  final MemberEntity member;
 
   @override
   List<Object?> get props => [member];

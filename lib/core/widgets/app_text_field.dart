@@ -6,20 +6,6 @@ import '../theme/theme_extensions.dart';
 
 /// Text field dùng chung cho theme tối (dark background)
 class AppTextField extends StatelessWidget {
-  final String label;
-  final String? hintText;
-  final TextEditingController? controller;
-  final TextInputType keyboardType;
-  final bool obscureText;
-  final Widget? suffixIcon;
-  final Widget? prefixIcon;
-  final String? Function(String?)? validator;
-  final void Function(String)? onChanged;
-  final bool enabled;
-  final int maxLines;
-  final TextInputAction textInputAction;
-  final FocusNode? focusNode;
-  final void Function(String)? onFieldSubmitted;
 
   const AppTextField({
     super.key,
@@ -38,6 +24,20 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.onFieldSubmitted,
   });
+  final String label;
+  final String? hintText;
+  final TextEditingController? controller;
+  final TextInputType keyboardType;
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final bool enabled;
+  final int maxLines;
+  final TextInputAction textInputAction;
+  final FocusNode? focusNode;
+  final void Function(String)? onFieldSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -129,21 +129,6 @@ class AppTextField extends StatelessWidget {
 
 /// Text field dùng cho theme sáng (light background)
 class AppTextFieldLight extends StatelessWidget {
-  final String label;
-  final String? hintText;
-  final TextEditingController? controller;
-  final TextInputType keyboardType;
-  final bool obscureText;
-  final Widget? suffixIcon;
-  final Widget? prefixIcon;
-  final String? Function(String?)? validator;
-  final void Function(String)? onChanged;
-  final bool enabled;
-  final int maxLines;
-  final int? maxLength;
-  final TextAlign textAlign;
-  final TextStyle? style;
-  final List<TextInputFormatter>? inputFormatters;
 
   const AppTextFieldLight({
     super.key,
@@ -163,6 +148,21 @@ class AppTextFieldLight extends StatelessWidget {
     this.style,
     this.inputFormatters,
   });
+  final String label;
+  final String? hintText;
+  final TextEditingController? controller;
+  final TextInputType keyboardType;
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final bool enabled;
+  final int maxLines;
+  final int? maxLength;
+  final TextAlign textAlign;
+  final TextStyle? style;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -243,18 +243,6 @@ class AppTextFieldLight extends StatelessWidget {
 
 /// Text field outline với floating label - dùng cho form sáng (admin, form thành viên...)
 class AppOutlineTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final String hintText;
-  final TextInputType? keyboardType;
-  final int maxLines;
-  final int? minLines;
-  final String? Function(String?)? validator;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final bool enabled;
-  final bool obscureText;
-  final Color? fillColor;
 
   const AppOutlineTextField({
     super.key,
@@ -271,6 +259,18 @@ class AppOutlineTextField extends StatelessWidget {
     this.obscureText = false,
     this.fillColor,
   });
+  final TextEditingController controller;
+  final String label;
+  final String hintText;
+  final TextInputType? keyboardType;
+  final int maxLines;
+  final int? minLines;
+  final String? Function(String?)? validator;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool enabled;
+  final bool obscureText;
+  final Color? fillColor;
 
   @override
   Widget build(BuildContext context) {

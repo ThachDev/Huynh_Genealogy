@@ -23,9 +23,6 @@ import 'onboarding_state.dart';
 ///   6. UI lắng nghe State mới và tự động cập nhật / điều hướng màn hình.
 /// ============================================================================
 class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
-  final CreateFamily createFamily;
-  final VerifyInviteCode verifyInviteCode;
-  final JoinFamily joinFamily;
 
   OnboardingBloc({
     required this.createFamily,
@@ -37,6 +34,9 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
     on<VerifyInviteCodeEvent>(_onVerifyInviteCode);
     on<JoinFamilyEvent>(_onJoinFamily);
   }
+  final CreateFamily createFamily;
+  final VerifyInviteCode verifyInviteCode;
+  final JoinFamily joinFamily;
 
   /// --------------------------------------------------------------------------
   /// Xử lý Event 1: Tạo Dòng họ mới

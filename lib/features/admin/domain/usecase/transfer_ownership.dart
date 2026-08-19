@@ -4,19 +4,19 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../onboarding/domain/repository/onboarding_repository.dart';
 
 class TransferOwnershipParams {
-  final int familyId;
-  final int newOwnerUserId;
 
   const TransferOwnershipParams({
     required this.familyId,
     required this.newOwnerUserId,
   });
+  final int familyId;
+  final int newOwnerUserId;
 }
 
 class TransferOwnership implements UseCase<bool, TransferOwnershipParams> {
-  final OnboardingRepository repository;
 
   TransferOwnership(this.repository);
+  final OnboardingRepository repository;
 
   @override
   Future<Either<Failure, bool>> call(TransferOwnershipParams params) {

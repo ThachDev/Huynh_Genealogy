@@ -31,6 +31,11 @@ mixin _$EventEntity {
   String? get location => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   String? get organizer => throw _privateConstructorUsedError;
+  int get reactionCount => throw _privateConstructorUsedError;
+  bool get isReacted => throw _privateConstructorUsedError;
+  int get commentCount => throw _privateConstructorUsedError;
+  bool get isRead => throw _privateConstructorUsedError;
+  bool get isDismissed => throw _privateConstructorUsedError;
 
   /// Serializes this EventEntity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -59,7 +64,12 @@ abstract class $EventEntityCopyWith<$Res> {
       String? imageUrl,
       String? location,
       String type,
-      String? organizer});
+      String? organizer,
+      int reactionCount,
+      bool isReacted,
+      int commentCount,
+      bool isRead,
+      bool isDismissed});
 }
 
 /// @nodoc
@@ -88,6 +98,11 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
     Object? location = freezed,
     Object? type = null,
     Object? organizer = freezed,
+    Object? reactionCount = null,
+    Object? isReacted = null,
+    Object? commentCount = null,
+    Object? isRead = null,
+    Object? isDismissed = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -134,6 +149,26 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
           ? _value.organizer
           : organizer // ignore: cast_nullable_to_non_nullable
               as String?,
+      reactionCount: null == reactionCount
+          ? _value.reactionCount
+          : reactionCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      isReacted: null == isReacted
+          ? _value.isReacted
+          : isReacted // ignore: cast_nullable_to_non_nullable
+              as bool,
+      commentCount: null == commentCount
+          ? _value.commentCount
+          : commentCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      isRead: null == isRead
+          ? _value.isRead
+          : isRead // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isDismissed: null == isDismissed
+          ? _value.isDismissed
+          : isDismissed // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -157,7 +192,12 @@ abstract class _$$EventEntityImplCopyWith<$Res>
       String? imageUrl,
       String? location,
       String type,
-      String? organizer});
+      String? organizer,
+      int reactionCount,
+      bool isReacted,
+      int commentCount,
+      bool isRead,
+      bool isDismissed});
 }
 
 /// @nodoc
@@ -184,6 +224,11 @@ class __$$EventEntityImplCopyWithImpl<$Res>
     Object? location = freezed,
     Object? type = null,
     Object? organizer = freezed,
+    Object? reactionCount = null,
+    Object? isReacted = null,
+    Object? commentCount = null,
+    Object? isRead = null,
+    Object? isDismissed = null,
   }) {
     return _then(_$EventEntityImpl(
       id: null == id
@@ -230,6 +275,26 @@ class __$$EventEntityImplCopyWithImpl<$Res>
           ? _value.organizer
           : organizer // ignore: cast_nullable_to_non_nullable
               as String?,
+      reactionCount: null == reactionCount
+          ? _value.reactionCount
+          : reactionCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      isReacted: null == isReacted
+          ? _value.isReacted
+          : isReacted // ignore: cast_nullable_to_non_nullable
+              as bool,
+      commentCount: null == commentCount
+          ? _value.commentCount
+          : commentCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      isRead: null == isRead
+          ? _value.isRead
+          : isRead // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isDismissed: null == isDismissed
+          ? _value.isDismissed
+          : isDismissed // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -248,7 +313,12 @@ class _$EventEntityImpl implements _EventEntity {
       this.imageUrl,
       this.location,
       this.type = 'event',
-      this.organizer});
+      this.organizer,
+      this.reactionCount = 0,
+      this.isReacted = false,
+      this.commentCount = 0,
+      this.isRead = false,
+      this.isDismissed = false});
 
   factory _$EventEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventEntityImplFromJson(json);
@@ -277,10 +347,25 @@ class _$EventEntityImpl implements _EventEntity {
   final String type;
   @override
   final String? organizer;
+  @override
+  @JsonKey()
+  final int reactionCount;
+  @override
+  @JsonKey()
+  final bool isReacted;
+  @override
+  @JsonKey()
+  final int commentCount;
+  @override
+  @JsonKey()
+  final bool isRead;
+  @override
+  @JsonKey()
+  final bool isDismissed;
 
   @override
   String toString() {
-    return 'EventEntity(id: $id, title: $title, description: $description, eventDate: $eventDate, isLunar: $isLunar, familyId: $familyId, content: $content, imageUrl: $imageUrl, location: $location, type: $type, organizer: $organizer)';
+    return 'EventEntity(id: $id, title: $title, description: $description, eventDate: $eventDate, isLunar: $isLunar, familyId: $familyId, content: $content, imageUrl: $imageUrl, location: $location, type: $type, organizer: $organizer, reactionCount: $reactionCount, isReacted: $isReacted, commentCount: $commentCount, isRead: $isRead, isDismissed: $isDismissed)';
   }
 
   @override
@@ -304,7 +389,16 @@ class _$EventEntityImpl implements _EventEntity {
                 other.location == location) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.organizer, organizer) ||
-                other.organizer == organizer));
+                other.organizer == organizer) &&
+            (identical(other.reactionCount, reactionCount) ||
+                other.reactionCount == reactionCount) &&
+            (identical(other.isReacted, isReacted) ||
+                other.isReacted == isReacted) &&
+            (identical(other.commentCount, commentCount) ||
+                other.commentCount == commentCount) &&
+            (identical(other.isRead, isRead) || other.isRead == isRead) &&
+            (identical(other.isDismissed, isDismissed) ||
+                other.isDismissed == isDismissed));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -321,7 +415,12 @@ class _$EventEntityImpl implements _EventEntity {
       imageUrl,
       location,
       type,
-      organizer);
+      organizer,
+      reactionCount,
+      isReacted,
+      commentCount,
+      isRead,
+      isDismissed);
 
   /// Create a copy of EventEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -351,7 +450,12 @@ abstract class _EventEntity implements EventEntity {
       final String? imageUrl,
       final String? location,
       final String type,
-      final String? organizer}) = _$EventEntityImpl;
+      final String? organizer,
+      final int reactionCount,
+      final bool isReacted,
+      final int commentCount,
+      final bool isRead,
+      final bool isDismissed}) = _$EventEntityImpl;
 
   factory _EventEntity.fromJson(Map<String, dynamic> json) =
       _$EventEntityImpl.fromJson;
@@ -378,6 +482,16 @@ abstract class _EventEntity implements EventEntity {
   String get type;
   @override
   String? get organizer;
+  @override
+  int get reactionCount;
+  @override
+  bool get isReacted;
+  @override
+  int get commentCount;
+  @override
+  bool get isRead;
+  @override
+  bool get isDismissed;
 
   /// Create a copy of EventEntity
   /// with the given fields replaced by the non-null parameter values.

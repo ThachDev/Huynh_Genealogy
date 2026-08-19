@@ -17,7 +17,6 @@ import '../models/upcoming_anniversary.dart';
 import '../widgets/user_event_card.dart';
 import '../widgets/user_notifications_widget.dart';
 import 'user_anniversary_list_page.dart';
-import 'user_event_list_page.dart';
 
 class UserEventsPage extends StatefulWidget {
   final int familyId;
@@ -199,6 +198,7 @@ class _UserEventsPageState extends State<UserEventsPage>
             lunarDateLabel: lunarLabel,
             daysRemaining: days,
             isBirthday: false,
+            targetDate: solarAnniversary,
           ));
         } catch (_) {}
       }
@@ -239,6 +239,7 @@ class _UserEventsPageState extends State<UserEventsPage>
               solarDateLabel: solarLabel,
               daysRemaining: days,
               isBirthday: true,
+              targetDate: birthdayThisYear,
             ));
           }
         }
@@ -270,9 +271,13 @@ class _UserEventsPageState extends State<UserEventsPage>
 
             final announcements = allEvents.where((e) {
               final t = e.type.toLowerCase();
-              return t == 'announcement' ||
+              final isAnnounce = t == 'announcement' ||
                   t == 'notification' ||
                   t == 'thông báo';
+              return isAnnounce &&
+                  !e.isDismissed &&
+                  !NotificationReadController.instance
+                      .isDismissed(e.id.toString());
             }).toList();
 
             final displayEvents = allEvents.where((e) {
@@ -419,9 +424,6 @@ class _UserEventsPageState extends State<UserEventsPage>
         // ── Bảng Tin Sự Kiện Dòng Tộc (Clan Event Feed) ──
         AppSectionTitle(
           title: l10n.eventsListTitle,
-          trailing: _buildSeeAll(
-            onTap: () => _openEventList(displayEvents),
-          ),
         ),
         if (displayEvents.isEmpty)
           Padding(
@@ -508,35 +510,6 @@ class _UserEventsPageState extends State<UserEventsPage>
   // ────────────────────────────────────────────────────────────────
   //  Helpers
   // ────────────────────────────────────────────────────────────────
-  Widget _buildSeeAll({VoidCallback? onTap}) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        child: Text(
-          AppLocalizations.of(context)!.seeMoreLabel,
-          style: GoogleFonts.inter(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: context.primary,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _openEventList(List<EventEntity> events) {
-    Navigator.push(
-      context,
-      SereneFadeSlidePageRoute(
-        page: UserEventListPage(
-          familyId: widget.familyId,
-          isAdminMode: widget.isAdminMode,
-          events: events,
-        ),
-      ),
-    );
-  }
 
   Future<bool?> _showConfirmDeleteDialog(EventEntity event) {
     final l10n = AppLocalizations.of(context)!;

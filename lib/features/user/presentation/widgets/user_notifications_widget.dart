@@ -6,7 +6,6 @@ import '../../../../core/data/repository/notification_read_controller.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
-import '../../../admin/presentation/pages/events/admin_event_detail_page.dart';
 import '../../../events/events.dart';
 
 /// Trang Thông Báo dòng họ thiết kế theo UI/UX chuẩn hiện đại.
@@ -47,17 +46,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
 
   void _onItemTap(EventEntity item) {
     NotificationReadController.instance.markRead(item.id.toString());
-
-    Navigator.push(
-      context,
-      SereneFadeSlidePageRoute(
-        page: AdminEventDetailPage(
-          familyId: widget.familyId,
-          event: item,
-          isUserView: true,
-        ),
-      ),
-    );
+    Navigator.pop(context);
+    UserMainNavigationPage.tabIndexNotifier.value = 1;
   }
 
   @override
@@ -68,106 +58,110 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
       listenable: NotificationReadController.instance,
       builder: (context, _) => BlocBuilder<EventsBloc, EventsState>(
         builder: (context, eventsState) {
-        List<EventEntity> allEvents = widget.announcements;
-        if (allEvents.isEmpty && eventsState is EventsLoaded) {
-          allEvents = eventsState.events.where((e) {
-            final t = e.type.toLowerCase();
-            return t == 'announcement' ||
-                t == 'notification' ||
-                t == 'thông báo';
-          }).toList();
-        }
+          List<EventEntity> allEvents = widget.announcements;
+          if (allEvents.isEmpty && eventsState is EventsLoaded) {
+            allEvents = eventsState.events.where((e) {
+              final t = e.type.toLowerCase();
+              return t == 'announcement' ||
+                  t == 'notification' ||
+                  t == 'thông báo';
+            }).toList();
+          }
 
-        final displayList = allEvents;
+          final displayList = allEvents
+              .where((e) =>
+                  !e.isDismissed &&
+                  !NotificationReadController.instance.isDismissed(e.id.toString()))
+              .toList();
 
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppAppBar(
-            title: l10n.eventTypeAnnouncement,
-            automaticallyImplyLeading: true,
-          ),
-          body: AppBackgroundBody(
-            child: Column(
-              children: [
-                const SizedBox(height: 12),
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppAppBar(
+              title: l10n.eventTypeAnnouncement,
+              automaticallyImplyLeading: true,
+            ),
+            body: AppBackgroundBody(
+              child: Column(
+                children: [
+                  const SizedBox(height: 12),
 
-                // ── Row 1: Section Title + "Đọc tất cả" ──
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        l10n.importantLabel,
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: context.textPrimary,
+                  // ── Row 1: Section Title + "Đọc tất cả" ──
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          l10n.importantLabel,
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: context.textPrimary,
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        borderRadius: BorderRadius.circular(8),
-                        onTap: displayList.isNotEmpty
-                            ? () => _markAllAsRead(displayList)
-                            : null,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 4),
-                          child: Row(
-                            children: [
-                              Icon(
-                                LucideIcons.checkCheck,
-                                size: 16,
-                                color: context.primary,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                l10n.markAllReadAction,
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
+                        InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: displayList.isNotEmpty
+                              ? () => _markAllAsRead(displayList)
+                              : null,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 4),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  LucideIcons.checkCheck,
+                                  size: 16,
                                   color: context.primary,
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 4),
+                                Text(
+                                  l10n.markAllReadAction,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                // ── Row 2: Notification Items List ──
-                Expanded(
-                  child: displayList.isEmpty
-                      ? Center(
-                          child: AppEmptyState(
-                            icon: LucideIcons.bellOff,
-                            message: l10n.noNotificationsMessage,
+                  // ── Row 2: Notification Items List ──
+                  Expanded(
+                    child: displayList.isEmpty
+                        ? Center(
+                            child: AppEmptyState(
+                              icon: LucideIcons.bellOff,
+                              message: l10n.noNotificationsMessage,
+                            ),
+                          )
+                        : ListView.separated(
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 4),
+                            itemCount: displayList.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 8),
+                            itemBuilder: (context, index) {
+                              final item = displayList[index];
+                              final isRead = NotificationReadController.instance
+                                  .isRead(item.id.toString());
+                              return _buildNotificationCard(
+                                  context, item, isRead);
+                            },
                           ),
-                        )
-                      : ListView.separated(
-                          physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 4),
-                          itemCount: displayList.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 8),
-                          itemBuilder: (context, index) {
-                            final item = displayList[index];
-                            final isRead = NotificationReadController.instance
-                                .isRead(item.id.toString());
-                            return _buildNotificationCard(
-                                context, item, isRead);
-                          },
-                        ),
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
+          );
         },
       ),
     );
@@ -349,17 +343,81 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
 
                     const SizedBox(width: 8),
 
-                    // Icon tùy chọn 3 chấm bên phải (Căn giữa - Center)
+                    // Menu tùy chọn 3 chấm chuẩn hệ thống
                     Center(
-                      child: IconButton(
+                      child: PopupMenuButton<String>(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        color: context.surface,
+                        surfaceTintColor: Colors.transparent,
+                        elevation: 4,
+                        offset: const Offset(0, 30),
+                        padding: const EdgeInsets.all(4),
+                        constraints: const BoxConstraints(),
                         icon: Icon(
                           LucideIcons.moreHorizontal,
                           size: 20,
                           color: context.textSecondary,
                         ),
-                        onPressed: () => _showItemMenu(context, item),
-                        padding: const EdgeInsets.all(4),
-                        constraints: const BoxConstraints(),
+                        onSelected: (value) {
+                          if (value == 'mark_read') {
+                            NotificationReadController.instance
+                                .markRead(item.id.toString());
+                          } else if (value == 'delete') {
+                            NotificationReadController.instance
+                                .dismiss(item.id.toString());
+                            AppSnackBar.show(
+                              context,
+                              message: 'Đã xoá thông báo',
+                              type: SnackBarType.success,
+                            );
+                          }
+                        },
+                        itemBuilder: (ctx) => [
+                          PopupMenuItem<String>(
+                            value: 'mark_read',
+                            height: 38,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  LucideIcons.checkCircle,
+                                  color: context.primary,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  l10n.markAsReadAction,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13,
+                                    color: context.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'delete',
+                            height: 38,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  LucideIcons.trash2,
+                                  color: context.primary,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  l10n.deleteNotificationAction,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13,
+                                    color: context.textPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -367,41 +425,6 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showItemMenu(BuildContext context, EventEntity item) {
-    final l10n = AppLocalizations.of(context)!;
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: context.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(LucideIcons.checkCircle),
-              title: Text(l10n.markAsReadAction),
-              onTap: () {
-                Navigator.pop(ctx);
-                NotificationReadController.instance
-                    .markRead(item.id.toString());
-              },
-            ),
-            ListTile(
-              leading: const Icon(LucideIcons.trash2, color: Colors.red),
-              title: Text(l10n.deleteNotificationAction,
-                  style: const TextStyle(color: Colors.red)),
-              onTap: () {
-                Navigator.pop(ctx);
-              },
-            ),
-          ],
         ),
       ),
     );

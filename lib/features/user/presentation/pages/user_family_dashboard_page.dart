@@ -13,7 +13,6 @@ import '../../../events/events.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../admin/presentation/widgets/admin_dashboard/member_item_widget.dart';
 import '../../../admin/presentation/widgets/admin_dashboard/family_dashboard_header_widget.dart';
-import '../../../admin/presentation/pages/events/admin_event_detail_page.dart';
 import '../../../../core/data/repository/notification_read_controller.dart';
 import '../../../../core/di/injection_container.dart';
 import '../widgets/family_highlight_carousel.dart';
@@ -21,7 +20,6 @@ import '../widgets/incense_offering_dialog.dart';
 import '../widgets/user_notifications_widget.dart';
 import '../../data/source/wish_api_service.dart';
 import '../models/wish_message.dart';
-import 'user_events_page.dart';
 import 'user_anniversary_list_page.dart';
 import '../models/upcoming_anniversary.dart';
 
@@ -157,6 +155,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
             lunarDateLabel: lunarLabel,
             daysRemaining: days,
             isBirthday: false,
+            targetDate: solarAnniversary,
           ));
         } catch (_) {}
       }
@@ -193,6 +192,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                 '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}',
             daysRemaining: daysLeft,
             isBirthday: true,
+            targetDate: bd,
           );
         })
         .whereType<UpcomingAnniversary>()
@@ -262,30 +262,12 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                 events: events,
                                 members: state.members,
                                 onGoToEvents: () {
-                                  final famId = _familyId();
-                                  if (famId != null) {
-                                    Navigator.push(
-                                      context,
-                                      SereneFadeSlidePageRoute(
-                                        page: UserEventsPage(familyId: famId),
-                                      ),
-                                    );
-                                  }
+                                  UserMainNavigationPage
+                                      .tabIndexNotifier.value = 1;
                                 },
                                 onGoToEventDetail: (event) {
-                                  final famId = _familyId();
-                                  if (famId != null) {
-                                    Navigator.push(
-                                      context,
-                                      SereneFadeSlidePageRoute(
-                                        page: AdminEventDetailPage(
-                                          familyId: famId,
-                                          event: event,
-                                          isUserView: true,
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                  UserMainNavigationPage
+                                      .tabIndexNotifier.value = 1;
                                 },
                                 onGoToAnniversaries: () {
                                   final anniversaries =
@@ -934,7 +916,12 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
         final announcements = allEvents.where((e) {
           final t = e.type.toLowerCase();
-          return t == 'announcement' || t == 'notification' || t == 'thông báo';
+          final isAnnounce =
+              t == 'announcement' || t == 'notification' || t == 'thông báo';
+          return isAnnounce &&
+              !e.isDismissed &&
+              !NotificationReadController.instance
+                  .isDismissed(e.id.toString());
         }).toList();
 
         final unreadCount = announcements

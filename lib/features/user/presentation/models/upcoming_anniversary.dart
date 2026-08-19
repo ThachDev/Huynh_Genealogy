@@ -8,6 +8,7 @@ class UpcomingAnniversary {
   final String? lunarDateLabel;
   final int daysRemaining;
   final bool isBirthday;
+  final DateTime? targetDate;
 
   const UpcomingAnniversary({
     required this.member,
@@ -16,5 +17,6 @@ class UpcomingAnniversary {
     this.lunarDateLabel,
     required this.daysRemaining,
     required this.isBirthday,
+    this.targetDate,
   });
 }

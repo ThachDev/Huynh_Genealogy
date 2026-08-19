@@ -79,13 +79,14 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
     final hint = isDeathTab ? 'Tìm kiếm ngày giỗ...' : 'Tìm kiếm ngày sinh nhật...';
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 6),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 460),
           child: AppSearchBar(
             controller: _searchController,
             hintText: hint,
+            height: 38,
             onChanged: (value) => setState(() => _query = value),
             trailing: [
               Theme(
@@ -94,17 +95,20 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                   highlightColor: Colors.transparent,
                 ),
                 child: PopupMenuButton<String>(
-                  icon: Icon(
-                    LucideIcons.listFilter,
-                    size: 20,
-                    color: context.textSecondary,
-                  ),
-                  offset: const Offset(0, 40),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   color: context.surface,
+                  surfaceTintColor: Colors.transparent,
                   elevation: 4,
+                  offset: const Offset(0, 30),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: Icon(
+                    LucideIcons.listFilter,
+                    size: 18,
+                    color: context.textSecondary,
+                  ),
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 'clear_all',
@@ -252,11 +256,11 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
           children: [
             // ── Tab Bar Container chuẩn thiết kế hệ thống ──
             Container(
-              margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              padding: const EdgeInsets.all(4),
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+              padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 color: context.surface,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: context.accent.withValues(alpha: 0.18),
                 ),
@@ -266,72 +270,78 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                       Colors.black.withValues(alpha: 0.04),
                       Colors.black.withValues(alpha: 0.2),
                     ),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 1.5),
                   ),
                 ],
               ),
-              child: TabBar(
-                controller: _tabController,
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerColor: Colors.transparent,
-                indicator: BoxDecoration(
-                  color: context.primary,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.primary.withValues(alpha: 0.3),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
+              child: SizedBox(
+                height: 34,
+                child: TabBar(
+                  controller: _tabController,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  dividerColor: Colors.transparent,
+                  labelPadding: EdgeInsets.zero,
+                  indicator: BoxDecoration(
+                    color: context.primary,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: context.primary.withValues(alpha: 0.25),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: context.textSecondary,
+                  labelStyle: GoogleFonts.beVietnamPro(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  unselectedLabelStyle: GoogleFonts.beVietnamPro(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  tabs: const [
+                    Tab(
+                      height: 34,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(LucideIcons.flame, size: 14),
+                          SizedBox(width: 5),
+                          Flexible(
+                            child: Text(
+                              'Ngày giỗ',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Tab(
+                      height: 34,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(LucideIcons.cake, size: 14),
+                          SizedBox(width: 5),
+                          Flexible(
+                            child: Text(
+                              'Sinh nhật',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                labelColor: Colors.white,
-                unselectedLabelColor: context.textSecondary,
-                labelStyle: GoogleFonts.beVietnamPro(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
-                unselectedLabelStyle: GoogleFonts.beVietnamPro(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
-                tabs: const [
-                  Tab(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(LucideIcons.flame, size: 15),
-                        SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            'Ngày giỗ',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Tab(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(LucideIcons.cake, size: 15),
-                        SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            'Sinh nhật',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
             ),
 

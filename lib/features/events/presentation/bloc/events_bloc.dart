@@ -3,6 +3,7 @@ import '../../../../core/errors/failures.dart';
 import '../../domain/usecases/get_events.dart';
 import '../../domain/usecases/save_event.dart';
 import '../../domain/usecases/delete_event.dart';
+import '../../../../core/data/repository/notification_read_controller.dart';
 import 'events_event.dart';
 import 'events_state.dart';
 
@@ -26,7 +27,10 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     final result = await getEvents(GetEventsParams(familyId: event.familyId));
     result.fold(
       (failure) => emit(EventsError(message: failure.message)),
-      (events) => emit(EventsLoaded(events: events)),
+      (events) {
+        NotificationReadController.instance.syncFromEvents(events, event.familyId);
+        emit(EventsLoaded(events: events));
+      },
     );
   }
 

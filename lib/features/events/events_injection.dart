@@ -25,4 +25,7 @@ void initEventsDependencies(GetIt sl) {
   sl.registerLazySingleton<EventsRemoteDataSource>(
     () => EventsRemoteDataSourceImpl(dio: sl()),
   );
+  sl.registerLazySingleton<EventApiService>(
+    () => EventApiService(dio: sl()),
+  );
 }

@@ -556,8 +556,8 @@ class TraditionalOrnamentalBorderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant TraditionalOrnamentalBorderPainter old) =>
-      old.borderColor != borderColor ||
-      old.fillColor != fillColor ||
-      old.leftAccentColor != leftAccentColor;
+  bool shouldRepaint(covariant TraditionalOrnamentalBorderPainter oldDelegate) =>
+      oldDelegate.borderColor != borderColor ||
+      oldDelegate.fillColor != fillColor ||
+      oldDelegate.leftAccentColor != leftAccentColor;
 }

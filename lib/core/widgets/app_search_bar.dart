@@ -9,6 +9,7 @@ class AppSearchBar extends StatelessWidget {
   final String hintText;
   final List<Widget>? trailing;
   final ValueChanged<String>? onChanged;
+  final double? height;
 
   const AppSearchBar({
     super.key,
@@ -16,10 +17,12 @@ class AppSearchBar extends StatelessWidget {
     required this.hintText,
     this.trailing,
     this.onChanged,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
+    final h = height ?? 40.0;
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: controller,
       builder: (context, value, child) {
@@ -27,20 +30,29 @@ class AppSearchBar extends StatelessWidget {
           controller: controller,
           hintText: hintText,
           onChanged: onChanged,
+          constraints: BoxConstraints(
+            minHeight: h,
+            maxHeight: h,
+          ),
+          padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+          ),
           leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 4.0),
+            padding: const EdgeInsets.only(left: 2.0, right: 4.0),
             child: Icon(
               LucideIcons.search,
-              size: 20,
+              size: 18,
               color: context.textSecondary,
             ),
           ),
           trailing: [
             if (value.text.isNotEmpty)
               IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
                 icon: Icon(
                   LucideIcons.x,
-                  size: 20,
+                  size: 18,
                   color: context.textSecondary,
                 ),
                 onPressed: () {
@@ -56,13 +68,13 @@ class AppSearchBar extends StatelessWidget {
           ),
           textStyle: WidgetStatePropertyAll(
             GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: 13.5,
               color: context.textPrimary,
             ),
           ),
           hintStyle: WidgetStatePropertyAll(
             GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: 13.5,
               color: context.textSecondary.withValues(alpha: 0.6),
             ),
           ),

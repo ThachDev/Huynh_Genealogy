@@ -14,6 +14,11 @@ class EventModel {
       location: json['location'] as String?,
       type: json['type'] as String? ?? 'event',
       organizer: json['organizer'] as String?,
+      reactionCount: _parseInt(json['reactionCount']) ?? _parseInt(json['reaction_count']) ?? 0,
+      isReacted: _parseBool(json['isReacted'] ?? json['is_reacted'] ?? json['reacted']),
+      commentCount: _parseInt(json['commentCount']) ?? _parseInt(json['comment_count']) ?? 0,
+      isRead: _parseBool(json['isRead'] ?? json['is_read']),
+      isDismissed: _parseBool(json['isDismissed'] ?? json['is_dismissed']),
     );
   }
 
@@ -30,6 +35,11 @@ class EventModel {
       'location': entity.location,
       'type': entity.type,
       'organizer': entity.organizer,
+      'reactionCount': entity.reactionCount,
+      'isReacted': entity.isReacted,
+      'commentCount': entity.commentCount,
+      'isRead': entity.isRead,
+      'isDismissed': entity.isDismissed,
     };
   }
 

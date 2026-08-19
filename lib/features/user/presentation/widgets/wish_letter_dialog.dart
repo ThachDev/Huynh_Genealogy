@@ -251,7 +251,8 @@ class _LetterContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: context.isDarkMode ? 0.4 : 0.12),
+            color:
+                Colors.black.withValues(alpha: context.isDarkMode ? 0.4 : 0.12),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
@@ -391,11 +392,14 @@ class _LetterContent extends StatelessWidget {
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: sending ? null : () => Navigator.of(context).pop(),
+                          onPressed: sending
+                              ? null
+                              : () => Navigator.of(context).pop(),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 11),
                             side: BorderSide(
-                              color: context.textSecondary.withValues(alpha: 0.25),
+                              color:
+                                  context.textSecondary.withValues(alpha: 0.25),
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -416,7 +420,8 @@ class _LetterContent extends StatelessWidget {
                         flex: 2,
                         child: ElevatedButton.icon(
                           onPressed: sending ? null : onSend,
-                          icon: const Icon(LucideIcons.send, size: 15, color: Colors.white),
+                          icon: const Icon(LucideIcons.send,
+                              size: 15, color: Colors.white),
                           label: Text(
                             l10n.wishSendButton,
                             style: GoogleFonts.beVietnamPro(

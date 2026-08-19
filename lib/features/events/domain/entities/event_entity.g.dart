@@ -19,6 +19,11 @@ _$EventEntityImpl _$$EventEntityImplFromJson(Map<String, dynamic> json) =>
       location: json['location'] as String?,
       type: json['type'] as String? ?? 'event',
       organizer: json['organizer'] as String?,
+      reactionCount: (json['reactionCount'] as num?)?.toInt() ?? 0,
+      isReacted: json['isReacted'] as bool? ?? false,
+      commentCount: (json['commentCount'] as num?)?.toInt() ?? 0,
+      isRead: json['isRead'] as bool? ?? false,
+      isDismissed: json['isDismissed'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$EventEntityImplToJson(_$EventEntityImpl instance) =>
@@ -34,4 +39,9 @@ Map<String, dynamic> _$$EventEntityImplToJson(_$EventEntityImpl instance) =>
       'location': instance.location,
       'type': instance.type,
       'organizer': instance.organizer,
+      'reactionCount': instance.reactionCount,
+      'isReacted': instance.isReacted,
+      'commentCount': instance.commentCount,
+      'isRead': instance.isRead,
+      'isDismissed': instance.isDismissed,
     };

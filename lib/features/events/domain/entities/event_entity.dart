@@ -17,6 +17,11 @@ class EventEntity with _$EventEntity {
     String? location,
     @Default('event') String type,
     String? organizer,
+    @Default(0) int reactionCount,
+    @Default(false) bool isReacted,
+    @Default(0) int commentCount,
+    @Default(false) bool isRead,
+    @Default(false) bool isDismissed,
   }) = _EventEntity;
 
   factory EventEntity.fromJson(Map<String, dynamic> json) =>

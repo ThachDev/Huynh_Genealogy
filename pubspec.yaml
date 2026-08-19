@@ -66,7 +66,7 @@ dependencies:
   path_provider: ^2.1.5
   gal: ^2.3.0
   flutter_datetime_picker_plus: ^2.4.0
-  url_launcher: ^6.3.2
+  url_launcher: ^6.3.0
   flutter_secure_storage: ^9.2.2
   cached_network_image: ^3.3.1
   package_info_plus: ^8.0.0

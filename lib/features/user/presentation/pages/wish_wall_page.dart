@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,10 +69,10 @@ class _WishWallPageState extends State<WishWallPage> {
       setState(() {
         _wishes = wishes;
         _isLoading = false;
-        // Khởi tạo trạng thái tim mặc định
+        // Khởi tạo trạng thái tim từ server
         for (final w in wishes) {
-          _reactionCounts[w.id] = 0;
-          _reacted[w.id] = false;
+          _reactionCounts[w.id] = w.reactionCount;
+          _reacted[w.id] = w.isReacted;
         }
       });
     }
@@ -144,14 +143,16 @@ class _WishWallPageState extends State<WishWallPage> {
     setState(() {
       final prev = _reacted[wishId] ?? false;
       _reacted[wishId] = !prev;
-      _reactionCounts[wishId] = (_reactionCounts[wishId] ?? 0) + (prev ? -1 : 1);
+      _reactionCounts[wishId] =
+          (_reactionCounts[wishId] ?? 0) + (prev ? -1 : 1);
     });
 
     final result = await widget.apiService.reactToWish(wishId);
     if (result != null && mounted) {
       setState(() {
         _reacted[wishId] = result['reacted'] as bool? ?? _reacted[wishId]!;
-        _reactionCounts[wishId] = result['reactionCount'] as int? ?? _reactionCounts[wishId]!;
+        _reactionCounts[wishId] =
+            result['reactionCount'] as int? ?? _reactionCounts[wishId]!;
       });
     }
   }
@@ -170,51 +171,73 @@ class _WishWallPageState extends State<WishWallPage> {
       context: context,
       backgroundColor: context.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: context.textSecondary.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: context.textSecondary.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.reportContentTitle,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: context.textPrimary,
+              Text(
+                l10n.reportContentTitle,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: context.textPrimary,
+                ),
               ),
-            ),
-            Text(
-              l10n.selectReportReason,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 13,
-                color: context.textSecondary,
+              const SizedBox(height: 2),
+              Text(
+                l10n.selectReportReason,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 13,
+                  color: context.textSecondary,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            ...reasons.map((reason) => ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: Icon(LucideIcons.flag, size: 18, color: context.accent),
-                  title: Text(
-                    reason,
-                    style: GoogleFonts.beVietnamPro(fontSize: 14),
-                  ),
-                  onTap: () => Navigator.pop(ctx, reason),
-                )),
-          ],
+              const SizedBox(height: 10),
+              ...reasons.map((reason) => InkWell(
+                    onTap: () => Navigator.pop(ctx, reason),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            LucideIcons.flag,
+                            size: 18,
+                            color: context.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              reason,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -224,9 +247,17 @@ class _WishWallPageState extends State<WishWallPage> {
     final success = await widget.apiService.reportWish(wishId, selectedReason);
     if (mounted) {
       if (success) {
-        AppSnackBar.success(context, l10n.reportSuccessMessage);
+        AppSnackBar.show(
+          context,
+          message: l10n.reportSuccessMessage,
+          type: SnackBarType.success,
+        );
       } else {
-        AppSnackBar.error(context, l10n.reportFailedMessage);
+        AppSnackBar.show(
+          context,
+          message: l10n.reportFailedMessage,
+          type: SnackBarType.error,
+        );
       }
     }
   }
@@ -258,9 +289,8 @@ class _WishWallPageState extends State<WishWallPage> {
               ListView.separated(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(16).copyWith(bottom: 100),
-                itemCount: _wishes.length > _wishLimit
-                    ? _wishLimit
-                    : _wishes.length,
+                itemCount:
+                    _wishes.length > _wishLimit ? _wishLimit : _wishes.length,
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 16),
                 itemBuilder: (context, index) {
@@ -313,151 +343,200 @@ class _WishCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final senderName =
+        (wish.senderName != null && wish.senderName!.trim().isNotEmpty)
+            ? wish.senderName!.trim()
+            : l10n.memberLabel;
+
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: context.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: context.textSecondary.withValues(alpha: 0.1),
+          color: context.textSecondary.withValues(alpha: 0.12),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color:
+                Colors.black.withValues(alpha: context.isDarkMode ? 0.2 : 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              AppAvatar(
-                avatarUrl: wish.senderAvatar,
-                fullName: wish.senderName ?? l10n.memberLabel,
-                radius: 18,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      wish.senderName ?? l10n.memberLabel,
-                      style: GoogleFonts.beVietnamPro(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                        color: context.textPrimary,
+          // ── 1. Header Crimson gọn gàng, vừa vặn ──
+          Container(
+            color: context.primary,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            child: Row(
+              children: [
+                // Avatar tròn nhỏ gọn
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: wish.senderAvatar != null &&
+                          wish.senderAvatar!.trim().isNotEmpty
+                      ? ClipOval(
+                          child: AppNetworkImage(
+                            url: wish.senderAvatar!.trim(),
+                            width: 28,
+                            height: 28,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Text(
+                          senderName.isNotEmpty
+                              ? senderName[0].toUpperCase()
+                              : 'M',
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: context.primary,
+                          ),
+                        ),
+                ),
+                const SizedBox(width: 8),
+                // Tên người gửi & Ngày gửi
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        senderName,
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${wish.createdAt.day}/${wish.createdAt.month}/${wish.createdAt.year}',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: context.textSecondary,
+                      Text(
+                        '${wish.createdAt.day.toString().padLeft(2, '0')}/${wish.createdAt.month.toString().padLeft(2, '0')}/${wish.createdAt.year}',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          color: Colors.white.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Menu 3 chấm – Báo cáo vi phạm
+                PopupMenuButton<String>(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  color: context.surface,
+                  surfaceTintColor: Colors.transparent,
+                  elevation: 4,
+                  offset: const Offset(0, 28),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(
+                    LucideIcons.moreVertical,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                  itemBuilder: (ctx) => [
+                    PopupMenuItem<String>(
+                      value: 'report',
+                      height: 38,
+                      child: Row(
+                        children: [
+                          Icon(
+                            LucideIcons.flag,
+                            size: 18,
+                            color: context.textPrimary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.reportContentTitle,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 13,
+                              color: context.textPrimary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
+                  onSelected: (value) {
+                    if (value == 'report') onReport();
+                  },
                 ),
+              ],
+            ),
+          ),
+
+          // ── 2. Nội dung lời chúc (Không background, không icon quote) ──
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            child: Text(
+              wish.content,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 14,
+                height: 1.45,
+                color: context.textPrimary,
               ),
-              // Menu 3 chấm – Báo cáo vi phạm (CH Play UGC Policy)
-              PopupMenuButton<String>(
-                icon: Icon(
-                  LucideIcons.moreVertical,
-                  size: 18,
-                  color: context.textSecondary.withValues(alpha: 0.6),
-                ),
-                itemBuilder: (ctx) => [
-                  PopupMenuItem(
-                    value: 'report',
+            ),
+          ),
+
+          // ── 3. Thanh yêu thích đồng bộ như Card sự kiện ──
+          Divider(
+            height: 1,
+            thickness: 0.5,
+            color: context.textSecondary.withValues(alpha: 0.12),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: onReact,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(LucideIcons.flag, size: 16, color: context.textSecondary),
-                        const SizedBox(width: 8),
+                        Icon(
+                          isReacted ? LucideIcons.heart : LucideIcons.heart,
+                          size: 17,
+                          color: isReacted
+                              ? context.primary
+                              : context.textSecondary,
+                        ),
+                        const SizedBox(width: 6),
                         Text(
-                          AppLocalizations.of(context)!.reportContentTitle,
-                          style: GoogleFonts.beVietnamPro(fontSize: 14),
+                          reactionCount > 0
+                              ? 'Thích ($reactionCount)'
+                              : 'Thích',
+                          style: GoogleFonts.inter(
+                            fontSize: 12.5,
+                            fontWeight:
+                                isReacted ? FontWeight.w600 : FontWeight.normal,
+                            color: isReacted
+                                ? context.primary
+                                : context.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-                onSelected: (value) {
-                  if (value == 'report') onReport();
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 36,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Icon(
-                      LucideIcons.quote,
-                      size: 16,
-                      color: context.textSecondary.withValues(alpha: 0.3),
-                    ),
-                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  wish.content,
-                  style: GoogleFonts.beVietnamPro(
-                    fontSize: 15,
-                    height: 1.5,
-                    fontStyle: FontStyle.italic,
-                    color: context.textPrimary.withValues(alpha: 0.9),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // ─── Reaction row ──────────────────────────────────────────────
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const SizedBox(width: 36 + 8), // align với nội dung
-              GestureDetector(
-                onTap: onReact,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (child, anim) => ScaleTransition(
-                    scale: anim,
-                    child: child,
-                  ),
-                  child: Icon(
-                    isReacted ? Icons.favorite : Icons.favorite_border,
-                    key: ValueKey(isReacted),
-                    size: 20,
-                    color: isReacted
-                        ? AppColors.error
-                        : context.textSecondary.withValues(alpha: 0.4),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 4),
-              if (reactionCount > 0)
-                Text(
-                  '$reactionCount',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: isReacted
-                        ? AppColors.error
-                        : context.textSecondary,
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

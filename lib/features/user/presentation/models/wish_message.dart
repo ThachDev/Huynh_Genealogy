@@ -8,6 +8,8 @@ class WishMessage {
   final DateTime createdAt;
   final String? senderName;
   final String? senderAvatar;
+  final int reactionCount;
+  final bool isReacted;
 
   WishMessage({
     required this.id,
@@ -19,9 +21,16 @@ class WishMessage {
     required this.createdAt,
     this.senderName,
     this.senderAvatar,
+    this.reactionCount = 0,
+    this.isReacted = false,
   });
 
   factory WishMessage.fromJson(Map<String, dynamic> json) {
+    final rawReacted = json['isReacted'] ?? json['is_reacted'] ?? json['reacted'];
+    final bool reacted = rawReacted is bool
+        ? rawReacted
+        : (rawReacted is num ? rawReacted == 1 : rawReacted.toString() == 'true' || rawReacted.toString() == '1');
+
     return WishMessage(
       id: json['id'] ?? 0,
       familyId: json['familyId'] ?? 0,
@@ -32,8 +41,12 @@ class WishMessage {
       createdAt: json['createdAt'] != null 
           ? DateTime.parse(json['createdAt']) 
           : DateTime.now(),
-      senderName: json['senderName'],
-      senderAvatar: json['senderAvatar'],
+      senderName: json['senderName'] ?? json['sender_name'],
+      senderAvatar: json['senderAvatar'] ?? json['sender_avatar'],
+      reactionCount: (json['reactionCount'] as num?)?.toInt() ??
+          (json['reaction_count'] as num?)?.toInt() ??
+          0,
+      isReacted: reacted,
     );
   }
 
@@ -44,6 +57,8 @@ class WishMessage {
       'senderId': senderId,
       'content': content,
       'eventType': eventType,
+      'reactionCount': reactionCount,
+      'isReacted': isReacted,
     };
   }
 }

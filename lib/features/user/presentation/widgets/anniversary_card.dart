@@ -35,17 +35,26 @@ class AnniversaryCard extends StatelessWidget {
   }
 
   String _formatDateForCalendar() {
-    // data.solarDateLabel format: DD/MM or DD/MM/YYYY
+    if (data.targetDate != null) {
+      final y = data.targetDate!.year.toString();
+      final m = data.targetDate!.month.toString().padLeft(2, '0');
+      final d = data.targetDate!.day.toString().padLeft(2, '0');
+      return '$y-$m-$d';
+    }
+
+    // Fallback: tính toán chính xác năm tiếp theo từ ngày hiện tại + daysRemaining
+    final target = DateTime.now().add(Duration(days: data.daysRemaining));
+    final y = target.year.toString();
     try {
       final parts = data.solarDateLabel.split('/');
       if (parts.length >= 2) {
         final d = parts[0].padLeft(2, '0');
         final m = parts[1].padLeft(2, '0');
-        final y = parts.length == 3 ? parts[2] : DateTime.now().year.toString();
-        return '$y-$m-$d';
+        final year = parts.length == 3 ? parts[2] : y;
+        return '$year-$m-$d';
       }
     } catch (_) {}
-    return DateTime.now().toIso8601String().split('T').first;
+    return '$y-${target.month.toString().padLeft(2, '0')}-${target.day.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -146,38 +155,26 @@ class AnniversaryCard extends StatelessWidget {
 
                   const SizedBox(height: 6),
 
-                  // Countdown Badge
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: context.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: context.primary.withValues(alpha: 0.25),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        isToday
+                            ? LucideIcons.circleDot
+                            : LucideIcons.alarmClock,
+                        size: 12,
+                        color: context.primary,
                       ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isToday
-                              ? LucideIcons.circleDot
-                              : LucideIcons.alarmClock,
-                          size: 11,
+                      const SizedBox(width: 4),
+                      Text(
+                        countdownText,
+                        style: GoogleFonts.inter(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700,
                           color: context.primary,
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          countdownText,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: context.primary,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

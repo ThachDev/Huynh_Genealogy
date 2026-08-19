@@ -12,6 +12,7 @@ import '../../../../core/domain/entity/user_entity.dart';
 import '../models/upcoming_anniversary.dart';
 import '../models/wish_message.dart';
 import '../widgets/wish_letter_dialog.dart';
+import '../widgets/incense_offering_dialog.dart';
 import '../../data/source/wish_api_service.dart';
 
 class WishWallPage extends StatefulWidget {
@@ -100,20 +101,35 @@ class _WishWallPageState extends State<WishWallPage> {
     final lunar = widget.data.lunarDateLabel;
     final subtitle = lunar == null ? solar : '$solar · $lunar';
 
-    final message = await showWishLetterDialog(
-      context,
-      title: widget.data.title,
-      subtitle: subtitle,
-      isBirthday: widget.data.isBirthday,
-    );
+    final String? message;
+    if (widget.data.isBirthday) {
+      message = await showWishLetterDialog(
+        context,
+        title: widget.data.title,
+        subtitle: subtitle,
+        isBirthday: true,
+      );
+    } else {
+      message = await showIncenseDialog(
+        context,
+        targetName: widget.data.title,
+        subtitle: subtitle,
+      );
+    }
 
-    if (message != null && message.trim().isNotEmpty && mounted) {
+    if (message != null && mounted) {
+      final defaultContent = widget.data.isBirthday
+          ? 'Chúc mừng sinh nhật!'
+          : 'Thắp nén tâm nhang tưởng nhớ tiền nhân thành kính.';
+      final prayerContent =
+          message.trim().isNotEmpty ? message.trim() : defaultContent;
+
       final newWish = WishMessage(
         id: 0,
         familyId: userProfile.familyId ?? 0,
         memberId: widget.data.member.id,
         senderId: userProfile.id,
-        content: message,
+        content: prayerContent,
         eventType: widget.data.isBirthday ? 'birthday' : 'anniversary',
         createdAt: DateTime.now(),
         senderName: userProfile.fullName,
@@ -133,6 +149,14 @@ class _WishWallPageState extends State<WishWallPage> {
           _reactionCounts[created.id] = 0;
           _reacted[created.id] = false;
         });
+
+        AppSnackBar.show(
+          context,
+          message: widget.data.isBirthday
+              ? l10n.wishSentMessage
+              : 'Đã thắp nén tâm nhang tưởng nhớ ${widget.data.title} thành kính!',
+          type: SnackBarType.success,
+        );
       }
     }
   }
@@ -280,9 +304,13 @@ class _WishWallPageState extends State<WishWallPage> {
             else if (_wishes.isEmpty)
               Center(
                 child: AppEmptyState(
-                  icon: LucideIcons.mail,
-                  message: l10n.noWishesMessage,
-                  subMessage: l10n.beFirstWisher,
+                  icon: isBirthday ? LucideIcons.mail : LucideIcons.flame,
+                  message: isBirthday
+                      ? l10n.noWishesMessage
+                      : 'Chưa có nén tâm nhang nào',
+                  subMessage: isBirthday
+                      ? l10n.beFirstWisher
+                      : 'Hãy là người đầu tiên thắp nén tâm nhang tưởng nhớ.',
                 ),
               )
             else
@@ -313,9 +341,9 @@ class _WishWallPageState extends State<WishWallPage> {
         backgroundColor: context.primary,
         foregroundColor: context.textOnPrimary,
         elevation: 4,
-        icon: Icon(isBirthday ? LucideIcons.gift : LucideIcons.mailPlus),
+        icon: Icon(isBirthday ? LucideIcons.gift : LucideIcons.flame),
         label: Text(
-          isBirthday ? l10n.sendWishButton : l10n.sendRemembranceButton,
+          isBirthday ? l10n.sendWishButton : 'Thắp nén tâm nhang',
           style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
         ),
       ),

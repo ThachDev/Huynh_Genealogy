@@ -742,7 +742,9 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
               _isSearching ? LucideIcons.x : LucideIcons.search,
               color: context.textPrimary,
             ),
-            tooltip: _isSearching ? l10n.closeSearchTooltip : l10n.searchMemberTooltip,
+            tooltip: _isSearching
+                ? l10n.closeSearchTooltip
+                : l10n.searchMemberTooltip,
             onPressed: () {
               setState(() {
                 _isSearching = !_isSearching;
@@ -785,7 +787,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
             child: Icon(
               LucideIcons.tag,
               color: _showGenerationBadges
-                  ? context.accent
+                  ? context.primary
                   : context.textSecondary.withValues(alpha: 0.4),
               size: 18,
             ),
@@ -800,7 +802,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
             mini: true,
             child: Icon(
               LucideIcons.maximize2,
-              color: context.accent,
+              color: context.primary,
               size: 18,
             ),
           ),
@@ -926,6 +928,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                         positions: positions,
                                         generationLevels: generationLevels,
                                         nodeHeight: _nodeHeight,
+                                        primaryColor: context.primary,
                                         accentColor: context.accent,
                                         surfaceColor: context.surface,
                                         textColor: context.textPrimary,
@@ -938,10 +941,10 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                           ..style = PaintingStyle.stroke,
                                         spousePaint: Paint()
                                           ..color = context.resolve(
-                                              context.accent
-                                                  .withValues(alpha: 0.8),
+                                              context.primary
+                                                  .withValues(alpha: 0.6),
                                               Colors.grey.shade700
-                                                  .withValues(alpha: 0.8))
+                                                  .withValues(alpha: 0.6))
                                           ..strokeWidth = 2.0
                                           ..strokeCap = StrokeCap.round
                                           ..style = PaintingStyle.stroke,
@@ -963,10 +966,10 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                         isCurrentUser:
                                             userMemberId == member.id,
                                         onTap: () {
-                                           HapticFeedback.lightImpact();
-                                           context.read<FamilyTreeBloc>().add(
-                                               FamilyTreeSelectMemberEvent(
-                                                   member.id));
+                                          HapticFeedback.lightImpact();
+                                          context.read<FamilyTreeBloc>().add(
+                                              FamilyTreeSelectMemberEvent(
+                                                  member.id));
                                           Navigator.push(
                                             context,
                                             SereneFadeSlidePageRoute(
@@ -1024,12 +1027,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                             .generationLevelFormat(
                                                 _TreeEdgePainter.toRoman(gen))
                                             .toUpperCase(),
-                                         style: GoogleFonts.beVietnamPro(
-                                           fontSize: 11.5,
-                                           fontWeight: FontWeight.bold,
-                                           color: context.accent,
-                                           letterSpacing: 0.8,
-                                         ),
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 11.5,
+                                          fontWeight: FontWeight.bold,
+                                          color: context.accent,
+                                          letterSpacing: 0.8,
+                                        ),
                                       ),
                                     );
                                   }).toList(),
@@ -1234,6 +1237,7 @@ class _TreeEdgePainter extends CustomPainter {
   final Paint linePaint;
   final Paint spousePaint;
   final double nodeHeight;
+  final Color primaryColor;
   final Color accentColor;
   final Color surfaceColor;
   final Color textColor;
@@ -1247,6 +1251,7 @@ class _TreeEdgePainter extends CustomPainter {
     required this.linePaint,
     required this.spousePaint,
     required this.nodeHeight,
+    required this.primaryColor,
     required this.accentColor,
     required this.surfaceColor,
     required this.textColor,
@@ -1349,7 +1354,10 @@ class _TreeEdgePainter extends CustomPainter {
       canvas.drawPath(path, linePaint);
     }
 
-    // ── Spouse edges — đường ngang + chấm tròn giữa ─────────────────────
+    // ── Spouse edges — cặp nhẫn cưới lồng nhau (Interlocking Rings ⚭) ──
+    const ringRadius = 4.5;
+    const ringSpacing = 2.8;
+
     for (final se in spouseEdges) {
       final left = positions[se.leftMemberId];
       final right = positions[se.rightMemberId];
@@ -1358,30 +1366,34 @@ class _TreeEdgePainter extends CustomPainter {
       final start = Offset(left.dx + _nodeWidth / 2, left.dy);
       final end = Offset(right.dx - _nodeWidth / 2, right.dy);
       final midX = (start.dx + end.dx) / 2;
+      final midY = start.dy;
 
-      // Chọn icon dựa vào trạng thái hôn nhân
-      final icon =
-          se.isDivorced ? LucideIcons.heartCrack : LucideIcons.heartHandshake;
-      final iconColor = se.isDivorced ? Colors.grey : Colors.redAccent;
+      // Vẽ 2 chiếc nhẫn cưới lồng nhau màu Crimson
+      final ringColor = se.isDivorced ? Colors.grey : primaryColor;
+      final ringPaint = Paint()
+        ..color = ringColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5;
 
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: String.fromCharCode(icon.codePoint),
-          style: TextStyle(
-            color: iconColor,
-            fontSize: 16,
-            fontFamily: icon.fontFamily,
-            package: icon.fontPackage,
-          ),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
+      // Nhẫn trái & nhẫn phải lồng nhau
+      canvas.drawCircle(
+          Offset(midX - ringSpacing, midY), ringRadius, ringPaint);
+      canvas.drawCircle(
+          Offset(midX + ringSpacing, midY), ringRadius, ringPaint);
 
-      textPainter.paint(
-        canvas,
-        Offset(midX - textPainter.width / 2, start.dy - textPainter.height / 2),
-      );
+      // Nếu ly hôn: Vẽ vạch gạch chéo
+      if (se.isDivorced) {
+        final slashPaint = Paint()
+          ..color = Colors.grey.shade600
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..strokeCap = StrokeCap.round;
+        canvas.drawLine(
+          Offset(midX - 6.0, midY - 5.5),
+          Offset(midX + 6.0, midY + 5.5),
+          slashPaint,
+        );
+      }
     }
   }
 
@@ -1391,7 +1403,10 @@ class _TreeEdgePainter extends CustomPainter {
         oldDelegate.orphanEdges != orphanEdges ||
         oldDelegate.spouseEdges != spouseEdges ||
         oldDelegate.positions != positions ||
-        oldDelegate.generationLevels != generationLevels;
+        oldDelegate.generationLevels != generationLevels ||
+        oldDelegate.primaryColor != primaryColor ||
+        oldDelegate.accentColor != accentColor ||
+        oldDelegate.surfaceColor != surfaceColor;
   }
 }
 

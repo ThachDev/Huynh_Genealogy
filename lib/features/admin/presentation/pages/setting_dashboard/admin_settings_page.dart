@@ -402,7 +402,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       confirmColor: context.primary,
                     );
                     if (confirmed == true && context.mounted) {
-                      UserMainNavigationPage.tabIndexNotifier.value = 0;
                       context.read<AuthBloc>().add(AuthLogoutRequested());
                     }
                   },

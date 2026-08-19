@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
@@ -38,6 +39,8 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
   final TextEditingController _prayerController = TextEditingController();
   bool _isLit = false;
   bool _isFinished = false;
+  int _burnKey = 0;
+  Uint8List? _webpBytes;
 
   // Animation controller cho tiến trình thắp & tàn nhang (khi nhấn "Thắp Nhang")
   late final AnimationController _burnController;
@@ -46,6 +49,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
   @override
   void initState() {
     super.initState();
+    _loadWebpBytes();
 
     _burnController = AnimationController(
       vsync: this,
@@ -72,6 +76,18 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
     });
   }
 
+  Future<void> _loadWebpBytes() async {
+    try {
+      final ByteData data =
+          await rootBundle.load('assets/images/bat_huong.webp');
+      if (mounted) {
+        setState(() {
+          _webpBytes = data.buffer.asUint8List();
+        });
+      }
+    } catch (_) {}
+  }
+
   @override
   void dispose() {
     _burnController.dispose();
@@ -84,14 +100,19 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
     super.didChangeDependencies();
     precacheImage(
         const AssetImage('assets/images/bat_huong_thumb.png'), context);
-    precacheImage(const AssetImage('assets/images/bat_huong.webp'), context);
   }
 
   void _lightIncense() {
     if (_isLit) return;
     FocusScope.of(context).unfocus();
-    setState(() => _isLit = true);
-    _burnController.forward();
+    // Xóa triệt để cache hình ảnh động để Flutter khởi tạo lại Codec từ frame 0
+    PaintingBinding.instance.imageCache.clear();
+    PaintingBinding.instance.imageCache.clearLiveImages();
+    setState(() {
+      _isLit = true;
+      _burnKey++;
+    });
+    _burnController.forward(from: 0.0);
   }
 
   @override
@@ -121,28 +142,54 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── 1. Header Trang Trọng ──────────────────────────────────────
+              // ── 1. Header Trang Trọng: [Flame] Tên + Ngày & Nút X ──
               Container(
                 width: double.infinity,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8.5),
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8.5),
                 decoration: BoxDecoration(
                   color: primaryColor,
                 ),
                 child: Row(
                   children: [
-                    const Icon(LucideIcons.flame,
-                        size: 15, color: Colors.white),
+                    const Icon(
+                      LucideIcons.flame,
+                      size: 18,
+                      color: Color(0xFFFDE68A),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        'THẮP NÉN TÂM NHANG',
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: 0.6,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            widget.targetName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              height: 1.15,
+                            ),
+                          ),
+                          if (widget.subtitle != null &&
+                              widget.subtitle!.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              widget.subtitle!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withValues(alpha: 0.82),
+                                height: 1.15,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                     IconButton(
@@ -157,36 +204,10 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
               ),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 18),
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Tên người được thắp nhang
-                    Text(
-                      widget.targetName,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: context.textPrimary,
-                      ),
-                    ),
-                    if (widget.subtitle != null &&
-                        widget.subtitle!.isNotEmpty) ...[
-                      const SizedBox(height: 3),
-                      Text(
-                        widget.subtitle!,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
-
-                    const SizedBox(height: 14),
-
                     // ── 2. Khu Vực Lư Hương 3D & 3 Nén Nhang Đốt Tàn Thật ────────────
                     RepaintBoundary(
                       child: Container(
@@ -215,11 +236,20 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                             // Ảnh tĩnh ban đầu hoặc Animation WebP trong suốt khi thắp
                             Positioned.fill(
                               child: _isLit
-                                  ? Image.asset(
-                                      'assets/images/bat_huong.webp',
-                                      fit: BoxFit.contain,
-                                      gaplessPlayback: true,
-                                    )
+                                  ? (_webpBytes != null
+                                      ? Image.memory(
+                                          _webpBytes!,
+                                          key: ValueKey(
+                                              'bat_huong_mem_$_burnKey'),
+                                          fit: BoxFit.contain,
+                                          gaplessPlayback: false,
+                                        )
+                                      : Image.asset(
+                                          'assets/images/bat_huong.webp',
+                                          key: ValueKey(
+                                              'bat_huong_webp_$_burnKey'),
+                                          fit: BoxFit.contain,
+                                        ))
                                   : Image.asset(
                                       'assets/images/bat_huong_thumb.png',
                                       fit: BoxFit.contain,
@@ -255,62 +285,51 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                                 },
                               ),
 
-                            // Text trạng thái nhang (Bỏ background khi chưa thắp)
-                            Positioned(
-                              top: 10,
-                              right: 12,
-                              child: AnimatedOpacity(
-                                duration: const Duration(milliseconds: 300),
-                                opacity: _isLit ? 1.0 : 0.8,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 4),
-                                  decoration: _isLit
-                                      ? BoxDecoration(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.6),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all(
-                                            color: accentGold.withValues(
-                                                alpha: 0.4),
+                            // Badge trạng thái nhang (Chỉ hiện khi đang thắp - Top Right gọn gàng)
+                            if (_isLit)
+                              Positioned(
+                                top: 10,
+                                right: 12,
+                                child: AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 300),
+                                  opacity: 1.0,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.65),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color:
+                                            accentGold.withValues(alpha: 0.45),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Color(0xFFEF4444),
                                           ),
-                                        )
-                                      : null,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        width: 6,
-                                        height: 6,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: _isLit
-                                              ? const Color(0xFFEF4444)
-                                              : context.textSecondary
-                                                  .withValues(alpha: 0.6),
                                         ),
-                                      ),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        _isLit
-                                            ? (_isFinished
-                                                ? 'Tâm nguyện đã gửi'
-                                                : 'Đang dâng hương...')
-                                            : 'Chưa thắp',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 10.5,
-                                          fontWeight: FontWeight.w600,
-                                          color: _isLit
-                                              ? const Color(0xFFFDE68A)
-                                              : context.textSecondary,
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          _isFinished ? 'Đã thắp' : 'Đang thắp',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 10.5,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFFFDE68A),
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -402,7 +421,9 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
                             ),
                             label: Text(
                               _isLit
-                                  ? 'Đang Dâng Hương...'
+                                  ? (_isFinished
+                                      ? 'Đã Dâng Hương'
+                                      : 'Đang Dâng Hương...')
                                   : 'Thắp Nhang Thành Kính',
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 13,

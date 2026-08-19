@@ -241,7 +241,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 
           tabs.add(_TabConfig(
             icon: LucideIcons.settings,
-            label: l10n.navSettings,
+            label: l10n.settingsTitle,
             page: const AdminSettingsPage(),
           ));
         } else {
@@ -269,7 +269,7 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
 
           tabs.add(_TabConfig(
             icon: LucideIcons.settings,
-            label: l10n.navSettings,
+            label: l10n.settingsTitle,
             page: const AdminSettingsPage(),
           ));
         }

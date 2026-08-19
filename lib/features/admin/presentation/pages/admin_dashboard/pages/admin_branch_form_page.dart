@@ -287,7 +287,7 @@ class _AdminBranchFormPageState extends State<AdminBranchFormPage> {
                         _buildSectionCard(
                           context,
                           icon: LucideIcons.gitBranch,
-                          title: l10n.basicInfoTitle,
+                          title: l10n.basicInfoSectionTitle,
                           children: [
                             _buildTextField(
                               controller: _nameController,

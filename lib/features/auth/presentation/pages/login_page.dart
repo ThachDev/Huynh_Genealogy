@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         children: [
           Text(
-            l10n.loginTitle,
+            l10n.loginButton,
             style: GoogleFonts.beVietnamPro(
               fontSize: 28,
               fontWeight: FontWeight.bold,

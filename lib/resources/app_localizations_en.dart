@@ -9,9 +9,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get loginTitle => 'Login';
-
-  @override
   String get loginSubtitle => 'Connect with your family genealogy roots';
 
   @override
@@ -40,9 +37,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rememberMe => 'Remember me';
-
-  @override
-  String get registerTitle => 'Register';
 
   @override
   String get registerSubtitle => 'Create your family tree lineage account';
@@ -148,9 +142,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get otpResendButton => 'Resend code';
 
   @override
-  String get resetPasswordTitle => 'Reset Password';
-
-  @override
   String get resetPasswordSubtitle =>
       'Enter your new password for your account.';
 
@@ -206,7 +197,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyNameRequired => 'Family name cannot be empty';
 
   @override
-  String get familyDescriptionLabel => 'Biography / Description';
+  String get familyDescriptionLabel => 'Clan Description';
 
   @override
   String get familyDescriptionHint => 'Home town, origins...';
@@ -229,9 +220,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get welcomeViewerSubtitle =>
       'Please enter the Invite Code provided by the Clan Leader to join and view the family tree.';
-
-  @override
-  String get inviteCodeHint => 'Enter 6-character code';
 
   @override
   String familyFoundTitle(String name) {
@@ -264,7 +252,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'For members who have an invite code from the Clan Leader to view and update the family tree.';
 
   @override
-  String get familyPhotoSectionLabel => 'Family Representative Photo';
+  String get familyPhotoSectionLabel => 'Family Avatar';
 
   @override
   String get errEmailRequired => 'Please enter your email address';
@@ -416,7 +404,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterInviteCodeLabel => 'Enter Invite Code';
 
   @override
-  String get inviteCodeHintNew => 'EG: HGT-2024';
+  String get inviteCodeHintNew => 'E.g: HGT-2024';
 
   @override
   String get inviteCodeDescription =>
@@ -441,9 +429,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navEvents => 'Events';
 
   @override
-  String get navSettings => 'Settings';
-
-  @override
   String get errGenerationRequired => 'Please enter the generation number';
 
   @override
@@ -463,9 +448,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formCancel => 'Cancel';
-
-  @override
-  String get lunarSuffix => 'Lunar';
 
   @override
   String get leapMonthSuffix => '(Leap)';
@@ -501,12 +483,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountAndClanSection => 'Account & Clan';
-
-  @override
-  String get clanInfoLabel => 'Clan Information';
-
-  @override
-  String get accountSecurityLabel => 'Account Security';
 
   @override
   String get switchToMemberPage => 'Switch to Member Page';
@@ -561,9 +537,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dissolveClanLabel => 'Dissolve Clan';
-
-  @override
-  String get logoutButton => 'Logout';
 
   @override
   String get accountSecurityTitle => 'Account Security';
@@ -644,9 +617,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchMemberHint => 'Search member...';
 
   @override
-  String get noMemberFound => 'No matching member found.';
-
-  @override
   String get noSearchResultsMessage => 'No matching results found.';
 
   @override
@@ -675,7 +645,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roleEditorDesc => 'Contribute and edit genealogy information.';
 
   @override
-  String get roleViewerDesc => 'Can only view family information.';
+  String get roleViewerDesc => 'View-only access to clan information.';
 
   @override
   String get updateRoleSuccess => 'Role updated successfully!';
@@ -921,12 +891,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get roleOwner => 'Clan Leader';
 
   @override
-  String get roleEditor => 'Editor';
-
-  @override
-  String get roleViewer => 'Member';
-
-  @override
   String get searchMembersHint => 'Search members...';
 
   @override
@@ -946,9 +910,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statBranches => 'Branches';
-
-  @override
-  String get statPending => 'Pending';
 
   @override
   String get inviteCodeSectionLabel => 'Family Invite Code';
@@ -1072,9 +1033,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteBranchTooltip => 'Delete branch';
-
-  @override
-  String get basicInfoTitle => 'Basic Information';
 
   @override
   String get branchNameLabel => 'Branch name';
@@ -1263,9 +1221,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailSubjectHelp => 'Gia Toc Viet Support';
 
   @override
-  String get accountSectionTitle => 'Account';
-
-  @override
   String get allLabel => 'All';
 
   @override
@@ -1301,9 +1256,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyTreeTitle => 'Family Tree';
-
-  @override
-  String get knownLabel => 'Known';
 
   @override
   String get logoutConfirmMessage =>
@@ -1438,19 +1390,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventLocationHint => 'Enter location...';
 
   @override
-  String get eventOrganizerLabel => 'Organizer';
-
-  @override
-  String get eventOrganizerHint => 'Name of person ...';
-
-  @override
   String get eventAuthorLabel => 'Author';
 
   @override
   String get eventPickPhoto => 'Pick photo';
 
   @override
-  String get eventChangePhoto => 'Pick photo';
+  String get eventChangePhoto => 'Change photo';
 
   @override
   String get eventDetailTitle => 'Event Detail';
@@ -1722,9 +1668,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusRejected => 'Rejected';
 
   @override
-  String get unknownShortLabel => 'Unknown';
-
-  @override
   String get maritalDivorcedStatus => 'Divorced';
 
   @override
@@ -1735,9 +1678,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchMemberByNameHint => 'Search by member name...';
-
-  @override
-  String get noMatchingMember => 'No matching member found';
 
   @override
   String get noUnlinkedMembers => 'No unlinked members';
@@ -2082,7 +2022,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errTransferOwnership => 'Error transferring clan leadership';
 
   @override
-  String get linkAccountsTitle => 'Account & Link Management';
+  String get linkAccountsTitle => 'Accounts & Linking';
 
   @override
   String get linkAccountsNodeTitle => 'Link Account';
@@ -2187,11 +2127,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get auditUnknownActor => 'Unknown';
-
-  @override
-  String auditChangedFields(Object fields, Object name) {
-    return '$name · changed: $fields';
-  }
 
   @override
   String get unlinkFailed => 'Failed to unlink account';

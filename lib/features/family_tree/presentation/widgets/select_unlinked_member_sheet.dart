@@ -161,7 +161,7 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                         padding: const EdgeInsets.all(20.0),
                         child: Text(
                           _searchQuery.isNotEmpty
-                              ? l10n.noMatchingMember
+                              ? l10n.emptyMembers
                               : l10n.noUnlinkedMembers,
                           style: GoogleFonts.beVietnamPro(
                             color: textSecondary,

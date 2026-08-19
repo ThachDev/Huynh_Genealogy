@@ -126,7 +126,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: AppAppBar(title: l10n.resetPasswordTitle),
+      appBar: AppAppBar(title: l10n.resetPasswordButton),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -173,7 +173,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             ),
                             const SizedBox(height: 24),
                             Text(
-                              l10n.resetPasswordTitle,
+                              l10n.resetPasswordButton,
                               textAlign: TextAlign.center,
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 24,

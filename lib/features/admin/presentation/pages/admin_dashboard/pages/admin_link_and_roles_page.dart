@@ -155,7 +155,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   child: Text(
                     l10n.roleOfUser(
-                        user.userFullName ?? l10n.roleViewer.toLowerCase()),
+                        user.userFullName ?? l10n.memberLabel.toLowerCase()),
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -233,7 +233,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
               _confirmTransferOwnership(
                 familyId,
                 user.userId,
-                user.userFullName ?? user.userEmail ?? l10n.roleViewer,
+                user.userFullName ?? user.userEmail ?? l10n.memberLabel,
               );
             },
       leading: Icon(
@@ -622,7 +622,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
               child: visibleItems.isEmpty
                   ? Center(
                       child: Text(
-                        l10n.noMemberFound,
+                        l10n.emptyMembers,
                         style: GoogleFonts.beVietnamPro(
                           color: context.textSecondary,
                           fontSize: 14,
@@ -995,7 +995,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
               child: members.isEmpty
                   ? Center(
                       child: Text(
-                        l10n.noMemberFound,
+                        l10n.emptyMembers,
                         style: GoogleFonts.beVietnamPro(
                           color: context.textSecondary,
                           fontSize: 14,
@@ -1060,7 +1060,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                                         children: [
                                           Text(
                                             user.userFullName ??
-                                                l10n.roleViewer,
+                                                l10n.memberLabel,
                                             style: GoogleFonts.beVietnamPro(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14,

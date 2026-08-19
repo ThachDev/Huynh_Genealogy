@@ -302,13 +302,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     context,
                     showAdminInterface
                         ? l10n.accountAndClanSection
-                        : l10n.accountSectionTitle,
+                        : l10n.accountSection,
                   ),
                   if (showAdminInterface && isOwner)
                     _buildSettingsTile(
                       context: context,
                       icon: LucideIcons.landmark,
-                      title: l10n.clanInfoLabel,
+                      title: l10n.clanInfoSettingsTitle,
                       destination: AdminClanInfoPage(
                         family: family,
                         user: user,
@@ -317,7 +317,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   _buildSettingsTile(
                     context: context,
                     icon: LucideIcons.lock,
-                    title: l10n.accountSecurityLabel,
+                    title: l10n.accountSecurityTitle,
                     destination: const AdminAccountSecurityPage(),
                     showDivider: showAdminInterface || hasAdminPrivileges,
                   ),
@@ -389,13 +389,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 ]),
                 const SizedBox(height: 24),
                 AppButton(
-                  label: l10n.logoutButton,
+                  label: l10n.logoutLabel,
                   onPressed: () async {
                     final confirmed = await AppDialog.confirm(
                       context,
                       title: l10n.logoutLabel,
                       message: l10n.logoutConfirmMessage,
-                      confirmLabel: l10n.logoutButton,
+                      confirmLabel: l10n.logoutLabel,
                       type: AppDialogType.danger,
                       showIcon: false,
                       confirmColor: context.primary,

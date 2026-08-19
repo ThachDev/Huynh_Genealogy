@@ -166,7 +166,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Column(
         children: [
           Text(
-            l10n.registerTitle,
+            l10n.registerButton,
             style: GoogleFonts.beVietnamPro(
               fontSize: 26,
               fontWeight: FontWeight.bold,

@@ -513,9 +513,9 @@ class _PendingRequestDetailSheet extends StatelessWidget {
         return l10n.roleOwner;
       case 'BRANCH_ADMIN':
       case 'EDITOR':
-        return l10n.roleEditor;
+        return l10n.roleEditorTitle;
       default:
-        return l10n.roleViewer;
+        return l10n.memberLabel;
     }
   }
 
@@ -552,7 +552,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
       case 'female':
         return l10n.genderFemale;
       default:
-        return l10n.unknownShortLabel;
+        return l10n.unknownLabel;
     }
   }
 
@@ -567,7 +567,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
       case 'widowed':
         return l10n.maritalWidowedShort;
       default:
-        return l10n.unknownShortLabel;
+        return l10n.unknownLabel;
     }
   }
 }

@@ -6,7 +6,7 @@ class LunarDateHelper {
 
   /// Returns the formatted lunar date string "dd/MM ÂM LỊCH" for a given solar date.
   static String getLunarDateString(DateTime solarDate, [AppLocalizations? l10n]) {
-    final lunarSuffix = l10n?.lunarSuffix ?? 'ÂM LỊCH';
+    final lunarSuffix = l10n?.lunarCalendar ?? 'ÂM LỊCH';
     final leapSuffix = l10n?.leapMonthSuffix ?? '(Nhuận)';
     try {
       final lunar = Lunar(createdFromSolar: true, date: solarDate);

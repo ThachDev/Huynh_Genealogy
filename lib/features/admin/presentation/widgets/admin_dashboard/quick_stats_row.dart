@@ -54,7 +54,7 @@ class QuickStatsRow extends StatelessWidget {
             Expanded(
               child: StatCardItem(
                 icon: LucideIcons.clock,
-                label: l10n.statPending,
+                label: l10n.statusPending,
                 value: pendingCount,
                 isSelected: selectedTab == AdminDashboardTab.pending,
                 onTap: () => onTabChanged(AdminDashboardTab.pending),

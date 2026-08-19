@@ -43,11 +43,11 @@ class AdminDashboardPage extends StatefulWidget {
         return l10n.roleOwner;
       case 'BRANCH_ADMIN':
       case 'EDITOR':
-        return l10n.roleEditor;
+        return l10n.roleEditorTitle;
       case 'VIEWER':
-        return l10n.roleViewer;
+        return l10n.memberLabel;
       default:
-        return l10n.roleViewer;
+        return l10n.memberLabel;
     }
   }
 

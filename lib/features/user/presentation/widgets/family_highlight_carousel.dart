@@ -8,11 +8,11 @@ import '../../../../resources/app_localizations.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../../core/domain/entity/user_entity.dart';
+import '../../../../core/domain/entity/wish_entity.dart';
 import '../../../events/domain/entities/event_entity.dart';
 import '../../../family_tree/domain/entities/member_entity.dart';
-import '../../data/source/wish_api_service.dart';
+import '../../domain/repository/wish_repository.dart';
 import '../models/upcoming_anniversary.dart';
-import '../models/wish_message.dart';
 import '../widgets/wish_letter_dialog.dart';
 import '../widgets/incense_offering_dialog.dart';
 import 'family_highlight_card.dart';
@@ -428,7 +428,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
     );
 
     if (message != null && message.trim().isNotEmpty && mounted) {
-      final newWish = WishMessage(
+      final newWish = WishEntity(
         id: 0,
         familyId: userProfile.familyId ?? 0,
         memberId: data.member.id,
@@ -440,23 +440,22 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         senderAvatar: userProfile.avatarUrl,
       );
 
-      final apiService = sl<WishApiService>();
-      final created = await apiService.createWish(newWish);
+      final wishRepository = sl<WishRepository>();
+      final result = await wishRepository.createWish(newWish);
 
       if (mounted) {
-        if (created != null) {
-          AppSnackBar.show(
-            context,
-            message: l10n.wishSentMessage,
-            type: SnackBarType.success,
-          );
-        } else {
-          AppSnackBar.show(
+        result.fold(
+          (_) => AppSnackBar.show(
             context,
             message: l10n.errorOccurred,
             type: SnackBarType.error,
-          );
-        }
+          ),
+          (_) => AppSnackBar.show(
+            context,
+            message: l10n.wishSentMessage,
+            type: SnackBarType.success,
+          ),
+        );
       }
     }
   }
@@ -490,7 +489,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
           ? message.trim()
           : l10n.incenseDefaultPrayer;
 
-      final newWish = WishMessage(
+      final newWish = WishEntity(
         id: 0,
         familyId: userProfile.familyId ?? 0,
         memberId: data.member.id,
@@ -502,23 +501,22 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
         senderAvatar: userProfile.avatarUrl,
       );
 
-      final apiService = sl<WishApiService>();
-      final created = await apiService.createWish(newWish);
+      final wishRepository = sl<WishRepository>();
+      final result = await wishRepository.createWish(newWish);
 
       if (mounted) {
-        if (created != null) {
-          AppSnackBar.show(
-            context,
-            message: l10n.incenseLitFor(data.title),
-            type: SnackBarType.success,
-          );
-        } else {
-          AppSnackBar.show(
+        result.fold(
+          (_) => AppSnackBar.show(
             context,
             message: l10n.errorOccurred,
             type: SnackBarType.error,
-          );
-        }
+          ),
+          (_) => AppSnackBar.show(
+            context,
+            message: l10n.incenseLitFor(data.title),
+            type: SnackBarType.success,
+          ),
+        );
       }
     }
   }

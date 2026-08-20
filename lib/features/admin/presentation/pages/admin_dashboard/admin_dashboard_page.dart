@@ -296,15 +296,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       final userTreeState = context.watch<FamilyTreeBloc>().state;
       if (userTreeState is FamilyTreeLoaded &&
           userTreeState.members.isNotEmpty) {
-        final rootMembers = userTreeState.members.where(
-          (m) => m.generation == 1 || m.parentId == null,
+        final surname = FamilyNameResolver.resolveSurname(
+          userTreeState.members,
         );
-        final rootMember = rootMembers.isNotEmpty
-            ? rootMembers.first
-            : userTreeState.members.first;
-        final parts = rootMember.fullName.trim().split(' ');
-        if (parts.isNotEmpty) {
-          familyName = l10n.familyNameFormat(parts.first);
+        if (surname != null) {
+          familyName = l10n.familyNameFormat(surname);
         }
       } else {
         final parts = user.fullName.trim().split(' ');

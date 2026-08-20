@@ -16,10 +16,12 @@ import '../../../../core/di/injection_container.dart';
 import '../widgets/family_highlight_carousel.dart';
 import '../widgets/incense_offering_dialog.dart';
 import '../widgets/user_notifications_widget.dart';
-import '../../data/source/wish_api_service.dart';
-import '../models/wish_message.dart';
+import '../../domain/repository/wish_repository.dart';
+import '../../../../core/domain/entity/wish_entity.dart';
 import 'user_anniversary_list_page.dart';
 import '../../domain/services/anniversary_calculator.dart';
+import '../../domain/services/member_filter.dart';
+import '../../domain/services/announcement_service.dart';
 
 class UserFamilyDashboardPage extends StatefulWidget {
   const UserFamilyDashboardPage({super.key});
@@ -31,12 +33,9 @@ class UserFamilyDashboardPage extends StatefulWidget {
 
 class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-  int? _selectedBranchId;
   final ScrollController _scrollController = ScrollController();
   int _memberLimit = 5;
-  String _statusFilter = 'all'; // 'all', 'alive', 'deceased'
-  String _genderFilter = 'all'; // 'all', 'male', 'female'
+  MemberFilter _filter = const MemberFilter();
 
   @override
   void initState() {
@@ -64,7 +63,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
 
   void _onSearchChanged() {
     setState(() {
-      _searchQuery = _searchController.text.trim().toLowerCase();
+      _filter = _filter.copyWith(
+          searchQuery: _searchController.text.trim().toLowerCase());
       _memberLimit = 5;
     });
   }
@@ -78,7 +78,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     }
   }
 
-int? _familyId() {
+  int? _familyId() {
     final authState = context.read<AuthBloc>().state;
     return authState is Authenticated ? authState.user.familyId : null;
   }
@@ -151,37 +151,12 @@ int? _familyId() {
                                   UserMainNavigationPage
                                       .tabIndexNotifier.value = 1;
                                 },
-                                onGoToAnniversaries: () {
-                                  final anniversaries = AnniversaryCalculator
-                                      .calculateDeathAnniversaries(state.members);
-                                  final birthdays = AnniversaryCalculator
-                                      .calculateBirthdays(state.members);
-                                  Navigator.push(
-                                    context,
-                                    SereneFadeSlidePageRoute(
-                                      page: UserAnniversaryListPage(
-                                        deathAnniversaries: anniversaries,
-                                        birthdays: birthdays,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                onGoToBirthdays: () {
-                                  final anniversaries = AnniversaryCalculator
-                                      .calculateDeathAnniversaries(state.members);
-                                  final birthdays = AnniversaryCalculator
-                                      .calculateBirthdays(state.members);
-                                  Navigator.push(
-                                    context,
-                                    SereneFadeSlidePageRoute(
-                                      page: UserAnniversaryListPage(
-                                        deathAnniversaries: anniversaries,
-                                        birthdays: birthdays,
-                                        initialTabIndex: 1,
-                                      ),
-                                    ),
-                                  );
-                                },
+                                onGoToAnniversaries: () =>
+                                    _openAnniversaryList(state.members),
+                                onGoToBirthdays: () => _openAnniversaryList(
+                                  state.members,
+                                  initialTabIndex: 1,
+                                ),
                                 onIncenseTap: (name) =>
                                     _showIncenseDialog(context, name),
                               ),
@@ -195,11 +170,11 @@ int? _familyId() {
                         SliverToBoxAdapter(
                           child: AppSectionTitle(
                             title: l10n.branchTabLabel,
-                            trailing: _selectedBranchId != null
+                            trailing: _filter.branchId != null
                                 ? GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        _selectedBranchId = null;
+                                        _filter = _filter.copyWith();
                                       });
                                     },
                                     child: Container(
@@ -246,7 +221,7 @@ int? _familyId() {
                                   itemBuilder: (_, index) {
                                     final branch = state.branches[index];
                                     final isSelected =
-                                        _selectedBranchId == branch.id;
+                                        _filter.branchId == branch.id;
                                     return SizedBox(
                                       width: MediaQuery.of(context).size.width *
                                           0.6,
@@ -262,11 +237,12 @@ int? _familyId() {
                                           isSelected: isSelected,
                                           onTap: () {
                                             setState(() {
-                                              if (_selectedBranchId ==
+                                              if (_filter.branchId ==
                                                   branch.id) {
-                                                _selectedBranchId = null;
+                                                _filter = _filter.copyWith();
                                               } else {
-                                                _selectedBranchId = branch.id;
+                                                _filter = _filter.copyWith(
+                                                    branchId: branch.id);
                                               }
                                             });
                                           },
@@ -350,7 +326,7 @@ int? _familyId() {
                                             ),
                                           ),
                                         ),
-                                        if (_searchQuery.isNotEmpty)
+                                        if (_filter.searchQuery.isNotEmpty)
                                           GestureDetector(
                                             onTap: () {
                                               _searchController.clear();
@@ -379,15 +355,12 @@ int? _familyId() {
                                                 Icon(
                                                   LucideIcons.listFilter,
                                                   size: 17,
-                                                  color: (_statusFilter !=
-                                                              'all' ||
-                                                          _genderFilter !=
-                                                              'all')
+                                                  color: _filter
+                                                          .hasActiveFilters
                                                       ? context.primary
                                                       : context.textSecondary,
                                                 ),
-                                                if (_statusFilter != 'all' ||
-                                                    _genderFilter != 'all')
+                                                if (_filter.hasActiveFilters)
                                                   Positioned(
                                                     top: -2,
                                                     right: -2,
@@ -450,18 +423,14 @@ int? _familyId() {
                                                                 ),
                                                               ),
                                                               const Spacer(),
-                                                              if (_statusFilter !=
-                                                                      'all' ||
-                                                                  _genderFilter !=
-                                                                      'all')
+                                                              if (_filter
+                                                                  .hasActiveFilters)
                                                                 GestureDetector(
                                                                   onTap: () {
                                                                     setState(
                                                                         () {
-                                                                      _statusFilter =
-                                                                          'all';
-                                                                      _genderFilter =
-                                                                          'all';
+                                                                      _filter =
+                                                                          const MemberFilter();
                                                                     });
                                                                     setMenuState(
                                                                         () {});
@@ -522,16 +491,21 @@ int? _familyId() {
                                                                 _buildSwitchOption(
                                                                   label: l10n
                                                                       .aliveLabel,
-                                                                  isSelected:
-                                                                      _statusFilter ==
-                                                                          'alive',
+                                                                  isSelected: _filter
+                                                                          .status ==
+                                                                      MemberStatusFilter
+                                                                          .alive,
                                                                   onTap: () {
                                                                     setState(
                                                                         () {
-                                                                      _statusFilter = _statusFilter ==
-                                                                              'alive'
-                                                                          ? 'all'
-                                                                          : 'alive';
+                                                                      _filter =
+                                                                          _filter
+                                                                              .copyWith(
+                                                                        status: _filter.status ==
+                                                                                MemberStatusFilter.alive
+                                                                            ? MemberStatusFilter.all
+                                                                            : MemberStatusFilter.alive,
+                                                                      );
                                                                     });
                                                                     setMenuState(
                                                                         () {});
@@ -540,16 +514,21 @@ int? _familyId() {
                                                                 _buildSwitchOption(
                                                                   label: l10n
                                                                       .deceasedLabel,
-                                                                  isSelected:
-                                                                      _statusFilter ==
-                                                                          'deceased',
+                                                                  isSelected: _filter
+                                                                          .status ==
+                                                                      MemberStatusFilter
+                                                                          .deceased,
                                                                   onTap: () {
                                                                     setState(
                                                                         () {
-                                                                      _statusFilter = _statusFilter ==
-                                                                              'deceased'
-                                                                          ? 'all'
-                                                                          : 'deceased';
+                                                                      _filter =
+                                                                          _filter
+                                                                              .copyWith(
+                                                                        status: _filter.status ==
+                                                                                MemberStatusFilter.deceased
+                                                                            ? MemberStatusFilter.all
+                                                                            : MemberStatusFilter.deceased,
+                                                                      );
                                                                     });
                                                                     setMenuState(
                                                                         () {});
@@ -596,34 +575,46 @@ int? _familyId() {
                                                             child: Row(
                                                               children: [
                                                                 _buildSwitchOption(
-                                                                  label: l10n.genderMale,
-                                                                  isSelected:
-                                                                      _genderFilter ==
-                                                                          'male',
+                                                                  label: l10n
+                                                                      .genderMale,
+                                                                  isSelected: _filter
+                                                                          .gender ==
+                                                                      MemberGenderFilter
+                                                                          .male,
                                                                   onTap: () {
                                                                     setState(
                                                                         () {
-                                                                      _genderFilter = _genderFilter ==
-                                                                              'male'
-                                                                          ? 'all'
-                                                                          : 'male';
+                                                                      _filter =
+                                                                          _filter
+                                                                              .copyWith(
+                                                                        gender: _filter.gender ==
+                                                                                MemberGenderFilter.male
+                                                                            ? MemberGenderFilter.all
+                                                                            : MemberGenderFilter.male,
+                                                                      );
                                                                     });
                                                                     setMenuState(
                                                                         () {});
                                                                   },
                                                                 ),
                                                                 _buildSwitchOption(
-                                                                  label: l10n.genderFemale,
-                                                                  isSelected:
-                                                                      _genderFilter ==
-                                                                          'female',
+                                                                  label: l10n
+                                                                      .genderFemale,
+                                                                  isSelected: _filter
+                                                                          .gender ==
+                                                                      MemberGenderFilter
+                                                                          .female,
                                                                   onTap: () {
                                                                     setState(
                                                                         () {
-                                                                      _genderFilter = _genderFilter ==
-                                                                              'female'
-                                                                          ? 'all'
-                                                                          : 'female';
+                                                                      _filter =
+                                                                          _filter
+                                                                              .copyWith(
+                                                                        gender: _filter.gender ==
+                                                                                MemberGenderFilter.female
+                                                                            ? MemberGenderFilter.all
+                                                                            : MemberGenderFilter.female,
+                                                                      );
                                                                     });
                                                                     setMenuState(
                                                                         () {});
@@ -654,37 +645,8 @@ int? _familyId() {
                         // Hiển thị danh sách thành viên được lọc theo tìm kiếm, chi tộc, trạng thái & giới tính
                         Builder(
                           builder: (context) {
-                            final filteredMembers = state.members.where((m) {
-                              if (_selectedBranchId != null &&
-                                  m.branchId != _selectedBranchId) {
-                                return false;
-                              }
-                              if (_statusFilter == 'alive' && !m.isAlive) {
-                                return false;
-                              }
-                              if (_statusFilter == 'deceased' && m.isAlive) {
-                                return false;
-                              }
-                              if (_genderFilter == 'male' &&
-                                  m.gender != Gender.male) {
-                                return false;
-                              }
-                              if (_genderFilter == 'female' &&
-                                  m.gender != Gender.female) {
-                                return false;
-                              }
-                              if (_searchQuery.isNotEmpty) {
-                                final query = _searchQuery.toLowerCase();
-                                return m.fullName
-                                        .toLowerCase()
-                                        .contains(query) ||
-                                    (m.branchName != null &&
-                                        m.branchName!
-                                            .toLowerCase()
-                                            .contains(query));
-                              }
-                              return true;
-                            }).toList();
+                            final filteredMembers =
+                                _filter.apply(state.members);
 
                             if (filteredMembers.isEmpty) {
                               return SliverToBoxAdapter(
@@ -774,14 +736,9 @@ int? _familyId() {
         inviteCode = state.family!.inviteCode;
         logoUrl = state.family!.logoUrl;
       } else if (state.members.isNotEmpty) {
-        final rootMembers = state.members.where(
-          (m) => m.generation == 1 || m.parentId == null,
-        );
-        final rootMember =
-            rootMembers.isNotEmpty ? rootMembers.first : state.members.first;
-        final parts = rootMember.fullName.trim().split(' ');
-        if (parts.isNotEmpty) {
-          familyName = l10n.familyTreeNameFormat(parts.first.toUpperCase());
+        final surname = FamilyNameResolver.resolveSurname(state.members);
+        if (surname != null) {
+          familyName = l10n.familyTreeNameFormat(surname.toUpperCase());
         }
       }
     }
@@ -793,20 +750,10 @@ int? _familyId() {
           allEvents = eventsState.events;
         }
 
-        final announcements = allEvents.where((e) {
-          final t = e.type.toLowerCase();
-          final isAnnounce =
-              t == 'announcement' || t == 'notification' || t == 'thông báo';
-          return isAnnounce &&
-              !e.isDismissed &&
-              !NotificationReadController.instance
-                  .isDismissed(e.id.toString());
-        }).toList();
-
-        final unreadCount = announcements
-            .where((e) =>
-                !NotificationReadController.instance.isRead(e.id.toString()))
-            .length;
+        final headerData = AnnouncementService.buildHeaderData(
+          allEvents,
+          NotificationReadController.instance,
+        );
 
         final bellButton = IconButton(
           icon: Stack(
@@ -817,7 +764,7 @@ int? _familyId() {
                 color: context.textPrimary,
                 size: 20,
               ),
-              if (unreadCount > 0)
+              if (headerData.hasUnread)
                 Positioned(
                   top: -6,
                   right: -6,
@@ -832,7 +779,7 @@ int? _familyId() {
                       minHeight: 16,
                     ),
                     child: Text(
-                      '$unreadCount',
+                      '${headerData.unreadCount}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 9,
@@ -854,7 +801,7 @@ int? _familyId() {
                 SereneFadeSlidePageRoute(
                   page: UserNotificationsPage(
                     familyId: famId,
-                    announcements: announcements,
+                    announcements: headerData.announcements,
                   ),
                 ),
               );
@@ -872,6 +819,25 @@ int? _familyId() {
           trailingAction: bellButton,
         );
       },
+    );
+  }
+
+  void _openAnniversaryList(
+    List<MemberEntity> members, {
+    int initialTabIndex = 0,
+  }) {
+    final anniversaries =
+        AnniversaryCalculator.calculateDeathAnniversaries(members);
+    final birthdays = AnniversaryCalculator.calculateBirthdays(members);
+    Navigator.push(
+      context,
+      SereneFadeSlidePageRoute(
+        page: UserAnniversaryListPage(
+          deathAnniversaries: anniversaries,
+          birthdays: birthdays,
+          initialTabIndex: initialTabIndex,
+        ),
+      ),
     );
   }
 
@@ -895,7 +861,7 @@ int? _familyId() {
             ? result.trim()
             : l10n.incenseDefaultPrayer;
 
-        final newWish = WishMessage(
+        final newWish = WishEntity(
           id: 0,
           familyId: userProfile.familyId ?? 0,
           memberId: 0,
@@ -907,8 +873,8 @@ int? _familyId() {
           senderAvatar: userProfile.avatarUrl,
         );
 
-        final apiService = sl<WishApiService>();
-        await apiService.createWish(newWish);
+        final wishRepo = sl<WishRepository>();
+        await wishRepo.createWish(newWish);
       }
 
       if (context.mounted) {

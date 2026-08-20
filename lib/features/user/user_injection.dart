@@ -1,11 +1,13 @@
 import 'package:get_it/get_it.dart';
 import 'data/repository/user_repository_impl.dart';
+import 'data/repository/wish_repository_impl.dart';
 import 'data/source/user_remote_data_source.dart';
+import 'data/source/wish_remote_data_source.dart';
 import 'domain/repository/user_repository.dart';
+import 'domain/repository/wish_repository.dart';
 import 'domain/usecase/get_user_profile.dart';
 import 'domain/usecase/update_user_profile.dart';
 import 'presentation/bloc/user_bloc.dart';
-import 'data/source/wish_api_service.dart';
 
 void initUserDependencies(GetIt sl) {
   // BLoC
@@ -24,12 +26,15 @@ void initUserDependencies(GetIt sl) {
   sl.registerLazySingleton<UserRepository>(
     () => UserRepositoryImpl(remoteDataSource: sl()),
   );
+  sl.registerLazySingleton<WishRepository>(
+    () => WishRepositoryImpl(remoteDataSource: sl()),
+  );
 
   // Data Source
   sl.registerLazySingleton<UserRemoteDataSource>(
     () => UserRemoteDataSourceImpl(dio: sl()),
   );
-  sl.registerLazySingleton<WishApiService>(
-    () => WishApiService(dio: sl()),
+  sl.registerLazySingleton<WishRemoteDataSource>(
+    () => WishRemoteDataSourceImpl(dio: sl()),
   );
 }

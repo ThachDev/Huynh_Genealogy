@@ -6,7 +6,7 @@ import '../../../../resources/app_localizations.dart';
 import '../../../admin/presentation/widgets/events/event_calendar_widget.dart';
 import '../models/upcoming_anniversary.dart';
 import '../pages/wish_wall_page.dart';
-import '../../data/source/wish_api_service.dart';
+import '../../domain/repository/wish_repository.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/widgets/widgets.dart';
 
@@ -28,7 +28,7 @@ class AnniversaryCard extends StatelessWidget {
       SereneFadeSlidePageRoute(
         page: WishWallPage(
           data: data,
-          apiService: sl<WishApiService>(),
+          wishRepository: sl<WishRepository>(),
         ),
       ),
     );

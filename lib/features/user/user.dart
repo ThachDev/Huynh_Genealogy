@@ -1,8 +1,11 @@
 // Re-export Core User Entity
 export '../../core/domain/entity/user_entity.dart';
+export '../../core/domain/entity/wish_entity.dart';
 
 // Domain Repositories
 export 'domain/repository/user_repository.dart';
+export 'domain/repository/wish_repository.dart';
+export 'domain/wish_reaction.dart';
 
 // Domain UseCases
 export 'domain/usecase/get_user_profile.dart';
@@ -10,7 +13,9 @@ export 'domain/usecase/update_user_profile.dart';
 
 // Data Sources & Repository Implementation
 export 'data/source/user_remote_data_source.dart';
+export 'data/source/wish_remote_data_source.dart';
 export 'data/repository/user_repository_impl.dart';
+export 'data/repository/wish_repository_impl.dart';
 
 // Presentation BLoC
 export 'presentation/bloc/user_bloc.dart';

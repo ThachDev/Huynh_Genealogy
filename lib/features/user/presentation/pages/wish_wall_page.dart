@@ -9,21 +9,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../../core/domain/entity/user_entity.dart';
+import '../../../../core/domain/entity/wish_entity.dart';
 import '../models/upcoming_anniversary.dart';
-import '../models/wish_message.dart';
 import '../widgets/wish_letter_dialog.dart';
 import '../widgets/incense_offering_dialog.dart';
-import '../../data/source/wish_api_service.dart';
+import '../../domain/repository/wish_repository.dart';
 
 class WishWallPage extends StatefulWidget {
 
   const WishWallPage({
     super.key,
     required this.data,
-    required this.apiService,
+    required this.wishRepository,
   });
   final UpcomingAnniversary data;
-  final WishApiService apiService;
+  final WishRepository wishRepository;
 
   @override
   State<WishWallPage> createState() => _WishWallPageState();
@@ -31,7 +31,7 @@ class WishWallPage extends StatefulWidget {
 
 class _WishWallPageState extends State<WishWallPage> {
   bool _isLoading = true;
-  List<WishMessage> _wishes = [];
+  List<WishEntity> _wishes = [];
   final ScrollController _scrollController = ScrollController();
   int _wishLimit = 5;
 
@@ -64,19 +64,23 @@ class _WishWallPageState extends State<WishWallPage> {
 
   Future<void> _loadWishes() async {
     setState(() => _isLoading = true);
-    final wishes =
-        await widget.apiService.getWishesByMember(widget.data.member.id);
-    if (mounted) {
-      setState(() {
-        _wishes = wishes;
-        _isLoading = false;
-        // Khởi tạo trạng thái tim từ server
-        for (final w in wishes) {
-          _reactionCounts[w.id] = w.reactionCount;
-          _reacted[w.id] = w.isReacted;
-        }
-      });
-    }
+    final result =
+        await widget.wishRepository.getWishesByMember(widget.data.member.id);
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+      result.fold(
+        (_) => _wishes = [],
+        (wishes) {
+          _wishes = wishes;
+          // Khởi tạo trạng thái tim từ server
+          for (final w in wishes) {
+            _reactionCounts[w.id] = w.reactionCount;
+            _reacted[w.id] = w.isReacted;
+          }
+        },
+      );
+    });
   }
 
   Future<void> _sendWish() async {
@@ -124,7 +128,7 @@ class _WishWallPageState extends State<WishWallPage> {
       final prayerContent =
           message.trim().isNotEmpty ? message.trim() : defaultContent;
 
-      final newWish = WishMessage(
+      final newWish = WishEntity(
         id: 0,
         familyId: userProfile.familyId ?? 0,
         memberId: widget.data.member.id,
@@ -142,20 +146,24 @@ class _WishWallPageState extends State<WishWallPage> {
         _reacted[newWish.id] = false;
       });
 
-      final created = await widget.apiService.createWish(newWish);
-      if (created != null && mounted) {
-        setState(() {
-          _wishes[0] = created;
-          _reactionCounts[created.id] = 0;
-          _reacted[created.id] = false;
-        });
-
-        AppSnackBar.show(
-          context,
-          message: widget.data.isBirthday
-              ? l10n.wishSentMessage
-              : l10n.incenseLitFor(widget.data.title),
-          type: SnackBarType.success,
+      final result = await widget.wishRepository.createWish(newWish);
+      if (mounted) {
+        result.fold(
+          (_) {},
+          (created) {
+            setState(() {
+              _wishes[0] = created;
+              _reactionCounts[created.id] = 0;
+              _reacted[created.id] = false;
+            });
+            AppSnackBar.show(
+              context,
+              message: widget.data.isBirthday
+                  ? l10n.wishSentMessage
+                  : l10n.incenseLitFor(widget.data.title),
+              type: SnackBarType.success,
+            );
+          },
         );
       }
     }
@@ -171,13 +179,17 @@ class _WishWallPageState extends State<WishWallPage> {
           (_reactionCounts[wishId] ?? 0) + (prev ? -1 : 1);
     });
 
-    final result = await widget.apiService.reactToWish(wishId);
-    if (result != null && mounted) {
-      setState(() {
-        _reacted[wishId] = result['reacted'] as bool? ?? _reacted[wishId]!;
-        _reactionCounts[wishId] =
-            result['reactionCount'] as int? ?? _reactionCounts[wishId]!;
-      });
+    final result = await widget.wishRepository.reactToWish(wishId);
+    if (mounted) {
+      result.fold(
+        (_) {},
+        (reaction) {
+          setState(() {
+            _reacted[wishId] = reaction.reacted;
+            _reactionCounts[wishId] = reaction.reactionCount;
+          });
+        },
+      );
     }
   }
 
@@ -268,21 +280,25 @@ class _WishWallPageState extends State<WishWallPage> {
 
     if (selectedReason == null || !mounted) return;
 
-    final success = await widget.apiService.reportWish(wishId, selectedReason);
+    final result = await widget.wishRepository.reportWish(
+      wishId,
+      selectedReason,
+    );
     if (mounted) {
-      if (success) {
-        AppSnackBar.show(
-          context,
-          message: l10n.reportSuccessMessage,
-          type: SnackBarType.success,
-        );
-      } else {
-        AppSnackBar.show(
+      result.fold(
+        (_) => AppSnackBar.show(
           context,
           message: l10n.reportFailedMessage,
           type: SnackBarType.error,
-        );
-      }
+        ),
+        (success) => AppSnackBar.show(
+          context,
+          message: success
+              ? l10n.reportSuccessMessage
+              : l10n.reportFailedMessage,
+          type: success ? SnackBarType.success : SnackBarType.error,
+        ),
+      );
     }
   }
 
@@ -361,7 +377,7 @@ class _WishCard extends StatelessWidget {
     required this.onReact,
     required this.onReport,
   });
-  final WishMessage wish;
+  final WishEntity wish;
   final bool isBirthday;
   final int reactionCount;
   final bool isReacted;

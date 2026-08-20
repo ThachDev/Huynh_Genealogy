@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:giatocviet/core/domain/entity/family_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/family_entity.dart';
 import 'package:giatocviet/features/onboarding/domain/repository/onboarding_repository.dart';
 import 'package:giatocviet/features/onboarding/domain/usecase/create_family.dart';
 import 'package:mocktail/mocktail.dart';

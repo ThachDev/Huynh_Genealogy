@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/domain/entity/user_entity.dart';
+import '../../../auth/domain/entities/user_entity.dart';
 import '../../domain/repository/user_repository.dart';
 import '../source/user_remote_data_source.dart';
 

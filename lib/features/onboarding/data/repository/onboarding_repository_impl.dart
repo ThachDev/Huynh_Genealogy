@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/domain/entity/family_entity.dart';
+import '../../../family_tree/domain/entities/family_entity.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
 import '../../domain/repository/onboarding_repository.dart';
 import '../source/onboarding_remote_data_source.dart';

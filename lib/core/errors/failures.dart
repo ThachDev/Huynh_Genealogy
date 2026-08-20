@@ -1,22 +1,48 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 import '../../resources/app_localizations.dart';
 
 // ─── Global Language Helper ──────────────────────────────────────────────────
+/// Helper truy cập [AppLocalizations] ngoài widget tree (data source, service,
+/// bloc). Instance được quản lý bởi GetIt (xem `injection_container.dart`) để
+/// dễ thay thế trong test thay vì static singleton ẩn.
 class AppLanguage {
-  static AppLocalizations? _current;
+  AppLocalizations? _current;
 
-  static void init(BuildContext context) {
+  void init(BuildContext context) {
     _current = AppLocalizations.of(context);
   }
 
-  static AppLocalizations? get current => _current;
+  AppLocalizations? get l10n => _current;
+
+  /// Truy cập nhanh không cần inject: lấy instance từ GetIt.
+  static AppLocalizations? get current {
+    final sl = GetIt.instance;
+    if (sl.isRegistered<AppLanguage>()) return sl<AppLanguage>()._current;
+    return null;
+  }
 }
 
 // ─── Base failures ────────────────────────────────────────────────────────────
 abstract class Failure extends Equatable {
-  const Failure({this.customMessage});
+  const Failure({
+    this.customMessage,
+    this.code,
+    this.details,
+    this.timestamp,
+  });
+
   final String? customMessage;
+
+  /// Mã lỗi nghiệp vụ (VD: `INVALID_EMAIL`, `NOT_FOUND`, `UNAUTHORIZED`, ...).
+  final String? code;
+
+  /// Dữ liệu bổ sung phục vụ debug/error reporting.
+  final dynamic details;
+
+  /// Thời điểm lỗi xảy ra.
+  final DateTime? timestamp;
 
   String get message =>
       _sanitizeRawMessage(customMessage, 'Có lỗi xảy ra. Vui lòng thử lại.');
@@ -183,14 +209,19 @@ abstract class Failure extends Equatable {
   }
 
   @override
-  List<Object?> get props => [customMessage];
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }
 
 // ─── Concrete failures ────────────────────────────────────────────────────────
 
 class ServerFailure extends Failure {
-  const ServerFailure({String? message, this.statusCode})
-      : super(customMessage: message);
+  const ServerFailure({
+    String? message,
+    this.statusCode,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
   final int? statusCode;
 
   @override
@@ -220,11 +251,16 @@ class ServerFailure extends Failure {
   }
 
   @override
-  List<Object?> get props => [customMessage, statusCode];
+  List<Object?> get props => [customMessage, statusCode, code, details, timestamp];
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure({String? message}) : super(customMessage: message);
+  const NetworkFailure({
+    String? message,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
 
   @override
   String get message {
@@ -239,10 +275,18 @@ class NetworkFailure extends Failure {
   String getMessage(BuildContext context) {
     return _sanitizeMessage(context, AppLocalizations.of(context).errNetwork);
   }
+
+  @override
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure({String? message}) : super(customMessage: message);
+  const CacheFailure({
+    String? message,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
 
   @override
   String get message {
@@ -257,10 +301,18 @@ class CacheFailure extends Failure {
   String getMessage(BuildContext context) {
     return _sanitizeMessage(context, AppLocalizations.of(context).errCache);
   }
+
+  @override
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }
 
 class NotFoundFailure extends Failure {
-  const NotFoundFailure({String? message}) : super(customMessage: message);
+  const NotFoundFailure({
+    String? message,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
 
   @override
   String get message {
@@ -275,10 +327,18 @@ class NotFoundFailure extends Failure {
   String getMessage(BuildContext context) {
     return _sanitizeMessage(context, AppLocalizations.of(context).errNotFound);
   }
+
+  @override
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }
 
 class ValidationFailure extends Failure {
-  const ValidationFailure({String? message}) : super(customMessage: message);
+  const ValidationFailure({
+    String? message,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
 
   @override
   String get message {
@@ -294,10 +354,18 @@ class ValidationFailure extends Failure {
     return _sanitizeMessage(
         context, AppLocalizations.of(context).errValidation);
   }
+
+  @override
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }
 
 class AuthFailure extends Failure {
-  const AuthFailure({String? message}) : super(customMessage: message);
+  const AuthFailure({
+    String? message,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
 
   @override
   String get message {
@@ -312,10 +380,18 @@ class AuthFailure extends Failure {
   String getMessage(BuildContext context) {
     return _sanitizeMessage(context, AppLocalizations.of(context).errAuth);
   }
+
+  @override
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }
 
 class PermissionFailure extends Failure {
-  const PermissionFailure({String? message}) : super(customMessage: message);
+  const PermissionFailure({
+    String? message,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
 
   @override
   String get message {
@@ -331,10 +407,18 @@ class PermissionFailure extends Failure {
     return _sanitizeMessage(
         context, AppLocalizations.of(context).errPermission);
   }
+
+  @override
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }
 
 class TimeoutFailure extends Failure {
-  const TimeoutFailure({String? message}) : super(customMessage: message);
+  const TimeoutFailure({
+    String? message,
+    super.code,
+    super.details,
+    super.timestamp,
+  }) : super(customMessage: message);
 
   @override
   String get message {
@@ -349,4 +433,7 @@ class TimeoutFailure extends Failure {
   String getMessage(BuildContext context) {
     return _sanitizeMessage(context, AppLocalizations.of(context).errTimeout);
   }
+
+  @override
+  List<Object?> get props => [customMessage, code, details, timestamp];
 }

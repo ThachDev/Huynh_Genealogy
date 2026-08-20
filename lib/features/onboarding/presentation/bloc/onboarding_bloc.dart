@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/domain/entity/family_entity.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import '../../../family_tree/domain/entities/family_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 import '../../domain/usecase/create_family.dart';
 import '../../domain/usecase/join_family.dart';
 import '../../domain/usecase/verify_invite_code.dart';

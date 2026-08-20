@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/domain/entity/user_entity.dart';
+import '../../../auth/domain/entities/user_entity.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';

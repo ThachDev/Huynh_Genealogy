@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/domain/entity/family_entity.dart';
+import '../../../family_tree/domain/entities/family_entity.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
 
 /// ============================================================================

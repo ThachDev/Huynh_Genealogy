@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../../core/domain/entity/user_entity.dart';
+import '../../../auth/domain/entities/user_entity.dart';
 import '../repository/user_repository.dart';
 
 class UpdateUserProfile implements UseCase<UserEntity, UpdateUserProfileParams> {

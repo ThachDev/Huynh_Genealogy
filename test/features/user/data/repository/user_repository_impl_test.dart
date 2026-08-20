@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:giatocviet/core/errors/exceptions.dart';
 import 'package:giatocviet/core/errors/failures.dart';
-import 'package:giatocviet/core/domain/entity/user_entity.dart';
+import 'package:giatocviet/features/auth/domain/entities/user_entity.dart';
 import 'package:giatocviet/features/user/data/repository/user_repository_impl.dart';
 import 'package:giatocviet/features/user/data/source/user_remote_data_source.dart';
 import 'package:mocktail/mocktail.dart';

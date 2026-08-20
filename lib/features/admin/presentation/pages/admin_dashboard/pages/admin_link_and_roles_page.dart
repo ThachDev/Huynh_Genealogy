@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import 'package:giatocviet/core/theme/app_theme.dart';
 import 'package:giatocviet/core/theme/theme_extensions.dart';
 import 'package:giatocviet/core/widgets/widgets.dart';
 import 'package:giatocviet/core/domain/entity/family_user_entity.dart';
@@ -15,6 +14,8 @@ import 'package:giatocviet/features/admin/presentation/bloc/admin_member_roles/a
 import 'package:giatocviet/features/admin/presentation/bloc/admin_transfer_ownership_bloc/admin_transfer_ownership_bloc.dart';
 import 'package:giatocviet/features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
 import 'package:giatocviet/features/admin/presentation/widgets/link_account_email_sheet.dart';
+import 'package:giatocviet/features/admin/presentation/widgets/member_account_link_item_tile.dart';
+import 'package:giatocviet/features/admin/presentation/widgets/member_role_option_tiles.dart';
 
 enum LinkStatusFilter { all, linked, unlinked }
 
@@ -164,122 +165,59 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                   ),
                 ),
                 const Divider(),
-                _buildRoleOption(user, familyId, 'EDITOR', l10n.roleEditorTitle,
-                    l10n.roleEditorDesc),
-                _buildRoleOption(user, familyId, 'VIEWER', l10n.memberLabel,
-                    l10n.roleViewerDesc),
+                RoleOptionTile(
+                  user: user,
+                  familyId: familyId,
+                  roleValue: 'EDITOR',
+                  roleTitle: l10n.roleEditorTitle,
+                  roleDesc: l10n.roleEditorDesc,
+                  onSelect: () {
+                    Navigator.pop(context);
+                    context.read<AdminMemberRolesBloc>().add(
+                          UpdateAdminMemberRoleEvent(
+                            familyId: familyId,
+                            userId: user.userId,
+                            role: 'EDITOR',
+                          ),
+                        );
+                  },
+                ),
+                RoleOptionTile(
+                  user: user,
+                  familyId: familyId,
+                  roleValue: 'VIEWER',
+                  roleTitle: l10n.memberLabel,
+                  roleDesc: l10n.roleViewerDesc,
+                  onSelect: () {
+                    Navigator.pop(context);
+                    context.read<AdminMemberRolesBloc>().add(
+                          UpdateAdminMemberRoleEvent(
+                            familyId: familyId,
+                            userId: user.userId,
+                            role: 'VIEWER',
+                          ),
+                        );
+                  },
+                ),
                 const Divider(),
-                _buildTransferOwnershipOption(user, familyId, l10n),
+                TransferOwnershipOptionTile(
+                  user: user,
+                  familyId: familyId,
+                  l10n: l10n,
+                  onTransfer: () {
+                    Navigator.pop(context);
+                    _confirmTransferOwnership(
+                      familyId,
+                      user.userId,
+                      user.userFullName ?? user.userEmail ?? l10n.memberLabel,
+                    );
+                  },
+                ),
               ],
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _buildRoleOption(FamilyUserEntity user, int familyId, String roleValue,
-      String roleTitle, String roleDesc) {
-    final isSelected = user.role == roleValue;
-
-    return ListTile(
-      onTap: () {
-        Navigator.pop(context);
-        context.read<AdminMemberRolesBloc>().add(
-              UpdateAdminMemberRoleEvent(
-                familyId: familyId,
-                userId: user.userId,
-                role: roleValue,
-              ),
-            );
-      },
-      leading: Icon(
-        roleValue == 'EDITOR' ? LucideIcons.edit3 : LucideIcons.user,
-        color: context.textSecondary,
-        size: 22,
-      ),
-      title: Text(
-        roleTitle,
-        style: GoogleFonts.beVietnamPro(
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-          color: context.textPrimary,
-        ),
-      ),
-      subtitle: Text(
-        roleDesc,
-        style: GoogleFonts.inter(
-          fontSize: 12,
-          color: context.textSecondary,
-        ),
-      ),
-      trailing: isSelected
-          ? Icon(LucideIcons.check, color: context.primary, size: 20)
-          : null,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-    );
-  }
-
-  Widget _buildTransferOwnershipOption(
-      FamilyUserEntity user, int familyId, AppLocalizations l10n) {
-    final isOwner = user.role.toUpperCase() == 'OWNER' ||
-        user.role.toUpperCase() == 'CREATOR';
-
-    return ListTile(
-      onTap: isOwner
-          ? null
-          : () {
-              Navigator.pop(context);
-              _confirmTransferOwnership(
-                familyId,
-                user.userId,
-                user.userFullName ?? user.userEmail ?? l10n.memberLabel,
-              );
-            },
-      leading: Icon(
-        LucideIcons.crown,
-        color: isOwner ? context.textSecondary : context.primary,
-        size: 22,
-      ),
-      title: Row(
-        children: [
-          Text(
-            l10n.transferOwnershipLabel,
-            style: GoogleFonts.beVietnamPro(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              color: isOwner ? context.textSecondary : context.primary,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: context.primary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              l10n.supremeRoleLabel,
-              style: GoogleFonts.inter(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: context.primary,
-              ),
-            ),
-          ),
-        ],
-      ),
-      subtitle: Text(
-        l10n.transferFullOwnershipLabel,
-        style: GoogleFonts.inter(
-          fontSize: 12,
-          color: context.textSecondary,
-        ),
-      ),
-      trailing: isOwner
-          ? Icon(LucideIcons.check, color: context.primary, size: 20)
-          : null,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
     );
   }
 
@@ -633,8 +571,20 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                       itemCount: visibleItems.length,
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 10),
-                      itemBuilder: (context, index) => _buildLinkItem(
-                          context, visibleItems[index], familyId, l10n),
+                      itemBuilder: (context, index) {
+                        final item = visibleItems[index];
+                        return MemberAccountLinkItemTile(
+                          item: item,
+                          familyId: familyId,
+                          l10n: l10n,
+                          onLinkPressed: familyId == null
+                              ? null
+                              : () => _onLinkPressed(item, familyId, l10n),
+                          onUnlinkPressed: familyId == null
+                              ? null
+                              : () => _onUnlinkPressed(item, familyId, l10n),
+                        );
+                      },
                     ),
             ),
           ],
@@ -643,154 +593,6 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
     );
   }
 
-  Widget _buildLinkItem(BuildContext context, MemberAccountLinkEntity item,
-      int? familyId, AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: context.accent.withValues(alpha: 0.15),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppAvatar(
-                avatarUrl: item.avatarUrl,
-                fullName: item.fullName,
-                radius: 22,
-                backgroundColor: context.primary.withValues(alpha: 0.15),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.fullName,
-                      style: GoogleFonts.beVietnamPro(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: context.textPrimary,
-                      ),
-                    ),
-                    if (item.isLinked && item.linkedAccount != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        item.linkedAccount!.email,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: context.textSecondary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ] else if (item.pendingInvite != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        item.pendingInvite!.email,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          color: context.resolve(
-                            AppColors.accent,
-                            AppColors.accent,
-                          ),
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                    if (item.generation != null) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        l10n.generationLabel('${item.generation}'),
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              _buildStatusChip(context, item, l10n),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  label: item.isLinked
-                      ? l10n.changeEmailButton
-                      : l10n.linkInviteButton,
-                  variant: AppButtonVariant.outline,
-                  size: AppButtonSize.small,
-                  prefixIcon: const Icon(LucideIcons.mail, size: 14),
-                  onPressed: familyId == null
-                      ? null
-                      : () => _onLinkPressed(item, familyId, l10n),
-                ),
-              ),
-              if (item.isLinked || item.pendingInvite != null) ...[
-                const SizedBox(width: 8),
-                Expanded(
-                  child: AppButton(
-                    label: l10n.unlinkButton,
-                    color: context.primary,
-                    size: AppButtonSize.small,
-                    prefixIcon: const Icon(LucideIcons.unlink, size: 14),
-                    onPressed: familyId == null
-                        ? null
-                        : () => _onUnlinkPressed(item, familyId, l10n),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusChip(BuildContext context, MemberAccountLinkEntity item,
-      AppLocalizations l10n) {
-    if (item.isLinked) {
-      return _chip(context, l10n.linkedLabel, Colors.green);
-    }
-    if (item.pendingInvite != null) {
-      return _chip(context, l10n.invitePendingLabel, AppColors.accent);
-    }
-    return _chip(context, l10n.notLinkedLabel, context.textSecondary);
-  }
-
-  Widget _chip(BuildContext context, String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.inter(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: color,
-        ),
-      ),
-    );
-  }
-
-  // ══════════════════════════════════════════════════════════════════════════
   // TAB 2: PHÂN QUYỀN THÀNH VIÊN
   // ══════════════════════════════════════════════════════════════════════════
   Widget _buildMemberRolesTab(

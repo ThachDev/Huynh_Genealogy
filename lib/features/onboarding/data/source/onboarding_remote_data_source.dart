@@ -3,8 +3,8 @@ import 'dart:io';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import 'package:giatocviet/core/data/model/member_model.dart';
-import '../../../../core/data/model/family_model.dart';
+import 'package:giatocviet/features/family_tree/data/models/member_model.dart';
+import '../../../../features/family_tree/data/models/family_model.dart';
 import '../../../../core/data/model/family_user_model.dart';
 
 /// ============================================================================

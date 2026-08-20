@@ -5,7 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 import '../../../../features/auth/auth.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_link_and_roles_page.dart';

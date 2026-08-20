@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import '../../errors/failures.dart';
-import '../../usecases/usecase.dart';
-import '../entity/family_entity.dart';
-import '../../../features/onboarding/domain/repository/onboarding_repository.dart';
+import '../../../../core/errors/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../../family_tree/domain/entities/family_entity.dart';
+import '../repository/onboarding_repository.dart';
 
 class GetFamilyDetail implements UseCase<FamilyEntity, int> {
 

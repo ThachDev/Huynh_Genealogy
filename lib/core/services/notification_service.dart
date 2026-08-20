@@ -3,32 +3,37 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:vnlunar/vnlunar.dart';
 
 import '../data/repository/notification_settings_store.dart';
-import '../domain/entity/member_entity.dart';
+import '../../features/family_tree/domain/entities/member_entity.dart';
 import '../errors/failures.dart';
+import 'notification/anniversary_scheduler.dart';
+import 'notification/notification_content.dart';
 
-/// Loại thông báo truyền trong `data` của FCM / local push.
-class NotifType {
-  static const String event = 'event';
-  static const String wish = 'wish';
-  static const String anniversary = 'anniversary';
-}
+export 'notification/notification_content.dart' show NotifType;
 
-/// Quản lý toàn bộ thông báo: đăng ký FCM token, nhận tin (foreground/
-/// background), hiển thị bằng [FlutterLocalNotificationsPlugin] tôn trọng
-/// cài đặt từng loại, lên lịch giỗ/sinh nhật và điều hướng khi tap.
+/// Façade quản lý thông báo: đăng ký FCM token, nhận tin (foreground/
+/// background), hiển thị bằng [FlutterLocalNotificationsPlugin] tôn trọng cài
+/// đặt từng loại, lên lịch giỗ/sinh nhật và điều hướng khi tap.
+///
+/// Các trách nhiệm con đã tách ra:
+///   - [NotificationContentBuilder]: xây nội dung thông báo.
+///   - [AnniversaryScheduler]: lên lịch giỗ/sinh nhật.
 class NotificationService {
   NotificationService._();
+
   static final NotificationService instance = NotificationService._();
 
-  static const String channelId = 'giatoc_notifications';
-  static const String channelName = 'Thông báo Gia Tộc Việt';
+  static const String channelId = NotificationChannel.id;
+  static const String channelName = NotificationChannel.name;
 
   final FlutterLocalNotificationsPlugin _local =
       FlutterLocalNotificationsPlugin();
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final NotificationContentBuilder _content =
+      const NotificationContentBuilder();
+  late final AnniversaryScheduler _scheduler =
+      AnniversaryScheduler(local: _local, content: _content);
 
   String? _token;
   String? get token => _token;
@@ -116,33 +121,7 @@ class NotificationService {
 
   Future<void> _showIfEnabled(Map<String, dynamic> data) async {
     final map = data.map((k, v) => MapEntry(k, v?.toString() ?? ''));
-    await _show(map, _titleFor(map), _bodyFor(map));
-  }
-
-  String _titleFor(Map<String, String> data) {
-    final eventType = (data['eventType'] ?? '').toLowerCase();
-    if (data['type'] == NotifType.wish) {
-      return AppLanguage.current?.notifWishTitle ?? 'Lời chúc';
-    }
-    if (data['type'] == NotifType.anniversary) {
-      return data['isBirthday'] == 'true'
-          ? AppLanguage.current?.notifBirthdayTitle ?? 'Sinh nhật hôm nay'
-          : AppLanguage.current?.notifDeathAnniversaryTitle ??
-              'Ngày giỗ hôm nay';
-    }
-    if (eventType == 'announcement' ||
-        eventType == 'notification' ||
-        eventType == 'thông báo') {
-      return AppLanguage.current?.notifAnnouncementTitle ??
-          'Thông báo mới từ dòng họ';
-    }
-    return AppLanguage.current?.notifNewEventTitle ?? 'Sự kiện mới';
-  }
-
-  String _bodyFor(Map<String, String> data) {
-    final custom = data['body'] ?? data['title'];
-    if (custom != null && custom.isNotEmpty) return custom;
-    return AppLanguage.current?.notifGenericBody ?? 'Có thông báo mới từ dòng họ';
+    await _show(map, _content.titleFor(map), _content.bodyFor(map));
   }
 
   Future<void> _show(
@@ -210,126 +189,15 @@ class NotificationService {
     } catch (_) {}
   }
 
-  /// Kênh 3: lên lịch 1 thông báo cục bộ lúc 08:00 cho các giỗ/sinh nhật
-  /// hôm nay. Gọi lại mỗi khi app mở / có dữ liệu gia phả để cập nhật.
+  /// Lên lịch thông báo giỗ/sinh nhật hôm nay. Uỷ quyền cho
+  /// [AnniversaryScheduler].
   Future<void> scheduleTodaysAnniversaries({
     required int familyId,
     required List<MemberEntity> members,
-  }) async {
-    // Luôn xoá lịch cũ trước (kể cả khi đang tắt loại này).
-    final id = 80000 + familyId;
-    await _local.cancel(id, tag: 'family_$familyId');
-
-    if (members.isEmpty) return;
-    if (!await NotificationSettingsStore.anniversaryEnabled()) return;
-
-    final today = DateTime.now();
-    final todayLunar = Lunar(createdFromSolar: true, date: today);
-    final deaths = <String>[];
-    final births = <String>[];
-
-    for (final m in members) {
-      if (!m.isAlive) {
-        int? day;
-        int? month;
-        final lunar = m.lunarDeathDate;
-        if (lunar != null && lunar.isNotEmpty) {
-          final match = RegExp(r'(\d+)\/(\d+)').firstMatch(lunar);
-          if (match != null) {
-            day = int.tryParse(match.group(1) ?? '');
-            month = int.tryParse(match.group(2) ?? '');
-          }
-        }
-        if (day == null || month == null) {
-          final solar = m.dateOfDeath;
-          if (solar != null && solar.isNotEmpty) {
-            try {
-              final parts = solar.split('-');
-              if (parts.length == 3) {
-                final y = int.parse(parts[0]);
-                final mo = int.parse(parts[1]);
-                final d = int.parse(parts[2]);
-                final l =
-                    Lunar(createdFromSolar: true, date: DateTime(y, mo, d));
-                day = l.day;
-                month = l.month;
-              }
-            } catch (_) {}
-          }
-        }
-        if (day != null &&
-            month != null &&
-            day == todayLunar.day &&
-            month == todayLunar.month) {
-          deaths.add(m.fullName);
-        }
-      } else {
-        final dob = m.dateOfBirth;
-        if (dob != null && dob.isNotEmpty) {
-          try {
-            final parts = dob.split('-');
-            if (parts.length == 3) {
-              final mo = int.parse(parts[1]);
-              final d = int.parse(parts[2]);
-              if (d == today.day && mo == today.month) births.add(m.fullName);
-            }
-          } catch (_) {}
-        }
-      }
-    }
-
-    if (deaths.isEmpty && births.isEmpty) return;
-
-    final parts = <String>[];
-    if (deaths.isNotEmpty) {
-      final joined = deaths.join(', ');
-      parts.add(AppLanguage.current?.notifDeathOfPart(joined) ??
-          'ngày giỗ của $joined');
-    }
-    if (births.isNotEmpty) {
-      final joined = births.join(', ');
-      parts.add(AppLanguage.current?.notifBirthdayOfPart(joined) ??
-          'sinh nhật của $joined');
-    }
-
-    final joinedParts = parts.join(' và ');
-    final title = (deaths.isNotEmpty && births.isNotEmpty)
-        ? AppLanguage.current?.notifAnniversariesTodayTitle ??
-            'Giỗ & Sinh nhật hôm nay'
-        : (deaths.isNotEmpty
-            ? AppLanguage.current?.notifDeathAnniversaryTitle ??
-                'Ngày giỗ hôm nay'
-            : AppLanguage.current?.notifBirthdayTitle ?? 'Sinh nhật hôm nay');
-    final body = AppLanguage.current?.notifTodayBody(joinedParts) ??
-        'Hôm nay là $joinedParts.';
-
-    final now = tz.TZDateTime.now(tz.local);
-    var fire = tz.TZDateTime(tz.local, now.year, now.month, now.day, 8);
-    if (!fire.isAfter(now)) fire = fire.add(const Duration(days: 1));
-
-    await _local.zonedSchedule(
-      id,
-      title,
-      body,
-      fire,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          channelId,
-          channelName,
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-        iOS: DarwinNotificationDetails(),
-      ),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: jsonEncode({
-        'type': NotifType.anniversary,
-        'familyId': '$familyId',
-        'title': title,
-        'body': body,
-      }),
+  }) {
+    return _scheduler.scheduleTodaysAnniversaries(
+      familyId: familyId,
+      members: members,
     );
   }
 }

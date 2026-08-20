@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/domain/entity/wish_entity.dart';
+import '../entities/wish_entity.dart';
 import '../wish_reaction.dart';
 
 abstract class WishRepository {

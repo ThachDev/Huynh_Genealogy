@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/domain/entity/user_entity.dart';
+import '../../../auth/domain/entities/user_entity.dart';
 
 abstract class UserRemoteDataSource {
   Future<UserEntity> getUserProfile();

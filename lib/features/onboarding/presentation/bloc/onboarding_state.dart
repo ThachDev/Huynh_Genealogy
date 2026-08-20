@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import '../../../../core/domain/entity/family_entity.dart';
+import '../../../family_tree/domain/entities/family_entity.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 
 /// ============================================================================
 /// BLOC STATES — ONBOARDING FEATURE

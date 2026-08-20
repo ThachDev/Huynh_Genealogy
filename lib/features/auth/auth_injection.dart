@@ -65,6 +65,10 @@ void initAuthDependencies(GetIt sl) {
     () => AuthLocalDataSourceImpl(secureStorage: sl()),
   );
 
+  sl.registerLazySingleton<AccountRemoteDataSource>(
+    () => AccountRemoteDataSource(dio: sl(), firebaseAuth: sl()),
+  );
+
   // Cung cấp token đã lưu làm fallback xác thực khi Firebase chưa có user.
   DioClient.fallbackTokenProvider = () async {
     try {

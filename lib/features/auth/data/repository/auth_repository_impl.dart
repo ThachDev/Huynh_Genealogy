@@ -6,7 +6,7 @@ import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/data/repository/logout_cache_cleaner.dart';
-import 'package:giatocviet/core/domain/entity/user_entity.dart';
+import 'package:giatocviet/features/auth/domain/entities/user_entity.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../source/auth_local_data_source.dart';
 import '../source/auth_remote_data_source.dart';

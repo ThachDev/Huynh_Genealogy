@@ -1,6 +1,6 @@
 // Re-export Core User Entity
-export '../../core/domain/entity/user_entity.dart';
-export '../../core/domain/entity/wish_entity.dart';
+export '../auth/domain/entities/user_entity.dart';
+export 'domain/entities/wish_entity.dart';
 
 // Domain Repositories
 export 'domain/repository/user_repository.dart';

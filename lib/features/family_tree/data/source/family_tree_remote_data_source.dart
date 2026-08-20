@@ -3,9 +3,9 @@ import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import 'package:giatocviet/core/data/model/branch_model.dart';
-import 'package:giatocviet/core/data/model/member_model.dart';
-import 'package:giatocviet/core/data/model/audit_log_model.dart';
+import 'package:giatocviet/features/family_tree/data/models/branch_model.dart';
+import '../models/member_model.dart';
+import '../models/audit_log_model.dart';
 
 abstract class FamilyTreeRemoteDataSource {
   Future<List<MemberModel>> getMembers({int? branchId, int? familyId});

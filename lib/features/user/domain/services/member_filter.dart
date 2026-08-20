@@ -1,4 +1,4 @@
-import '../../../../core/domain/entity/member_entity.dart';
+import '../../../family_tree/domain/entities/member_entity.dart';
 
 /// Filter criteria cho danh sách thành viên.
 class MemberFilter {

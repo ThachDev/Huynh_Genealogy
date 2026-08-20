@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:giatocviet/core/errors/exceptions.dart';
 import 'package:giatocviet/core/errors/failures.dart';
+import 'package:giatocviet/features/events/data/datasources/event_api_service.dart';
 import 'package:giatocviet/features/events/data/datasources/events_remote_data_source.dart';
 import 'package:giatocviet/features/events/data/repositories/events_repository_impl.dart';
 import 'package:giatocviet/features/events/domain/entities/event_entity.dart';
@@ -9,13 +10,20 @@ import 'package:mocktail/mocktail.dart';
 
 class MockEventsRemoteDataSource extends Mock implements EventsRemoteDataSource {}
 
+class MockEventApiService extends Mock implements EventApiService {}
+
 void main() {
   late EventsRepositoryImpl repository;
   late MockEventsRemoteDataSource mockRemoteDataSource;
+  late MockEventApiService mockEventApiService;
 
   setUp(() {
     mockRemoteDataSource = MockEventsRemoteDataSource();
-    repository = EventsRepositoryImpl(remoteDataSource: mockRemoteDataSource);
+    mockEventApiService = MockEventApiService();
+    repository = EventsRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      eventApiService: mockEventApiService,
+    );
   });
 
   const tFamilyId = 1;

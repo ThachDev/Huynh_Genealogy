@@ -4,7 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
-import '../../../../core/domain/entity/member_entity.dart';
+import '../../domain/entities/member_entity.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberNodeWidget extends StatefulWidget {

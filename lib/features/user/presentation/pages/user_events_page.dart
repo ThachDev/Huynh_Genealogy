@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:vnlunar/vnlunar.dart';
 
-import '../../../../core/data/repository/notification_read_controller.dart';
+
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';

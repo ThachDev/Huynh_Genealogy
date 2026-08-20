@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import 'package:giatocviet/core/domain/entity/audit_log_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/audit_log_entity.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class GetAuditLogs implements UseCase<List<AuditLogEntity>, GetAuditLogsParams> {

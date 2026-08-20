@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import 'package:giatocviet/core/domain/entity/branch_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/branch_entity.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../../../core/utils/file_size_guard.dart';
 import '../../../../../../core/data/repository/form_draft_store.dart';
@@ -21,6 +21,7 @@ import '../../../../../auth/auth.dart';
 import '../../../../../onboarding/onboarding.dart';
 import '../../../bloc/admin_member_form/admin_member_form_bloc.dart';
 import '../../../../domain/usecase/save_member.dart';
+import 'admin_member_form_options.dart';
 import '../../../../../../resources/app_localizations.dart';
 
 class AdminMemberFormPage extends StatefulWidget {
@@ -554,126 +555,18 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
             final int? currentGeneration =
                 int.tryParse(_generationController.text.trim());
 
-            // Đệ quy tìm tất cả con cháu trực hệ của một member để tránh chọn con làm cha mẹ
-            Set<int> getDescendantIds(int memberId) {
-              final descendants = <int>{};
-              void dfs(int id) {
-                for (final child in allMembers) {
-                  if (child.parentId == id && !descendants.contains(child.id)) {
-                    descendants.add(child.id);
-                    dfs(child.id);
-                  }
-                }
-              }
-
-              dfs(memberId);
-              return descendants;
-            }
-
-            final descendants = existingMember != null
-                ? getDescendantIds(existingMember.id)
-                : <int>{};
-
-            final ancestors = <int>{};
-            void dfsAncestors(int? parentId) {
-              if (parentId == null) return;
-              if (!ancestors.contains(parentId)) {
-                ancestors.add(parentId);
-                final parent =
-                    allMembers.where((m) => m.id == parentId).firstOrNull;
-                if (parent != null) {
-                  dfsAncestors(parent.parentId);
-                }
-              }
-            }
-
-            if (existingMember != null) {
-              dfsAncestors(existingMember.parentId);
-            }
-
-            // Cha/Mẹ: Danh sách thành viên (chỉ loại trừ chính mình, vợ/chồng hiện tại và con cháu)
-            final parentOptions = allMembers.where((m) {
-              if (m.id == existingMember?.id) return false;
-              // LUÔN CHO PHÉP parent hiện tại để không bị reset ngầm khi chỉnh sửa
-              if (existingMember != null && m.id == existingMember.parentId) {
-                return true;
-              }
-              if (widget.initialParentId != null &&
-                  m.id == widget.initialParentId) {
-                return true;
-              }
-
-              // Không được chọn vợ/chồng làm cha/mẹ
-              if (_spouseId != null && m.id == _spouseId) return false;
-              // Không được chọn con cháu của chính mình làm cha/mẹ
-              if (descendants.contains(m.id)) return false;
-
-              return true;
-            }).toList();
-
-            // Vợ/Chồng: cùng thế hệ + ngược giới tính + chưa có vợ/chồng khác
-            final spouseOptions = allMembers.where((m) {
-              if (m.id == existingMember?.id) return false;
-              // LUÔN CHO PHÉP spouse hiện tại để không bị reset ngầm khi chỉnh sửa
-              if (existingMember != null && m.id == existingMember.spouseId) {
-                return true;
-              }
-              if (widget.initialSpouseId != null &&
-                  m.id == widget.initialSpouseId) {
-                return true;
-              }
-
-              // Không được chọn cha/mẹ làm vợ/chồng
-              if (_parentId != null && m.id == _parentId) return false;
-              // Không được cưới tổ tiên hoặc con cháu
-              if (descendants.contains(m.id) || ancestors.contains(m.id)) {
-                return false;
-              }
-              // Lọc cùng thế hệ
-              if (currentGeneration != null && m.generation != null) {
-                if (m.generation != currentGeneration) return false;
-              }
-              // Lọc ngược giới tính
-              if (_gender == Gender.male && m.gender == Gender.male) {
-                return false;
-              }
-              if (_gender == Gender.female && m.gender == Gender.female) {
-                return false;
-              }
-              // Bỏ những người đã có vợ/chồng khác
-              if (m.spouseId != null &&
-                  m.spouseId != existingMember?.id &&
-                  m.spouseId != _spouseId) {
-                // Cho phép Đa thê: Nếu Nữ đang chọn chồng, thì cho phép chọn Nam dù Nam đã có vợ
-                if (_gender == Gender.female && m.gender == Gender.male) {
-                  // allow
-                } else {
-                  return false;
-                }
-              }
-              // Không được cưới anh/chị/em ruột (chung parentId)
-              if (_parentId != null &&
-                  m.parentId != null &&
-                  m.parentId == _parentId) {
-                return false;
-              }
-              // Không được cưới anh/em họ trực hệ gần (con của cô dì chú bác ruột - chung ông bà)
-              if (_parentId != null) {
-                final myParent =
-                    allMembers.where((x) => x.id == _parentId).firstOrNull;
-                if (myParent != null &&
-                    myParent.parentId != null &&
-                    m.parentId != null) {
-                  final spouseParent =
-                      allMembers.where((x) => x.id == m.parentId).firstOrNull;
-                  if (spouseParent != null &&
-                      spouseParent.parentId == myParent.parentId) {
-                    return false; // Chung ông/bà nội ngoại
-                  }
-                }
-              }
-              return true;
-            }).toList();
+            final options = MemberFormOptions.compute(
+              allMembers: allMembers,
+              existingMember: existingMember,
+              parentId: _parentId,
+              spouseId: _spouseId,
+              gender: _gender,
+              currentGeneration: currentGeneration,
+              initialParentId: widget.initialParentId,
+              initialSpouseId: widget.initialSpouseId,
+            );
+            final parentOptions = options.parentOptions;
+            final spouseOptions = options.spouseOptions;
 
             // Reset _parentId nếu người đã chọn không còn thuộc danh sách
             final parentIds = parentOptions.map((m) => m.id).toSet();

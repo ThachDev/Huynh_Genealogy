@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import '../../di/injection_container.dart' as di;
-import '../../../features/events/data/datasources/event_api_service.dart';
-import '../../../features/events/domain/entities/event_entity.dart';
-import 'notification_read_store.dart';
+import '../../../../core/di/injection_container.dart' as di;
+import '../../../../core/data/repository/notification_read_store.dart';
+import '../../domain/repositories/events_repository.dart';
+import '../../domain/entities/event_entity.dart';
 
 /// Điều phối trạng thái "đã đọc" của thông báo.
 ///
@@ -97,14 +97,14 @@ class NotificationReadController extends ChangeNotifier {
     try {
       final eventId = int.tryParse(id);
       if (eventId != null) {
-        di.sl<EventApiService>().markEventAsRead(eventId);
+        di.sl<EventsRepository>().markEventAsRead(eventId);
       }
     } catch (_) {}
   }
 
   void _syncMarkAllReadApi() {
     try {
-      di.sl<EventApiService>().markAllEventsAsRead();
+      di.sl<EventsRepository>().markAllEventsAsRead();
     } catch (_) {}
   }
 
@@ -112,14 +112,14 @@ class NotificationReadController extends ChangeNotifier {
     try {
       final eventId = int.tryParse(id);
       if (eventId != null) {
-        di.sl<EventApiService>().dismissEvent(eventId);
+        di.sl<EventsRepository>().dismissEvent(eventId);
       }
     } catch (_) {}
   }
 
   void _syncDismissAllApi() {
     try {
-      di.sl<EventApiService>().dismissAllEvents();
+      di.sl<EventsRepository>().dismissAllEvents();
     } catch (_) {}
   }
 

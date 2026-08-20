@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 import '../../../family_tree/domain/repository/family_tree_repository.dart';
 
 class GetMemberDetail implements UseCase<MemberEntity, int> {

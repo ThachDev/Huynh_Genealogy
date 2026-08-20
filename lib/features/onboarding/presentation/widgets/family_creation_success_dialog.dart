@@ -6,7 +6,7 @@ import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_snackbar.dart';
-import '../../../../core/domain/entity/family_entity.dart';
+import '../../../family_tree/domain/entities/family_entity.dart';
 
 class FamilyCreationSuccessDialog extends StatefulWidget {
 

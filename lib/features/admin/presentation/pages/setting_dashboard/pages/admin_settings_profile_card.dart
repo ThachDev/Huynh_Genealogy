@@ -9,7 +9,7 @@ import '../../../../../../core/utils/file_size_guard.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../../../core/domain/entity/member_entity.dart';
+import '../../../../../family_tree/domain/entities/member_entity.dart';
 import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../core/di/injection_container.dart';
 import '../../../../../auth/auth.dart';

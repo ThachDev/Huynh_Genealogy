@@ -161,7 +161,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         builder: (context, child) {
-          AppLanguage.init(context);
+          di.sl<AppLanguage>().init(context);
           return child!;
         },
       ),

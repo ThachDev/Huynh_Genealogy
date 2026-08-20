@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:giatocviet/core/domain/entity/branch_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/branch_entity.dart';
 import 'package:giatocviet/core/errors/failures.dart';
 import 'package:giatocviet/features/family_tree/domain/repository/family_tree_repository.dart';
 import 'package:giatocviet/features/family_tree/domain/usecase/get_branches.dart';

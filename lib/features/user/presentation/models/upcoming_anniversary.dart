@@ -1,4 +1,4 @@
-import '../../../../core/domain/entity/member_entity.dart';
+import '../../../family_tree/domain/entities/member_entity.dart';
 
 /// Sự kiện sắp tới dùng chung cho Ngày Giỗ (isBirthday: false) và Sinh Nhật (isBirthday: true).
 class UpcomingAnniversary {

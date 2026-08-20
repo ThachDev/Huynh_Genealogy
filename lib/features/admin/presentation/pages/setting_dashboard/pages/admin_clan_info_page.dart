@@ -10,11 +10,11 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
-import '../../../../../../core/domain/entity/family_entity.dart';
+import '../../../../../family_tree/domain/entities/family_entity.dart';
 import '../../../../../../resources/app_localizations.dart';
 import '../../../../../../core/di/injection_container.dart';
 import '../../../../admin.dart';
-import '../../../../../../core/domain/entity/user_entity.dart';
+import '../../../../../auth/domain/entities/user_entity.dart';
 
 class AdminClanInfoPage extends StatefulWidget {
 

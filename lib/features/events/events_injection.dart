@@ -18,7 +18,10 @@ void initEventsDependencies(GetIt sl) {
 
   // Repository
   sl.registerLazySingleton<EventsRepository>(
-    () => EventsRepositoryImpl(remoteDataSource: sl()),
+    () => EventsRepositoryImpl(
+      remoteDataSource: sl(),
+      eventApiService: sl(),
+    ),
   );
 
   // Data Source

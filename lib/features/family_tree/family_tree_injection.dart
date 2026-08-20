@@ -2,7 +2,6 @@ import 'package:get_it/get_it.dart';
 import 'family_tree.dart';
 import '../admin/admin.dart';
 import '../onboarding/onboarding.dart';
-import '../../core/domain/usecase/get_family_detail.dart';
 import '../../core/data/repository/logout_cache_cleaner.dart';
 import 'data/source/family_tree_local_data_source.dart';
 

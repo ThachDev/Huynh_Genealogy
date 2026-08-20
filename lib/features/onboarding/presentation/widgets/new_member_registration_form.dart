@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/utils/file_size_guard.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../../../core/domain/entity/user_entity.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import '../../../auth/domain/entities/user_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';

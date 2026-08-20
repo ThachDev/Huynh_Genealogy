@@ -8,6 +8,7 @@ export 'domain/usecase/create_family.dart';
 export 'domain/usecase/verify_invite_code.dart';
 export 'domain/usecase/join_family.dart';
 export 'domain/usecase/link_member_to_user.dart';
+export 'domain/usecase/get_family_detail.dart';
 
 // Data Models & Sources
 export 'data/source/onboarding_remote_data_source.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecase/delete_event.dart';
-import '../../../../../core/domain/usecase/get_events.dart';
+import '../../../../events/domain/usecases/get_events.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../domain/usecase/save_event.dart';
 import 'events_event.dart';

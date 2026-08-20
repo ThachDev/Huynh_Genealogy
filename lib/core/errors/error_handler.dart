@@ -35,7 +35,7 @@ class ErrorHandler {
     if (error is PermissionException) {
       return PermissionFailure(message: error.message);
     }
-    if (error is TimeoutException) {
+    if (error is AppTimeoutException) {
       return TimeoutFailure(message: error.message);
     }
     return ServerFailure(message: error.toString());

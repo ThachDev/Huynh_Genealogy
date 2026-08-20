@@ -1,5 +1,3 @@
-import 'package:giatocviet/core/data/repository/notification_read_controller.dart';
-import 'package:giatocviet/core/domain/entity/event_entity.dart';
 import 'package:giatocviet/features/events/events.dart';
 
 /// Service xử lý logic thông báo/announcement cho User dashboard.

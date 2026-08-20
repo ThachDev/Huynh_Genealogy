@@ -1,62 +1,75 @@
-class ServerException implements Exception {
+/// Base class dùng chung cho mọi exception của ứng dụng.
+///
+/// Tuân theo convention trong `error-handling.md`:
+///   - [message]: thông điệp lỗi (có thể null, sẽ được làm sạch ở Failure layer).
+///   - [code]: mã lỗi nghiệp vụ (VD: `INVALID_EMAIL`, `NOT_FOUND`, ...).
+///   - [details]: dữ liệu bổ sung để debug (response body, stack, ...).
+abstract class AppException implements Exception {
+  const AppException({this.message, this.code, this.details});
 
+  final String? message;
+  final String? code;
+  final dynamic details;
+
+  @override
+  String toString() => 'AppException: ${message ?? 'Error'}';
+}
+
+class ServerException extends AppException {
   const ServerException({
-    this.message,
+    super.message,
+    super.code,
+    super.details,
     this.statusCode,
   });
-  final String? message;
   final int? statusCode;
 
   @override
-  String toString() => 'ServerException: ${message ?? 'Server error'} (status: $statusCode)';
+  String toString() =>
+      'ServerException: ${message ?? 'Server error'} (status: $statusCode)';
 }
 
-class NetworkException implements Exception {
-  const NetworkException({this.message});
-  final String? message;
+class NetworkException extends AppException {
+  const NetworkException({super.message, super.code, super.details});
 
   @override
-  String toString() => 'NetworkException: ${message ?? 'No network connection'}';
+  String toString() =>
+      'NetworkException: ${message ?? 'No network connection'}';
 }
 
-class CacheException implements Exception {
-  const CacheException({this.message});
-  final String? message;
+class CacheException extends AppException {
+  const CacheException({super.message, super.code, super.details});
 
   @override
   String toString() => 'CacheException: ${message ?? 'Cache error'}';
 }
 
-class NotFoundException implements Exception {
-  const NotFoundException({this.message});
-  final String? message;
+class NotFoundException extends AppException {
+  const NotFoundException({super.message, super.code, super.details});
 
   @override
   String toString() => 'NotFoundException: ${message ?? 'Data not found'}';
 }
 
-class AuthException implements Exception {
-  const AuthException({this.message});
-  final String? message;
+class AuthException extends AppException {
+  const AuthException({super.message, super.code, super.details});
 
   @override
-  String toString() => 'AuthException: ${message ?? 'Authentication failed'}';
+  String toString() =>
+      'AuthException: ${message ?? 'Authentication failed'}';
 }
 
-class PermissionException implements Exception {
-  const PermissionException({this.message});
-  final String? message;
+class PermissionException extends AppException {
+  const PermissionException({super.message, super.code, super.details});
 
   @override
   String toString() => 'PermissionException: ${message ?? 'Access denied'}';
 }
 
-class TimeoutException implements Exception {
-  const TimeoutException({this.message});
-  final String? message;
+class AppTimeoutException extends AppException {
+  const AppTimeoutException({super.message, super.code, super.details});
 
   @override
-  String toString() => 'TimeoutException: ${message ?? 'Connection timed out'}';
+  String toString() =>
+      'AppTimeoutException: ${message ?? 'Connection timed out'}';
 }
-
-

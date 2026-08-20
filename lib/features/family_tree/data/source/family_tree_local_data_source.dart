@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:giatocviet/core/data/model/branch_model.dart';
-import 'package:giatocviet/core/data/model/member_model.dart';
-import 'package:giatocviet/core/domain/entity/branch_entity.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
+import 'package:giatocviet/features/family_tree/data/models/branch_model.dart';
+import '../models/member_model.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/branch_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 
 /// Lưu dữ liệu cây gia phả xuống file cục bộ (documents) theo từng gia tộc,
 /// để xem nhanh và xem offline khi không có mạng.

@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../network/dio_client.dart';
+import '../errors/failures.dart';
 
 // Feature DI Modules
 import '../../features/auth/auth_injection.dart';
@@ -23,6 +24,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => FirebaseAuth.instance);
   sl.registerLazySingleton(() => GoogleSignIn());
   sl.registerLazySingleton<Dio>(() => DioClient.instance);
+  sl.registerLazySingleton<AppLanguage>(() => AppLanguage());
 
   // ─── Initialize Feature Modules DI ────────────────────────────────────────
   initAuthDependencies(sl);

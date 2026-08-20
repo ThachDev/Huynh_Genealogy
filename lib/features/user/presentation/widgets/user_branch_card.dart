@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
-import 'package:giatocviet/core/domain/entity/branch_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/branch_entity.dart';
 
 class UserBranchCard extends StatelessWidget {
 

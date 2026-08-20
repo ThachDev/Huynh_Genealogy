@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:giatocviet/core/errors/failures.dart';
 import 'package:giatocviet/core/usecases/usecase.dart';
-import 'package:giatocviet/core/domain/entity/user_entity.dart';
+import 'package:giatocviet/features/auth/domain/entities/user_entity.dart';
 import 'package:giatocviet/features/user/domain/usecase/get_user_profile.dart';
 import 'package:giatocviet/features/user/domain/usecase/update_user_profile.dart';
 import 'package:giatocviet/features/user/presentation/bloc/user_bloc.dart';

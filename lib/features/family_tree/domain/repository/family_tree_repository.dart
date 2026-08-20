@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import 'package:giatocviet/core/domain/entity/branch_entity.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import 'package:giatocviet/core/domain/entity/audit_log_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/branch_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/audit_log_entity.dart';
 
 abstract class FamilyTreeRepository {
   // ---------- Members ----------

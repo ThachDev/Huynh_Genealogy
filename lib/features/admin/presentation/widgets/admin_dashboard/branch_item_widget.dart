@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../../core/theme/theme_extensions.dart';
-import '../../../../../core/domain/entity/branch_entity.dart';
+import '../../../../family_tree/domain/entities/branch_entity.dart';
 import '../../../../../resources/app_localizations.dart';
 
 class BranchItemWidget extends StatelessWidget {

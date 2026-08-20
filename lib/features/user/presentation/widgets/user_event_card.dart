@@ -44,7 +44,7 @@ class UserEventCard extends StatefulWidget {
 
 class _UserEventCardState extends State<UserEventCard> {
   final GlobalKey _cardKey = GlobalKey();
-  late final EventApiService _apiService;
+  late final EventsRepository _apiService;
   bool _isSharing = false;
   late bool _isLiked;
   late int _likeCount;
@@ -54,7 +54,7 @@ class _UserEventCardState extends State<UserEventCard> {
   @override
   void initState() {
     super.initState();
-    _apiService = di.sl<EventApiService>();
+    _apiService = di.sl<EventsRepository>();
     _isLiked = widget.event.isReacted;
     _likeCount = widget.event.reactionCount;
     _loadComments();
@@ -72,13 +72,17 @@ class _UserEventCardState extends State<UserEventCard> {
   }
 
   Future<void> _loadComments() async {
-    final comments = await _apiService.getComments(widget.event.id);
-    if (mounted) {
-      setState(() {
-        _comments.clear();
-        _comments.addAll(comments);
-      });
-    }
+    final result = await _apiService.getComments(widget.event.id);
+    if (!mounted) return;
+    setState(() {
+      result.fold(
+        (_) => _comments.clear(),
+        (comments) {
+          _comments.clear();
+          _comments.addAll(comments);
+        },
+      );
+    });
   }
 
   void _toggleLike() async {
@@ -88,8 +92,9 @@ class _UserEventCardState extends State<UserEventCard> {
       if (_likeCount < 0) _likeCount = 0;
     });
 
-    final res = await _apiService.reactToEvent(widget.event.id);
-    if (res != null && mounted) {
+    final result = await _apiService.reactToEvent(widget.event.id);
+    if (result.isRight() && mounted) {
+      final res = result.getOrElse(() => <String, dynamic>{});
       setState(() {
         if (res['reactionCount'] != null) {
           _likeCount = (res['reactionCount'] as num).toInt();
@@ -311,9 +316,18 @@ class _UserEventCardState extends State<UserEventCard> {
                                 final text = controller.text.trim();
                                 if (text.isNotEmpty) {
                                   controller.clear();
-                                  final newComment = await _apiService
+                                  final result = await _apiService
                                       .createComment(widget.event.id, text);
-                                  if (newComment != null) {
+                                  if (result.isRight() && mounted) {
+                                    final newComment = result.getOrElse(
+                                        () => EventInteractionModel(
+                                          id: 0,
+                                          eventId: widget.event.id,
+                                          userId: 0,
+                                          authorName: '',
+                                          content: text,
+                                          createdAt: '',
+                                        ));
                                     setModalState(() {
                                       _comments.add(newComment);
                                     });

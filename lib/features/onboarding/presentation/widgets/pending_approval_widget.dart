@@ -6,8 +6,8 @@ import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../core/di/injection_container.dart';
-import '../../../../core/domain/usecase/get_family_detail.dart';
 import '../../../auth/auth.dart';
+import '../../onboarding.dart';
 
 class PendingApprovalWidget extends StatefulWidget {
 

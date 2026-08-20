@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
-import '../../../../core/domain/entity/wish_entity.dart';
+import '../../domain/entities/wish_entity.dart';
 import '../../domain/wish_reaction.dart';
 
 abstract class WishRemoteDataSource {

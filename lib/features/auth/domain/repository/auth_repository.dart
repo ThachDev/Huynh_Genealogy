@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import 'package:giatocviet/core/domain/entity/user_entity.dart';
+import 'package:giatocviet/features/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> loginWithGoogle();

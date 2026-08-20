@@ -1,4 +1,4 @@
-import '../../domain/entity/audit_log_entity.dart';
+import '../../domain/entities/audit_log_entity.dart';
 
 class AuditLogModel extends AuditLogEntity {
   const AuditLogModel({

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/domain/entity/wish_entity.dart';
+import '../../domain/entities/wish_entity.dart';
 import '../../domain/repository/wish_repository.dart';
 import '../../domain/wish_reaction.dart';
 import '../source/wish_remote_data_source.dart';

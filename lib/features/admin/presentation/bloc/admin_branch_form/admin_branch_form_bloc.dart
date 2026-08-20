@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecase/save_branch.dart';
 import '../../../domain/usecase/delete_branch.dart';
-import '../../../../../core/domain/entity/branch_entity.dart';
+import '../../../../family_tree/domain/entities/branch_entity.dart';
 
 part 'admin_branch_form_event.dart';
 part 'admin_branch_form_state.dart';

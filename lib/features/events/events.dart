@@ -1,4 +1,5 @@
 export 'domain/entities/event_entity.dart';
+export 'domain/entities/event_interaction.dart';
 export 'domain/repositories/events_repository.dart';
 export 'domain/usecases/get_events.dart';
 export 'domain/usecases/save_event.dart';
@@ -10,3 +11,4 @@ export 'data/repositories/events_repository_impl.dart';
 export 'presentation/bloc/events_bloc.dart';
 export 'presentation/bloc/events_event.dart';
 export 'presentation/bloc/events_state.dart';
+export 'presentation/controllers/notification_read_controller.dart';

@@ -1,5 +1,5 @@
 import 'package:vnlunar/vnlunar.dart';
-import '../../../../core/domain/entity/member_entity.dart';
+import '../../../family_tree/domain/entities/member_entity.dart';
 import '../../presentation/models/upcoming_anniversary.dart';
 
 /// Service tính toán các sự kiện kỷ niệm (Giỗ, Sinh nhật) từ danh sách thành viên.

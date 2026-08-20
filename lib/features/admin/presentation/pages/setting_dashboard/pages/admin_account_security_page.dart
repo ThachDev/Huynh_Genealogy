@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
-import 'package:dio/dio.dart';
-import '../../../../../../core/network/dio_client.dart';
-import '../../../../../../core/constants/app_constants.dart';
+import '../../../../../../core/di/injection_container.dart' as di;
+import '../../../../../../core/errors/exceptions.dart';
 import '../../../../../../core/theme/theme_extensions.dart';
 import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../core/utils/validators.dart';
@@ -45,43 +44,28 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
       final l10n = AppLocalizations.of(context);
       setState(() => _isSaving = true);
       try {
-        final fbUser = fb.FirebaseAuth.instance.currentUser;
-        if (fbUser == null) {
-          throw Exception(l10n.notLoggedIn);
-        }
-
-        final idToken = await fbUser.getIdToken();
-        if (idToken == null) {
-          throw Exception(l10n.sessionTokenError);
-        }
-
-        final response = await DioClient.instance.post(
-          AppConstants.changePasswordEndpoint,
-          data: {
-            'idToken': idToken,
-            'currentPassword': _currentPasswordController.text,
-            'newPassword': _newPasswordController.text,
-          },
+        final success = await di.sl<AccountRemoteDataSource>().changePassword(
+          currentPassword: _currentPasswordController.text,
+          newPassword: _newPasswordController.text,
         );
 
         if (mounted) {
           setState(() => _isSaving = false);
-          if (response.statusCode == 200 && response.data['success'] == true) {
+          if (success) {
             AppSnackBar.success(
                 context, AppLocalizations.of(context).changePasswordSuccess);
             Navigator.pop(context);
           } else {
-            final msg = response.data['message'] ??
-                AppLocalizations.of(context).passwordChangeFailed;
-            AppSnackBar.error(context, msg);
+            AppSnackBar.error(context, l10n.passwordChangeFailed);
           }
         }
-      } on DioException catch (e) {
+      } on AppException catch (e) {
         if (mounted) {
           setState(() => _isSaving = false);
-          final errorMsg = e.response?.data['message'] ??
-              AppLocalizations.of(context).errServerConnection;
-          AppSnackBar.error(context, errorMsg);
+          final msg = e is AuthException
+              ? l10n.sessionTokenError
+              : (e.message ?? l10n.errServerConnection);
+          AppSnackBar.error(context, msg);
         }
       } catch (e) {
         if (mounted) {
@@ -135,24 +119,20 @@ class _AdminAccountSecurityPageState extends State<AdminAccountSecurityPage> {
 
     setState(() => _isDeleting = true);
     try {
-      final response = await DioClient.instance.delete(
-        AppConstants.deleteAccountEndpoint,
-      );
+      final success = await di.sl<AccountRemoteDataSource>().deleteAccount();
       if (!mounted) return;
-      if (response.statusCode == 200 && response.data['success'] == true) {
+      if (success) {
         await fb.FirebaseAuth.instance.signOut();
         if (mounted) {
           AppSnackBar.success(context, l10n.deleteAccountSuccess);
           Navigator.of(context).popUntil((route) => route.isFirst);
         }
       } else {
-        final msg = response.data['message'] ?? l10n.deleteAccountFailed;
-        AppSnackBar.error(context, msg);
+        AppSnackBar.error(context, l10n.deleteAccountFailed);
       }
-    } on DioException catch (e) {
+    } on AppException catch (e) {
       if (mounted) {
-        final msg = e.response?.data['message'] ?? l10n.errServerConnection;
-        AppSnackBar.error(context, msg);
+        AppSnackBar.error(context, e.message ?? l10n.errServerConnection);
       }
     } catch (e) {
       if (mounted) {

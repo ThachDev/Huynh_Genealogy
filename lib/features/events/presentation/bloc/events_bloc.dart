@@ -3,7 +3,7 @@ import '../../../../core/errors/failures.dart';
 import '../../domain/usecases/get_events.dart';
 import '../../domain/usecases/save_event.dart';
 import '../../domain/usecases/delete_event.dart';
-import '../../../../core/data/repository/notification_read_controller.dart';
+import '../controllers/notification_read_controller.dart';
 import 'events_event.dart';
 import 'events_state.dart';
 

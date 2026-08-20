@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import 'package:giatocviet/core/data/model/user_model.dart';
+import 'package:giatocviet/features/auth/data/models/user_model.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> cacheUser(UserModel userToCache);

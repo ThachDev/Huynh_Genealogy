@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:giatocviet/core/domain/entity/branch_entity.dart';
-import 'package:giatocviet/core/domain/entity/member_entity.dart';
-import 'package:giatocviet/core/domain/entity/family_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/branch_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/family_entity.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../onboarding/domain/usecase/get_family_detail.dart';
 import '../../domain/usecase/get_branches.dart';
 import '../../domain/usecase/get_members.dart';
 import '../../domain/usecase/get_cached_branches.dart';
 import '../../domain/usecase/get_cached_members.dart';
-import '../../../../core/domain/usecase/get_family_detail.dart';
 
 part 'family_tree_event.dart';
 part 'family_tree_state.dart';

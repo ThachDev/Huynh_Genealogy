@@ -366,7 +366,7 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
       children: [
         // ── PageView carousel ─────────────────────────────────────────────
         SizedBox(
-          height: 180,
+          height: 194,
           child: PageView.builder(
             controller: _pageController,
             itemCount: slides.length,

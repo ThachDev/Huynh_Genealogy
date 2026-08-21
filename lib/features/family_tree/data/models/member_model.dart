@@ -79,7 +79,9 @@ class MemberModel extends MemberEntity {
       phone: json['phone'] as String?,
       education: json['education'] as String?,
       occupation: json['occupation'] as String?,
-      deletedAt: json['deletedAt'] as String?,
+      deletedAt: (json['deletedAt'] == null || json['deletedAt'] == '')
+          ? null
+          : json['deletedAt'] as String?,
     );
   }
 
@@ -106,7 +108,6 @@ class MemberModel extends MemberEntity {
       'phone': phone,
       'education': education,
       'occupation': occupation,
-      'deletedAt': deletedAt,
     };
   }
 
@@ -118,10 +119,12 @@ class MemberModel extends MemberEntity {
   }
 
   static bool _parseBool(dynamic value) {
-    if (value == null) return false;
+    if (value == null) return true;
     if (value is bool) return value;
+    if (value is num) return value == 1;
     if (value is String) {
-      return value.toLowerCase() == 'true' || value == '1';
+      final s = value.trim().toLowerCase();
+      return s == 'true' || s == '1';
     }
     return false;
   }

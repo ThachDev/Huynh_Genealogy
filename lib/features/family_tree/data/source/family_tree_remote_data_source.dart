@@ -111,9 +111,10 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       final jsonMap = member.toJson();
 
       // Keep null values so we can clear fields on the backend (e.g., unselect parent/spouse).
-      // Also omit 'id' if it is 0 (new member) to avoid backend interpreting it as an update.
+      // Also omit 'id' if it is 0 (new member) and system metadata fields like 'deletedAt'
       final Map<String, dynamic> cleanMap = {};
       jsonMap.forEach((key, value) {
+        if (key == 'deletedAt' || key == 'createdAt' || key == 'updatedAt') return;
         if (value != null) {
           if (key == 'id' && value == 0) return;
           cleanMap[key] = value;
@@ -135,8 +136,12 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
           final Map<String, dynamic> formDataMap = {};
           cleanMap.forEach((k, v) {
             if (k != 'avatarUrl') {
-              // FormData values are converted to string. Use empty string for null.
-              formDataMap[k] = v ?? '';
+              if (k == 'isAlive') {
+                formDataMap[k] = member.isAlive ? 1 : 0;
+              } else {
+                // FormData values are converted to string. Use empty string for null.
+                formDataMap[k] = v ?? '';
+              }
             }
           });
           formDataMap['avatar'] = await MultipartFile.fromFile(

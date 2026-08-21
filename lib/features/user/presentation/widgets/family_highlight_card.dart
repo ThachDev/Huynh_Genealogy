@@ -119,7 +119,7 @@ class FamilyHighlightCard extends StatelessWidget {
             // 2. Body: Bên trái là Lịch hệ thống (EventCalendarWidget) - Bên phải là Cột (Tên + Des + Địa điểm)
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 4),
                 child: _buildBody(cfg, context),
               ),
             ),
@@ -136,7 +136,7 @@ class FamilyHighlightCard extends StatelessWidget {
 
             // 4. Footer CTA Button
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
+              padding: const EdgeInsets.fromLTRB(12, 5, 12, 7),
               child: _buildCta(cfg, context),
             ),
           ],
@@ -329,7 +329,7 @@ class FamilyHighlightCard extends StatelessWidget {
         onTap: onActionTap ?? onTap,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           decoration: BoxDecoration(
             color: context.surface,
             borderRadius: BorderRadius.circular(10),

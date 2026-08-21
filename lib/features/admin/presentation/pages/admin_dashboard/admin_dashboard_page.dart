@@ -75,7 +75,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   String _searchQuery = '';
 
   final ScrollController _scrollController = ScrollController();
-  static const int _pageSize = 15;
+  static const int _pageSize = 50;
   int _memberLimit = _pageSize;
   int _branchLimit = _pageSize;
   int _pendingLimit = _pageSize;
@@ -263,6 +263,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
+  Future<void> _onRefresh() async {
+    _loadTree();
+    _loadPendingRequests();
+    await Future.delayed(const Duration(milliseconds: 600));
+  }
+
   void _loadPendingRequests() {
     final familyId = _familyId();
     final authState = context.read<AuthBloc>().state;
@@ -401,9 +407,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   setState(() {
                     _selectedTab = tab;
                     _searchController.clear();
-                    _memberLimit = 5;
-                    _branchLimit = 5;
-                    _pendingLimit = 5;
+                    _memberLimit = _pageSize;
+                    _branchLimit = _pageSize;
+                    _pendingLimit = _pageSize;
                     if (_scrollController.hasClients) {
                       _scrollController.jumpTo(0);
                     }
@@ -499,44 +505,51 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSearchBar(l10n.searchMembersHint, showFilter: true),
-            if (filteredMembers.isEmpty)
-              _buildEmptyWidget(l10n.emptyMembers)
-            else
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(bottom: 30),
-                  itemCount: currentMemberCount + (hasMoreMembers ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= currentMemberCount) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2.5),
-                          ),
-                        ),
-                      );
-                    }
-                    final member = filteredMembers[index];
-                    return MemberItemWidget(
-                      member: member,
-                      allMembers: members,
-                      onEdit: () {
-                        Navigator.push(
-                          context,
-                          SereneFadeSlidePageRoute(
-                            page: AdminMemberFormPage(memberId: member.id),
-                          ),
-                        );
-                      },
-                      onDelete: () => showMemberDeleteConfirmation(context, member),
-                    );
-                  },
-                ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                color: context.primary,
+                child: filteredMembers.isEmpty
+                    ? _buildEmptyWidget(l10n.emptyMembers)
+                    : ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        padding: const EdgeInsets.only(bottom: 30),
+                        itemCount: currentMemberCount + (hasMoreMembers ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index >= currentMemberCount) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                                ),
+                              ),
+                            );
+                          }
+                          final member = filteredMembers[index];
+                          return MemberItemWidget(
+                            member: member,
+                            allMembers: members,
+                            onEdit: () async {
+                              final result = await Navigator.push(
+                                context,
+                                SereneFadeSlidePageRoute(
+                                  page: AdminMemberFormPage(memberId: member.id),
+                                ),
+                              );
+                              if (result == true) {
+                                _loadTree();
+                              }
+                            },
+                            onDelete: () => showMemberDeleteConfirmation(context, member),
+                          );
+                        },
+                      ),
               ),
+            ),
           ],
         );
 
@@ -562,54 +575,58 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSearchBar(l10n.searchBranchesHint),
-            if (filteredBranches.isEmpty)
-              _buildEmptyWidget(l10n.emptyBranches)
-            else
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(bottom: 30),
-                  itemCount: currentBranchCount + (hasMoreBranches ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= currentBranchCount) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2.5),
-                          ),
-                        ),
-                      );
-                    }
-                    final branch = filteredBranches[index];
-                    return BranchItemWidget(
-                      branch: branch,
-                      memberCount:
-                          members.where((m) => m.branchId == branch.id).length,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          SereneFadeSlidePageRoute(
-                            page: AdminBranchDetailPage(
-                              branch: branch,
-                              members: members,
-                            ),
-                          ),
-                        ).then((result) {
-                          if (result == true) {
-                            _loadTree();
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                color: context.primary,
+                child: filteredBranches.isEmpty
+                    ? _buildEmptyWidget(l10n.emptyBranches)
+                    : ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        padding: const EdgeInsets.only(bottom: 30),
+                        itemCount: currentBranchCount + (hasMoreBranches ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index >= currentBranchCount) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                                ),
+                              ),
+                            );
                           }
-                        });
-                      },
-                      onEdit: () => _openBranchForm(context, branch: branch),
-                      onDelete: () =>
-                          showDeleteBranchConfirmation(context, branch),
-                    );
-                  },
-                ),
+                          final branch = filteredBranches[index];
+                          return BranchItemWidget(
+                            branch: branch,
+                            memberCount:
+                                members.where((m) => m.branchId == branch.id).length,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                SereneFadeSlidePageRoute(
+                                  page: AdminBranchDetailPage(
+                                    branch: branch,
+                                    members: members,
+                                  ),
+                                ),
+                              ).then((result) {
+                                if (result == true) {
+                                  _loadTree();
+                                }
+                              });
+                            },
+                            onEdit: () => _openBranchForm(context, branch: branch),
+                            onDelete: () =>
+                                showDeleteBranchConfirmation(context, branch),
+                          );
+                        },
+                      ),
               ),
+            ),
           ],
         );
 
@@ -634,33 +651,37 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSearchBar(l10n.searchHint),
-            if (filteredRequests.isEmpty)
-              _buildEmptyWidget(l10n.emptyPendingRequests)
-            else
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(bottom: 30),
-                  itemCount: currentPendingCount + (hasMorePending ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= currentPendingCount) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 2.5),
-                          ),
-                        ),
-                      );
-                    }
-                    return PendingRequestItemWidget(
-                      request: filteredRequests[index],
-                    );
-                  },
-                ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                color: context.primary,
+                child: filteredRequests.isEmpty
+                    ? _buildEmptyWidget(l10n.emptyPendingRequests)
+                    : ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        padding: const EdgeInsets.only(bottom: 30),
+                        itemCount: currentPendingCount + (hasMorePending ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index >= currentPendingCount) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                                ),
+                              ),
+                            );
+                          }
+                          return PendingRequestItemWidget(
+                            request: filteredRequests[index],
+                          );
+                        },
+                      ),
               ),
+            ),
           ],
         );
     }
@@ -708,7 +729,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   setState(() {
                     _genderFilter = null;
                     _isAliveFilter = null;
-                    _memberLimit = 5;
+                    _memberLimit = _pageSize;
                     if (_scrollController.hasClients) {
                       _scrollController.jumpTo(0);
                     }
@@ -783,7 +804,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                     });
                                     setState(() {
                                       _genderFilter = value;
-                                      _memberLimit = 5;
+                                      _memberLimit = _pageSize;
                                       if (_scrollController.hasClients) {
                                         _scrollController.jumpTo(0);
                                       }
@@ -837,7 +858,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                     });
                                     setState(() {
                                       _isAliveFilter = isAlive;
-                                      _memberLimit = 5;
+                                      _memberLimit = _pageSize;
                                       if (_scrollController.hasClients) {
                                         _scrollController.jumpTo(0);
                                       }
@@ -860,11 +881,19 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildEmptyWidget(String message) {
-    return AppEmptyState(
-      icon: LucideIcons.folderOpen,
-      iconSize: 40,
-      message: message,
-      useCardStyle: true,
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: AppEmptyState(
+            icon: LucideIcons.folderOpen,
+            iconSize: 40,
+            message: message,
+            useCardStyle: true,
+          ),
+        ),
+      ),
     );
   }
 }

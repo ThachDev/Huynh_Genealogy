@@ -29,8 +29,8 @@ class MemberItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final result = await Navigator.push(
           context,
           SereneFadeSlidePageRoute(
             page: FamilyMemberDetailPage(
@@ -39,6 +39,9 @@ class MemberItemWidget extends StatelessWidget {
             ),
           ),
         );
+        if (result == true) {
+          onEdit?.call();
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),

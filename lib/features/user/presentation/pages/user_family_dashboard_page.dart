@@ -34,7 +34,7 @@ class UserFamilyDashboardPage extends StatefulWidget {
 class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  int _memberLimit = 5;
+  int _memberLimit = 50;
   MemberFilter _filter = const MemberFilter();
 
   @override
@@ -65,15 +65,16 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     setState(() {
       _filter = _filter.copyWith(
           searchQuery: _searchController.text.trim().toLowerCase());
-      _memberLimit = 5;
+      _memberLimit = 50;
     });
   }
 
   void _onScroll() {
+    if (!_scrollController.hasClients) return;
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       setState(() {
-        _memberLimit += 5;
+        _memberLimit += 50;
       });
     }
   }

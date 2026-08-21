@@ -660,12 +660,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                             state.selectedMemberId == member.id,
                                         isCurrentUser:
                                             userMemberId == member.id,
-                                        onTap: () {
+                                        onTap: () async {
                                           HapticFeedback.lightImpact();
                                           context.read<FamilyTreeBloc>().add(
                                               FamilyTreeSelectMemberEvent(
                                                   member.id));
-                                          Navigator.push(
+                                          final result = await Navigator.push(
                                             context,
                                             SereneFadeSlidePageRoute(
                                               page: FamilyMemberDetailPage(
@@ -674,6 +674,9 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                               ),
                                             ),
                                           );
+                                          if (result == true && mounted) {
+                                            _reloadTree();
+                                          }
                                         },
                                         onAddChildTap: canEdit
                                             ? () => _onAddChild(

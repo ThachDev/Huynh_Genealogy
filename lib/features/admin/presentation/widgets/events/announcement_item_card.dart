@@ -34,7 +34,7 @@ class AnnouncementItemCard extends StatelessWidget {
           color: context.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: context.primary.withValues(alpha: 0.12),
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: [
             BoxShadow(

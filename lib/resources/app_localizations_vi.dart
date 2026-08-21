@@ -2072,7 +2072,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String confirmUnlinkMessage(Object name) {
-    return 'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên $name?';
+    return 'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên $name? Tài khoản này sẽ bị rời khỏi dòng họ và không thể truy cập thông tin gia tộc nữa.';
   }
 
   @override
@@ -2682,4 +2682,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get lightModeLabel => 'Sáng';
+
+  @override
+  String get copyImageAction => 'Sao chép ảnh';
+
+  @override
+  String get imageLinkCopied => 'Đã sao chép liên kết hình ảnh';
 }

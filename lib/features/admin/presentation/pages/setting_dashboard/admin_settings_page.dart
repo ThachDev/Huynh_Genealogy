@@ -111,7 +111,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       color: context.surface,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: context.primary.withValues(alpha: 0.3),
+                        color: context.accent.withValues(alpha: 0.12),
                       ),
                     ),
                     child: Column(
@@ -380,8 +380,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                         familyId: family?.id ?? 0,
                         familyName: family?.name ?? l10n.appTitle,
                       ),
-                      titleColor: context.error,
-                      iconColor: context.error,
                       showDivider: false,
                     ),
                   ],
@@ -557,7 +555,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(24)),
                 border: Border.all(
-                  color: context.primary.withValues(alpha: 0.2),
+                  color: context.accent.withValues(alpha: 0.12),
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

@@ -77,7 +77,7 @@ class AnniversaryCard extends StatelessWidget {
           color: context.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: context.textSecondary.withValues(alpha: 0.12),
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: [
             BoxShadow(

@@ -251,7 +251,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                 border: Border.all(
                   color: isSelected
                       ? context.primary
-                      : context.textSecondary.withValues(alpha: 0.2),
+                      : context.accent.withValues(alpha: 0.12),
                   width: 1.2,
                 ),
                 boxShadow: isSelected
@@ -307,7 +307,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
           borderRadius: BorderRadius.circular(14),
           color: context.surface,
           border: Border.all(
-            color: context.textSecondary.withValues(alpha: 0.2),
+            color: context.accent.withValues(alpha: 0.12),
             width: 1.2,
           ),
         ),
@@ -519,10 +519,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
           color: context.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: context.resolve(
-              const Color(0xFFE8D4C8),
-              context.textSecondary.withValues(alpha: 0.2),
-            ),
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: [
             BoxShadow(
@@ -544,30 +541,9 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
               child: Row(
                 children: [
                   // Author Avatar
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: context.resolve(
-                            Colors.grey.shade300, Colors.grey.shade700),
-                      ),
-                    ),
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: context.primary.withValues(alpha: 0.1),
-                      child: Text(
-                        authorName.isNotEmpty
-                            ? authorName.substring(0, 1).toUpperCase()
-                            : 'G',
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: context.primary,
-                        ),
-                      ),
-                    ),
+                  AppAvatar(
+                    fullName: authorName,
+                    fontSize: 16,
                   ),
                   const SizedBox(width: 10),
 
@@ -633,7 +609,10 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
               ),
             ),
 
-            const Divider(height: 1),
+            Divider(
+              height: 1,
+              color: context.accent.withValues(alpha: 0.08),
+            ),
 
             // ── 2. Post Title & Text Content ──
             Padding(
@@ -786,7 +765,7 @@ class _AdminEventDetailPageState extends State<AdminEventDetailPage> {
                         color: context.surface,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: context.textSecondary.withValues(alpha: 0.2),
+                          color: context.accent.withValues(alpha: 0.12),
                           width: 1.2,
                         ),
                       ),

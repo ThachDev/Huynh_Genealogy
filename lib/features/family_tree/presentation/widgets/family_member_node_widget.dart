@@ -123,9 +123,8 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                       border: Border.all(
                         color: widget.isSelected
                             ? context.primary
-                            : context.accent.withValues(
-                                alpha: context.isDarkMode ? 0.75 : 0.65),
-                        width: widget.isSelected ? 2.0 : 1.2,
+                            : context.accent.withValues(alpha: 0.12),
+                        width: widget.isSelected ? 2.0 : 1.0,
                       ),
                     ),
                     clipBehavior: Clip.antiAlias,
@@ -154,20 +153,10 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                           child: Column(
                             children: [
                               // ── 1. AVATAR ──
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: context.accent.withValues(
-                                        alpha:
-                                            context.isDarkMode ? 0.45 : 0.35),
-                                  ),
-                                ),
-                                child: AppAvatar(
-                                  avatarUrl: widget.member.avatarUrl,
-                                  fullName: widget.member.fullName,
-                                  fontSize: 15,
-                                ),
+                              AppAvatar(
+                                avatarUrl: widget.member.avatarUrl,
+                                fullName: widget.member.fullName,
+                                fontSize: 15,
                               ),
                               const SizedBox(height: 5),
 
@@ -332,7 +321,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                                   BorderRadius.circular(10),
                                               border: Border.all(
                                                 color: context.accent
-                                                    .withValues(alpha: 0.4),
+                                                    .withValues(alpha: 0.12),
                                                 width: 0.7,
                                               ),
                                             ),
@@ -384,7 +373,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                                   BorderRadius.circular(10),
                                               border: Border.all(
                                                 color: context.accent
-                                                    .withValues(alpha: 0.4),
+                                                    .withValues(alpha: 0.12),
                                                 width: 0.7,
                                               ),
                                             ),

@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:gal/gal.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:path_provider/path_provider.dart';
@@ -350,32 +353,343 @@ class _UserEventCardState extends State<UserEventCard> {
     );
   }
 
+  Future<File?> _getImageFile(String imageUrl, bool isNetwork) async {
+    try {
+      if (isNetwork) {
+        final tempDir = await getTemporaryDirectory();
+        final fileName =
+            'event_img_${DateTime.now().millisecondsSinceEpoch}.png';
+        final file = File('${tempDir.path}/$fileName');
+        final response = await Dio().get<List<int>>(
+          imageUrl,
+          options: Options(responseType: ResponseType.bytes),
+        );
+        if (response.data != null) {
+          await file.writeAsBytes(response.data!);
+          return file;
+        }
+        return null;
+      } else {
+        final file = File(imageUrl);
+        return file.existsSync() ? file : null;
+      }
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _downloadImage(String imageUrl, bool isNetwork, BuildContext ctx,
+      AppLocalizations l10n) async {
+    try {
+      final file = await _getImageFile(imageUrl, isNetwork);
+      if (file == null) {
+        if (ctx.mounted) AppSnackBar.error(ctx, l10n.qrSaveError);
+        return;
+      }
+      await Gal.putImage(file.path);
+      if (ctx.mounted) {
+        AppSnackBar.success(ctx, l10n.qrSaved);
+      }
+    } catch (_) {
+      if (ctx.mounted) {
+        AppSnackBar.error(ctx, l10n.qrSaveError);
+      }
+    }
+  }
+
+  Future<void> _shareImage(String imageUrl, bool isNetwork, BuildContext ctx,
+      AppLocalizations l10n) async {
+    try {
+      final file = await _getImageFile(imageUrl, isNetwork);
+      if (file == null) {
+        if (ctx.mounted) AppSnackBar.error(ctx, l10n.qrSaveError);
+        return;
+      }
+      await Share.shareXFiles([XFile(file.path, mimeType: 'image/png')]);
+    } catch (_) {
+      if (ctx.mounted) {
+        AppSnackBar.error(ctx, l10n.qrSaveError);
+      }
+    }
+  }
+
+  void _copyImageLink(
+      String imageUrl, BuildContext ctx, AppLocalizations l10n) {
+    Clipboard.setData(ClipboardData(text: imageUrl));
+    if (ctx.mounted) {
+      AppSnackBar.success(ctx, l10n.imageLinkCopied);
+    }
+  }
+
+  void _showReportSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final reasons = [
+      l10n.reportReasonInappropriate,
+      l10n.reportReasonAbusive,
+      l10n.reportReasonFalseInfo,
+      l10n.reportReasonSpam,
+      l10n.reportReasonOther,
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: context.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                      color: context.textSecondary.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                Text(
+                  l10n.reportContentTitle,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: context.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  l10n.selectReportReason,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: context.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ...reasons.map(
+                  (reason) => InkWell(
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      AppSnackBar.success(context, l10n.reportSuccessMessage);
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 10),
+                      child: Row(
+                        children: [
+                          Icon(
+                            LucideIcons.flag,
+                            size: 16,
+                            color: context.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              reason,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w500,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            LucideIcons.chevronRight,
+                            size: 16,
+                            color: context.textSecondary.withValues(alpha: 0.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _showImageDialog(BuildContext context, String imageUrl, bool isNetwork) {
     showDialog(
       context: context,
-      barrierColor: Colors.black87,
+      barrierColor: Colors.black.withValues(alpha: 0.92),
       builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx);
         return Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.all(10),
+          insetPadding: EdgeInsets.zero,
           child: Stack(
-            alignment: Alignment.topRight,
+            fit: StackFit.expand,
             children: [
-              InteractiveViewer(
-                minScale: 0.5,
-                maxScale: 4.0,
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: isNetwork
-                        ? AppNetworkImage(url: imageUrl, fit: BoxFit.contain)
-                        : Image.file(File(imageUrl), fit: BoxFit.contain),
-                  ),
+              // ── Hình ảnh tương tác phóng to/thu nhỏ ──
+              Center(
+                child: InteractiveViewer(
+                  minScale: 0.5,
+                  maxScale: 4.0,
+                  child: isNetwork
+                      ? AppNetworkImage(url: imageUrl, fit: BoxFit.contain)
+                      : Image.file(File(imageUrl), fit: BoxFit.contain),
                 ),
               ),
-              IconButton(
-                icon: const Icon(LucideIcons.x, color: Colors.white, size: 28),
-                onPressed: () => Navigator.pop(ctx),
+
+              // ── Top Bar: Nút X bên trái, Menu 3 chấm bên phải ──
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Nút X bên trái
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.45),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(LucideIcons.x,
+                                color: Colors.white, size: 22),
+                            onPressed: () => Navigator.pop(ctx),
+                          ),
+                        ),
+
+                        // Menu 3 chấm bên phải
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.45),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Theme(
+                            data: Theme.of(ctx).copyWith(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                            ),
+                            child: PopupMenuButton<String>(
+                              icon: const Icon(LucideIcons.moreVertical,
+                                  color: Colors.white, size: 22),
+                              color: ctx.surface,
+                              surfaceTintColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(
+                                  color: ctx.accent.withValues(alpha: 0.12),
+                                ),
+                              ),
+                              offset: const Offset(0, 48),
+                              onSelected: (value) async {
+                                switch (value) {
+                                  case 'download':
+                                    await _downloadImage(
+                                        imageUrl, isNetwork, ctx, l10n);
+                                    break;
+                                  case 'copy':
+                                    _copyImageLink(imageUrl, ctx, l10n);
+                                    break;
+                                  case 'share':
+                                    await _shareImage(
+                                        imageUrl, isNetwork, ctx, l10n);
+                                    break;
+                                  case 'report':
+                                    _showReportSheet(ctx);
+                                    break;
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                PopupMenuItem<String>(
+                                  value: 'download',
+                                  height: 40,
+                                  child: Row(
+                                    children: [
+                                      Icon(LucideIcons.download,
+                                          size: 16, color: ctx.textPrimary),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        l10n.downloadLabel,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 13,
+                                          color: ctx.textPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<String>(
+                                  value: 'copy',
+                                  height: 40,
+                                  child: Row(
+                                    children: [
+                                      Icon(LucideIcons.copy,
+                                          size: 16, color: ctx.textPrimary),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        l10n.copyImageAction,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 13,
+                                          color: ctx.textPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<String>(
+                                  value: 'share',
+                                  height: 40,
+                                  child: Row(
+                                    children: [
+                                      Icon(LucideIcons.share2,
+                                          size: 16, color: ctx.textPrimary),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        l10n.shareLabel,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 13,
+                                          color: ctx.textPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const PopupMenuDivider(height: 1),
+                                PopupMenuItem<String>(
+                                  value: 'report',
+                                  height: 40,
+                                  child: Row(
+                                    children: [
+                                      Icon(LucideIcons.flag,
+                                          size: 16, color: ctx.error),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        l10n.reportContentTitle,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 13,
+                                          color: ctx.error,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -443,7 +757,7 @@ class _UserEventCardState extends State<UserEventCard> {
         color: context.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: context.textSecondary.withValues(alpha: 0.12),
+          color: context.accent.withValues(alpha: 0.12),
         ),
         boxShadow: [
           BoxShadow(
@@ -465,31 +779,15 @@ class _UserEventCardState extends State<UserEventCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── 1. Post Header: Nền Crimson đỏ sẫm đồng bộ hệ thống ──
-                  Container(
-                    color: context.primary,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
+                  // ── 1. Post Header: Nền Card đồng bộ hệ thống, AppAvatar thanh lịch ──
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
                     child: Row(
                       children: [
-                        Container(
-                          width: 38,
-                          height: 38,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            organizerName.trim().isNotEmpty
-                                ? organizerName.trim()[0].toUpperCase()
-                                : 'G',
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: context.primary,
-                            ),
-                          ),
+                        AppAvatar(
+                          fullName: organizerName,
+                          radius: 19,
+                          fontSize: 15,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -501,7 +799,7 @@ class _UserEventCardState extends State<UserEventCard> {
                                 style: GoogleFonts.beVietnamPro(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: context.textPrimary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -513,8 +811,8 @@ class _UserEventCardState extends State<UserEventCard> {
                                         ? ' (${l10n.lunarShortLabel})'
                                         : ''),
                                 style: GoogleFonts.inter(
-                                  fontSize: 11,
-                                  color: Colors.white.withValues(alpha: 0.85),
+                                  fontSize: 11.5,
+                                  color: context.textSecondary,
                                 ),
                               ),
                             ],
@@ -527,16 +825,19 @@ class _UserEventCardState extends State<UserEventCard> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(12),
+                              color: context.primary.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: context.primary.withValues(alpha: 0.15),
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(
+                                Icon(
                                   LucideIcons.mapPin,
                                   size: 11,
-                                  color: Colors.white,
+                                  color: context.primary,
                                 ),
                                 const SizedBox(width: 4),
                                 ConstrainedBox(
@@ -546,8 +847,8 @@ class _UserEventCardState extends State<UserEventCard> {
                                     event.location!.trim(),
                                     style: GoogleFonts.inter(
                                       fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      color: context.primary,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,

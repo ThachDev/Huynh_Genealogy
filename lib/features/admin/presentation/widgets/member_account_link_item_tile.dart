@@ -22,7 +22,10 @@ class LinkStatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final (String label, Color color) = switch (item) {
       _ when item.isLinked => (l10n.linkedLabel, Colors.green),
-      _ when item.pendingInvite != null => (l10n.invitePendingLabel, AppColors.accent),
+      _ when item.pendingInvite != null => (
+          l10n.invitePendingLabel,
+          AppColors.accent
+        ),
       _ => (l10n.notLinkedLabel, context.textSecondary),
     };
     return Container(
@@ -68,7 +71,7 @@ class MemberAccountLinkItemTile extends StatelessWidget {
         color: context.surface,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: context.accent.withValues(alpha: 0.15),
+          color: context.accent.withValues(alpha: 0.12),
         ),
       ),
       child: Column(
@@ -81,7 +84,6 @@ class MemberAccountLinkItemTile extends StatelessWidget {
                 avatarUrl: item.avatarUrl,
                 fullName: item.fullName,
                 radius: 22,
-                backgroundColor: context.primary.withValues(alpha: 0.15),
               ),
               const SizedBox(width: 12),
               Expanded(

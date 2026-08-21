@@ -3827,7 +3827,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmUnlinkMessage.
   ///
   /// In vi, this message translates to:
-  /// **'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?'**
+  /// **'Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}? Tài khoản này sẽ bị rời khỏi dòng họ và không thể truy cập thông tin gia tộc nữa.'**
   String confirmUnlinkMessage(Object name);
 
   /// No description provided for @trashTitle.
@@ -4849,6 +4849,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Sáng'**
   String get lightModeLabel;
+
+  /// No description provided for @copyImageAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép ảnh'**
+  String get copyImageAction;
+
+  /// No description provided for @imageLinkCopied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép liên kết hình ảnh'**
+  String get imageLinkCopied;
 }
 
 class _AppLocalizationsDelegate

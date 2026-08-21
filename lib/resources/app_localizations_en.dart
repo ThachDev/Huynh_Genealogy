@@ -2073,7 +2073,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String confirmUnlinkMessage(Object name) {
-    return 'Are you sure you want to unlink the account of member $name?';
+    return 'Are you sure you want to unlink the account of member $name? This account will be removed from the clan and will no longer have access to clan information.';
   }
 
   @override
@@ -2205,7 +2205,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String generationLevelFormat(String gen) {
-    return 'Generation $gen';
+    return 'Gen $gen';
   }
 
   @override
@@ -2683,4 +2683,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lightModeLabel => 'Light';
+
+  @override
+  String get copyImageAction => 'Copy image';
+
+  @override
+  String get imageLinkCopied => 'Image link copied';
 }

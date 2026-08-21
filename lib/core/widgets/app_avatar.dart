@@ -5,7 +5,6 @@ import '../theme/theme_extensions.dart';
 
 /// Reusable AppAvatar widget displaying NetworkImage or last word's initial letter.
 class AppAvatar extends StatelessWidget {
-
   const AppAvatar({
     super.key,
     this.avatarUrl,
@@ -36,15 +35,10 @@ class AppAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveBgColor = backgroundColor ??
-        context.resolve(
-          context.primary.withValues(alpha: 0.12),
-          context.accent.withValues(alpha: 0.18),
+        context.primary.withValues(
+          alpha: context.isDarkMode ? 0.18 : 0.12,
         );
-    final effectiveTextColor = textColor ??
-        context.resolve(
-          context.primary,
-          context.accent,
-        );
+    final effectiveTextColor = textColor ?? context.primary;
     final effectiveFontSize = fontSize ?? (radius * 0.8);
 
     final hasAvatarUrl = avatarUrl != null && avatarUrl!.trim().isNotEmpty;

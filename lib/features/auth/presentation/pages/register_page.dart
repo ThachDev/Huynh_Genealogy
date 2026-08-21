@@ -143,10 +143,180 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _buildTopBar(BuildContext context, bool isEnglish) {
+    final isDark = context.isDarkMode;
     return Positioned(
       top: 12.0,
       right: 16.0,
-      child: _buildLanguageSwitcher(context, isEnglish),
+      child: Container(
+        padding: const EdgeInsets.all(2.0),
+        decoration: BoxDecoration(
+          color: context.textSecondary.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(
+            color: context.textSecondary.withValues(alpha: 0.14),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 1. Theme Toggle
+            GestureDetector(
+              onTap: () {
+                final newMode = isDark ? ThemeMode.light : ThemeMode.dark;
+                FamilyTreeApp.setThemeMode(context, newMode);
+              },
+              child: Container(
+                width: 52,
+                height: 24,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Stack(
+                  children: [
+                    AnimatedAlign(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      alignment:
+                          isDark ? Alignment.centerRight : Alignment.centerLeft,
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: context.surface,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: context.resolve(
+                                  Colors.black.withValues(alpha: 0.12),
+                                  Colors.transparent),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Icon(
+                              LucideIcons.sun,
+                              size: 12,
+                              color: !isDark
+                                  ? context.primary
+                                  : context.textSecondary,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Icon(
+                              LucideIcons.moon,
+                              size: 12,
+                              color: isDark
+                                  ? const Color(0xFFFF5252)
+                                  : context.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // 2. Vertical Divider
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              width: 1,
+              height: 14,
+              color: context.textSecondary.withValues(alpha: 0.2),
+            ),
+
+            // 3. Language Toggle
+            GestureDetector(
+              onTap: () {
+                final newLocale =
+                    isEnglish ? const Locale('vi') : const Locale('en');
+                FamilyTreeApp.setLocale(context, newLocale);
+              },
+              child: Container(
+                width: 56,
+                height: 24,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Stack(
+                  children: [
+                    AnimatedAlign(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeInOut,
+                      alignment: isEnglish
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: Container(
+                        width: 26,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: context.surface,
+                          borderRadius: BorderRadius.circular(12.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: context.resolve(
+                                  Colors.black.withValues(alpha: 0.12),
+                                  Colors.transparent),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'VI',
+                              style: GoogleFonts.inter(
+                                fontSize: 10,
+                                fontWeight: !isEnglish
+                                    ? FontWeight.bold
+                                    : FontWeight.w600,
+                                color: !isEnglish
+                                    ? context.primary
+                                    : context.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'EN',
+                              style: GoogleFonts.inter(
+                                fontSize: 10,
+                                fontWeight: isEnglish
+                                    ? FontWeight.bold
+                                    : FontWeight.w600,
+                                color: isEnglish
+                                    ? context.accent
+                                    : context.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -299,87 +469,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _buildLanguageSwitcher(BuildContext context, bool isEnglish) {
-    return GestureDetector(
-      onTap: () {
-        final newLocale = isEnglish ? const Locale('vi') : const Locale('en');
-        FamilyTreeApp.setLocale(context, newLocale);
-      },
-      child: Container(
-        width: 76,
-        height: 26,
-        decoration: BoxDecoration(
-          color: context.textSecondary.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(13.0),
-          border: Border.all(
-            color: context.textSecondary.withValues(alpha: 0.12),
-          ),
-        ),
-        child: Stack(
-          children: [
-            AnimatedAlign(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              alignment:
-                  isEnglish ? Alignment.centerRight : Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Container(
-                  width: 34,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: context.surface,
-                    borderRadius: BorderRadius.circular(10.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.resolve(Colors.black.withValues(alpha: 0.08), Colors.transparent),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'VI',
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
-                        fontWeight:
-                            !isEnglish ? FontWeight.bold : FontWeight.w600,
-                        color: !isEnglish
-                            ? context.primary
-                            : context.textSecondary,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'EN',
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
-                        fontWeight:
-                            isEnglish ? FontWeight.bold : FontWeight.w600,
-                        color: isEnglish
-                            ? context.accent
-                            : context.textSecondary,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildTermsCheckbox(bool isLoading, AppLocalizations l10n) {
     return GestureDetector(

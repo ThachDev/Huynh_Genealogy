@@ -245,8 +245,6 @@ class _TrashItem extends StatelessWidget {
                       fullName: member.fullName,
                       radius: 24,
                       fontSize: 16,
-                      backgroundColor: context.resolve(
-                          Colors.grey.shade100, const Color(0xFF2C2C2C)),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

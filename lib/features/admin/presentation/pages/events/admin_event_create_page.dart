@@ -261,7 +261,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                 border: Border.all(
                   color: isSelected
                       ? context.primary
-                      : context.textSecondary.withValues(alpha: 0.2),
+                      : context.accent.withValues(alpha: 0.12),
                   width: 1.2,
                 ),
                 boxShadow: isSelected
@@ -313,7 +313,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
           borderRadius: BorderRadius.circular(14),
           color: context.surface,
           border: Border.all(
-            color: context.textSecondary.withValues(alpha: 0.2),
+            color: context.accent.withValues(alpha: 0.12),
             width: 1.2,
           ),
         ),
@@ -518,8 +518,7 @@ class _AdminEventCreatePageState extends State<AdminEventCreatePage> {
                                 color: context.surface,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: context.textSecondary
-                                      .withValues(alpha: 0.2),
+                                  color: context.accent.withValues(alpha: 0.12),
                                   width: 1.2,
                                 ),
                               ),

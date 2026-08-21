@@ -23,7 +23,7 @@ class UserBranchCard extends StatelessWidget {
 
     final borderColor = isSelected
         ? context.primary
-        : context.textSecondary.withValues(alpha: 0.2);
+        : context.accent.withValues(alpha: 0.12);
     final fillColor = context.surface;
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
@@ -35,8 +35,8 @@ class UserBranchCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           color: fillColor,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: borderColor, width: 1.2),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: borderColor),
           boxShadow: const [
             BoxShadow(
               color: Colors.black12,
@@ -48,11 +48,16 @@ class UserBranchCard extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           child: Row(
             children: [
-              // Icon trơn
-              Icon(
-                LucideIcons.gitBranch,
-                color: isSelected ? context.accent : context.primary,
-                size: 26,
+              // Icon chi tộc
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: context.primary.withValues(
+                    alpha: context.isDarkMode ? 0.18 : 0.12),
+                child: Icon(
+                  LucideIcons.gitBranch,
+                  color: context.primary,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               // Nội dung

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../../core/utils/file_size_guard.dart';
 
 import '../../../../../../core/theme/theme_extensions.dart';
@@ -194,25 +193,10 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
     }
   }
 
-  ImageProvider _getAvatarImage(String? avatarUrl) {
-    if (_localAvatarPath != null) {
-      return FileImage(File(_localAvatarPath!));
-    }
-    if (avatarUrl != null && avatarUrl.isNotEmpty) {
-      if (avatarUrl.startsWith('http')) {
-        return CachedNetworkImageProvider(avatarUrl);
-      }
-      return FileImage(File(avatarUrl));
-    }
-    return const AssetImage('assets/images/background.png');
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = widget.user;
     final avatarUrl = user?.avatarUrl as String?;
-    final hasAvatar =
-        (avatarUrl != null && avatarUrl.isNotEmpty) || _localAvatarPath != null;
     final email = (user?.email as String?) ?? '';
 
     return Container(
@@ -224,42 +208,18 @@ class _AdminSettingsProfileCardState extends State<AdminSettingsProfileCard> {
             onTap: _isEditingInline ? _pickImage : null,
             child: Stack(
               children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: _isEditingInline
-                          ? context.accent
-                          : context.primary.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    color: context.primary.withValues(alpha: 0.08),
-                    image: hasAvatar
-                        ? DecorationImage(
-                            image: _getAvatarImage(avatarUrl),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
-                  child: !hasAvatar
-                      ? Center(
-                          child: Text(
-                            AppAvatar.getInitialLetter(
-                              (user?.fullName as String?) ??
-                                  _nameController.text,
-                              fallback: 'U',
-                            ),
-                            style: GoogleFonts.beVietnamPro(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: context.primary,
-                            ),
-                          ),
-                        )
-                      : null,
-                ),
+                _localAvatarPath != null
+                    ? CircleAvatar(
+                        radius: 24,
+                        backgroundImage: FileImage(File(_localAvatarPath!)),
+                      )
+                    : AppAvatar(
+                        avatarUrl: avatarUrl,
+                        fullName: (user?.fullName as String?) ??
+                            _nameController.text,
+                        radius: 24,
+                        fallbackInitial: 'U',
+                      ),
                 if (_isEditingInline)
                   Positioned(
                     bottom: 0,

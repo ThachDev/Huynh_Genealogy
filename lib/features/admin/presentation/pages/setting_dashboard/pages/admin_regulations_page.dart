@@ -93,8 +93,7 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
         color: context.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: context.accent.withValues(alpha: 0.35),
-          width: 1.2,
+          color: context.accent.withValues(alpha: 0.12),
         ),
         boxShadow: [
           BoxShadow(
@@ -137,10 +136,7 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
                   l10n.regulationLastUpdated,
                   style: GoogleFonts.inter(
                     fontSize: 11,
-                    color: context.resolve(
-                      context.textSecondary,
-                      context.accent,
-                    ),
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -169,15 +165,15 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
           color: context.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isExpanded
-                ? context.primary.withValues(alpha: 0.3)
-                : context.accent.withValues(alpha: 0.12),
-            width: isExpanded ? 1.5 : 1,
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: isExpanded
               ? [
                   BoxShadow(
-                    color: context.primary.withValues(alpha: 0.08),
+                    color: context.resolve(
+                      Colors.black.withValues(alpha: 0.04),
+                      Colors.black.withValues(alpha: 0.2),
+                    ),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                   ),
@@ -349,13 +345,13 @@ class _AdminRegulationsPageState extends State<AdminRegulationsPage>
       margin: const EdgeInsets.only(bottom: 4),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: context.primary.withValues(alpha: 0.035),
+        color: context.resolve(
+          context.primary.withValues(alpha: 0.035),
+          Colors.white.withValues(alpha: 0.03),
+        ),
         borderRadius: BorderRadius.circular(8),
-        border: Border(
-          left: BorderSide(
-            color: context.accent.withValues(alpha: 0.6),
-            width: 3,
-          ),
+        border: Border.all(
+          color: context.accent.withValues(alpha: 0.12),
         ),
       ),
       child: Text.rich(

@@ -99,8 +99,7 @@ class FamilyHighlightCard extends StatelessWidget {
           color: context.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: cfg.primary.withValues(alpha: 0.22),
-            width: 1.2,
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: [
             BoxShadow(
@@ -131,7 +130,7 @@ class FamilyHighlightCard extends StatelessWidget {
               child: Divider(
                 height: 1,
                 thickness: 0.6,
-                color: cfg.primary.withValues(alpha: 0.12),
+                color: context.accent.withValues(alpha: 0.08),
               ),
             ),
 
@@ -335,7 +334,7 @@ class FamilyHighlightCard extends StatelessWidget {
             color: context.surface,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: cfg.primary.withValues(alpha: 0.35),
+              color: context.accent.withValues(alpha: 0.12),
             ),
             boxShadow: [
               BoxShadow(

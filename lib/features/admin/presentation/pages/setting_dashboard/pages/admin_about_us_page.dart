@@ -79,8 +79,7 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: context.accent.withValues(alpha: 0.5),
-                        width: 1.5,
+                        color: context.accent.withValues(alpha: 0.12),
                       ),
                     ),
                     child: Padding(
@@ -141,8 +140,7 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
                         color: context.surface,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: context.accent.withValues(alpha: 0.35),
-                          width: 1.2,
+                          color: context.accent.withValues(alpha: 0.12),
                         ),
                         boxShadow: [
                           BoxShadow(

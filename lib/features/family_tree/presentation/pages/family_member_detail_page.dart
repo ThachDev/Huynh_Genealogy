@@ -12,7 +12,6 @@ import '../../../admin/presentation/pages/admin_dashboard/pages/admin_link_and_r
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
-
   const FamilyMemberDetailPage({
     super.key,
     required this.member,
@@ -269,29 +268,11 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
               // ── Avatar nổi ở mép trên ──
               Positioned(
                 top: 0,
-                child: Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: context.accent, width: 3),
-                    boxShadow: [
-                      BoxShadow(
-                        color: context.resolve(
-                            Colors.black.withValues(alpha: 0.15),
-                            Colors.transparent),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: AppAvatar(
-                    avatarUrl: widget.member.avatarUrl,
-                    fullName: widget.member.fullName,
-                    radius: 45,
-                    fontSize: 32,
-                    backgroundColor: context.background,
-                  ),
+                child: AppAvatar(
+                  avatarUrl: widget.member.avatarUrl,
+                  fullName: widget.member.fullName,
+                  radius: 48,
+                  fontSize: 32,
                 ),
               ),
             ],

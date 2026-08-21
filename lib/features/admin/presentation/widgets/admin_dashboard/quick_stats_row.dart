@@ -89,7 +89,7 @@ class StatCardItem extends StatelessWidget {
 
     final Color borderColor = isSelected
         ? context.primary
-        : context.textSecondary.withValues(alpha: 0.15);
+        : context.accent.withValues(alpha: 0.12);
 
     final Color numberColor = isSelected ? Colors.white : context.textPrimary;
 

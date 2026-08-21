@@ -6,7 +6,6 @@ import '../theme/theme_extensions.dart';
 
 /// Text field dùng chung cho theme tối (dark background)
 class AppTextField extends StatelessWidget {
-
   const AppTextField({
     super.key,
     required this.label,
@@ -93,9 +92,7 @@ class AppTextField extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.15)
-                    : context.textSecondary.withValues(alpha: 0.2),
+                color: context.accent.withValues(alpha: 0.12),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -113,9 +110,7 @@ class AppTextField extends StatelessWidget {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.07)
-                    : context.textSecondary.withValues(alpha: 0.15),
+                color: context.accent.withValues(alpha: 0.12),
               ),
             ),
             errorStyle: GoogleFonts.inter(color: context.error, fontSize: 12),
@@ -129,7 +124,6 @@ class AppTextField extends StatelessWidget {
 
 /// Text field dùng cho theme sáng (light background)
 class AppTextFieldLight extends StatelessWidget {
-
   const AppTextFieldLight({
     super.key,
     required this.label,
@@ -211,13 +205,13 @@ class AppTextFieldLight extends StatelessWidget {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: context.textSecondary.withValues(alpha: 0.2),
+                color: context.accent.withValues(alpha: 0.12),
               ),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
-                color: context.textSecondary.withValues(alpha: 0.15),
+                color: context.accent.withValues(alpha: 0.12),
               ),
             ),
             focusedBorder: OutlineInputBorder(
@@ -243,7 +237,6 @@ class AppTextFieldLight extends StatelessWidget {
 
 /// Text field outline với floating label - dùng cho form sáng (admin, form thành viên...)
 class AppOutlineTextField extends StatelessWidget {
-
   const AppOutlineTextField({
     super.key,
     required this.controller,
@@ -303,14 +296,14 @@ class AppOutlineTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: context.textSecondary.withValues(alpha: 0.2),
+            color: context.accent.withValues(alpha: 0.12),
             width: 1.2,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: context.textSecondary.withValues(alpha: 0.15),
+            color: context.accent.withValues(alpha: 0.12),
             width: 1.2,
           ),
         ),

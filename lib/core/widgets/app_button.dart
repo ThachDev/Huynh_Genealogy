@@ -21,6 +21,8 @@ class AppButton extends StatelessWidget {
     this.isLoading = false,
     this.fullWidth = false,
     this.color,
+    this.fontSize,
+    this.height,
   });
   final String label;
   final VoidCallback? onPressed;
@@ -31,12 +33,14 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final bool fullWidth;
   final Color? color;
+  final double? fontSize;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
     final style = _buttonStyle(context);
-    final height = _height();
-    final fontSize = _fontSize();
+    final effectiveHeight = height ?? _height();
+    final effectiveFontSize = fontSize ?? _fontSize();
 
     final content = isLoading
         ? const AppLoading(size: 40)
@@ -53,7 +57,7 @@ class AppButton extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.inter(
-                    fontSize: fontSize,
+                    fontSize: effectiveFontSize,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.5,
                   ),
@@ -66,11 +70,11 @@ class AppButton extends StatelessWidget {
             ],
           );
 
-    final button = _buildButton(style, content, height);
+    final button = _buildButton(style, content, effectiveHeight);
 
     return fullWidth
-        ? SizedBox(width: double.infinity, height: height, child: button)
-        : SizedBox(height: height, child: button);
+        ? SizedBox(width: double.infinity, height: effectiveHeight, child: button)
+        : SizedBox(height: effectiveHeight, child: button);
   }
 
   Widget _buildButton(ButtonStyle style, Widget content, double height) {

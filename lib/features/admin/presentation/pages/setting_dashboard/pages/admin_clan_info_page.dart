@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../../core/utils/file_size_guard.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -97,16 +96,7 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
     }
   }
 
-  ImageProvider _getAvatarImage() {
-    final path = _localClanLogoPath ?? widget.family?.logoUrl;
-    if (path != null && path.isNotEmpty) {
-      if (path.startsWith('http://') || path.startsWith('https://')) {
-        return CachedNetworkImageProvider(path);
-      }
-      return FileImage(File(path));
-    }
-    return const AssetImage('assets/images/background.png');
-  }
+
 
   void _saveClanChanges() async {
     final l10n = AppLocalizations.of(context);
@@ -208,27 +198,19 @@ class _AdminClanInfoPageState extends State<AdminClanInfoPage> {
                           onTap: _isEditable ? _pickClanLogo : null,
                           child: Stack(
                             children: [
-                              Container(
-                                width: 90,
-                                height: 90,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: context.accent, width: 2),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color:
-                                          Colors.black.withValues(alpha: 0.1),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
+                              _localClanLogoPath != null
+                                  ? CircleAvatar(
+                                      radius: 45,
+                                      backgroundImage:
+                                          FileImage(File(_localClanLogoPath!)),
+                                    )
+                                  : AppAvatar(
+                                      avatarUrl: widget.family?.logoUrl,
+                                      fullName: widget.family?.name ??
+                                          _clanNameController.text,
+                                      radius: 45,
+                                      fontSize: 32,
                                     ),
-                                  ],
-                                  image: DecorationImage(
-                                    image: _getAvatarImage(),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
                               if (_isEditable)
                                 Positioned(
                                   bottom: 0,

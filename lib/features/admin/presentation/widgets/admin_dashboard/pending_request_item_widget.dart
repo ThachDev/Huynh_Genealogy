@@ -41,7 +41,7 @@ class PendingRequestItemWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         child: CustomPaint(
           painter: TraditionalOrnamentalBorderPainter(
-            borderColor: context.textSecondary.withValues(alpha: 0.2),
+            borderColor: context.accent.withValues(alpha: 0.12),
             fillColor: context.surface,
             leftAccentColor: context.accent,
           ),
@@ -50,29 +50,11 @@ class PendingRequestItemWidget extends StatelessWidget {
             child: Row(
               children: [
                 // ── Avatar ──
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: context.resolve(
-                          Colors.grey.shade300, Colors.grey.shade700),
-                    ),
-                  ),
-                  child: CircleAvatar(
-                    radius: 26,
-                    backgroundColor: context.resolve(
-                        Colors.grey.shade100, const Color(0xFF2C2C2C)),
-                    backgroundImage: request.userAvatarUrl != null
-                        ? CachedNetworkImageProvider(request.userAvatarUrl!)
-                        : null,
-                    child: request.userAvatarUrl == null
-                        ? Icon(
-                            LucideIcons.user,
-                            color: context.textPrimary,
-                            size: 24,
-                          )
-                        : null,
-                  ),
+                AppAvatar(
+                  avatarUrl: request.userAvatarUrl,
+                  fullName: request.userFullName,
+                  radius: 26,
+                  fontSize: 18,
                 ),
                 const SizedBox(width: 14),
 

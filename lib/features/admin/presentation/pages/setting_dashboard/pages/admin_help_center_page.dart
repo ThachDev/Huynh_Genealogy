@@ -8,7 +8,6 @@ import '../../../../../../core/widgets/widgets.dart';
 import '../../../../../../resources/app_localizations.dart';
 
 class AdminHelpCenterPage extends StatefulWidget {
-
   const AdminHelpCenterPage({
     super.key,
     this.initialTabIndex = 0,
@@ -71,7 +70,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                 color: context.surface,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: context.accent.withValues(alpha: 0.18),
+                  color: context.accent.withValues(alpha: 0.12),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -307,8 +306,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
         color: context.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: context.accent.withValues(alpha: 0.3),
-          width: 1.2,
+          color: context.accent.withValues(alpha: 0.12),
         ),
         boxShadow: [
           BoxShadow(
@@ -351,10 +349,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                   l10n.regulationLastUpdated,
                   style: GoogleFonts.inter(
                     fontSize: 11,
-                    color: context.resolve(
-                      context.textSecondary,
-                      context.accent,
-                    ),
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -418,8 +413,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
               color: context.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: context.accent.withValues(alpha: 0.35),
-                width: 1.2,
+                color: context.accent.withValues(alpha: 0.12),
               ),
               boxShadow: [
                 BoxShadow(
@@ -506,8 +500,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
         color: context.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: context.accent.withValues(alpha: 0.35),
-          width: 1.2,
+          color: context.accent.withValues(alpha: 0.12),
         ),
         boxShadow: [
           BoxShadow(
@@ -536,20 +529,10 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: context.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: context.primary.withValues(alpha: 0.15),
-                    ),
-                  ),
-                  child: Center(
-                    child: Icon(LucideIcons.mail,
-                        color: context.primary, size: 20),
-                  ),
+                Icon(
+                  LucideIcons.mail,
+                  color: context.primary,
+                  size: 22,
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -578,10 +561,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
                         l10n.supportEmailSubtitle,
                         style: GoogleFonts.inter(
                           fontSize: 11,
-                          color: context.resolve(
-                            context.textSecondary,
-                            context.accent,
-                          ),
+                          color: context.textSecondary,
                         ),
                       ),
                     ],
@@ -617,15 +597,15 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
           color: context.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isExpanded
-                ? context.primary.withValues(alpha: 0.3)
-                : context.accent.withValues(alpha: 0.12),
-            width: isExpanded ? 1.5 : 1,
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: isExpanded
               ? [
                   BoxShadow(
-                    color: context.primary.withValues(alpha: 0.08),
+                    color: context.resolve(
+                      Colors.black.withValues(alpha: 0.04),
+                      Colors.black.withValues(alpha: 0.2),
+                    ),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -715,15 +695,15 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
           color: context.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isExpanded
-                ? context.primary.withValues(alpha: 0.3)
-                : context.accent.withValues(alpha: 0.12),
-            width: isExpanded ? 1.5 : 1,
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: isExpanded
               ? [
                   BoxShadow(
-                    color: context.primary.withValues(alpha: 0.08),
+                    color: context.resolve(
+                      Colors.black.withValues(alpha: 0.04),
+                      Colors.black.withValues(alpha: 0.2),
+                    ),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -892,13 +872,13 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
       margin: const EdgeInsets.only(bottom: 3),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: context.primary.withValues(alpha: 0.035),
+        color: context.resolve(
+          context.primary.withValues(alpha: 0.035),
+          Colors.white.withValues(alpha: 0.03),
+        ),
         borderRadius: BorderRadius.circular(8),
-        border: Border(
-          left: BorderSide(
-            color: context.accent.withValues(alpha: 0.6),
-            width: 3,
-          ),
+        border: Border.all(
+          color: context.accent.withValues(alpha: 0.12),
         ),
       ),
       child: Text.rich(

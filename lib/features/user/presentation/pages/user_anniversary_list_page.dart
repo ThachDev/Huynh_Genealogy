@@ -100,6 +100,9 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                 child: PopupMenuButton<String>(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(
+                      color: context.accent.withValues(alpha: 0.12),
+                    ),
                   ),
                   color: context.surface,
                   surfaceTintColor: Colors.transparent,
@@ -265,7 +268,7 @@ class _UserAnniversaryListPageState extends State<UserAnniversaryListPage>
                 color: context.surface,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: context.accent.withValues(alpha: 0.18),
+                  color: context.accent.withValues(alpha: 0.12),
                 ),
                 boxShadow: [
                   BoxShadow(

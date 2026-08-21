@@ -9,7 +9,6 @@ import '../../../../../auth/auth.dart';
 import '../../../bloc/admin_dissolve_clan_bloc/admin_dissolve_clan_bloc.dart';
 
 class AdminDissolveClanPage extends StatefulWidget {
-
   const AdminDissolveClanPage({
     super.key,
     required this.familyId,
@@ -135,81 +134,60 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
               final isLoading = state is AdminDissolveClanLoading;
 
               return SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
+                physics: const BouncingScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Warning Section (no card background)
-                    Row(
-                      children: [
-                        Icon(
-                          LucideIcons.alertTriangle,
-                          color: context.primary,
-                          size: 22,
+                    // ── 1. Danger Warning Card ──
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: context.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: context.primary.withValues(alpha: 0.25),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            l10n.irreversibleActionTitle,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: context.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.irreversibleWarningDesc,
-                      style: GoogleFonts.inter(
-                        fontSize: 13.5,
-                        height: 1.6,
-                        color: context.textSecondary,
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Divider(
-                      height: 1,
-                      color: context.textSecondary.withValues(alpha: 0.15),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Confirmation Section (no card background)
-                    Text(
-                      l10n.confirmDissolveTitle,
-                      style: GoogleFonts.beVietnamPro(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: context.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    // Instruction line
-                    Text.rich(
-                      TextSpan(
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: context.textSecondary,
-                          height: 1.5,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextSpan(text: '${l10n.enterLabel} '),
-                          TextSpan(
-                            text: '"${widget.familyName}"',
-                            style: GoogleFonts.beVietnamPro(
-                              fontWeight: FontWeight.bold,
-                              color: context.primary,
-                            ),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color:
+                                      context.primary.withValues(alpha: 0.12),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  LucideIcons.alertTriangle,
+                                  color: context.primary,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  l10n.irreversibleActionTitle,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: context.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          TextSpan(text: l10n.orLabel),
-                          TextSpan(
-                            text: '"${l10n.dissolveWord}"',
-                            style: GoogleFonts.beVietnamPro(
-                              fontWeight: FontWeight.bold,
-                              color: context.primary,
+                          const SizedBox(height: 12),
+                          Text(
+                            l10n.irreversibleWarningDesc,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              height: 1.55,
+                              color: context.textSecondary,
                             ),
                           ),
                         ],
@@ -217,20 +195,75 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Input Text Field
-                    AppTextFieldLight(
-                      controller: _confirmController,
-                      label: l10n.reenterClanNameLabel,
-                      hintText: l10n.dissolveWord,
-                      prefixIcon: Icon(
-                        LucideIcons.trash2,
-                        color: context.primary,
-                        size: 18,
+                    // ── 2. Verification / Confirmation Card ──
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: context.surface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: context.accent.withValues(alpha: 0.12),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.confirmDissolveTitle,
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: context.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.enterLabel,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              _buildKeywordChip(
+                                context,
+                                text: widget.familyName,
+                                onTap: () {
+                                  _confirmController.text = widget.familyName;
+                                },
+                              ),
+                              _buildKeywordChip(
+                                context,
+                                text: l10n.dissolveWord,
+                                onTap: () {
+                                  _confirmController.text = l10n.dissolveWord;
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          AppTextFieldLight(
+                            controller: _confirmController,
+                            label: l10n.reenterClanNameLabel,
+                            hintText: l10n.dissolveWord,
+                            prefixIcon: Icon(
+                              LucideIcons.trash2,
+                              color: _canDissolve
+                                  ? context.primary
+                                  : context.textSecondary,
+                              size: 18,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 24),
 
-                    // Submit Action Button
+                    // ── 3. Submit Button ──
                     AppButton(
                       label: l10n.dissolvePermanentButton,
                       onPressed: _canDissolve ? _dissolveClan : null,
@@ -249,4 +282,48 @@ class _AdminDissolveClanPageState extends State<AdminDissolveClanPage> {
       ),
     );
   }
+
+  Widget _buildKeywordChip(
+    BuildContext context, {
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: context.primary.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: context.primary.withValues(alpha: 0.2),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                text,
+                style: GoogleFonts.beVietnamPro(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  color: context.primary,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(
+                LucideIcons.copy,
+                size: 12,
+                color: context.primary.withValues(alpha: 0.7),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
+

@@ -63,6 +63,11 @@ class AppSearchBar extends StatelessWidget {
             if (trailing != null) ...trailing!,
           ],
           elevation: const WidgetStatePropertyAll(0.5),
+          side: WidgetStatePropertyAll(
+            BorderSide(
+              color: context.accent.withValues(alpha: 0.12),
+            ),
+          ),
           backgroundColor: WidgetStatePropertyAll(
             context.isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
           ),

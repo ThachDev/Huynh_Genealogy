@@ -39,8 +39,7 @@ class AddMemberOptionDialog extends StatelessWidget {
     final dialogBg = context.surface;
     final textPrimary = context.textPrimary;
     final textSecondary = context.textSecondary;
-    final borderColor =
-        context.resolve(Colors.grey.shade200, Colors.grey.shade800);
+    final borderColor = context.accent.withValues(alpha: 0.12);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

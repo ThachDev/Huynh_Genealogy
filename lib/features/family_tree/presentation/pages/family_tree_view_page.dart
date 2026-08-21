@@ -207,8 +207,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                 ),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: context.accent.withValues(alpha: 0.6),
-                  width: 1.2,
+                  color: context.accent.withValues(alpha: 0.12),
                 ),
               ),
               child: TextField(
@@ -233,7 +232,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                     child: Icon(
                       LucideIcons.search,
                       size: 16,
-                      color: context.accent,
+                      color: context.textSecondary,
                     ),
                   ),
                   prefixIconConstraints: const BoxConstraints(
@@ -310,8 +309,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                 color: context.surface,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: context.accent.withValues(alpha: 0.4),
-                  width: 1.2,
+                  color: context.accent.withValues(alpha: 0.12),
                 ),
               ),
               child: Column(
@@ -387,7 +385,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                             trailing: Icon(
                               LucideIcons.focus,
                               size: 16,
-                              color: context.accent,
+                              color: context.textSecondary,
                             ),
                             onTap: () {
                               _centerOnNode(m.id);

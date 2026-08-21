@@ -721,7 +721,7 @@
   "inviteSentSuccess": "Invitation sent to {email}.",
   "unlinkSuccess": "Account unlinked.",
   "confirmUnlinkTitle": "Confirm Unlink",
-  "confirmUnlinkMessage": "Are you sure you want to unlink the account of member {name}?",
+  "confirmUnlinkMessage": "Are you sure you want to unlink the account of member {name}? This account will be removed from the clan and will no longer have access to clan information.",
   "trashTitle": "Trash",
   "trashEmpty": "Members in the trash for more than 30 days will be permanently deleted.",
   "trashDeletedAt": "Deleted: {time}",
@@ -807,7 +807,7 @@
   "hideGenBadges": "Hide generation labels",
   "showGenBadges": "Show generation labels",
   "treeOverviewTooltip": "Tree overview",
-  "generationLevelFormat": "Generation {gen}",
+  "generationLevelFormat": "Gen {gen}",
   "@generationLevelFormat": {
     "placeholders": {
       "gen": {
@@ -1184,5 +1184,7 @@
   "supremeRoleLabel": "Supreme",
   "transferFullOwnershipLabel": "Transfer full clan management to this person",
   "darkModeLabel": "Dark",
-  "lightModeLabel": "Light"
+  "lightModeLabel": "Light",
+  "copyImageAction": "Copy image",
+  "imageLinkCopied": "Image link copied"
 }

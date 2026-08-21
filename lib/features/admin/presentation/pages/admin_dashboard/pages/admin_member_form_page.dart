@@ -765,11 +765,9 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                   borderRadius:
                                                       BorderRadius.circular(12),
                                                   borderSide: BorderSide(
-                                                    color: _isAlive
-                                                        ? context.primary
-                                                        : context.textSecondary
-                                                            .withValues(
-                                                                alpha: 0.5),
+                                                    color: context.accent
+                                                        .withValues(
+                                                            alpha: 0.12),
                                                     width: 1.2,
                                                   ),
                                                 ),
@@ -778,11 +776,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                   borderRadius:
                                                       BorderRadius.circular(12),
                                                   borderSide: BorderSide(
-                                                    color: _isAlive
-                                                        ? context.primary
-                                                        : context.textSecondary
-                                                            .withValues(
-                                                                alpha: 0.5),
+                                                    color: context.primary,
                                                     width: 1.2,
                                                   ),
                                                 ),
@@ -1151,10 +1145,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                   color: Colors.transparent,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: context.resolve(
-                      const Color(0xFFE8D4C8),
-                      context.textSecondary.withValues(alpha: 0.3),
-                    ),
+                    color: context.accent.withValues(alpha: 0.12),
                     width: 1.5,
                   ),
                 ),
@@ -1163,13 +1154,16 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: context.appBarBg,
+                  color: context.surface,
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: context.accent.withValues(alpha: 0.12),
+                  ),
                 ),
                 child: Icon(
                   LucideIcons.camera,
                   size: 16,
-                  color: context.accent,
+                  color: context.textPrimary,
                 ),
               ),
             ],

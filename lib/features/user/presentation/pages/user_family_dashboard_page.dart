@@ -285,8 +285,8 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                       color: context.surface,
                                       borderRadius: BorderRadius.circular(19),
                                       border: Border.all(
-                                        color: context.textSecondary
-                                            .withValues(alpha: 0.2),
+                                        color: context.accent
+                                            .withValues(alpha: 0.12),
                                       ),
                                       boxShadow: [
                                         BoxShadow(
@@ -384,6 +384,10 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(16),
+                                              side: BorderSide(
+                                                color: context.accent
+                                                    .withValues(alpha: 0.12),
+                                              ),
                                             ),
                                             color: context.surface,
                                             elevation: 6,

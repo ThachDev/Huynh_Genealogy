@@ -122,7 +122,7 @@ class _EventCalendarWidgetState extends State<EventCalendarWidget> {
           color: context.surface,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: activeColor.withValues(alpha: 0.3),
+            color: context.accent.withValues(alpha: 0.12),
           ),
           boxShadow: [
             BoxShadow(

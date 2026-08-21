@@ -731,7 +731,7 @@
   "inviteSentSuccess": "Đã gửi lời mời gia nhập tới {email}.",
   "unlinkSuccess": "Đã gỡ liên kết tài khoản.",
   "confirmUnlinkTitle": "Xác nhận gỡ liên kết",
-  "confirmUnlinkMessage": "Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}?",
+  "confirmUnlinkMessage": "Bạn có chắc muốn gỡ liên kết tài khoản của thành viên {name}? Tài khoản này sẽ bị rời khỏi dòng họ và không thể truy cập thông tin gia tộc nữa.",
   "trashTitle": "Thùng rác",
   "trashEmpty": "Thành viên trong thùng rác quá 30 ngày sẽ bị xoá vĩnh viễn.",
   "trashDeletedAt": "Đã xóa: {time}",
@@ -1194,5 +1194,7 @@
   "supremeRoleLabel": "Tối cao",
   "transferFullOwnershipLabel": "Chuyển giao toàn quyền quản trị dòng họ cho người này",
   "darkModeLabel": "Tối",
-  "lightModeLabel": "Sáng"
+  "lightModeLabel": "Sáng",
+  "copyImageAction": "Sao chép ảnh",
+  "imageLinkCopied": "Đã sao chép liên kết hình ảnh"
 }

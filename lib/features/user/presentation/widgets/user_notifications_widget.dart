@@ -171,9 +171,6 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
       BuildContext context, EventEntity item, bool isRead) {
     final l10n = AppLocalizations.of(context);
     final String? organizer = item.organizer?.trim();
-    final bool hasOrganizer = organizer != null && organizer.isNotEmpty;
-    final String initialLetter =
-        hasOrganizer ? organizer[0].toUpperCase() : 'U';
 
     return RepaintBoundary(
       child: Semantics(
@@ -187,9 +184,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isRead
-                  ? context.textSecondary.withValues(alpha: 0.08)
-                  : context.primary.withValues(alpha: 0.25),
-              width: isRead ? 1 : 1.2,
+                  ? context.accent.withValues(alpha: 0.08)
+                  : context.accent.withValues(alpha: 0.12),
             ),
             boxShadow: isRead
                 ? []
@@ -215,32 +211,10 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                     Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: context.primary.withValues(alpha: 0.15),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: context.primary.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Center(
-                            child: hasOrganizer
-                                ? Text(
-                                    initialLetter,
-                                    style: GoogleFonts.beVietnamPro(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                      color: context.primary,
-                                    ),
-                                  )
-                                : Icon(
-                                    LucideIcons.user,
-                                    color: context.primary,
-                                    size: 20,
-                                  ),
-                          ),
+                        AppAvatar(
+                          fullName: organizer ?? 'U',
+                          radius: 21,
+                          fontSize: 16,
                         ),
                         if (!isRead)
                           Positioned(
@@ -270,7 +244,8 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                           // Hàng subtitle: Người đăng (nếu có) • Ngày đăng
                           Row(
                             children: [
-                              if (hasOrganizer) ...[
+                              if (organizer != null &&
+                                  organizer.isNotEmpty) ...[
                                 Text(
                                   organizer,
                                   style: GoogleFonts.inter(

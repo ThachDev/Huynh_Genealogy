@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -5,11 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:gal/gal.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../../core/theme/theme_extensions.dart';
 import '../../../../../core/widgets/app_button.dart';
-import '../../../../../core/widgets/app_network_image.dart';
+import '../../../../../core/widgets/app_avatar.dart';
 import '../../../../../core/widgets/app_shimmer.dart';
 import '../../../../../core/widgets/app_snackbar.dart';
 import '../../../../../resources/app_localizations.dart';
@@ -17,7 +20,6 @@ import '../../../../auth/domain/entities/user_entity.dart';
 
 /// Widget Header dùng chung cho cả Admin Dashboard và User Dashboard
 class FamilyDashboardHeaderWidget extends StatelessWidget {
-
   const FamilyDashboardHeaderWidget({
     super.key,
     required this.user,
@@ -53,26 +55,6 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
     }
   }
 
-  Widget _buildFallbackLogo() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image.asset(
-          'assets/images/logo.png',
-          width: 32,
-          height: 32,
-          fit: BoxFit.contain,
-          color: const Color(0xFFFFD700),
-          errorBuilder: (context, error, stackTrace) => const Icon(
-            LucideIcons.shield,
-            color: Color(0xFFFFD700),
-            size: 24,
-          ),
-        ),
-      ),
-    );
-  }
-
   Future<Uint8List?> _captureQr(GlobalKey key) async {
     try {
       final boundary =
@@ -100,7 +82,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
             children: [
               Container(
                 width: 340,
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                padding: const EdgeInsets.fromLTRB(16, 22, 16, 18),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -117,13 +99,45 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                       key: qrKey,
                       child: Container(
                         width: 260,
-                        height: 260,
-                        padding: const EdgeInsets.all(16),
-                        color: Colors.white,
-                        child: QrImageView(
-                          data: code,
-                          size: 260.0,
-                          gapless: false,
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            QrImageView(
+                              data: code,
+                              size: 228.0,
+                              gapless: false,
+                            ),
+                            const SizedBox(height: 10),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '${l10n.clanCodeLabel} ',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xFF666666),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: code,
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF1E1E1E),
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -133,6 +147,7 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                         Expanded(
                           child: AppButton(
                             label: l10n.downloadLabel,
+                            fontSize: 12.5,
                             onPressed: () async {
                               final bytes = await _captureQr(qrKey);
                               if (bytes == null) return;
@@ -149,24 +164,35 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                               }
                             },
                             prefixIcon:
-                                const Icon(LucideIcons.download, size: 16),
+                                const Icon(LucideIcons.download, size: 15),
                             variant: AppButtonVariant.secondary,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: AppButton(
                             label: l10n.shareLabel,
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: code));
-                              if (ctx.mounted) {
-                                Navigator.pop(ctx);
-                                AppSnackBar.success(
-                                    context, l10n.inviteCodeCopied(code));
+                            fontSize: 12.5,
+                            onPressed: () async {
+                              final bytes = await _captureQr(qrKey);
+                              if (bytes == null) return;
+                              try {
+                                final tempDir = await getTemporaryDirectory();
+                                final file = await File(
+                                  '${tempDir.path}/qr_${code}_${DateTime.now().millisecondsSinceEpoch}.png',
+                                ).create();
+                                await file.writeAsBytes(bytes);
+                                await Share.shareXFiles(
+                                  [XFile(file.path, mimeType: 'image/png')],
+                                );
+                              } catch (_) {
+                                if (ctx.mounted) {
+                                  AppSnackBar.error(ctx, l10n.qrSaveError);
+                                }
                               }
                             },
-                            prefixIcon: const Icon(LucideIcons.copy,
-                                size: 16, color: Colors.white),
+                            prefixIcon: const Icon(LucideIcons.share2,
+                                size: 15, color: Colors.white),
                           ),
                         ),
                       ],
@@ -200,22 +226,17 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
       );
     }
 
-final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
-    ? familyName.trim()
-    : l10n.familyNamePrefix(familyName.trim());
-
-    final bool isDark = context.isDarkMode;
-    final Color cardBg =
-        isDark ? const Color(0xFF2A231F) : const Color(0xFFFFFBF2);
+    final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
+        ? familyName.trim()
+        : l10n.familyNamePrefix(familyName.trim());
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: cardBg,
+        color: context.surface,
         borderRadius: BorderRadius.circular(14),
-        border:
-            Border.all(color: context.textSecondary.withValues(alpha: 0.12)),
+        border: Border.all(color: context.accent.withValues(alpha: 0.12)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -227,28 +248,11 @@ final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
       child: Row(
         children: [
           // Left Seal Logo
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: const Color(0xFF800000),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ClipOval(
-              child: (logoUrl != null && logoUrl!.isNotEmpty)
-                  ? AppNetworkImage(
-                      url: logoUrl!,
-                      errorBuilder: (context) => _buildFallbackLogo(),
-                    )
-                  : _buildFallbackLogo(),
-            ),
+          AppAvatar(
+            avatarUrl: logoUrl,
+            fullName: familyName,
+            radius: 32,
+            fontSize: 22,
           ),
           const SizedBox(width: 14),
           // Center Info
@@ -363,7 +367,7 @@ final displayFamilyName = familyName.trim().toLowerCase().startsWith('họ')
                   l10n.qrCodeLabel,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 10,
-                    color: const Color(0xFF800000),
+                    color: context.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

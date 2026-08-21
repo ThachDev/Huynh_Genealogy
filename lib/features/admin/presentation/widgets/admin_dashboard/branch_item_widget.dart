@@ -24,12 +24,6 @@ class BranchItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final bool isDark = context.isDarkMode;
-    final Color cardBg =
-        isDark ? const Color(0xFF261F1B) : const Color(0xFFFFFDF8);
-    final Color borderColor = isDark
-        ? Colors.white10
-        : const Color(0xFFE8D7B8).withValues(alpha: 0.6);
 
     return GestureDetector(
       onTap: onTap ?? onEdit,
@@ -37,10 +31,10 @@ class BranchItemWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: cardBg,
+            color: context.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: borderColor,
+              color: context.accent.withValues(alpha: 0.12),
             ),
             boxShadow: [
               BoxShadow(
@@ -54,23 +48,14 @@ class BranchItemWidget extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
             child: Row(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: context.resolve(
-                          Colors.grey.shade300, Colors.grey.shade700),
-                    ),
-                  ),
-                  child: CircleAvatar(
-                    radius: 26,
-                    backgroundColor: context.resolve(
-                        Colors.grey.shade100, const Color(0xFF2C2C2C)),
-                    child: Icon(
-                      LucideIcons.gitBranch,
-                      color: context.textPrimary,
-                      size: 24,
-                    ),
+                CircleAvatar(
+                  radius: 26,
+                  backgroundColor: context.primary.withValues(
+                      alpha: context.isDarkMode ? 0.18 : 0.12),
+                  child: Icon(
+                    LucideIcons.gitBranch,
+                    color: context.primary,
+                    size: 24,
                   ),
                 ),
                 const SizedBox(width: 14),

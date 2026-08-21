@@ -277,7 +277,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                   color: context.surface,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: context.accent.withValues(alpha: 0.18),
+                    color: context.accent.withValues(alpha: 0.12),
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -375,6 +375,11 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
         } else if (state is MemberAccountUnlinkedSuccess) {
           AppSnackBar.success(context, l10n.unlinkSuccess);
           _reloadLinks();
+          if (familyId != null) {
+            context.read<AdminMemberRolesBloc>().add(
+                  LoadAdminMemberRolesEvent(familyId: familyId),
+                );
+          }
         } else if (state is MemberAccountLinksFailure) {
           AppSnackBar.error(context, state.message);
           _reloadLinks();
@@ -815,7 +820,7 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                             color: context.surface,
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: context.accent.withValues(alpha: 0.15),
+                              color: context.accent.withValues(alpha: 0.12),
                             ),
                           ),
                           child: Material(
@@ -847,8 +852,6 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
                                       avatarUrl: user.userAvatarUrl,
                                       fullName: user.userFullName,
                                       radius: 22,
-                                      backgroundColor: context.primary
-                                          .withValues(alpha: 0.15),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(

@@ -28,13 +28,6 @@ class MemberItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = context.isDarkMode;
-    final Color cardBg =
-        isDark ? const Color(0xFF261F1B) : const Color(0xFFFFFDF8);
-    final Color borderColor = isDark
-        ? Colors.white10
-        : const Color(0xFFE8D7B8).withValues(alpha: 0.6);
-
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -51,10 +44,10 @@ class MemberItemWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: cardBg,
+            color: context.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: borderColor,
+              color: context.accent.withValues(alpha: 0.12),
             ),
             boxShadow: [
               BoxShadow(
@@ -79,22 +72,11 @@ class MemberItemWidget extends StatelessWidget {
       child: Row(
         children: [
           // ── Avatar ──
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color:
-                    context.resolve(Colors.grey.shade300, Colors.grey.shade700),
-              ),
-            ),
-            child: AppAvatar(
-              avatarUrl: member.avatarUrl,
-              fullName: member.fullName,
-              radius: 26,
-              fontSize: 18,
-              backgroundColor: context.resolve(
-                  Colors.grey.shade100, const Color(0xFF2C2C2C)),
-            ),
+          AppAvatar(
+            avatarUrl: member.avatarUrl,
+            fullName: member.fullName,
+            radius: 26,
+            fontSize: 18,
           ),
           const SizedBox(width: 14),
 

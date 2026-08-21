@@ -4,7 +4,6 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 
 class SelectionCard extends StatelessWidget {
-
   const SelectionCard({
     super.key,
     required this.iconAssetPath,
@@ -27,6 +26,9 @@ class SelectionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.surface,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: context.accent.withValues(alpha: 0.12),
+        ),
         boxShadow: [
           BoxShadow(
             color: isSelected
@@ -55,6 +57,9 @@ class SelectionCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   fit: BoxFit.contain,
+                  color: context.isDarkMode
+                      ? const Color(0xFFFF5252)
+                      : iconColor,
                 ),
                 const SizedBox(width: 16),
                 Expanded(

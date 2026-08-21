@@ -189,9 +189,6 @@ class _SelectUnlinkedMemberSheetState extends State<SelectUnlinkedMemberSheet> {
                             leading: AppAvatar(
                               avatarUrl: member.avatarUrl,
                               fullName: member.fullName,
-                              backgroundColor:
-                                  primaryColor.withValues(alpha: 0.1),
-                              textColor: primaryColor,
                             ),
                             title: Text(
                               member.fullName,

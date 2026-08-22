@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter: Dev",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define-from-file=config/env.dev.json"
+      ]
+    },
+    {
+      "name": "Flutter: Staging",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define-from-file=config/env.staging.json"
+      ]
+    },
+    {
+      "name": "Flutter: Prod",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define-from-file=config/env.prod.json"
+      ]
+    }
+  ]
+}

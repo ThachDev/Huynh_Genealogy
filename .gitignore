@@ -51,3 +51,17 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Cloudflare Wrangler & Secrets
+.wrangler/
+wrangler.toml
+
+# Environment configurations (allow example files only)
+config/env.*.json
+!config/env.example.json
+
+# Keystores & sensitive properties
+*.keystore
+*.jks
+key.properties
+android/key.properties

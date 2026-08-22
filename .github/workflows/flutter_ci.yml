@@ -1,11 +1,10 @@
-name: Flutter CI Pipeline
+name: Flutter CI (Code Quality & Tests)
 
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
-  workflow_dispatch:
 
 jobs:
   analyze_and_test:
@@ -44,37 +43,3 @@ jobs:
 
       - name: Run Unit & Widget Tests with Coverage
         run: flutter test --coverage
-
-  build_check:
-    name: Build Android APK
-    needs: analyze_and_test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version-file: '.fvmrc'
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build Android APK (Example Env)
-        run: flutter build apk --debug --dart-define-from-file=config/env.example.json
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: giatocviet-dev-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
-          retention-days: 7
-

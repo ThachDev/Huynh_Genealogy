@@ -138,6 +138,29 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                                 letterSpacing: 1.0,
                               ),
                             ),
+                            if (widget.member.linkedUserEmail != null &&
+                                widget.member.linkedUserEmail!.isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    LucideIcons.mail,
+                                    size: 13,
+                                    color: context.textSecondary,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    widget.member.linkedUserEmail!,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: context.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                             const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -199,6 +222,19 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                         (widget.member.placeOfBirth?.isNotEmpty == true)
                             ? widget.member.placeOfBirth!
                             : l10n.unknownLabel,
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.phone,
+                        l10n.phoneLabel,
+                        (widget.member.phone?.isNotEmpty == true)
+                            ? widget.member.phone!
+                            : l10n.unknownLabel,
+                      ),
+                      _buildInfoRow(
+                        LucideIcons.heart,
+                        l10n.maritalStatusShortLabel,
+                        _getMaritalStatusText(
+                            widget.member.maritalStatus, l10n),
                       ),
                       _buildInfoRow(
                         LucideIcons.bookOpen,
@@ -347,5 +383,20 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
         ],
       ),
     );
+  }
+
+  String _getMaritalStatusText(MaritalStatus status, AppLocalizations l10n) {
+    switch (status) {
+      case MaritalStatus.single:
+        return l10n.maritalSingle;
+      case MaritalStatus.married:
+        return l10n.maritalMarried;
+      case MaritalStatus.divorced:
+        return l10n.maritalDivorcedStatus;
+      case MaritalStatus.widowed:
+        return l10n.maritalWidowedShort;
+      case MaritalStatus.unknown:
+        return l10n.unknownLabel;
+    }
   }
 }

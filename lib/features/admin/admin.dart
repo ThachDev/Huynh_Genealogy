@@ -14,6 +14,7 @@ export 'domain/usecase/delete_family.dart';
 export 'domain/usecase/transfer_ownership.dart';
 export 'domain/usecase/get_trashed_members.dart';
 export 'domain/usecase/restore_member.dart';
+export 'domain/usecase/delete_member_permanently.dart';
 export 'domain/usecase/purge_trash.dart';
 export 'domain/usecase/get_audit_logs.dart';
 

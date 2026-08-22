@@ -25,6 +25,8 @@ class MemberModel extends MemberEntity {
     super.education,
     super.occupation,
     super.deletedAt,
+    super.isLinked,
+    super.linkedUserEmail,
   });
 
   factory MemberModel.fromEntity(MemberEntity entity) {
@@ -52,6 +54,8 @@ class MemberModel extends MemberEntity {
       education: entity.education,
       occupation: entity.occupation,
       deletedAt: entity.deletedAt,
+      isLinked: entity.isLinked,
+      linkedUserEmail: entity.linkedUserEmail,
     );
   }
 
@@ -82,6 +86,8 @@ class MemberModel extends MemberEntity {
       deletedAt: (json['deletedAt'] == null || json['deletedAt'] == '')
           ? null
           : json['deletedAt'] as String?,
+      isLinked: _parseBool(json['isLinked'] ?? (json['linkedUserEmail'] != null && json['linkedUserEmail'] != '')),
+      linkedUserEmail: json['linkedUserEmail'] as String?,
     );
   }
 

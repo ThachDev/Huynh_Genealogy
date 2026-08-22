@@ -50,3 +50,12 @@ class TrashPurgedState extends MemberTrashState {
   @override
   List<Object?> get props => [removed];
 }
+
+class MemberDeletedPermanentlyState extends MemberTrashState {
+
+  const MemberDeletedPermanentlyState({required this.memberId});
+  final int memberId;
+
+  @override
+  List<Object?> get props => [memberId];
+}

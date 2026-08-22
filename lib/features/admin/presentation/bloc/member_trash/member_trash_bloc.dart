@@ -4,6 +4,7 @@ import 'package:giatocviet/features/family_tree/domain/entities/member_entity.da
 import '../../../domain/usecase/get_trashed_members.dart';
 import '../../../domain/usecase/restore_member.dart';
 import '../../../domain/usecase/purge_trash.dart';
+import '../../../domain/usecase/delete_member_permanently.dart';
 
 part 'member_trash_event.dart';
 part 'member_trash_state.dart';
@@ -14,14 +15,17 @@ class MemberTrashBloc extends Bloc<MemberTrashEvent, MemberTrashState> {
     required this.getTrashedMembers,
     required this.restoreMember,
     required this.purgeTrash,
+    required this.deleteMemberPermanently,
   }) : super(const MemberTrashInitial()) {
     on<LoadMemberTrashEvent>(_onLoad);
     on<RestoreMemberEvent>(_onRestore);
     on<PurgeTrashEvent>(_onPurge);
+    on<DeletePermanentlyMemberEvent>(_onDeletePermanently);
   }
   final GetTrashedMembers getTrashedMembers;
   final RestoreMember restoreMember;
   final PurgeTrash purgeTrash;
+  final DeleteMemberPermanently deleteMemberPermanently;
 
   Future<void> _onLoad(
     LoadMemberTrashEvent event,
@@ -59,6 +63,18 @@ class MemberTrashBloc extends Bloc<MemberTrashEvent, MemberTrashState> {
     result.fold(
       (failure) => emit(MemberTrashFailure(message: failure.message)),
       (removed) => emit(TrashPurgedState(removed: removed)),
+    );
+  }
+
+  Future<void> _onDeletePermanently(
+    DeletePermanentlyMemberEvent event,
+    Emitter<MemberTrashState> emit,
+  ) async {
+    emit(const MemberTrashLoading());
+    final result = await deleteMemberPermanently(event.memberId);
+    result.fold(
+      (failure) => emit(MemberTrashFailure(message: failure.message)),
+      (_) => emit(MemberDeletedPermanentlyState(memberId: event.memberId)),
     );
   }
 }

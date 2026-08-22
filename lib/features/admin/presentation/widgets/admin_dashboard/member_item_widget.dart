@@ -128,7 +128,33 @@ class MemberItemWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                if (member.linkedUserEmail != null &&
+                    member.linkedUserEmail!.isNotEmpty) ...[
+                  const SizedBox(height: 3),
+                  Row(
+                    children: [
+                      Icon(
+                        LucideIcons.mail,
+                        size: 11,
+                        color: context.primary.withValues(alpha: 0.85),
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          member.linkedUserEmail!,
+                          style: GoogleFonts.inter(
+                            fontSize: 11.5,
+                            color: context.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: 4),
 
                 // Row 2: Đời + Chi
                 Row(

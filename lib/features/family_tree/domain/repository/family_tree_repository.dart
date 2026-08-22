@@ -13,7 +13,8 @@ abstract class FamilyTreeRepository {
   Future<Either<Failure, bool>> deleteMember(int id, {bool reassignChildrenToParent = false});
   Future<Either<Failure, List<MemberEntity>>> getTrashedMembers({int? familyId, int? branchId});
   Future<Either<Failure, MemberEntity>> restoreMember(int id);
-  Future<Either<Failure, int>> purgeTrash({int days = 30});
+  Future<Either<Failure, bool>> deleteMemberPermanently(int id);
+  Future<Either<Failure, int>> purgeTrash({int days = 0});
   Future<Either<Failure, List<AuditLogEntity>>> getAuditLogs({int? familyId, int? limit});
 
   // ---------- Branches ----------

@@ -881,18 +881,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildEmptyWidget(String message) {
-    return LayoutBuilder(
-      builder: (context, constraints) => SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight),
-          child: AppEmptyState(
-            icon: LucideIcons.folderOpen,
-            iconSize: 40,
-            message: message,
-            useCardStyle: true,
-          ),
-        ),
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: AppEmptyState(
+        icon: LucideIcons.folderOpen,
+        iconSize: 40,
+        message: message,
+        useCardStyle: true,
+        padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
       ),
     );
   }

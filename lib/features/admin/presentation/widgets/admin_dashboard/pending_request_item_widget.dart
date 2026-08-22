@@ -12,7 +12,6 @@ import '../../../../../core/routes/app_router.dart';
 import '../../pages/admin_dashboard/pages/admin_member_form_page.dart';
 
 class PendingRequestItemWidget extends StatelessWidget {
-
   const PendingRequestItemWidget({
     super.key,
     required this.request,
@@ -35,92 +34,146 @@ class PendingRequestItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final userFullName = request.userFullName ?? l10n.anonymousUser;
+    final targetMemberName = request.memberData?.fullName;
+    final isLinking = request.memberNodeId != null;
+
     return GestureDetector(
       onTap: () => _showDetailBottomSheet(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        child: CustomPaint(
-          painter: TraditionalOrnamentalBorderPainter(
-            borderColor: context.accent.withValues(alpha: 0.12),
-            fillColor: context.surface,
-            leftAccentColor: context.accent,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: context.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: context.accent.withValues(alpha: 0.12),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-            child: Row(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── Avatar ──
-                AppAvatar(
-                  avatarUrl: request.userAvatarUrl,
-                  fullName: request.userFullName,
-                  radius: 26,
-                  fontSize: 18,
-                ),
-                const SizedBox(width: 14),
+                // ── Phần trên: Avatar + Tên User + Email + Tag liên kết ──
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Avatar của User
+                    AppAvatar(
+                      avatarUrl: request.userAvatarUrl,
+                      fullName: userFullName,
+                      radius: 24,
+                      fontSize: 16,
+                    ),
+                    const SizedBox(width: 12),
 
-                // ── Thông tin ──
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        request.userFullName ?? l10n.anonymousUser,
-                        style: GoogleFonts.beVietnamPro(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: context.textPrimary,
-                          letterSpacing: -0.1,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
+                    // Thông tin User
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            LucideIcons.mail,
-                            size: 10,
-                            color: context.textSecondary.withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(width: 4),
-                          Flexible(
-                            child: Text(
-                              request.userEmail ?? l10n.noEmail,
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 11,
-                                color: context.textSecondary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                          // Username
+                          Text(
+                            userFullName,
+                            style: GoogleFonts.beVietnamPro(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: context.textPrimary,
+                              letterSpacing: -0.1,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 3),
+
+                          // Email
+                          if (request.userEmail != null &&
+                              request.userEmail!.isNotEmpty) ...[
+                            Row(
+                              children: [
+                                Icon(
+                                  LucideIcons.mail,
+                                  size: 11,
+                                  color:
+                                      context.primary.withValues(alpha: 0.85),
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    request.userEmail!,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11.5,
+                                      color: context.primary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                          ],
+
+                          // Dòng xin liên kết với + usermember (không background)
+                          Row(
+                            children: [
+                              Icon(
+                                isLinking
+                                    ? LucideIcons.link2
+                                    : LucideIcons.userPlus,
+                                size: 12,
+                                color: isLinking
+                                    ? context.primary
+                                    : context.accent,
+                              ),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  isLinking && targetMemberName != null
+                                      ? 'Xin liên kết với: $targetMemberName'
+                                      : (targetMemberName != null
+                                          ? 'Thành viên mới: $targetMemberName'
+                                          : 'Yêu cầu tham gia'),
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: isLinking
+                                        ? context.primary
+                                        : context.accent,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
 
-                // ── Actions ──
-                const SizedBox(width: 8),
-                IntrinsicWidth(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      AppButton(
-                        label: l10n.approveButton,
-                        onPressed: () {
-                          context.read<AdminPendingRequestsBloc>().add(
-                                ApproveAdminRequestEvent(requestId: request.id),
-                              );
-                        },
-                        size: AppButtonSize.small,
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: 6),
-                      AppButton(
+                const SizedBox(height: 12),
+                Divider(
+                  color: context.textSecondary.withValues(alpha: 0.08),
+                  height: 1,
+                ),
+                const SizedBox(height: 10),
+
+                // ── Phần dưới: 2 buttons chuyển xuống dưới cùng ──
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppButton(
                         label: l10n.rejectButton,
                         onPressed: () {
                           context.read<AdminPendingRequestsBloc>().add(
@@ -131,8 +184,21 @@ class PendingRequestItemWidget extends StatelessWidget {
                         variant: AppButtonVariant.secondary,
                         fullWidth: true,
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: AppButton(
+                        label: l10n.approveButton,
+                        onPressed: () {
+                          context.read<AdminPendingRequestsBloc>().add(
+                                ApproveAdminRequestEvent(requestId: request.id),
+                              );
+                        },
+                        size: AppButtonSize.small,
+                        fullWidth: true,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -144,7 +210,6 @@ class PendingRequestItemWidget extends StatelessWidget {
 }
 
 class _PendingRequestDetailSheet extends StatelessWidget {
-
   const _PendingRequestDetailSheet({
     required this.request,
     required this.l10n,
@@ -154,6 +219,9 @@ class _PendingRequestDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userFullName = request.userFullName ?? l10n.anonymousUser;
+    final isLinking = request.memberNodeId != null;
+
     return Container(
       decoration: BoxDecoration(
         color: context.surface,
@@ -175,7 +243,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // ── Avatar lớn ──
+            // ── Avatar lớn của User ──
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -202,33 +270,47 @@ class _PendingRequestDetailSheet extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // ── Tên ──
+            // ── Tên của User ──
             Text(
-              request.userFullName ?? l10n.anonymousUser,
+              userFullName,
               style: GoogleFonts.beVietnamPro(
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: context.textPrimary,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
 
-            // ── Email ──
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(LucideIcons.mail,
+            // ── Badge Loại yêu cầu ──
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: isLinking
+                    ? context.primary.withValues(alpha: 0.12)
+                    : context.accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    isLinking ? LucideIcons.link2 : LucideIcons.userPlus,
                     size: 13,
-                    color: context.textSecondary.withValues(alpha: 0.7)),
-                const SizedBox(width: 5),
-                Text(
-                  request.userEmail ?? l10n.noEmail,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    color: context.textSecondary,
+                    color: isLinking ? context.primary : context.accent,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 5),
+                  Text(
+                    isLinking
+                        ? 'Yêu cầu liên kết thành viên'
+                        : 'Đăng ký thành viên mới',
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isLinking ? context.primary : context.accent,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -240,24 +322,34 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                 endIndent: 24),
             const SizedBox(height: 16),
 
-            // ── Thông tin tài khoản ──
+            // ── Danh sách thông tin chi tiết ──
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _SectionLabel(label: l10n.accountSection, context: context),
-                  const SizedBox(height: 8),
+                  // ── PHẦN 1: TÀI KHOẢN NGƯỜI GỬI YÊU CẦU ──
+                  _SectionLabel(
+                      label: 'Tài khoản người gửi yêu cầu', context: context),
+                  const SizedBox(height: 10),
                   _InfoRow(
-                    icon: LucideIcons.fingerprint,
-                    label: l10n.userIdLabel,
-                    value: '#${request.userId}',
+                    icon: LucideIcons.user,
+                    label: 'Tên người dùng',
+                    value: userFullName,
+                    context: context,
+                  ),
+                  const SizedBox(height: 10),
+                  _InfoRow(
+                    icon: LucideIcons.mail,
+                    label: 'Email liên kết',
+                    value: request.userEmail ?? l10n.noEmail,
+                    valueColor: context.primary,
                     context: context,
                   ),
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.shieldCheck,
-                    label: l10n.registeredRoleLabel,
+                    label: 'Vai trò xin cấp',
                     value: _roleName(request.role),
                     valueColor: _roleColor(context, request.role),
                     context: context,
@@ -265,75 +357,86 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.clock,
-                    label: l10n.statusDisplayLabel,
+                    label: 'Trạng thái',
                     value: _statusName(request.status),
                     valueColor: context.accent,
                     context: context,
                   ),
 
-                  // ── Thông tin thành viên user đã điền ──
+                  // ── PHẦN 2: THÔNG TIN THÀNH VIÊN TRÊN CÂY GIA PHẢ ──
                   if (request.memberData != null) ...[
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
                     _SectionLabel(
-                        label: l10n.registeredMemberInfoLabel,
-                        context: context),
-                    const SizedBox(height: 8),
-                    if (request.memberData!.gender != null) ...[
-                      _InfoRow(
-                        icon: LucideIcons.users,
-                        label: l10n.genderLabel,
-                        value: _genderName(request.memberData!.gender!),
-                        context: context,
-                      ),
-                    ],
-                    if (request.memberData!.dateOfBirth != null) ...[
-                      const SizedBox(height: 10),
-                      _InfoRow(
-                        icon: LucideIcons.cake,
-                        label: l10n.dobLabel,
-                        value: request.memberData!.dateOfBirth!,
-                        context: context,
-                      ),
-                    ],
-                    if (request.memberData!.placeOfBirth != null &&
-                        request.memberData!.placeOfBirth!.isNotEmpty) ...[
-                      const SizedBox(height: 10),
-                      _InfoRow(
-                        icon: LucideIcons.mapPin,
-                        label: l10n.hometownLabel,
-                        value: request.memberData!.placeOfBirth!,
-                        context: context,
-                      ),
-                    ],
-                    if (request.memberData!.maritalStatus != null) ...[
-                      const SizedBox(height: 10),
-                      _InfoRow(
-                        icon: LucideIcons.heart,
-                        label: l10n.maritalStatusShortLabel,
-                        value: _maritalName(request.memberData!.maritalStatus!),
-                        context: context,
-                      ),
-                    ],
-                    if (request.memberData!.education != null &&
-                        request.memberData!.education!.isNotEmpty) ...[
-                      const SizedBox(height: 10),
-                      _InfoRow(
-                        icon: LucideIcons.graduationCap,
-                        label: l10n.educationLabel,
-                        value: request.memberData!.education!,
-                        context: context,
-                      ),
-                    ],
-                    if (request.memberData!.notes != null &&
-                        request.memberData!.notes!.isNotEmpty) ...[
-                      const SizedBox(height: 10),
-                      _InfoRow(
-                        icon: LucideIcons.fileText,
-                        label: l10n.notesLabel,
-                        value: request.memberData!.notes!,
-                        context: context,
-                      ),
-                    ],
+                      label: isLinking
+                          ? 'Thông tin thành viên trên cây'
+                          : 'Thông tin thành viên đăng ký',
+                      context: context,
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoRow(
+                      icon: LucideIcons.userCheck,
+                      label: 'Họ và tên',
+                      value: request.memberData!.fullName ?? 'Chưa cập nhật',
+                      context: context,
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoRow(
+                      icon: LucideIcons.layers,
+                      label: 'Đời thứ',
+                      value: request.memberData!.generation != null
+                          ? 'Đời thứ ${request.memberData!.generation}'
+                          : 'Đời thứ 1',
+                      context: context,
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoRow(
+                      icon: LucideIcons.gitBranch,
+                      label: 'Chi họ',
+                      value: (request.memberData!.branchName != null &&
+                              request.memberData!.branchName!.isNotEmpty)
+                          ? request.memberData!.branchName!
+                          : 'Chưa phân chi',
+                      context: context,
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoRow(
+                      icon: LucideIcons.users,
+                      label: l10n.genderLabel,
+                      value: request.memberData!.gender != null
+                          ? _genderName(request.memberData!.gender!)
+                          : l10n.unknownLabel,
+                      context: context,
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoRow(
+                      icon: LucideIcons.cake,
+                      label: l10n.dobLabel,
+                      value: (request.memberData!.dateOfBirth != null &&
+                              request.memberData!.dateOfBirth!.isNotEmpty)
+                          ? request.memberData!.dateOfBirth!
+                          : 'Chưa cập nhật',
+                      context: context,
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoRow(
+                      icon: LucideIcons.mapPin,
+                      label: l10n.hometownLabel,
+                      value: (request.memberData!.placeOfBirth != null &&
+                              request.memberData!.placeOfBirth!.isNotEmpty)
+                          ? request.memberData!.placeOfBirth!
+                          : 'Chưa cập nhật',
+                      context: context,
+                    ),
+                    const SizedBox(height: 10),
+                    _InfoRow(
+                      icon: LucideIcons.phone,
+                      label: 'Số điện thoại',
+                      value: (request.memberData!.phone != null &&
+                              request.memberData!.phone!.isNotEmpty)
+                          ? request.memberData!.phone!
+                          : 'Chưa cập nhật',
+                      context: context,
+                    ),
                   ],
                 ],
               ),
@@ -532,25 +635,9 @@ class _PendingRequestDetailSheet extends StatelessWidget {
         return l10n.unknownLabel;
     }
   }
-
-  String _maritalName(String status) {
-    switch (status.toLowerCase()) {
-      case 'single':
-        return l10n.maritalSingle;
-      case 'married':
-        return l10n.maritalMarried;
-      case 'divorced':
-        return l10n.maritalDivorcedStatus;
-      case 'widowed':
-        return l10n.maritalWidowedShort;
-      default:
-        return l10n.unknownLabel;
-    }
-  }
 }
 
 class _InfoRow extends StatelessWidget {
-
   const _InfoRow({
     required this.icon,
     required this.label,
@@ -612,7 +699,6 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _SectionLabel extends StatelessWidget {
-
   const _SectionLabel({required this.label, required this.context});
   final String label;
   final BuildContext context;

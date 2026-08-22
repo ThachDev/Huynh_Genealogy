@@ -14,7 +14,8 @@ abstract class FamilyTreeRemoteDataSource {
   Future<bool> deleteMember(int id, {bool reassignChildrenToParent = false});
   Future<List<MemberModel>> getTrashedMembers({int? familyId, int? branchId});
   Future<MemberModel> restoreMember(int id);
-  Future<int> purgeTrash({int days = 30});
+  Future<bool> deleteMemberPermanently(int id);
+  Future<int> purgeTrash({int days = 0});
   Future<List<AuditLogModel>> getAuditLogs({int? familyId, int? limit});
 
   Future<List<BranchModel>> getBranches({int? familyId});
@@ -253,7 +254,22 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
   }
 
   @override
-  Future<int> purgeTrash({int days = 30}) async {
+  Future<bool> deleteMemberPermanently(int id) async {
+    try {
+      await dio.delete('${AppConstants.membersEndpoint}/$id/permanent');
+      return true;
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ?? AppLanguage.current?.errDeleteMember ?? 'Lỗi xoá thành viên',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<int> purgeTrash({int days = 0}) async {
     try {
       final response = await dio.post(
         '${AppConstants.membersEndpoint}/trash/purge',

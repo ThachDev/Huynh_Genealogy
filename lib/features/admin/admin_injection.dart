@@ -67,6 +67,7 @@ void initAdminDependencies(GetIt sl) {
       getTrashedMembers: sl(),
       restoreMember: sl(),
       purgeTrash: sl(),
+      deleteMemberPermanently: sl(),
     ),
   );
 
@@ -79,6 +80,7 @@ void initAdminDependencies(GetIt sl) {
   // Use Cases
   sl.registerLazySingleton(() => SaveMember(sl()));
   sl.registerLazySingleton(() => DeleteMember(sl()));
+  sl.registerLazySingleton(() => DeleteMemberPermanently(sl()));
 
   // Liên kết tài khoản hai chiều (gán email theo nút / gỡ liên kết)
   sl.registerLazySingleton(() => GetAccountLinks(sl()));

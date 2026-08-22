@@ -7,7 +7,6 @@ import '../theme/app_theme.dart';
 import '../theme/theme_extensions.dart';
 
 class AppDropdown<T> extends StatefulWidget {
-
   const AppDropdown({
     super.key,
     required this.value,
@@ -62,16 +61,19 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
       onChanged: widget.onChanged,
       isExpanded: true,
       buttonStyleData: FormFieldButtonStyleData(
-        padding: widget.itemPadding ?? const EdgeInsets.symmetric(horizontal: 16),
+        padding:
+            widget.itemPadding ?? const EdgeInsets.symmetric(horizontal: 16),
         height: widget.buttonHeight ?? 48,
         width: double.infinity,
       ),
       iconStyleData: IconStyleData(
         icon: widget.showIcon
-            ? Icon(LucideIcons.chevronDown, size: 18, color: context.textSecondary)
+            ? Icon(LucideIcons.chevronDown,
+                size: 18, color: context.textSecondary)
             : const SizedBox.shrink(),
         openMenuIcon: widget.showIcon
-            ? Icon(LucideIcons.chevronUp, size: 18, color: context.textSecondary)
+            ? Icon(LucideIcons.chevronUp,
+                size: 18, color: context.textSecondary)
             : const SizedBox.shrink(),
       ),
       dropdownStyleData: DropdownStyleData(
@@ -117,7 +119,8 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                       horizontal: 10,
                       vertical: 8,
                     ),
-                    hintText: widget.searchHint ?? AppLocalizations.of(context).searchHint,
+                    hintText: widget.searchHint ??
+                        AppLocalizations.of(context).searchHint,
                     hintStyle: GoogleFonts.beVietnamPro(fontSize: 13),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -133,14 +136,26 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                 ),
               ),
               searchMatchFn: (item, searchValue) {
-                final child = item.child;
-                String itemText = '';
-                if (child is Text) {
-                  itemText = child.data ?? '';
+                if (searchValue.trim().isEmpty) return true;
+                final query = searchValue.trim().toLowerCase();
+
+                // 1. Extract and check all text from child widget tree
+                final itemText =
+                    _extractTextFromWidget(item.child).toLowerCase();
+                if (itemText.contains(query)) {
+                  return true;
                 }
-                return itemText
-                    .toLowerCase()
-                    .contains(searchValue.toLowerCase());
+
+                // 2. Check item.value toString if applicable
+                final val = item.value;
+                if (val != null) {
+                  final valStr = val.toString().toLowerCase();
+                  if (valStr.contains(query)) {
+                    return true;
+                  }
+                }
+
+                return false;
               },
             )
           : null,
@@ -149,10 +164,10 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
           textEditingController.clear();
         }
       },
-      style:
-          GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
+      style: GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
       decoration: InputDecoration(
-        fillColor: context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
+        fillColor:
+            context.resolve(const Color(0xFFFCFAF8), AppColors.surfaceDark),
         filled: true,
         contentPadding: EdgeInsets.zero,
         labelText: widget.label,
@@ -185,5 +200,48 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         ),
       ),
     );
+  }
+
+  String _extractTextFromWidget(Widget widget) {
+    if (widget is Text) {
+      return widget.data ?? widget.textSpan?.toPlainText() ?? '';
+    }
+    if (widget is Row) {
+      return widget.children.map(_extractTextFromWidget).join(' ');
+    }
+    if (widget is Column) {
+      return widget.children.map(_extractTextFromWidget).join(' ');
+    }
+    if (widget is Expanded) {
+      return _extractTextFromWidget(widget.child);
+    }
+    if (widget is Flexible) {
+      return _extractTextFromWidget(widget.child);
+    }
+    if (widget is Padding) {
+      if (widget.child != null) return _extractTextFromWidget(widget.child!);
+    }
+    if (widget is Container) {
+      if (widget.child != null) return _extractTextFromWidget(widget.child!);
+    }
+    if (widget is Align) {
+      if (widget.child != null) return _extractTextFromWidget(widget.child!);
+    }
+    if (widget is Center) {
+      if (widget.child != null) return _extractTextFromWidget(widget.child!);
+    }
+    if (widget is SizedBox) {
+      if (widget.child != null) return _extractTextFromWidget(widget.child!);
+    }
+    if (widget is DecoratedBox) {
+      if (widget.child != null) return _extractTextFromWidget(widget.child!);
+    }
+    if (widget is ConstrainedBox) {
+      if (widget.child != null) return _extractTextFromWidget(widget.child!);
+    }
+    if (widget is DefaultTextStyle) {
+      return _extractTextFromWidget(widget.child);
+    }
+    return '';
   }
 }

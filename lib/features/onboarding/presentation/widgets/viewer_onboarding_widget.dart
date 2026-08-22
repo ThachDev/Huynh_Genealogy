@@ -82,6 +82,15 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
 
   void _onJoinFamilyPressed() {
     if (_verifiedFamily != null && (_selectedMember != null || _isNotOnTree)) {
+      if (!_isNotOnTree && _selectedMember != null && _selectedMember!.isLinked) {
+        AppDialog.alert(
+          context,
+          title: 'Thành viên đã được liên kết',
+          message: 'Thành viên "${_selectedMember!.fullName}" đã được liên kết với một tài khoản khác.\n\nBạn không thể gửi yêu cầu liên kết vào thành viên này. Vui lòng chọn thành viên khác hoặc tích chọn "Tôi chưa có tên trên cây gia phả".',
+        );
+        return;
+      }
+
       String? maritalStatusStr;
       switch (_maritalStatus) {
         case MaritalStatus.single:
@@ -389,19 +398,54 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                             ),
                           ),
                         ),
-                        ..._familyMembers
-                            .map((m) => DropdownItem<MemberEntity?>(
-                                  value: m,
-                                  child: Text(
-                                    '${m.fullName}${m.generation != null ? " (${l10n.generationLabel('${m.generation!}')})" : ""}',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 14,
-                                      color: context.textPrimary,
+                        ..._familyMembers.map((m) => DropdownItem<MemberEntity?>(
+                              value: m,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${m.fullName}${m.generation != null ? " (${l10n.generationLabel('${m.generation!}')})" : ""}',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        color: m.isLinked
+                                            ? context.textSecondary
+                                            : context.textPrimary,
+                                      ),
                                     ),
                                   ),
-                                )),
+                                  if (m.isLinked)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: context.error.withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        'Đã liên kết',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: context.error,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            )),
                       ],
                       onChanged: (val) {
+                        if (val != null && val.isLinked) {
+                          AppDialog.alert(
+                            context,
+                            title: 'Thành viên đã được liên kết',
+                            message: 'Thành viên "${val.fullName}" đã được liên kết với một tài khoản khác.\n\nBạn không thể gửi yêu cầu liên kết vào thành viên này. Vui lòng chọn thành viên khác hoặc tích chọn "Tôi chưa có tên trên cây gia phả" để điền thông tin mới.',
+                          );
+                          setState(() {
+                            _selectedMember = null;
+                          });
+                          return;
+                        }
                         setState(() {
                           _selectedMember = val;
                         });

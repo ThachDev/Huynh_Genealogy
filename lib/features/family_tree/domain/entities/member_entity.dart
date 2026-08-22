@@ -30,6 +30,8 @@ class MemberEntity extends Equatable {
     this.education,
     this.occupation,
     this.deletedAt,
+    this.isLinked = false,
+    this.linkedUserEmail,
   });
   final int id;
   final String fullName;
@@ -54,6 +56,8 @@ class MemberEntity extends Equatable {
   final String? education;
   final String? occupation;
   final String? deletedAt;
+  final bool isLinked;
+  final String? linkedUserEmail;
 
   @override
   List<Object?> get props => [
@@ -80,6 +84,8 @@ class MemberEntity extends Equatable {
         education,
         occupation,
         deletedAt,
+        isLinked,
+        linkedUserEmail,
       ];
 
   MemberEntity copyWith({
@@ -106,6 +112,8 @@ class MemberEntity extends Equatable {
     String? education,
     String? occupation,
     String? deletedAt,
+    bool? isLinked,
+    String? linkedUserEmail,
   }) {
     return MemberEntity(
       id: id ?? this.id,
@@ -131,6 +139,8 @@ class MemberEntity extends Equatable {
       education: education ?? this.education,
       occupation: occupation ?? this.occupation,
       deletedAt: deletedAt ?? this.deletedAt,
+      isLinked: isLinked ?? this.isLinked,
+      linkedUserEmail: linkedUserEmail ?? this.linkedUserEmail,
     );
   }
 }

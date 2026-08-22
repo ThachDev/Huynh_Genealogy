@@ -38,24 +38,31 @@ class FamilyUserModel extends FamilyUserEntity {
     MemberDataEntity? memberData;
     if (memberJson != null) {
       memberData = MemberDataEntity(
+        id: _parseInt(memberJson['id']),
         fullName: memberJson['fullName'] as String?,
         gender: memberJson['gender'] as String?,
         dateOfBirth: memberJson['dateOfBirth'] as String?,
+        generation: _parseInt(memberJson['generation']),
         placeOfBirth: memberJson['placeOfBirth'] as String?,
         maritalStatus: memberJson['maritalStatus'] as String?,
         education: memberJson['education'] as String?,
+        occupation: memberJson['occupation'] as String?,
+        phone: memberJson['phone'] as String?,
         avatarUrl: memberJson['avatarUrl'] as String?,
         notes: memberJson['notes'] as String?,
-        parentId: memberJson['parentId'] as int?,
-        spouseId: memberJson['spouseId'] as int?,
+        parentId: _parseInt(memberJson['parentId']),
+        spouseId: _parseInt(memberJson['spouseId']),
+        branchName: memberJson['branchName'] as String?,
+        parentName: memberJson['parentName'] as String?,
+        spouseName: memberJson['spouseName'] as String?,
       );
     }
 
     return FamilyUserModel(
-      id: json['id'] as int,
-      userId: json['userId'] as int,
-      familyId: json['familyId'] as int,
-      memberNodeId: json['memberNodeId'] as int?,
+      id: _parseInt(json['id']) ?? 0,
+      userId: _parseInt(json['userId']) ?? 0,
+      familyId: _parseInt(json['familyId']) ?? 0,
+      memberNodeId: _parseInt(json['memberNodeId']),
       role: json['role'] as String? ?? 'VIEWER',
       status: json['status'] as String? ?? 'PENDING',
       userFullName: userJson != null
@@ -83,5 +90,12 @@ class FamilyUserModel extends FamilyUserEntity {
       'userEmail': userEmail,
       'userAvatarUrl': userAvatarUrl,
     };
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 }

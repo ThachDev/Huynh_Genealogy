@@ -26,9 +26,18 @@ class RestoreMemberEvent extends MemberTrashEvent {
   List<Object?> get props => [memberId];
 }
 
+class DeletePermanentlyMemberEvent extends MemberTrashEvent {
+
+  const DeletePermanentlyMemberEvent(this.memberId);
+  final int memberId;
+
+  @override
+  List<Object?> get props => [memberId];
+}
+
 class PurgeTrashEvent extends MemberTrashEvent {
 
-  const PurgeTrashEvent({this.days = 30});
+  const PurgeTrashEvent({this.days = 0});
   final int days;
 
   @override

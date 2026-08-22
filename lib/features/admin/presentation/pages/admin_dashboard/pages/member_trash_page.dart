@@ -64,12 +64,34 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
     }
   }
 
+  Future<void> _confirmDeletePermanently(MemberEntity member) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await AppDialog.confirm(
+      context,
+      title: l10n.trashPurgeTitle,
+      message:
+          'Bạn có chắc chắn muốn xoá vĩnh viễn thành viên "${member.fullName}"? Hành động này không thể hoàn tác.',
+      confirmLabel: 'Xoá vĩnh viễn',
+      type: AppDialogType.danger,
+      confirmColor: context.error,
+    );
+    if (confirmed == true && mounted) {
+      context
+          .read<MemberTrashBloc>()
+          .add(DeletePermanentlyMemberEvent(member.id));
+    }
+  }
+
   Future<void> _confirmPurge() async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await AppDialog.confirm(
       context,
       title: l10n.trashPurgeTitle,
-      message: l10n.trashPurgeMessage,
+      message:
+          'Xoá vĩnh viễn toàn bộ thành viên trong thùng rác? Hành động này không thể hoàn tác.',
+      confirmLabel: 'Dọn sạch',
+      type: AppDialogType.danger,
+      confirmColor: context.error,
     );
     if (confirmed == true && mounted) {
       context.read<MemberTrashBloc>().add(const PurgeTrashEvent());
@@ -80,9 +102,8 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
-    final role = authState is Authenticated
-        ? authState.user.role.toUpperCase()
-        : '';
+    final role =
+        authState is Authenticated ? authState.user.role.toUpperCase() : '';
     final isOwner = role == 'OWNER' || role == 'CREATOR';
     if (!isOwner) {
       return Scaffold(
@@ -148,6 +169,12 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
                   l10n.trashPurgeSuccess(state.removed),
                 );
                 _reload();
+              } else if (state is MemberDeletedPermanentlyState) {
+                AppSnackBar.success(
+                  context,
+                  'Đã xoá vĩnh viễn thành viên khỏi thùng rác.',
+                );
+                _reload();
               } else if (state is MemberTrashFailure) {
                 AppSnackBar.error(context, state.message);
               }
@@ -186,6 +213,8 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
                     return _TrashItem(
                       member: member,
                       onRestore: () => _confirmRestore(member),
+                      onDeletePermanently: () =>
+                          _confirmDeletePermanently(member),
                     );
                   },
                 ),
@@ -199,10 +228,14 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
 }
 
 class _TrashItem extends StatelessWidget {
-
-  const _TrashItem({required this.member, required this.onRestore});
+  const _TrashItem({
+    required this.member,
+    required this.onRestore,
+    required this.onDeletePermanently,
+  });
   final MemberEntity member;
   final VoidCallback onRestore;
+  final VoidCallback onDeletePermanently;
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +323,13 @@ class _TrashItem extends StatelessWidget {
                       variant: AppButtonVariant.outline,
                       size: AppButtonSize.small,
                       onPressed: onRestore,
+                    ),
+                    const SizedBox(width: 4),
+                    IconButton(
+                      icon: Icon(LucideIcons.trash2,
+                          size: 18, color: context.error),
+                      tooltip: 'Xoá vĩnh viễn',
+                      onPressed: onDeletePermanently,
                     ),
                   ],
                 ),

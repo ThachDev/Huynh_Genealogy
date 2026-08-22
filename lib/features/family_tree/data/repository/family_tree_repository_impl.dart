@@ -113,7 +113,18 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
   }
 
   @override
-  Future<Either<Failure, int>> purgeTrash({int days = 30}) async {
+  Future<Either<Failure, bool>> deleteMemberPermanently(int id) async {
+    try {
+      final res = await remoteDataSource.deleteMemberPermanently(id);
+      await localDataSource.clearAll();
+      return Right(res);
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> purgeTrash({int days = 0}) async {
     try {
       final count = await remoteDataSource.purgeTrash(days: days);
       await localDataSource.clearAll();

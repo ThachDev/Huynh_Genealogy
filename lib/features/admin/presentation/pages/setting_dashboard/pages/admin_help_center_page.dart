@@ -23,7 +23,7 @@ class _AdminHelpCenterPageState extends State<AdminHelpCenterPage>
   late TabController _tabController;
   final Set<String> _expandedFaqKeys = {};
   final Set<int> _expandedRegKeys = {};
-  String _appVersion = '1.0.0';
+  String _appVersion = '1.0.1';
 
   @override
   void initState() {

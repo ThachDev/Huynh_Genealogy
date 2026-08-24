@@ -19,7 +19,7 @@ class _AdminAboutUsPageState extends State<AdminAboutUsPage>
   late Animation<double> _logoScale;
   late Animation<double> _contentFade;
 
-  String _appVersion = '1.0.0';
+  String _appVersion = '1.0.1';
 
   @override
   void initState() {

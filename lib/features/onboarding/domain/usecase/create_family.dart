@@ -16,7 +16,6 @@ import '../repository/onboarding_repository.dart';
 ///   - `Params`: Tham số đầu vào truyền vào phương thức `call()` (`CreateFamilyParams`).
 /// ============================================================================
 class CreateFamily implements UseCase<FamilyEntity, CreateFamilyParams> {
-
   CreateFamily(this.repository);
   final OnboardingRepository repository;
 
@@ -32,7 +31,6 @@ class CreateFamily implements UseCase<FamilyEntity, CreateFamilyParams> {
 }
 
 class CreateFamilyParams extends Equatable {
-
   const CreateFamilyParams({
     required this.name,
     this.description,

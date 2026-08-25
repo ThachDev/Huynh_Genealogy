@@ -3350,6 +3350,12 @@ abstract class AppLocalizations {
   /// **'Gửi lời chúc'**
   String get sendWishButton;
 
+  /// No description provided for @offerIncenseButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dâng hương'**
+  String get offerIncenseButton;
+
   /// No description provided for @memberLabel.
   ///
   /// In vi, this message translates to:

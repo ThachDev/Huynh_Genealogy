@@ -1801,6 +1801,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get sendWishButton => 'Gửi lời chúc';
 
   @override
+  String get offerIncenseButton => 'Dâng hương';
+
+  @override
   String get memberLabel => 'Thành viên';
 
   @override

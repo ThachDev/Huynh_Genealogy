@@ -423,7 +423,7 @@ class _UserEventCardState extends State<UserEventCard> {
 
   void _showReportSheet(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final reasons = [
+    final reasons = <String>[
       l10n.reportReasonInappropriate,
       l10n.reportReasonAbusive,
       l10n.reportReasonFalseInfo,

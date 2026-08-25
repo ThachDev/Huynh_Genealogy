@@ -374,8 +374,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                               ),
                             ),
                             subtitle: Text(
-                              [genText, if (!m.isAlive) l10n.deceasedLabel]
-                                  .where((s) => s.isNotEmpty)
+                              [if (genText.isNotEmpty) genText, if (!m.isAlive) l10n.deceasedLabel]
                                   .join(' • '),
                               style: GoogleFonts.inter(
                                 fontSize: 11,

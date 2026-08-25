@@ -1799,6 +1799,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendWishButton => 'Send wish';
 
   @override
+  String get offerIncenseButton => 'Offer Incense';
+
+  @override
   String get memberLabel => 'Member';
 
   @override

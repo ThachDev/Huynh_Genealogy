@@ -8,11 +8,8 @@ import '../../../../core/widgets/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../auth/domain/entities/user_entity.dart';
 import '../../domain/entities/wish_entity.dart';
 import '../models/upcoming_anniversary.dart';
-import '../widgets/wish_letter_dialog.dart';
-import '../widgets/incense_offering_dialog.dart';
 import '../../domain/repository/wish_repository.dart';
 
 class WishWallPage extends StatefulWidget {
@@ -30,14 +27,12 @@ class WishWallPage extends StatefulWidget {
 }
 
 class _WishWallPageState extends State<WishWallPage> {
-  bool _isLoading = true;
-  List<WishEntity> _wishes = [];
-  final ScrollController _scrollController = ScrollController();
-  int _wishLimit = 5;
-
-  // Trạng thái tim theo wishId
+  final List<WishEntity> _wishes = [];
   final Map<int, int> _reactionCounts = {};
   final Map<int, bool> _reacted = {};
+  final ScrollController _scrollController = ScrollController();
+  int _wishLimit = 5;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -63,110 +58,24 @@ class _WishWallPageState extends State<WishWallPage> {
   }
 
   Future<void> _loadWishes() async {
-    setState(() => _isLoading = true);
     final result =
         await widget.wishRepository.getWishesByMember(widget.data.member.id);
     if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-      result.fold(
-        (_) => _wishes = [],
-        (wishes) {
-          _wishes = wishes;
-          // Khởi tạo trạng thái tim từ server
-          for (final w in wishes) {
+    result.fold(
+      (_) => setState(() => _isLoading = false),
+      (list) {
+        setState(() {
+          _wishes
+            ..clear()
+            ..addAll(list);
+          for (final w in list) {
             _reactionCounts[w.id] = w.reactionCount;
             _reacted[w.id] = w.isReacted;
           }
-        },
-      );
-    });
-  }
-
-  Future<void> _sendWish() async {
-    final l10n = AppLocalizations.of(context);
-    final authState = context.read<AuthBloc>().state;
-    UserEntity? userProfile;
-
-    if (authState is Authenticated) {
-      userProfile = authState.user;
-    }
-
-    if (userProfile == null) {
-      AppSnackBar.show(
-        context,
-        message: l10n.wishLoginRequired,
-        type: SnackBarType.error,
-      );
-      return;
-    }
-
-    final solar = widget.data.solarDateLabel;
-    final lunar = widget.data.lunarDateLabel;
-    final subtitle = lunar == null ? solar : '$solar · $lunar';
-
-    final String? message;
-    if (widget.data.isBirthday) {
-      message = await showWishLetterDialog(
-        context,
-        title: widget.data.title,
-        subtitle: subtitle,
-        isBirthday: true,
-      );
-    } else {
-      message = await showIncenseDialog(
-        context,
-        targetName: widget.data.title,
-        subtitle: subtitle,
-      );
-    }
-
-    if (message != null && mounted) {
-      final defaultContent = widget.data.isBirthday
-          ? l10n.happyBirthdayTitle
-          : l10n.incenseDefaultPrayer;
-      final prayerContent =
-          message.trim().isNotEmpty ? message.trim() : defaultContent;
-
-      final newWish = WishEntity(
-        id: 0,
-        familyId: userProfile.familyId ?? 0,
-        memberId: widget.data.member.id,
-        senderId: userProfile.id,
-        content: prayerContent,
-        eventType: widget.data.isBirthday ? 'birthday' : 'anniversary',
-        createdAt: DateTime.now(),
-        senderName: userProfile.fullName,
-        senderAvatar: userProfile.avatarUrl,
-      );
-
-      setState(() {
-        _wishes.insert(0, newWish);
-        _reactionCounts[newWish.id] = 0;
-        _reacted[newWish.id] = false;
-      });
-
-      final result = await widget.wishRepository.createWish(newWish);
-      if (mounted) {
-        result.fold(
-          (_) {},
-          (created) {
-            setState(() {
-              _wishes[0] = created;
-              _reactionCounts[created.id] = 0;
-              _reacted[created.id] = false;
-            });
-            AppSnackBar.show(
-              context,
-              message: widget.data.isBirthday
-                  ? l10n.wishSentMessage
-                  : l10n.incenseLitFor(widget.data.title),
-              type: SnackBarType.success,
-            );
-          },
-        );
-      }
-    }
+          _isLoading = false;
+        });
+      },
+    );
   }
 
   Future<void> _toggleReact(int wishId) async {
@@ -195,7 +104,7 @@ class _WishWallPageState extends State<WishWallPage> {
 
   Future<void> _reportWish(int wishId) async {
     final l10n = AppLocalizations.of(context);
-    final reasons = [
+    final reasons = <String>[
       l10n.reportReasonInappropriate,
       l10n.reportReasonAbusive,
       l10n.reportReasonFalseInfo,
@@ -426,17 +335,6 @@ class _WishWallPageState extends State<WishWallPage> {
                 },
               ),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _sendWish,
-        backgroundColor: context.primary,
-        foregroundColor: context.textOnPrimary,
-        elevation: 4,
-        icon: Icon(isBirthday ? LucideIcons.gift : LucideIcons.flame),
-        label: Text(
-          isBirthday ? l10n.sendWishButton : l10n.lightIncenseLabel,
-          style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.bold),
         ),
       ),
     );

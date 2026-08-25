@@ -63,6 +63,16 @@ class WishRepositoryImpl implements WishRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> deleteWish(int wishId) async {
+    try {
+      final success = await remoteDataSource.deleteWish(wishId);
+      return Right(success);
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> markWishAsRead(int wishId) async {
     try {
       final success = await remoteDataSource.markWishAsRead(wishId);

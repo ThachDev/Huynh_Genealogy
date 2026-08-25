@@ -302,10 +302,82 @@ class _WishWallPageState extends State<WishWallPage> {
     }
   }
 
+  Future<void> _deleteWish(int wishId) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          widget.data.isBirthday ? 'Xóa lời chúc' : 'Xóa lời tưởng niệm',
+          style: GoogleFonts.beVietnamPro(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: context.textPrimary,
+          ),
+        ),
+        content: Text(
+          widget.data.isBirthday
+              ? 'Bạn có chắc chắn muốn xóa lời chúc này không?'
+              : 'Bạn có chắc chắn muốn xóa lời tưởng niệm này không?',
+          style: GoogleFonts.beVietnamPro(fontSize: 13.5, color: context.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              l10n.cancelLabel,
+              style: TextStyle(color: context.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: context.error,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.deleteLabel),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final result = await widget.wishRepository.deleteWish(wishId);
+    if (!mounted) return;
+
+    result.fold(
+      (failure) {
+        AppSnackBar.show(
+          context,
+          message: failure.message,
+          type: SnackBarType.error,
+        );
+      },
+      (_) {
+        setState(() {
+          _wishes.removeWhere((w) => w.id == wishId);
+        });
+        AppSnackBar.show(
+          context,
+          message: widget.data.isBirthday
+              ? 'Đã xóa lời chúc thành công'
+              : 'Đã xóa lời tưởng niệm thành công',
+          type: SnackBarType.success,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isBirthday = widget.data.isBirthday;
+    final authState = context.watch<AuthBloc>().state;
+    final currentUserId = authState is Authenticated ? authState.user.id : null;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -339,13 +411,17 @@ class _WishWallPageState extends State<WishWallPage> {
                     const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   final wish = _wishes[index];
+                  final isOwner = currentUserId != null &&
+                      (wish.senderId == currentUserId);
                   return _WishCard(
                     wish: wish,
                     isBirthday: isBirthday,
                     reactionCount: _reactionCounts[wish.id] ?? 0,
                     isReacted: _reacted[wish.id] ?? false,
+                    isOwner: isOwner,
                     onReact: () => _toggleReact(wish.id),
                     onReport: () => _reportWish(wish.id),
+                    onDelete: () => _deleteWish(wish.id),
                   );
                 },
               ),
@@ -374,15 +450,19 @@ class _WishCard extends StatelessWidget {
     required this.isBirthday,
     required this.reactionCount,
     required this.isReacted,
+    required this.isOwner,
     required this.onReact,
     required this.onReport,
+    required this.onDelete,
   });
   final WishEntity wish;
   final bool isBirthday;
   final int reactionCount;
   final bool isReacted;
+  final bool isOwner;
   final VoidCallback onReact;
   final VoidCallback onReport;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -473,7 +553,7 @@ class _WishCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Menu 3 chấm – Báo cáo vi phạm
+                // Menu 3 chấm – Xóa (người gửi) / Báo cáo vi phạm (người khác)
                 PopupMenuButton<String>(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -490,29 +570,54 @@ class _WishCard extends StatelessWidget {
                     color: Colors.white,
                   ),
                   itemBuilder: (ctx) => [
-                    PopupMenuItem<String>(
-                      value: 'report',
-                      height: 38,
-                      child: Row(
-                        children: [
-                          Icon(
-                            LucideIcons.flag,
-                            size: 18,
-                            color: context.textPrimary,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.reportContentTitle,
-                            style: GoogleFonts.beVietnamPro(
-                              fontSize: 13,
+                    if (isOwner)
+                      PopupMenuItem<String>(
+                        value: 'delete',
+                        height: 38,
+                        child: Row(
+                          children: [
+                            Icon(
+                              LucideIcons.trash2,
+                              size: 18,
+                              color: context.error,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              isBirthday ? 'Xóa lời chúc' : 'Xóa lời tưởng niệm',
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 13,
+                                color: context.error,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      PopupMenuItem<String>(
+                        value: 'report',
+                        height: 38,
+                        child: Row(
+                          children: [
+                            Icon(
+                              LucideIcons.flag,
+                              size: 18,
                               color: context.textPrimary,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.reportContentTitle,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 13,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                   onSelected: (value) {
+                    if (value == 'delete') onDelete();
                     if (value == 'report') onReport();
                   },
                 ),

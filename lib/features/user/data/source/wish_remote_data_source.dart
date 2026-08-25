@@ -10,6 +10,7 @@ abstract class WishRemoteDataSource {
   Future<WishEntity> createWish(WishEntity wish);
   Future<WishReaction> reactToWish(int wishId);
   Future<bool> reportWish(int wishId, String reason);
+  Future<bool> deleteWish(int wishId);
   Future<bool> markWishAsRead(int wishId);
   Future<bool> markAllWishesAsRead();
 }
@@ -150,6 +151,30 @@ class WishRemoteDataSourceImpl implements WishRemoteDataSource {
       }
       throw ServerException(
         message: 'Báo cáo thất bại',
+        statusCode: response.statusCode,
+      );
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ?? 'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> deleteWish(int wishId) async {
+    try {
+      final response = await dio.delete(
+        '${AppConstants.baseUrl}/wishes/$wishId',
+      );
+      final data = response.data;
+      if (data != null && data['success'] == true) {
+        return true;
+      }
+      throw ServerException(
+        message: 'Xóa lời chúc thất bại',
         statusCode: response.statusCode,
       );
     } on DioException catch (e) {

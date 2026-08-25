@@ -636,6 +636,7 @@
   "noNotificationsMessage": "No notifications",
   "notificationDetailTitle": "Notification {title}",
   "markAsReadAction": "Mark as read",
+  "markAsUnreadAction": "Mark as unread",
   "deleteNotificationAction": "Delete notification",
   "wishLoginRequired": "Please wait for your information to load or log in again to send a wish",
   "noWishesMessage": "No wishes yet.",
@@ -774,7 +775,7 @@
   "viewMemberPage": "View member page",
   "memberNoLongerExists": "This member may have been deleted or no longer exists.",
   "disabledLabel": "Disabled",
-  "enabledCountFormat": "Enabled ({count}/4)",
+  "enabledCountFormat": "Enabled ({count}/3)",
   "@enabledCountFormat": {
     "placeholders": {
       "count": {

@@ -12,6 +12,7 @@ class WishEntity {
     this.senderAvatar,
     this.reactionCount = 0,
     this.isReacted = false,
+    this.isRead = false,
   });
 
   factory WishEntity.fromJson(Map<String, dynamic> json) {
@@ -21,6 +22,13 @@ class WishEntity {
         : (rawReacted is num
             ? rawReacted == 1
             : rawReacted.toString() == 'true' || rawReacted.toString() == '1');
+
+    final rawIsRead = json['isRead'] ?? json['is_read'];
+    final bool isRead = rawIsRead is bool
+        ? rawIsRead
+        : (rawIsRead is num
+            ? rawIsRead == 1
+            : rawIsRead.toString() == 'true' || rawIsRead.toString() == '1');
 
     return WishEntity(
       id: json['id'] ?? 0,
@@ -38,6 +46,7 @@ class WishEntity {
           (json['reaction_count'] as num?)?.toInt() ??
           0,
       isReacted: reacted,
+      isRead: isRead,
     );
   }
 
@@ -52,6 +61,7 @@ class WishEntity {
   final String? senderAvatar;
   final int reactionCount;
   final bool isReacted;
+  final bool isRead;
 
   Map<String, dynamic> toJson() {
     return {
@@ -77,6 +87,7 @@ class WishEntity {
     String? senderAvatar,
     int? reactionCount,
     bool? isReacted,
+    bool? isRead,
   }) {
     return WishEntity(
       id: id ?? this.id,
@@ -90,6 +101,7 @@ class WishEntity {
       senderAvatar: senderAvatar ?? this.senderAvatar,
       reactionCount: reactionCount ?? this.reactionCount,
       isReacted: isReacted ?? this.isReacted,
+      isRead: isRead ?? this.isRead,
     );
   }
 
@@ -108,7 +120,8 @@ class WishEntity {
           senderName == other.senderName &&
           senderAvatar == other.senderAvatar &&
           reactionCount == other.reactionCount &&
-          isReacted == other.isReacted;
+          isReacted == other.isReacted &&
+          isRead == other.isRead;
 
   @override
   int get hashCode =>
@@ -122,5 +135,6 @@ class WishEntity {
       senderName.hashCode ^
       senderAvatar.hashCode ^
       reactionCount.hashCode ^
-      isReacted.hashCode;
+      isReacted.hashCode ^
+      isRead.hashCode;
 }

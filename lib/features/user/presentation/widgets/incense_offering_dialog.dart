@@ -52,6 +52,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
   @override
   void initState() {
     super.initState();
+    _audioPlayer.setPlayerMode(PlayerMode.mediaPlayer);
     _audioPlayer.setReleaseMode(ReleaseMode.stop);
     _loadWebpBytes();
 

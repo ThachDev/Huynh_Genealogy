@@ -3314,6 +3314,12 @@ abstract class AppLocalizations {
   /// **'Đánh dấu đã đọc'**
   String get markAsReadAction;
 
+  /// No description provided for @markAsUnreadAction.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh dấu chưa đọc'**
+  String get markAsUnreadAction;
+
   /// No description provided for @deleteNotificationAction.
   ///
   /// In vi, this message translates to:
@@ -3977,7 +3983,7 @@ abstract class AppLocalizations {
   /// No description provided for @enabledCountFormat.
   ///
   /// In vi, this message translates to:
-  /// **'Đang bật ({count}/4)'**
+  /// **'Đang bật ({count}/3)'**
   String enabledCountFormat(int count);
 
   /// No description provided for @notifEventSubtitle.

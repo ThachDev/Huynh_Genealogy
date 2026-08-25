@@ -1782,6 +1782,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get markAsReadAction => 'Đánh dấu đã đọc';
 
   @override
+  String get markAsUnreadAction => 'Đánh dấu chưa đọc';
+
+  @override
   String get deleteNotificationAction => 'Xóa thông báo';
 
   @override
@@ -2160,7 +2163,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String enabledCountFormat(int count) {
-    return 'Đang bật ($count/4)';
+    return 'Đang bật ($count/3)';
   }
 
   @override

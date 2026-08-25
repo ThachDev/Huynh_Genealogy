@@ -23,6 +23,16 @@ class WishRepositoryImpl implements WishRepository {
   }
 
   @override
+  Future<Either<Failure, List<WishEntity>>> getMyWishes({int? memberId}) async {
+    try {
+      final wishes = await remoteDataSource.getMyWishes(memberId: memberId);
+      return Right(wishes);
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, WishEntity>> createWish(WishEntity wish) async {
     try {
       final created = await remoteDataSource.createWish(wish);
@@ -46,6 +56,26 @@ class WishRepositoryImpl implements WishRepository {
   Future<Either<Failure, bool>> reportWish(int wishId, String reason) async {
     try {
       final success = await remoteDataSource.reportWish(wishId, reason);
+      return Right(success);
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> markWishAsRead(int wishId) async {
+    try {
+      final success = await remoteDataSource.markWishAsRead(wishId);
+      return Right(success);
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> markAllWishesAsRead() async {
+    try {
+      final success = await remoteDataSource.markAllWishesAsRead();
       return Right(success);
     } catch (e) {
       return Left(ErrorHandler.map(e));

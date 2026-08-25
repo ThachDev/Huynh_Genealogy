@@ -646,6 +646,7 @@
   "noNotificationsMessage": "Không có thông báo nào",
   "notificationDetailTitle": "Thông báo {title}",
   "markAsReadAction": "Đánh dấu đã đọc",
+  "markAsUnreadAction": "Đánh dấu chưa đọc",
   "deleteNotificationAction": "Xóa thông báo",
   "wishLoginRequired": "Vui lòng chờ tải thông tin hoặc đăng nhập lại để gửi lời chúc",
   "noWishesMessage": "Chưa có lời chúc nào.",
@@ -784,7 +785,7 @@
   "viewMemberPage": "Xem trang thành viên",
   "memberNoLongerExists": "Thành viên này có thể đã bị xóa hoặc không còn tồn tại.",
   "disabledLabel": "Đã tắt",
-  "enabledCountFormat": "Đang bật ({count}/4)",
+  "enabledCountFormat": "Đang bật ({count}/3)",
   "@enabledCountFormat": {
     "placeholders": {
       "count": {

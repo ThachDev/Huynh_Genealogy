@@ -3,6 +3,7 @@ import '../../../../core/di/injection_container.dart' as di;
 import '../../../../core/data/repository/notification_read_store.dart';
 import '../../domain/repositories/events_repository.dart';
 import '../../domain/entities/event_entity.dart';
+import '../../../user/domain/repository/wish_repository.dart';
 
 /// Điều phối trạng thái "đã đọc" của thông báo.
 ///
@@ -63,6 +64,13 @@ class NotificationReadController extends ChangeNotifier {
     }
   }
 
+  Future<void> markUnread(String id) async {
+    if (_readIds.remove(id)) {
+      notifyListeners();
+      await _persist();
+    }
+  }
+
   Future<void> markAllRead(List<String> ids) async {
     var changed = false;
     for (final id in ids) {
@@ -95,9 +103,16 @@ class NotificationReadController extends ChangeNotifier {
 
   void _syncMarkReadApi(String id) {
     try {
-      final eventId = int.tryParse(id);
-      if (eventId != null) {
-        di.sl<EventsRepository>().markEventAsRead(eventId);
+      if (id.startsWith('wish_')) {
+        final wishId = int.tryParse(id.replaceFirst('wish_', ''));
+        if (wishId != null) {
+          di.sl<WishRepository>().markWishAsRead(wishId);
+        }
+      } else {
+        final eventId = int.tryParse(id);
+        if (eventId != null) {
+          di.sl<EventsRepository>().markEventAsRead(eventId);
+        }
       }
     } catch (_) {}
   }
@@ -105,6 +120,7 @@ class NotificationReadController extends ChangeNotifier {
   void _syncMarkAllReadApi() {
     try {
       di.sl<EventsRepository>().markAllEventsAsRead();
+      di.sl<WishRepository>().markAllWishesAsRead();
     } catch (_) {}
   }
 

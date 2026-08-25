@@ -6,9 +6,12 @@ import '../../domain/wish_reaction.dart';
 
 abstract class WishRemoteDataSource {
   Future<List<WishEntity>> getWishesByMember(int memberId);
+  Future<List<WishEntity>> getMyWishes({int? memberId});
   Future<WishEntity> createWish(WishEntity wish);
   Future<WishReaction> reactToWish(int wishId);
   Future<bool> reportWish(int wishId, String reason);
+  Future<bool> markWishAsRead(int wishId);
+  Future<bool> markAllWishesAsRead();
 }
 
 class WishRemoteDataSourceImpl implements WishRemoteDataSource {
@@ -31,6 +34,39 @@ class WishRemoteDataSourceImpl implements WishRemoteDataSource {
         statusCode: response.statusCode,
       );
     } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ?? 'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<List<WishEntity>> getMyWishes({int? memberId}) async {
+    try {
+      final endpoint = memberId != null
+          ? '${AppConstants.baseUrl}/wishes/member/$memberId'
+          : '${AppConstants.baseUrl}/wishes/my-wishes';
+      final response = await dio.get(endpoint);
+      final data = response.data;
+      if (data != null && data['success'] == true) {
+        final List list = data['data'] ?? [];
+        return list.map((e) => WishEntity.fromJson(e)).toList();
+      }
+      return [];
+    } on DioException catch (e) {
+      if (memberId != null) {
+        try {
+          final fallback = await dio.get('${AppConstants.baseUrl}/wishes/member/$memberId');
+          final data = fallback.data;
+          if (data != null && data['success'] == true) {
+            final List list = data['data'] ?? [];
+            return list.map((e) => WishEntity.fromJson(e)).toList();
+          }
+        } catch (_) {}
+      }
       throw ServerException(
         message: e.message ?? 'Lỗi kết nối máy chủ',
         statusCode: e.response?.statusCode,
@@ -123,6 +159,32 @@ class WishRemoteDataSourceImpl implements WishRemoteDataSource {
       );
     } catch (e) {
       throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<bool> markWishAsRead(int wishId) async {
+    try {
+      final response = await dio.post(
+        '${AppConstants.baseUrl}/wishes/$wishId/read',
+      );
+      final data = response.data;
+      return data != null && data['success'] == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> markAllWishesAsRead() async {
+    try {
+      final response = await dio.post(
+        '${AppConstants.baseUrl}/wishes/read-all',
+      );
+      final data = response.data;
+      return data != null && data['success'] == true;
+    } catch (_) {
+      return false;
     }
   }
 }

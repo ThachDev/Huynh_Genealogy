@@ -34,7 +34,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   bool _isEn = false;
   bool _isDark = false;
   bool _ntfEvents = true;
-  bool _ntfAnnouncements = true;
   bool _ntfWishes = true;
   bool _ntfAnniversaries = true;
 
@@ -46,13 +45,11 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   Future<void> _loadNotificationSettings() async {
     final events = await NotificationSettingsStore.eventEnabled();
-    final announcements = await NotificationSettingsStore.announcementEnabled();
     final wishes = await NotificationSettingsStore.wishEnabled();
     final anniversaries = await NotificationSettingsStore.anniversaryEnabled();
     if (!mounted) return;
     setState(() {
       _ntfEvents = events;
-      _ntfAnnouncements = announcements;
       _ntfWishes = wishes;
       _ntfAnniversaries = anniversaries;
     });
@@ -530,7 +527,6 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   String _getNotificationSummaryText(AppLocalizations l10n) {
     int count = 0;
     if (_ntfEvents) count++;
-    if (_ntfAnnouncements) count++;
     if (_ntfWishes) count++;
     if (_ntfAnniversaries) count++;
     if (count == 0) return l10n.disabledLabel;
@@ -577,24 +573,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   _buildBottomSheetNotificationItem(
                     context: context,
                     icon: LucideIcons.calendar,
-                    title: l10n.notifNewEventTitle,
+                    title: l10n.eventTypeEvent,
                     subtitle: l10n.notifEventSubtitle,
                     value: _ntfEvents,
                     onChanged: (v) {
                       setState(() => _ntfEvents = v);
                       setModalState(() {});
                       NotificationSettingsStore.setEvent(v);
-                    },
-                  ),
-                  _buildBottomSheetNotificationItem(
-                    context: context,
-                    icon: LucideIcons.megaphone,
-                    title: l10n.notifyAnnouncementLabel,
-                    subtitle: l10n.notifNewsSubtitle,
-                    value: _ntfAnnouncements,
-                    onChanged: (v) {
-                      setState(() => _ntfAnnouncements = v);
-                      setModalState(() {});
                       NotificationSettingsStore.setAnnouncement(v);
                     },
                   ),

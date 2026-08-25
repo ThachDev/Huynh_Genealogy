@@ -1780,6 +1780,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markAsReadAction => 'Mark as read';
 
   @override
+  String get markAsUnreadAction => 'Mark as unread';
+
+  @override
   String get deleteNotificationAction => 'Delete notification';
 
   @override
@@ -2161,7 +2164,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String enabledCountFormat(int count) {
-    return 'Enabled ($count/4)';
+    return 'Enabled ($count/3)';
   }
 
   @override

@@ -129,6 +129,22 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
     final navigator = AppRouter.rootNavigatorKey.currentState;
     final familyId = int.tryParse(data['familyId'] ?? '');
     final type = data['type'];
+
+    if (type == NotifType.wish) {
+      final treeState = context.read<FamilyTreeBloc>().state;
+      final famId = familyId ?? (treeState is FamilyTreeLoaded ? treeState.family?.id : null);
+      if (famId != null) {
+        navigator?.push(
+          SereneFadeSlidePageRoute(
+            page: UserNotificationsPage(
+              familyId: famId,
+            ),
+          ),
+        );
+      }
+      return;
+    }
+
     if (type == NotifType.event && familyId != null) {
       final eventType = data['eventType'] ?? '';
       final isAnnouncement = eventType == 'announcement' ||
@@ -137,7 +153,9 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
       if (isAnnouncement) {
         navigator?.push(
           SereneFadeSlidePageRoute(
-            page: UserNotificationsPage(familyId: familyId),
+            page: UserNotificationsPage(
+              familyId: familyId,
+            ),
           ),
         );
       }

@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,37 +39,42 @@ class IncenseOfferingDialog extends StatefulWidget {
 class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
     with SingleTickerProviderStateMixin {
   final TextEditingController _prayerController = TextEditingController();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isLit = false;
   bool _isFinished = false;
   int _burnKey = 0;
   Uint8List? _webpBytes;
 
-  // Animation controller cho tiến trình thắp & tàn nhang (khi nhấn "Thắp Nhang")
+  // Animation controller cho tiến trình thắp & tàn nhang (đồng bộ theo độ dài âm thanh soundTranquil ~6.6s)
   late final AnimationController _burnController;
   late final Animation<double> _glowPulse;
 
   @override
   void initState() {
     super.initState();
+    _audioPlayer.setReleaseMode(ReleaseMode.stop);
     _loadWebpBytes();
 
+    // 6635ms khớp chính xác với thời lượng file soundTranquil.mp3
     _burnController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 4800),
+      duration: const Duration(milliseconds: 6635),
     );
 
     _glowPulse = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.8, end: 1.4), weight: 30),
-      TweenSequenceItem(tween: Tween(begin: 1.4, end: 1.0), weight: 40),
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.3), weight: 30),
+      TweenSequenceItem(tween: Tween(begin: 0.8, end: 1.4), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 1.4, end: 1.1), weight: 45),
+      TweenSequenceItem(tween: Tween(begin: 1.1, end: 0.3), weight: 30),
     ]).animate(_burnController);
 
     _burnController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        setState(() {
-          _isFinished = true;
-        });
-        Future.delayed(const Duration(milliseconds: 900), () {
+        if (mounted) {
+          setState(() {
+            _isFinished = true;
+          });
+        }
+        Future.delayed(const Duration(milliseconds: 800), () {
           if (mounted) {
             Navigator.of(context).pop(_prayerController.text);
           }
@@ -91,6 +97,8 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
 
   @override
   void dispose() {
+    _audioPlayer.stop();
+    _audioPlayer.dispose();
     _burnController.dispose();
     _prayerController.dispose();
     super.dispose();
@@ -103,7 +111,7 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
         const AssetImage('assets/images/bat_huong_thumb.png'), context);
   }
 
-  void _lightIncense() {
+  void _lightIncense() async {
     if (_isLit) return;
     FocusScope.of(context).unfocus();
     // Xóa triệt để cache hình ảnh động để Flutter khởi tạo lại Codec từ frame 0
@@ -113,6 +121,12 @@ class _IncenseOfferingDialogState extends State<IncenseOfferingDialog>
       _isLit = true;
       _burnKey++;
     });
+
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource('sound/soundTranquil.mp3'));
+    } catch (_) {}
+
     _burnController.forward(from: 0.0);
   }
 

@@ -4,6 +4,12 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repository/onboarding_repository.dart';
 
+/// ============================================================================
+/// USE CASE — LINK MEMBER TO USER (DOMAIN LAYER)
+/// ============================================================================
+/// Đảm nhận nghiệp vụ gán/liên kết tài khoản người dùng (`userId`) với một nút thành viên
+/// (`memberId`) đã tồn tại trên sơ đồ cây gia phả.
+/// ============================================================================
 class LinkMemberToUser implements UseCase<bool, LinkMemberToUserParams> {
 
   LinkMemberToUser(this.repository);

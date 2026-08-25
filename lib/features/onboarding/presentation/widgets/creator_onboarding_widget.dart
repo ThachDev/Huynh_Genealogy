@@ -15,6 +15,17 @@ import '../../../auth/auth.dart';
 import '../bloc/onboarding_bloc.dart';
 import '../bloc/onboarding_event.dart';
 
+/// ============================================================================
+/// PRESENTATION LAYER — CREATOR ONBOARDING WIDGET
+/// ============================================================================
+/// Giao diện dành cho người dùng muốn khởi tạo dòng họ mới (Trưởng tộc / Người lập gia phả).
+///
+/// Quy trình xử lý:
+///   1. Người dùng nhập tên dòng họ, mô tả và tải ảnh biểu tượng (Logo).
+///   2. Form validation kiểm tra tính hợp lệ của dữ liệu.
+///   3. Phát ra `CreateFamilyEvent` tới `OnboardingBloc`.
+///   4. Lắng nghe `FamilyCreatedState` từ BLoC để chuyển sang màn hình quản lý với vai trò OWNER.
+/// ============================================================================
 class CreatorOnboardingWidget extends StatefulWidget {
 
   const CreatorOnboardingWidget({

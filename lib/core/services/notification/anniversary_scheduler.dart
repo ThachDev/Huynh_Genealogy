@@ -102,8 +102,12 @@ class AnniversaryScheduler {
           NotificationChannel.name,
           importance: Importance.high,
           priority: Priority.high,
+          sound: RawResourceAndroidNotificationSound('sound_noti'),
         ),
-        iOS: DarwinNotificationDetails(),
+        iOS: DarwinNotificationDetails(
+          sound: 'soundNoti.mp3',
+          presentSound: true,
+        ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:

@@ -9,8 +9,10 @@ class NotifType {
 
 /// Kênh hiển thị thông báo local.
 class NotificationChannel {
-  static const String id = 'giatoc_notifications';
+  static const String id = 'giatoc_notifications_sound_v1';
   static const String name = 'Thông báo Gia Tộc Việt';
+  static const String soundResourceName = 'sound_noti';
+  static const String soundFileName = 'soundNoti.mp3';
 }
 
 /// Xây dựng nội dung (tiêu đề / nội dung) cho thông báo.

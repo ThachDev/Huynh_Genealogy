@@ -6,6 +6,13 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../auth/auth.dart';
 import 'selection_card.dart';
 
+/// ============================================================================
+/// PRESENTATION LAYER — PATH SELECTION WIDGET
+/// ============================================================================
+/// Giao diện bước 1 cho phép người dùng mới lựa chọn 1 trong 2 luồng Onboarding:
+///   - Path 1 (Creator): Khởi tạo dòng họ mới.
+///   - Path 2 (Viewer): Gia nhập vào một dòng họ đã có sẵn.
+/// ============================================================================
 class PathSelectionWidget extends StatelessWidget {
 
   const PathSelectionWidget({

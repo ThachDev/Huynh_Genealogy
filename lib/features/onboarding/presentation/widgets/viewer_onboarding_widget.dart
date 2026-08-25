@@ -15,6 +15,20 @@ import '../bloc/onboarding_event.dart';
 import '../bloc/onboarding_state.dart';
 import 'new_member_registration_form.dart';
 
+/// ============================================================================
+/// PRESENTATION LAYER — VIEWER ONBOARDING WIDGET
+/// ============================================================================
+/// Giao diện dành cho người dùng tham gia vào dòng họ đã có sẵn (Thành viên / Viewer).
+///
+/// Quy trình xử lý gồm 2 bước (2-Step Flow):
+///   1. BƯỚC 1 - Nhập hoặc Quét QR Code Mã mời:
+///      - Người dùng nhập mã -> Gửi `VerifyInviteCodeEvent(code)` tới `OnboardingBloc`.
+///      - `OnboardingBloc` xác thực -> Phát ra `InviteCodeVerifiedState(family, members)`.
+///   2. BƯỚC 2 - Chọn hoặc Nhập thông tin thành viên:
+///      - Nhánh 2a: Chọn thành viên có sẵn trên cây gia phả (`_selectedMember`).
+///      - Nhánh 2b: Chưa có tên trên cây (`_isNotOnTree = true`) -> Điền form thông tin cá nhân.
+///      - Bấm nút gửi -> Gửi `JoinFamilyEvent(...)` tới `OnboardingBloc`.
+/// ============================================================================
 class ViewerOnboardingWidget extends StatefulWidget {
 
   const ViewerOnboardingWidget({

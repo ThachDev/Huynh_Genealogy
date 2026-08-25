@@ -108,14 +108,18 @@ class NotificationService {
 
   Future<void> _createChannel() async {
     try {
-      await _local
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(const AndroidNotificationChannel(
+      final androidPlugin = _local.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      if (androidPlugin != null) {
+        await androidPlugin.createNotificationChannel(
+          const AndroidNotificationChannel(
             channelId,
             channelName,
             importance: Importance.high,
-          ));
+            sound: RawResourceAndroidNotificationSound('sound_noti'),
+          ),
+        );
+      }
     } catch (_) {}
   }
 
@@ -141,8 +145,12 @@ class NotificationService {
           channelName,
           importance: Importance.high,
           priority: Priority.high,
+          sound: RawResourceAndroidNotificationSound('sound_noti'),
         ),
-        iOS: DarwinNotificationDetails(),
+        iOS: DarwinNotificationDetails(
+          sound: 'soundNoti.mp3',
+          presentSound: true,
+        ),
       ),
       payload: jsonEncode(data),
     );
@@ -251,6 +259,12 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
         NotificationService.channelId,
         NotificationService.channelName,
         importance: Importance.high,
+        priority: Priority.high,
+        sound: RawResourceAndroidNotificationSound('sound_noti'),
+      ),
+      iOS: DarwinNotificationDetails(
+        sound: 'soundNoti.mp3',
+        presentSound: true,
       ),
     ),
     payload: jsonEncode(data),

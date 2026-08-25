@@ -9,6 +9,17 @@ import '../../../../core/di/injection_container.dart';
 import '../../../auth/auth.dart';
 import '../../onboarding.dart';
 
+/// ============================================================================
+/// PRESENTATION LAYER — PENDING APPROVAL WIDGET
+/// ============================================================================
+/// Giao diện hiển thị trạng thái "Đang chờ phê duyệt" cho người dùng đã gửi yêu cầu
+/// tham gia dòng họ và đang đợi Trưởng tộc/Admin duyệt.
+///
+/// Các hành động chính:
+///   1. Tải thông tin liên hệ của Trưởng tộc (`GetFamilyDetail` UseCase).
+///   2. Nút kiểm tra lại trạng thái (`AuthCheckRequested` -> cập nhật User Entity từ AuthBloc).
+///   3. Nút đăng xuất tài khoản (`AuthLogoutRequested`).
+/// ============================================================================
 class PendingApprovalWidget extends StatefulWidget {
 
   const PendingApprovalWidget({

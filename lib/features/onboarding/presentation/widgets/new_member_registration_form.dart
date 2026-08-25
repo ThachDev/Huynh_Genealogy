@@ -12,6 +12,18 @@ import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
 
+/// ============================================================================
+/// PRESENTATION LAYER — MEMBER REGISTRATION FORM WIDGET
+/// ============================================================================
+/// Form điền thông tin chi tiết cho người dùng muốn đăng ký gia nhập dòng họ
+/// khi chưa có hồ sơ tồn tại trên cây gia phả.
+///
+/// Bao gồm:
+///   - Thông tin cá nhân cơ bản: Họ tên, Ngày sinh, Quê quán, Giới tính, Học vấn, Hôn nhân.
+///   - Ảnh đại diện (Avatar Picker với kiểm tra dung lượng).
+///   - Mối quan hệ gia đình (Cha/Mẹ, Vợ/Chồng): Hỗ trợ chọn từ danh sách thành viên có sẵn trên cây
+///     hoặc nhập tên tuỳ chỉnh nếu người thân chưa có trên cây.
+/// ============================================================================
 class MemberRegistrationForm extends StatefulWidget {
 
   const MemberRegistrationForm({

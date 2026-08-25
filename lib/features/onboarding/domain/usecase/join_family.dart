@@ -5,6 +5,15 @@ import '../../../../core/usecases/usecase.dart';
 import '../../../../core/domain/entity/family_user_entity.dart';
 import '../repository/onboarding_repository.dart';
 
+/// ============================================================================
+/// USE CASE — JOIN FAMILY (DOMAIN LAYER)
+/// ============================================================================
+/// Đảm nhận nghiệp vụ gửi yêu cầu tham gia vào một dòng họ (gia tộc).
+///
+/// UseCase này nhận `JoinFamilyParams` (bao gồm `userId`, `familyId`, và tuỳ chọn
+/// thông tin cá nhân mới hoặc ID nút thành viên trên cây gia phả để liên kết).
+/// Kết quả trả về `Either<Failure, FamilyUserEntity>`.
+/// ============================================================================
 class JoinFamily implements UseCase<FamilyUserEntity, JoinFamilyParams> {
 
   JoinFamily(this.repository);

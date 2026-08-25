@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,7 +50,11 @@ void main() async {
   await NotificationService.instance.initialize();
   NotificationService.instance.setupBackgroundHandler();
 
-  runApp(const FamilyTreeApp());
+  runApp(
+    DevicePreview(
+      builder: (context) => const FamilyTreeApp(),
+    ),
+  );
 }
 
 class FamilyTreeApp extends StatefulWidget {
@@ -157,12 +162,13 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
-        locale: _locale,
+        locale: DevicePreview.locale(context) ?? _locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         builder: (context, child) {
+          final previewChild = DevicePreview.appBuilder(context, child);
           di.sl<AppLanguage>().init(context);
-          return child!;
+          return previewChild;
         },
       ),
     );

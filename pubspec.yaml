@@ -73,6 +73,8 @@ dependencies:
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
   audioplayers: ^6.7.1
+  flutter_expandable_fab: ^2.4.0
+  device_preview: ^1.2.0
 
 dev_dependencies:
   flutter_test:

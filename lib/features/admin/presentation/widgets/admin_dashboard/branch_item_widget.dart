@@ -11,19 +11,21 @@ class BranchItemWidget extends StatelessWidget {
     super.key,
     required this.branch,
     required this.memberCount,
-    required this.onEdit,
+    this.onEdit,
     this.onDelete,
     this.onTap,
   });
   final BranchEntity branch;
   final int memberCount;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
+    final showMenu = onEdit != null || onDelete != null;
 
     return GestureDetector(
       onTap: onTap ?? onEdit,
@@ -135,65 +137,68 @@ class BranchItemWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                PopupMenuButton<String>(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  color: context.surface,
-                  elevation: 4,
-                  offset: const Offset(18, 30),
-                  onSelected: (value) {
-                    if (value == 'edit') {
-                      onEdit();
-                    } else if (value == 'delete') {
-                      onDelete?.call();
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem<String>(
-                      value: 'edit',
-                      height: 38,
-                      child: Row(
-                        children: [
-                          Icon(LucideIcons.edit,
-                              color: context.textPrimary, size: 18),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.editLabel,
-                            style: GoogleFonts.beVietnamPro(
-                                fontSize: 13, color: context.textPrimary),
+                if (showMenu) ...[
+                  const SizedBox(width: 8),
+                  PopupMenuButton<String>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    color: context.surface,
+                    elevation: 4,
+                    offset: const Offset(18, 30),
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        onEdit?.call();
+                      } else if (value == 'delete') {
+                        onDelete?.call();
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      if (onEdit != null)
+                        PopupMenuItem<String>(
+                          value: 'edit',
+                          height: 38,
+                          child: Row(
+                            children: [
+                              Icon(LucideIcons.edit,
+                                  color: context.textPrimary, size: 18),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.editLabel,
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13, color: context.textPrimary),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    if (onDelete != null)
-                      PopupMenuItem<String>(
-                        value: 'delete',
-                        height: 38,
-                        child: Row(
-                          children: [
-                            Icon(LucideIcons.trash2,
-                                color: context.textPrimary, size: 18),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.deleteLabel,
-                              style: GoogleFonts.beVietnamPro(
-                                  fontSize: 13, color: context.textPrimary),
-                            ),
-                          ],
                         ),
+                      if (onDelete != null)
+                        PopupMenuItem<String>(
+                          value: 'delete',
+                          height: 38,
+                          child: Row(
+                            children: [
+                              Icon(LucideIcons.trash2,
+                                  color: context.textPrimary, size: 18),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.deleteLabel,
+                                style: GoogleFonts.beVietnamPro(
+                                    fontSize: 13, color: context.textPrimary),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        LucideIcons.moreVertical,
+                        color: context.textSecondary,
+                        size: 20,
                       ),
-                  ],
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      LucideIcons.moreVertical,
-                      color: context.textSecondary,
-                      size: 20,
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

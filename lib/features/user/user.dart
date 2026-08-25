@@ -25,7 +25,7 @@ export 'presentation/bloc/user_state.dart';
 // Presentation Pages & Widgets
 export 'presentation/pages/user_events_page.dart';
 export 'presentation/pages/user_family_dashboard_page.dart';
-export 'presentation/widgets/user_branch_card.dart';
+export 'presentation/pages/user_branch_list_page.dart';
 
 // Dependency Injection
 export 'user_injection.dart';

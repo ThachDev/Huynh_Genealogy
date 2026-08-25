@@ -106,23 +106,26 @@ class AppDialog {
           backgroundColor: AppColors.wood,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const AppLoading(size: 60),
-                const SizedBox(width: 16),
-                Flexible(
-                  child: Text(
-                    message ?? l10n.loadingMessage,
-                    style: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontSize: 14,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 360),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const AppLoading(size: 60),
+                  const SizedBox(width: 16),
+                  Flexible(
+                    child: Text(
+                      message ?? l10n.loadingMessage,
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -155,7 +158,6 @@ class AppDialog {
 }
 
 class _AppDialogWidget extends StatelessWidget {
-
   const _AppDialogWidget({
     required this.title,
     required this.message,
@@ -183,119 +185,123 @@ class _AppDialogWidget extends StatelessWidget {
     final icon = _icon();
 
     return Dialog(
-      backgroundColor: context.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Icon
-            if (showIcon) ...[
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: accentColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: accentColor, size: 28),
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // Title
-            Align(
-              alignment: showIcon ? Alignment.center : Alignment.centerLeft,
-              child: Text(
-                title,
-                textAlign: showIcon ? TextAlign.center : TextAlign.left,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: showIcon ? context.textPrimary : accentColor,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // Message
-            Align(
-              alignment: showIcon ? Alignment.center : Alignment.centerLeft,
-              child: messageSpan != null
-                  ? Text.rich(
-                      messageSpan!,
-                      textAlign:
-                          showIcon ? TextAlign.center : TextAlign.justify,
-                    )
-                  : Text(
-                      message,
-                      textAlign:
-                          showIcon ? TextAlign.center : TextAlign.justify,
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
-                        color: context.textSecondary,
-                        height: 1.5,
-                      ),
-                    ),
-            ),
-            const SizedBox(height: 24),
-
-            // Buttons
-            if (showCancel)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(
-                      cancelLabel ?? AppLocalizations.of(context).cancelLabel,
-                      style: GoogleFonts.inter(
-                        color: context.textSecondary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  AppButton(
-                    label: confirmLabel,
-                    onPressed: () => Navigator.of(context).pop(true),
-                    color: accentColor,
-                    size: AppButtonSize.small,
-                  ),
-                ],
-              )
-            else
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: accentColor,
-                    foregroundColor: type == AppDialogType.warning ||
-                            (type == AppDialogType.info && !context.isDarkMode)
-                        ? Colors.black87
-                        : context.textOnPrimary,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  child: Text(
-                    confirmLabel,
-                    style: GoogleFonts.inter(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-          ],
+        backgroundColor: context.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-      ),
-    );
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icon
+                if (showIcon) ...[
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, color: accentColor, size: 28),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                // Title
+                Align(
+                  alignment: showIcon ? Alignment.center : Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    textAlign: showIcon ? TextAlign.center : TextAlign.left,
+                    style: GoogleFonts.beVietnamPro(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: showIcon ? context.textPrimary : accentColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Message
+                Align(
+                  alignment: showIcon ? Alignment.center : Alignment.centerLeft,
+                  child: messageSpan != null
+                      ? Text.rich(
+                          messageSpan!,
+                          textAlign:
+                              showIcon ? TextAlign.center : TextAlign.justify,
+                        )
+                      : Text(
+                          message,
+                          textAlign:
+                              showIcon ? TextAlign.center : TextAlign.justify,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            color: context.textSecondary,
+                            height: 1.5,
+                          ),
+                        ),
+                ),
+                const SizedBox(height: 24),
+
+                // Buttons
+                if (showCancel)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text(
+                          cancelLabel ??
+                              AppLocalizations.of(context).cancelLabel,
+                          style: GoogleFonts.inter(
+                            color: context.textSecondary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      AppButton(
+                        label: confirmLabel,
+                        onPressed: () => Navigator.of(context).pop(true),
+                        color: accentColor,
+                        size: AppButtonSize.small,
+                      ),
+                    ],
+                  )
+                else
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: accentColor,
+                        foregroundColor: type == AppDialogType.warning ||
+                                (type == AppDialogType.info &&
+                                    !context.isDarkMode)
+                            ? Colors.black87
+                            : context.textOnPrimary,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      child: Text(
+                        confirmLabel,
+                        style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ));
   }
 
   Color _accentColor(BuildContext context) {
@@ -326,7 +332,6 @@ class _AppDialogWidget extends StatelessWidget {
 }
 
 class _AppInputDialogWidget extends StatefulWidget {
-
   const _AppInputDialogWidget({
     required this.title,
     required this.message,
@@ -409,89 +414,92 @@ class _AppInputDialogWidgetState extends State<_AppInputDialogWidget> {
     }
 
     return Dialog(
-      backgroundColor: context.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title (Căn trái, chữ đỏ sẫm truyền thống)
-            Text(
-              widget.title,
-              textAlign: TextAlign.left,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: titleColor,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // Message (Căn trái)
-            Text(
-              widget.message,
-              textAlign: TextAlign.left,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                color: context.textSecondary,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Instruction Label với từ khoá "XÁC NHẬN" / "GIẢI TÁN" IN ĐẬM
-            Text.rich(
-              TextSpan(
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  color: context.textSecondary,
-                  height: 1.4,
-                ),
-                children: instructionSpans,
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // Text Input Field chuẩn hệ thống
-            AppTextFieldLight(
-              label: '',
-              controller: _controller,
-              hintText: widget.requiredWord,
-            ),
-            const SizedBox(height: 24),
-
-            // Buttons row (Huỷ + Xác nhận)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+        backgroundColor: context.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 440),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Text(
-                    widget.cancelLabel,
-                    style: GoogleFonts.inter(
-                      color: context.textSecondary,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
+                // Title (Căn trái, chữ đỏ sẫm truyền thống)
+                Text(
+                  widget.title,
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: titleColor,
                   ),
                 ),
-                const SizedBox(width: 12),
-                AppButton(
-                  label: widget.confirmLabel,
-                  onPressed:
-                      _isValid ? () => Navigator.of(context).pop(true) : null,
-                  size: AppButtonSize.small,
+                const SizedBox(height: 12),
+
+                // Message (Căn trái)
+                Text(
+                  widget.message,
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: context.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Instruction Label với từ khoá "XÁC NHẬN" / "GIẢI TÁN" IN ĐẬM
+                Text.rich(
+                  TextSpan(
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: context.textSecondary,
+                      height: 1.4,
+                    ),
+                    children: instructionSpans,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Text Input Field chuẩn hệ thống
+                AppTextFieldLight(
+                  label: '',
+                  controller: _controller,
+                  hintText: widget.requiredWord,
+                ),
+                const SizedBox(height: 24),
+
+                // Buttons row (Huỷ + Xác nhận)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(
+                        widget.cancelLabel,
+                        style: GoogleFonts.inter(
+                          color: context.textSecondary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    AppButton(
+                      label: widget.confirmLabel,
+                      onPressed: _isValid
+                          ? () => Navigator.of(context).pop(true)
+                          : null,
+                      size: AppButtonSize.small,
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

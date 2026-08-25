@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
@@ -25,6 +30,44 @@ class FamilyMemberDetailPage extends StatefulWidget {
 }
 
 class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
+  final _boundaryKey = GlobalKey();
+  bool _isSharing = false;
+
+  Future<void> _sharePage(BuildContext context, AppLocalizations l10n) async {
+    if (_isSharing) return;
+    setState(() => _isSharing = true);
+    try {
+      final boundary = _boundaryKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
+      if (boundary == null) return;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+      final bytes = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final sanitizedName =
+          widget.member.fullName.toLowerCase().replaceAll(RegExp(r'\s+'), '_');
+      final fileName =
+          'thanh_vien_${sanitizedName}_${DateTime.now().millisecondsSinceEpoch}.png';
+      final file = await File('${tempDir.path}/$fileName').create();
+      await file.writeAsBytes(bytes);
+
+      await Share.shareXFiles(
+        [XFile(file.path, mimeType: 'image/png')],
+        text: '${widget.member.fullName} - ${l10n.memberDetailTitle}',
+      );
+    } catch (_) {
+      if (context.mounted) {
+        AppSnackBar.error(context, l10n.qrSaveError);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSharing = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -70,252 +113,260 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
         .firstOrNull;
 
     return Scaffold(
-      backgroundColor: context.background,
-      appBar: AppAppBar(
-        title: l10n.memberDetailTitle,
-        actions: [
-          if (canEdit) ...[
+        backgroundColor: context.background,
+        appBar: AppAppBar(
+          title: l10n.memberDetailTitle,
+          actions: [
             IconButton(
-              icon: Icon(LucideIcons.link2, color: context.textPrimary),
-              tooltip: l10n.linkAccountsLabel,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  SereneFadeSlidePageRoute(
-                    page: AdminLinkAndRolesPage(
-                      memberId: widget.member.id,
-                    ),
-                  ),
-                );
-              },
+              icon: Icon(LucideIcons.share2, color: context.textPrimary),
+              tooltip: l10n.shareLabel,
+              onPressed: _isSharing ? null : () => _sharePage(context, l10n),
             ),
-            IconButton(
-              icon: Icon(LucideIcons.edit3, color: context.textPrimary),
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  SereneFadeSlidePageRoute(
-                    page: AdminMemberFormPage(
-                      memberId: widget.member.id,
+            if (canEdit) ...[
+              IconButton(
+                icon: Icon(LucideIcons.link2, color: context.textPrimary),
+                tooltip: l10n.linkAccountsLabel,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    SereneFadeSlidePageRoute(
+                      page: AdminLinkAndRolesPage(
+                        memberId: widget.member.id,
+                      ),
                     ),
-                  ),
-                );
-                if (result == true && context.mounted) {
-                  Navigator.pop(context, true);
-                }
-              },
-            ),
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(LucideIcons.edit3, color: context.textPrimary),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    SereneFadeSlidePageRoute(
+                      page: AdminMemberFormPage(
+                        memberId: widget.member.id,
+                      ),
+                    ),
+                  );
+                  if (result == true && context.mounted) {
+                    Navigator.pop(context, true);
+                  }
+                },
+              ),
+            ],
           ],
-        ],
-      ),
-      body: AppBackgroundBody(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.topCenter,
-            children: [
-              // ── Khối thông tin gộp chung ──
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 48), // Chừa chỗ cho avatar nổi lên
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(16, 64, 16, 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Họ và tên
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              widget.member.fullName.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: context.primary,
-                                letterSpacing: 1.0,
-                              ),
-                            ),
-                            if (widget.member.linkedUserEmail != null &&
-                                widget.member.linkedUserEmail!.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    LucideIcons.mail,
-                                    size: 13,
-                                    color: context.textSecondary,
+        ),
+        body: RepaintBoundary(
+          key: _boundaryKey,
+          child: AppBackgroundBody(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
+                children: [
+                  // ── Khối thông tin gộp chung ──
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 48), // Chừa chỗ cho avatar nổi lên
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(16, 64, 16, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Họ và tên
+                          Center(
+                            child: Column(
+                              children: [
+                                Text(
+                                  widget.member.fullName.toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: context.primary,
+                                    letterSpacing: 1.0,
                                   ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    widget.member.linkedUserEmail!,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: context.textSecondary,
-                                    ),
+                                ),
+                                if (widget.member.linkedUserEmail != null &&
+                                    widget.member.linkedUserEmail!
+                                        .isNotEmpty) ...[
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        LucideIcons.mail,
+                                        size: 13,
+                                        color: context.textSecondary,
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        widget.member.linkedUserEmail!,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: context.textSecondary,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              ),
-                            ],
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _buildBadge(
-                                  l10n.generationLabel(
-                                      '${widget.member.generation ?? "?"}'),
-                                  context.accent,
-                                ),
-                                const SizedBox(width: 8),
-                                _buildBadge(
-                                  widget.member.isAlive
-                                      ? l10n.aliveLabel
-                                      : l10n.deceasedLabel,
-                                  widget.member.isAlive
-                                      ? Colors.green
-                                      : context.textSecondary,
-                                  icon: widget.member.isAlive
-                                      ? null
-                                      : LucideIcons.flame,
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _buildBadge(
+                                      l10n.generationLabel(
+                                          '${widget.member.generation ?? "?"}'),
+                                      context.accent,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    _buildBadge(
+                                      widget.member.isAlive
+                                          ? l10n.aliveLabel
+                                          : l10n.deceasedLabel,
+                                      widget.member.isAlive
+                                          ? Colors.green
+                                          : context.textSecondary,
+                                      icon: widget.member.isAlive
+                                          ? null
+                                          : LucideIcons.flame,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      const Divider(height: 1),
-                      const SizedBox(height: 16),
+                          ),
+                          const SizedBox(height: 24),
+                          const Divider(height: 1),
+                          const SizedBox(height: 16),
 
-                      // Section 1: Thông tin cá nhân
-                      _buildSectionHeader(l10n.personalInfoSectionTitle),
-                      const SizedBox(height: 8),
-                      _buildInfoRow(
-                        LucideIcons.cake,
-                        l10n.dateOfBirthLabel,
-                        DateFormatter.formatForDisplay(
-                                widget.member.dateOfBirth) ??
-                            l10n.unknownLabel,
-                      ),
-                      if (!widget.member.isAlive)
-                        _buildInfoRow(
-                          LucideIcons.skull,
-                          l10n.dateOfDeathLabel,
-                          DateFormatter.formatForDisplay(
-                                  widget.member.dateOfDeath) ??
-                              l10n.unknownLabel,
-                        ),
-                      _buildInfoRow(
-                        LucideIcons.user,
-                        l10n.genderLabel,
-                        widget.member.gender == Gender.male
-                            ? l10n.genderMale
-                            : l10n.genderFemale,
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.mapPin,
-                        l10n.placeOfBirthLabel,
-                        (widget.member.placeOfBirth?.isNotEmpty == true)
-                            ? widget.member.placeOfBirth!
-                            : l10n.unknownLabel,
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.phone,
-                        l10n.phoneLabel,
-                        (widget.member.phone?.isNotEmpty == true)
-                            ? widget.member.phone!
-                            : l10n.unknownLabel,
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.heart,
-                        l10n.maritalStatusShortLabel,
-                        _getMaritalStatusText(
-                            widget.member.maritalStatus, l10n),
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.bookOpen,
-                        l10n.educationLabel,
-                        (widget.member.education?.isNotEmpty == true)
-                            ? widget.member.education!
-                            : l10n.unknownLabel,
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.briefcase,
-                        l10n.occupationLabel,
-                        (widget.member.occupation?.isNotEmpty == true)
-                            ? widget.member.occupation!
-                            : l10n.unknownLabel,
-                      ),
-                      const SizedBox(height: 24),
-                      const Divider(height: 1),
-                      const SizedBox(height: 16),
+                          // Section 1: Thông tin cá nhân
+                          _buildSectionHeader(l10n.personalInfoSectionTitle),
+                          const SizedBox(height: 8),
+                          _buildInfoRow(
+                            LucideIcons.cake,
+                            l10n.dateOfBirthLabel,
+                            DateFormatter.formatForDisplay(
+                                    widget.member.dateOfBirth) ??
+                                l10n.unknownLabel,
+                          ),
+                          if (!widget.member.isAlive)
+                            _buildInfoRow(
+                              LucideIcons.skull,
+                              l10n.dateOfDeathLabel,
+                              DateFormatter.formatForDisplay(
+                                      widget.member.dateOfDeath) ??
+                                  l10n.unknownLabel,
+                            ),
+                          _buildInfoRow(
+                            LucideIcons.user,
+                            l10n.genderLabel,
+                            widget.member.gender == Gender.male
+                                ? l10n.genderMale
+                                : l10n.genderFemale,
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.mapPin,
+                            l10n.placeOfBirthLabel,
+                            (widget.member.placeOfBirth?.isNotEmpty == true)
+                                ? widget.member.placeOfBirth!
+                                : l10n.unknownLabel,
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.phone,
+                            l10n.phoneLabel,
+                            (widget.member.phone?.isNotEmpty == true)
+                                ? widget.member.phone!
+                                : l10n.unknownLabel,
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.heart,
+                            l10n.maritalStatusShortLabel,
+                            _getMaritalStatusText(
+                                widget.member.maritalStatus, l10n),
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.bookOpen,
+                            l10n.educationLabel,
+                            (widget.member.education?.isNotEmpty == true)
+                                ? widget.member.education!
+                                : l10n.unknownLabel,
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.briefcase,
+                            l10n.occupationLabel,
+                            (widget.member.occupation?.isNotEmpty == true)
+                                ? widget.member.occupation!
+                                : l10n.unknownLabel,
+                          ),
+                          const SizedBox(height: 24),
+                          const Divider(height: 1),
+                          const SizedBox(height: 16),
 
-                      // Section 2: Quan hệ gia đình
-                      _buildSectionHeader(l10n.familyRelationSectionTitle),
-                      const SizedBox(height: 8),
-                      _buildInfoRow(
-                        LucideIcons.user,
-                        l10n.fatherLabel,
-                        father?.fullName ?? l10n.unknownLabel,
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.user,
-                        l10n.motherLabel,
-                        mother?.fullName ?? l10n.unknownLabel,
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.heart,
-                        l10n.spouseLabel,
-                        spouse?.fullName ?? l10n.unknownLabel,
-                      ),
-                      _buildInfoRow(
-                        LucideIcons.gitCommit,
-                        l10n.branchLabel,
-                        (widget.member.branchName?.isNotEmpty == true)
-                            ? widget.member.branchName!
-                            : l10n.unknownLabel,
-                      ),
-                      const SizedBox(height: 24),
-                      const Divider(height: 1),
-                      const SizedBox(height: 16),
+                          // Section 2: Quan hệ gia đình
+                          _buildSectionHeader(l10n.familyRelationSectionTitle),
+                          const SizedBox(height: 8),
+                          _buildInfoRow(
+                            LucideIcons.user,
+                            l10n.fatherLabel,
+                            father?.fullName ?? l10n.unknownLabel,
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.user,
+                            l10n.motherLabel,
+                            mother?.fullName ?? l10n.unknownLabel,
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.heart,
+                            l10n.spouseLabel,
+                            spouse?.fullName ?? l10n.unknownLabel,
+                          ),
+                          _buildInfoRow(
+                            LucideIcons.gitCommit,
+                            l10n.branchLabel,
+                            (widget.member.branchName?.isNotEmpty == true)
+                                ? widget.member.branchName!
+                                : l10n.unknownLabel,
+                          ),
+                          const SizedBox(height: 24),
+                          const Divider(height: 1),
+                          const SizedBox(height: 16),
 
-                      // Section 3: Tiểu sử
-                      _buildSectionHeader(l10n.biographySectionTitle),
-                      const SizedBox(height: 12),
-                      Text(
-                        widget.member.notes != null &&
-                                widget.member.notes!.isNotEmpty
-                            ? widget.member.notes!
-                            : l10n.noBiographyMessage,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          height: 1.6,
-                        ),
+                          // Section 3: Tiểu sử
+                          _buildSectionHeader(l10n.biographySectionTitle),
+                          const SizedBox(height: 12),
+                          Text(
+                            widget.member.notes != null &&
+                                    widget.member.notes!.isNotEmpty
+                                ? widget.member.notes!
+                                : l10n.noBiographyMessage,
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              height: 1.6,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
 
-              // ── Avatar nổi ở mép trên ──
-              Positioned(
-                top: 0,
-                child: AppAvatar(
-                  avatarUrl: widget.member.avatarUrl,
-                  fullName: widget.member.fullName,
-                  radius: 48,
-                  fontSize: 32,
-                ),
+                  // ── Avatar nổi ở mép trên ──
+                  Positioned(
+                    top: 0,
+                    child: AppAvatar(
+                      avatarUrl: widget.member.avatarUrl,
+                      fullName: widget.member.fullName,
+                      radius: 48,
+                      fontSize: 32,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildSectionHeader(String title) {

@@ -99,38 +99,42 @@ class AppBackgroundBody extends StatelessWidget {
   const AppBackgroundBody({
     super.key,
     required this.child,
+    this.enableMaxWidth = true,
+    this.maxWidth = 600,
   });
 
   final Widget child;
+  final bool enableMaxWidth;
+  final double maxWidth;
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.isDarkMode;
+    final bgImage = isDark
+        ? 'assets/images/background_dark.png'
+        : 'assets/images/background.png';
 
-    if (isDark) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/background_dark.png'),
-            fit: BoxFit.cover,
-          ),
+    Widget content = child;
+    if (enableMaxWidth) {
+      content = Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: child,
         ),
-        child: child,
       );
     }
 
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/background.png'),
+          image: AssetImage(bgImage),
           fit: BoxFit.cover,
         ),
       ),
-      child: child,
+      child: content,
     );
   }
 }

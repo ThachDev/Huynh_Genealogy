@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:vnlunar/vnlunar.dart';
-
 
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -13,13 +11,9 @@ import '../../../../features/auth/auth.dart';
 import '../../../../features/family_tree/family_tree.dart';
 import '../../../events/events.dart';
 import '../../../admin/admin.dart';
-import '../models/upcoming_anniversary.dart';
 import '../widgets/user_event_card.dart';
-import '../widgets/user_notifications_widget.dart';
-import 'user_anniversary_list_page.dart';
 
 class UserEventsPage extends StatefulWidget {
-
   const UserEventsPage({
     super.key,
     required this.familyId,
@@ -128,128 +122,6 @@ class _UserEventsPageState extends State<UserEventsPage>
     }
   }
 
-  List<UpcomingAnniversary> _calculateDeathAnniversaries(
-      List<MemberEntity> members) {
-    final List<UpcomingAnniversary> anniversaries = [];
-    final today = DateTime.now();
-    final todayOnlyDate = DateTime(today.year, today.month, today.day);
-
-    for (final member in members) {
-      if (member.isAlive) continue;
-
-      int? lunarDay;
-      int? lunarMonth;
-
-      if (member.lunarDeathDate != null && member.lunarDeathDate!.isNotEmpty) {
-        final match =
-            RegExp(r'(\d+)\/(\d+)').firstMatch(member.lunarDeathDate!);
-        if (match != null) {
-          lunarDay = int.tryParse(match.group(1) ?? '');
-          lunarMonth = int.tryParse(match.group(2) ?? '');
-        }
-      }
-
-      if (lunarDay == null || lunarMonth == null) {
-        if (member.dateOfDeath != null && member.dateOfDeath!.isNotEmpty) {
-          try {
-            final parts = member.dateOfDeath!.split('-');
-            if (parts.length == 3) {
-              final year = int.tryParse(parts[0]);
-              final month = int.tryParse(parts[1]);
-              final day = int.tryParse(parts[2]);
-              if (year != null && month != null && day != null) {
-                final dt = DateTime(year, month, day);
-                final lunar = Lunar(createdFromSolar: true, date: dt);
-                lunarDay = lunar.day;
-                lunarMonth = lunar.month;
-              }
-            }
-          } catch (_) {}
-        }
-      }
-
-      if (lunarDay != null && lunarMonth != null) {
-        try {
-          final todayLunar = Lunar(createdFromSolar: true, date: today);
-          final currentLunarYear = todayLunar.year;
-
-          final listSolar = convertLunar2Solar(
-              lunarDay, lunarMonth, currentLunarYear, false);
-          var solarAnniversary =
-              DateTime(listSolar[2], listSolar[1], listSolar[0]);
-
-          if (solarAnniversary.isBefore(todayOnlyDate)) {
-            final nextListSolar = convertLunar2Solar(
-                lunarDay, lunarMonth, currentLunarYear + 1, false);
-            solarAnniversary =
-                DateTime(nextListSolar[2], nextListSolar[1], nextListSolar[0]);
-          }
-
-          final days = solarAnniversary.difference(todayOnlyDate).inDays;
-          final solarLabel =
-              '${solarAnniversary.day.toString().padLeft(2, '0')}/${solarAnniversary.month.toString().padLeft(2, '0')}';
-          final lunarLabel =
-              '${lunarDay.toString().padLeft(2, '0')}/${lunarMonth.toString().padLeft(2, '0')} ÂL';
-
-          anniversaries.add(UpcomingAnniversary(
-            member: member,
-            title: member.fullName,
-            solarDateLabel: solarLabel,
-            lunarDateLabel: lunarLabel,
-            daysRemaining: days,
-            isBirthday: false,
-            targetDate: solarAnniversary,
-          ));
-        } catch (_) {}
-      }
-    }
-
-    anniversaries.sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
-    return anniversaries;
-  }
-
-  List<UpcomingAnniversary> _calculateBirthdays(List<MemberEntity> members) {
-    final List<UpcomingAnniversary> birthdays = [];
-    final today = DateTime.now();
-    final todayOnlyDate = DateTime(today.year, today.month, today.day);
-
-    for (final member in members) {
-      if (!member.isAlive) continue;
-      if (member.dateOfBirth == null || member.dateOfBirth!.isEmpty) continue;
-
-      try {
-        final parts = member.dateOfBirth!.split('-');
-        if (parts.length == 3) {
-          final birthMonth = int.tryParse(parts[1]);
-          final birthDay = int.tryParse(parts[2]);
-
-          if (birthMonth != null && birthDay != null) {
-            var birthdayThisYear = DateTime(today.year, birthMonth, birthDay);
-            if (birthdayThisYear.isBefore(todayOnlyDate)) {
-              birthdayThisYear = DateTime(today.year + 1, birthMonth, birthDay);
-            }
-
-            final days = birthdayThisYear.difference(todayOnlyDate).inDays;
-            final solarLabel =
-                '${birthDay.toString().padLeft(2, '0')}/${birthMonth.toString().padLeft(2, '0')}';
-
-            birthdays.add(UpcomingAnniversary(
-              member: member,
-              title: member.fullName,
-              solarDateLabel: solarLabel,
-              daysRemaining: days,
-              isBirthday: true,
-              targetDate: birthdayThisYear,
-            ));
-          }
-        }
-      } catch (_) {}
-    }
-
-    birthdays.sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
-    return birthdays;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -287,93 +159,9 @@ class _UserEventsPageState extends State<UserEventsPage>
                   t != 'thông báo';
             }).toList();
 
-            List<MemberEntity> members = [];
-            if (treeState is FamilyTreeLoaded) {
-              members = treeState.members;
-            }
-
-            final unreadCount = announcements
-                .where((e) => !NotificationReadController.instance
-                    .isRead(e.id.toString()))
-                .length;
-
-            final deathAnniversaries = _calculateDeathAnniversaries(members);
-            final birthdays = _calculateBirthdays(members);
-
             return Scaffold(
               appBar: AppAppBar(
                 title: l10n.eventsListTitle,
-                actions: [
-                  // Icon Giỗ & Sinh Nhật (đứng trước chuông)
-                  IconButton(
-                    icon: Icon(
-                      LucideIcons.calendarHeart,
-                      color: context.textPrimary,
-                      size: 22,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        SereneFadeSlidePageRoute(
-                          page: UserAnniversaryListPage(
-                            deathAnniversaries: deathAnniversaries,
-                            birthdays: birthdays,
-                          ),
-                        ),
-                      );
-                    },
-                    tooltip: l10n.anniversariesTitle,
-                  ),
-                  IconButton(
-                    icon: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Icon(LucideIcons.bell,
-                            color: context.textPrimary, size: 22),
-                        if (unreadCount > 0)
-                          Positioned(
-                            top: -8,
-                            right: -6,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: context.error,
-                                shape: BoxShape.circle,
-                              ),
-                              constraints: const BoxConstraints(
-                                minWidth: 16,
-                                minHeight: 16,
-                              ),
-                              child: Text(
-                                '$unreadCount',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        SereneFadeSlidePageRoute(
-                          page: UserNotificationsPage(
-                            familyId: widget.familyId,
-                            announcements: announcements,
-                            isAdminMode: widget.isAdminMode,
-                          ),
-                        ),
-                      );
-                      if (mounted) setState(() {});
-                    },
-                    tooltip: l10n.eventTypeAnnouncement,
-                  ),
-                  const SizedBox(width: 8),
-                ],
               ),
               body: AppBackgroundBody(
                 child: Builder(

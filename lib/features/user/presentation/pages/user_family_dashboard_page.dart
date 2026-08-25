@@ -1,23 +1,28 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gal/gal.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../family_tree/family_tree.dart';
-import '../widgets/user_branch_card.dart';
 import '../../../auth/auth.dart';
 import '../../../events/events.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../admin/presentation/widgets/admin_dashboard/member_item_widget.dart';
-import '../../../admin/presentation/widgets/admin_dashboard/family_dashboard_header_widget.dart';
 
-import '../../../../core/di/injection_container.dart';
-import '../widgets/family_highlight_carousel.dart';
-import '../widgets/incense_offering_dialog.dart';
 import '../widgets/user_notifications_widget.dart';
-import '../../domain/repository/wish_repository.dart';
-import '../../domain/entities/wish_entity.dart';
+import '../widgets/user_quick_actions_widget.dart';
+import 'user_branch_list_page.dart';
+import '../../../admin/presentation/widgets/admin_dashboard/member_item_widget.dart';
 import 'user_anniversary_list_page.dart';
 import '../../domain/services/anniversary_calculator.dart';
 import '../../domain/services/member_filter.dart';
@@ -84,6 +89,173 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     return authState is Authenticated ? authState.user.familyId : null;
   }
 
+  Future<Uint8List?> _captureQr(GlobalKey key) async {
+    try {
+      final boundary =
+          key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return null;
+      final image = await boundary.toImage(pixelRatio: 4.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      return byteData?.buffer.asUint8List();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void _showQrDialog(BuildContext context, String code) {
+    final qrKey = GlobalKey();
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx);
+        return Dialog(
+          backgroundColor: ctx.surface,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Stack(
+            children: [
+              Container(
+                width: 340,
+                padding: const EdgeInsets.fromLTRB(20, 26, 20, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      l10n.qrDialogTitle,
+                      style: GoogleFonts.beVietnamPro(
+                        fontWeight: FontWeight.bold,
+                        color: ctx.textPrimary,
+                        fontSize: 17,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    RepaintBoundary(
+                      key: qrKey,
+                      child: Container(
+                        width: 260,
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            QrImageView(
+                              data: code,
+                              size: 228.0,
+                              gapless: false,
+                            ),
+                            const SizedBox(height: 10),
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '${l10n.clanCodeLabel} ',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color(0xFF666666),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: code,
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF1E1E1E),
+                                      letterSpacing: 1.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            label: l10n.downloadLabel,
+                            fontSize: 12.5,
+                            onPressed: () async {
+                              final bytes = await _captureQr(qrKey);
+                              if (bytes == null) return;
+                              try {
+                                await Gal.putImageBytes(bytes,
+                                    name: 'qr_$code');
+                                if (ctx.mounted) {
+                                  AppSnackBar.success(ctx, l10n.qrSaved);
+                                }
+                              } catch (e) {
+                                if (ctx.mounted) {
+                                  AppSnackBar.error(ctx, l10n.qrSaveError);
+                                }
+                              }
+                            },
+                            prefixIcon:
+                                const Icon(LucideIcons.download, size: 15),
+                            variant: AppButtonVariant.secondary,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: AppButton(
+                            label: l10n.shareLabel,
+                            fontSize: 12.5,
+                            onPressed: () async {
+                              final bytes = await _captureQr(qrKey);
+                              if (bytes == null) return;
+                              try {
+                                final tempDir = await getTemporaryDirectory();
+                                final file = await File(
+                                  '${tempDir.path}/qr_${code}_${DateTime.now().millisecondsSinceEpoch}.png',
+                                ).create();
+                                await file.writeAsBytes(bytes);
+                                await Share.shareXFiles(
+                                  [XFile(file.path, mimeType: 'image/png')],
+                                );
+                              } catch (_) {
+                                if (ctx.mounted) {
+                                  AppSnackBar.error(ctx, l10n.qrSaveError);
+                                }
+                              }
+                            },
+                            prefixIcon: const Icon(LucideIcons.share2,
+                                size: 15, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: IconButton(
+                  icon: Icon(LucideIcons.x, color: ctx.textSecondary, size: 20),
+                  onPressed: () => Navigator.pop(ctx),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -131,523 +303,106 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                           ),
                         ),
                       if (state is FamilyTreeLoaded) ...[
-                        const SliverToBoxAdapter(child: SizedBox(height: 10)),
+                        const SliverToBoxAdapter(child: SizedBox(height: 6)),
 
-                        // ── 1. Banner Tiêu Điểm Sắp Tới (Carousel) ──
-                        BlocBuilder<EventsBloc, EventsState>(
-                          builder: (context, eventsState) {
-                            final events = eventsState is EventsLoaded
-                                ? eventsState.events
-                                : <EventEntity>[];
-
-                            return SliverToBoxAdapter(
-                              child: FamilyHighlightCarousel(
-                                events: events,
-                                members: state.members,
-                                onGoToEvents: () {
-                                  UserMainNavigationPage
-                                      .tabIndexNotifier.value = 1;
-                                },
-                                onGoToEventDetail: (event) {
-                                  UserMainNavigationPage
-                                      .tabIndexNotifier.value = 1;
-                                },
-                                onGoToAnniversaries: () =>
-                                    _openAnniversaryList(state.members),
-                                onGoToBirthdays: () => _openAnniversaryList(
-                                  state.members,
-                                  initialTabIndex: 1,
-                                ),
-                                onIncenseTap: (name) =>
-                                    _showIncenseDialog(context, name),
-                              ),
-                            );
-                          },
-                        ),
-
-                        const SliverToBoxAdapter(child: SizedBox(height: 2)),
-
-                        // ── 2. Branches Section ──
+                        // ── 1. Lối tắt hành động nhanh (Quick Actions Hub) ──
                         SliverToBoxAdapter(
-                          child: AppSectionTitle(
-                            title: l10n.branchTabLabel,
-                            trailing: _filter.branchId != null
-                                ? GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _filter = _filter.copyWith();
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: context.primary
-                                            .withValues(alpha: 0.12),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            l10n.clearBranchFilterLabel,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 11,
-                                              color: context.primary,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Icon(LucideIcons.x,
-                                              size: 12, color: context.primary),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                : null,
+                          child: UserQuickActionsWidget(
+                            onOpenBranches: () {
+                              Navigator.push(
+                                context,
+                                SereneFadeSlidePageRoute(
+                                  page: UserBranchListPage(
+                                    branches: state.branches,
+                                    members: state.members,
+                                  ),
+                                ),
+                              );
+                            },
+                            onGoToAnniversaries: () =>
+                                _openAnniversaryList(state.members),
+                            onOpenInviteCode: () {
+                              final inviteCode = state.family?.inviteCode ?? '';
+                              if (inviteCode.isNotEmpty) {
+                                _showQrDialog(context, inviteCode);
+                              } else {
+                                AppSnackBar.warning(
+                                    context, 'Chưa có mã gia tộc');
+                              }
+                            },
                           ),
                         ),
-                        SliverToBoxAdapter(
-                          child: ClipRect(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: SizedBox(
-                                height: 140,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  padding: EdgeInsets.zero,
-                                  clipBehavior: Clip.none,
-                                  itemCount: state.branches.length,
-                                  itemBuilder: (_, index) {
-                                    final branch = state.branches[index];
-                                    final isSelected =
-                                        _filter.branchId == branch.id;
-                                    return SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.6,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                          right:
-                                              index < state.branches.length - 1
-                                                  ? 12
-                                                  : 0,
-                                        ),
-                                        child: UserBranchCard(
-                                          branch: branch,
-                                          isSelected: isSelected,
-                                          onTap: () {
-                                            setState(() {
-                                              if (_filter.branchId ==
-                                                  branch.id) {
-                                                _filter = _filter.copyWith();
-                                              } else {
-                                                _filter = _filter.copyWith(
-                                                    branchId: branch.id);
-                                              }
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // ── 4. Members Section Title & Search + Filter ──
+
+                        const SliverToBoxAdapter(child: SizedBox(height: 8)),
+
+                        // ── 3. Danh sách Thành viên & Bộ lọc ──
                         SliverToBoxAdapter(
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
-                            child: Row(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: 4,
-                                  height: 18,
-                                  color: context.primary,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  l10n.statMembers.toUpperCase(),
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: context.textPrimary,
-                                    letterSpacing: 1,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                // ── Thanh tìm kiếm luôn mở + Nút bộ lọc ──
-                                Expanded(
-                                  child: Container(
-                                    height: 38,
-                                    decoration: BoxDecoration(
-                                      color: context.surface,
-                                      borderRadius: BorderRadius.circular(19),
-                                      border: Border.all(
-                                        color: context.accent
-                                            .withValues(alpha: 0.12),
+                                // Header: Tiêu đề + Badge đếm số lượng
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 3.5,
+                                      height: 16,
+                                      decoration: BoxDecoration(
+                                        color: context.primary,
+                                        borderRadius: BorderRadius.circular(2),
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.03),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 1),
-                                        ),
-                                      ],
                                     ),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 10),
-                                        Icon(
-                                          LucideIcons.search,
-                                          size: 16,
-                                          color: context.textSecondary,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Expanded(
-                                          child: TextField(
-                                            controller: _searchController,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 13,
-                                              color: context.textPrimary,
-                                            ),
-                                            decoration: InputDecoration(
-                                              hintText: l10n.searchMembersHint,
-                                              hintStyle: GoogleFonts.inter(
-                                                fontSize: 12,
-                                                color: context.textSecondary
-                                                    .withValues(alpha: 0.6),
-                                              ),
-                                              border: InputBorder.none,
-                                              isDense: true,
-                                              contentPadding: EdgeInsets.zero,
-                                            ),
-                                          ),
-                                        ),
-                                        if (_filter.searchQuery.isNotEmpty)
-                                          GestureDetector(
-                                            onTap: () {
-                                              _searchController.clear();
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 4),
-                                              child: Icon(
-                                                LucideIcons.x,
-                                                size: 15,
-                                                color: context.textSecondary,
-                                              ),
-                                            ),
-                                          ),
-                                        // ── Nút Bộ Lọc dạng Switch / Toggle ──
-                                        Theme(
-                                          data: Theme.of(context).copyWith(
-                                            splashColor: Colors.transparent,
-                                            highlightColor: Colors.transparent,
-                                          ),
-                                          child: PopupMenuButton<void>(
-                                            icon: Stack(
-                                              clipBehavior: Clip.none,
-                                              children: [
-                                                Icon(
-                                                  LucideIcons.listFilter,
-                                                  size: 17,
-                                                  color: _filter
-                                                          .hasActiveFilters
-                                                      ? context.primary
-                                                      : context.textSecondary,
-                                                ),
-                                                if (_filter.hasActiveFilters)
-                                                  Positioned(
-                                                    top: -2,
-                                                    right: -2,
-                                                    child: Container(
-                                                      width: 6,
-                                                      height: 6,
-                                                      decoration: BoxDecoration(
-                                                        color: context.primary,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                            padding: EdgeInsets.zero,
-                                            constraints: const BoxConstraints(
-                                              minWidth: 32,
-                                              minHeight: 32,
-                                            ),
-                                            offset: const Offset(0, 42),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              side: BorderSide(
-                                                color: context.accent
-                                                    .withValues(alpha: 0.12),
-                                              ),
-                                            ),
-                                            color: context.surface,
-                                            elevation: 6,
-                                            itemBuilder: (context) => [
-                                              PopupMenuItem<void>(
-                                                enabled: false,
-                                                padding: EdgeInsets.zero,
-                                                child: StatefulBuilder(
-                                                  builder:
-                                                      (context, setMenuState) {
-                                                    return Container(
-                                                      width: 210,
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 14,
-                                                          vertical: 8),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          // ── Header Bộ Lọc ──
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                l10n.optionsLabel,
-                                                                style: GoogleFonts
-                                                                    .beVietnamPro(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: context
-                                                                      .textPrimary,
-                                                                ),
-                                                              ),
-                                                              const Spacer(),
-                                                              if (_filter
-                                                                  .hasActiveFilters)
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    setState(
-                                                                        () {
-                                                                      _filter =
-                                                                          const MemberFilter();
-                                                                    });
-                                                                    setMenuState(
-                                                                        () {});
-                                                                  },
-                                                                  child: Text(
-                                                                    l10n.resetFilterLabel,
-                                                                    style: GoogleFonts
-                                                                        .inter(
-                                                                      fontSize:
-                                                                          11,
-                                                                      color: context
-                                                                          .accent,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 12),
-
-                                                          // ── 1. Switch: Còn sống / Đã mất ──
-                                                          Text(
-                                                            l10n.statusLabel,
-                                                            style: GoogleFonts
-                                                                .inter(
-                                                              fontSize: 11,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: context
-                                                                  .textSecondary,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 6),
-                                                          Container(
-                                                            height: 32,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: context
-                                                                  .background,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          16),
-                                                              border: Border.all(
-                                                                  color: context
-                                                                      .textSecondary
-                                                                      .withValues(
-                                                                          alpha:
-                                                                              0.15)),
-                                                            ),
-                                                            child: Row(
-                                                              children: [
-                                                                _buildSwitchOption(
-                                                                  label: l10n
-                                                                      .aliveLabel,
-                                                                  isSelected: _filter
-                                                                          .status ==
-                                                                      MemberStatusFilter
-                                                                          .alive,
-                                                                  onTap: () {
-                                                                    setState(
-                                                                        () {
-                                                                      _filter =
-                                                                          _filter
-                                                                              .copyWith(
-                                                                        status: _filter.status ==
-                                                                                MemberStatusFilter.alive
-                                                                            ? MemberStatusFilter.all
-                                                                            : MemberStatusFilter.alive,
-                                                                      );
-                                                                    });
-                                                                    setMenuState(
-                                                                        () {});
-                                                                  },
-                                                                ),
-                                                                _buildSwitchOption(
-                                                                  label: l10n
-                                                                      .deceasedLabel,
-                                                                  isSelected: _filter
-                                                                          .status ==
-                                                                      MemberStatusFilter
-                                                                          .deceased,
-                                                                  onTap: () {
-                                                                    setState(
-                                                                        () {
-                                                                      _filter =
-                                                                          _filter
-                                                                              .copyWith(
-                                                                        status: _filter.status ==
-                                                                                MemberStatusFilter.deceased
-                                                                            ? MemberStatusFilter.all
-                                                                            : MemberStatusFilter.deceased,
-                                                                      );
-                                                                    });
-                                                                    setMenuState(
-                                                                        () {});
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 12),
-
-                                                          // ── 2. Switch: Giới tính Nam / Nữ ──
-                                                          Text(
-                                                            l10n.genderLabel,
-                                                            style: GoogleFonts
-                                                                .inter(
-                                                              fontSize: 11,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: context
-                                                                  .textSecondary,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 6),
-                                                          Container(
-                                                            height: 32,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: context
-                                                                  .background,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          16),
-                                                              border: Border.all(
-                                                                  color: context
-                                                                      .textSecondary
-                                                                      .withValues(
-                                                                          alpha:
-                                                                              0.15)),
-                                                            ),
-                                                            child: Row(
-                                                              children: [
-                                                                _buildSwitchOption(
-                                                                  label: l10n
-                                                                      .genderMale,
-                                                                  isSelected: _filter
-                                                                          .gender ==
-                                                                      MemberGenderFilter
-                                                                          .male,
-                                                                  onTap: () {
-                                                                    setState(
-                                                                        () {
-                                                                      _filter =
-                                                                          _filter
-                                                                              .copyWith(
-                                                                        gender: _filter.gender ==
-                                                                                MemberGenderFilter.male
-                                                                            ? MemberGenderFilter.all
-                                                                            : MemberGenderFilter.male,
-                                                                      );
-                                                                    });
-                                                                    setMenuState(
-                                                                        () {});
-                                                                  },
-                                                                ),
-                                                                _buildSwitchOption(
-                                                                  label: l10n
-                                                                      .genderFemale,
-                                                                  isSelected: _filter
-                                                                          .gender ==
-                                                                      MemberGenderFilter
-                                                                          .female,
-                                                                  onTap: () {
-                                                                    setState(
-                                                                        () {
-                                                                      _filter =
-                                                                          _filter
-                                                                              .copyWith(
-                                                                        gender: _filter.gender ==
-                                                                                MemberGenderFilter.female
-                                                                            ? MemberGenderFilter.all
-                                                                            : MemberGenderFilter.female,
-                                                                      );
-                                                                    });
-                                                                    setMenuState(
-                                                                        () {});
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                      ],
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      l10n.statMembers.toUpperCase(),
+                                      style: GoogleFonts.beVietnamPro(
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: context.textPrimary,
+                                        letterSpacing: 0.8,
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: context.primary,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        '${_filter.apply(state.members).length}',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 11.5,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+
+                                // ── Thanh tìm kiếm + Bộ lọc hệ thống ──
+                                AppSearchBar(
+                                  controller: _searchController,
+                                  hintText: l10n.searchMembersHint,
+                                  trailing: [
+                                    _buildFilterMenuButton(
+                                        context, l10n, state.branches),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
                         ),
 
-                        // Hiển thị danh sách thành viên được lọc theo tìm kiếm, chi tộc, trạng thái & giới tính
+                        const SliverToBoxAdapter(child: SizedBox(height: 8)),
+
+                        // ── Danh sách thành viên ──
                         Builder(
                           builder: (context) {
                             final filteredMembers =
@@ -659,7 +414,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                   icon: LucideIcons.search,
                                   message: l10n.emptyMembers,
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 40, horizontal: 16),
+                                      vertical: 36, horizontal: 16),
                                 ),
                               );
                             }
@@ -672,7 +427,6 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                                     member: member,
                                     allMembers: state.members,
                                     showMenu: false,
-                                    useOrnamentalBorder: false,
                                   );
                                 },
                                 childCount:
@@ -696,30 +450,267 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     );
   }
 
-  Widget _buildSwitchOption({
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          decoration: BoxDecoration(
-            color: isSelected ? context.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              color: isSelected ? Colors.white : context.textSecondary,
+  Widget _buildFilterMenuButton(BuildContext context, AppLocalizations l10n,
+      [List<BranchEntity> branches = const []]) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      child: PopupMenuButton<void>(
+        icon: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Icon(
+              LucideIcons.listFilter,
+              size: 17,
+              color: _filter.hasActiveFilters
+                  ? context.primary
+                  : context.textSecondary,
             ),
+            if (_filter.hasActiveFilters)
+              Positioned(
+                top: -2,
+                right: -2,
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: context.primary,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(
+          minWidth: 32,
+          minHeight: 32,
+        ),
+        offset: const Offset(0, 36),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: context.accent.withValues(alpha: 0.12),
           ),
         ),
+        color: context.surface,
+        elevation: 6,
+        itemBuilder: (context) => [
+          // ── 1. Bỏ chọn tất cả ──
+          PopupMenuItem<void>(
+            height: 38,
+            child: Row(
+              children: [
+                Icon(LucideIcons.filterX, color: context.textPrimary, size: 18),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.clearAllLabel,
+                  style: GoogleFonts.beVietnamPro(
+                      fontSize: 13, color: context.textPrimary),
+                ),
+              ],
+            ),
+            onTap: () {
+              setState(() {
+                _filter = const MemberFilter();
+              });
+            },
+          ),
+          const PopupMenuDivider(),
+
+          // ── 2. Nội dung bộ lọc với Segmented Controls & Dropdown ──
+          PopupMenuItem<void>(
+            enabled: false,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: StatefulBuilder(
+              builder: (context, setMenuState) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ── Chi tộc (AppDropdown) ──
+                    if (branches.isNotEmpty) ...[
+                      Text(
+                        l10n.branchLabel,
+                        style: GoogleFonts.beVietnamPro(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: context.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      AppDropdown<int?>(
+                        value: _filter.branchId,
+                        buttonHeight: 36,
+                        itemPadding: const EdgeInsets.symmetric(horizontal: 8),
+                        items: [
+                          DropdownItem<int?>(
+                            child: Text(
+                              '${l10n.allLabel} ${l10n.branchTabLabel.toLowerCase()}',
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 12,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ),
+                          ...branches.map((b) => DropdownItem<int?>(
+                                value: b.id,
+                                child: Text(
+                                  b.name,
+                                  style: GoogleFonts.beVietnamPro(
+                                    fontSize: 12,
+                                    color: context.textPrimary,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )),
+                        ],
+                        onChanged: (val) {
+                          setState(() {
+                            _filter = _filter.copyWith(branchId: val);
+                          });
+                          setMenuState(() {});
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+
+                    // ── Tình trạng ──
+                    Text(
+                      l10n.statusLabel,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      width: double.infinity,
+                      child:
+                          CupertinoSlidingSegmentedControl<MemberStatusFilter>(
+                        backgroundColor: context.isDarkMode
+                            ? Colors.grey.shade900
+                            : Colors.grey.shade200,
+                        thumbColor: context.isDarkMode
+                            ? Colors.grey.shade700
+                            : Colors.white,
+                        groupValue: _filter.status == MemberStatusFilter.all
+                            ? null
+                            : _filter.status,
+                        children: {
+                          MemberStatusFilter.alive: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 7),
+                            child: Text(
+                              l10n.aliveLabel,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 12,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ),
+                          MemberStatusFilter.deceased: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 7),
+                            child: Text(
+                              l10n.deceasedLabel,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 12,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ),
+                        },
+                        onValueChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _filter = _filter.copyWith(
+                                status: _filter.status == value
+                                    ? MemberStatusFilter.all
+                                    : value,
+                              );
+                            });
+                            setMenuState(() {});
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // ── Giới tính ──
+                    Text(
+                      l10n.genderLabel,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      width: double.infinity,
+                      child:
+                          CupertinoSlidingSegmentedControl<MemberGenderFilter>(
+                        backgroundColor: context.isDarkMode
+                            ? Colors.grey.shade900
+                            : Colors.grey.shade200,
+                        thumbColor: context.isDarkMode
+                            ? Colors.grey.shade700
+                            : Colors.white,
+                        groupValue: _filter.gender == MemberGenderFilter.all
+                            ? null
+                            : _filter.gender,
+                        children: {
+                          MemberGenderFilter.male: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 7),
+                            child: Text(
+                              l10n.genderMale,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 12,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ),
+                          MemberGenderFilter.female: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 7),
+                            child: Text(
+                              l10n.genderFemale,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 12,
+                                color: context.textPrimary,
+                              ),
+                            ),
+                          ),
+                        },
+                        onValueChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _filter = _filter.copyWith(
+                                gender: _filter.gender == value
+                                    ? MemberGenderFilter.all
+                                    : value,
+                              );
+                            });
+                            setMenuState(() {});
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -727,19 +718,16 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
   Widget _buildHeader(BuildContext context, FamilyTreeState state) {
     final authState = context.watch<AuthBloc>().state;
     final user = (authState is Authenticated) ? authState.user : null;
-
     final l10n = AppLocalizations.of(context);
-    String familyName = l10n.familyTreeTitle;
-    String inviteCode = '';
-    String? logoUrl;
 
+    String familyName = l10n.familyTreeTitle;
+    String? origin;
     if (state is FamilyTreeLoaded) {
       if (state.family != null) {
         if (state.family!.name.isNotEmpty) {
           familyName = state.family!.name;
         }
-        inviteCode = state.family!.inviteCode;
-        logoUrl = state.family!.logoUrl;
+        origin = state.family!.origin;
       } else if (state.members.isNotEmpty) {
         final surname = FamilyNameResolver.resolveSurname(state.members);
         if (surname != null) {
@@ -747,6 +735,11 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
         }
       }
     }
+
+    final rawFamilyName = familyName.trim();
+    final displayFamilyName = rawFamilyName.toLowerCase().startsWith('họ')
+        ? rawFamilyName.toUpperCase()
+        : l10n.familyNamePrefix(rawFamilyName).toUpperCase();
 
     return BlocBuilder<EventsBloc, EventsState>(
       builder: (context, eventsState) {
@@ -760,68 +753,221 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           NotificationReadController.instance,
         );
 
-        final bellButton = IconButton(
-          icon: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Icon(
-                LucideIcons.bell,
-                color: context.textPrimary,
-                size: 20,
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: context.appBarBg,
+            image: DecorationImage(
+              image: AssetImage(
+                context.isDarkMode
+                    ? 'assets/images/background_appbar_dark.png'
+                    : 'assets/images/background_appbar_light.png',
               ),
-              if (headerData.hasUnread)
-                Positioned(
-                  top: -6,
-                  right: -6,
-                  child: Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: context.error,
-                      shape: BoxShape.circle,
-                    ),
-                    constraints: const BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
-                    ),
-                    child: Text(
-                      '${headerData.unreadCount}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
+              fit: BoxFit.cover,
+              onError: (_, __) {},
+            ),
+          ),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(color: context.appBarOverlay),
+              ),
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Avatar ──
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: context.accent,
+                            width: 1.8,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: AppAvatar(
+                            avatarUrl: user?.avatarUrl,
+                            fullName: user?.fullName,
+                          ),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                      const SizedBox(width: 12),
+
+                      // ── Center: Column (Greeting + Họ & Clan origin) ──
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Greeting + Tên user
+                            RichText(
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '${l10n.helloLabel} ',
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 14,
+                                      color: context.textSecondary,
+                                      height: 1.25,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: '${user?.fullName ?? l10n.youLabel}!',
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: context.textPrimary,
+                                      height: 1.25,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 5),
+
+                            // Dòng họ + Clan origin
+                            if (state is FamilyTreeLoading)
+                              const AppShimmer(
+                                child:
+                                    SkeletonBox(height: 20, borderRadius: 10),
+                              )
+                            else
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Icon + Tên họ tộc (Họ + Clan)
+                                    Icon(
+                                      LucideIcons.landmark,
+                                      size: 13,
+                                      color: context.accent,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      displayFamilyName,
+                                      style: GoogleFonts.beVietnamPro(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w800,
+                                        color: context.textPrimary,
+                                        letterSpacing: 0.6,
+                                      ),
+                                    ),
+                                    // Quê quán / Clan origin
+                                    if (origin != null &&
+                                        origin.isNotEmpty) ...[
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6),
+                                        child: Text(
+                                          '|',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: context.textSecondary
+                                                .withValues(alpha: 0.4),
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        LucideIcons.mapPin,
+                                        size: 12,
+                                        color: context.accent,
+                                      ),
+                                      const SizedBox(width: 3.5),
+                                      Text(
+                                        origin,
+                                        style: GoogleFonts.beVietnamPro(
+                                          fontSize: 12,
+                                          color: context.textPrimary,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      // ── Bell icon ──
+                      GestureDetector(
+                        onTap: () async {
+                          final famId = _familyId();
+                          if (famId != null) {
+                            await Navigator.push(
+                              context,
+                              SereneFadeSlidePageRoute(
+                                page: UserNotificationsPage(
+                                  familyId: famId,
+                                  announcements: headerData.announcements,
+                                ),
+                              ),
+                            );
+                            if (mounted) setState(() {});
+                          }
+                        },
+                        child: Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            color: context.resolve(
+                              Colors.black.withValues(alpha: 0.05),
+                              Colors.white.withValues(alpha: 0.1),
+                            ),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: context.resolve(
+                                Colors.black.withValues(alpha: 0.1),
+                                Colors.white.withValues(alpha: 0.2),
+                              ),
+                            ),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            clipBehavior: Clip.none,
+                            children: [
+                              Icon(
+                                LucideIcons.bell,
+                                color: context.textPrimary,
+                                size: 19,
+                              ),
+                              if (headerData.hasUnread)
+                                Positioned(
+                                  top: 7,
+                                  right: 7,
+                                  child: Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: BoxDecoration(
+                                      color: context.error,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
             ],
           ),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          onPressed: () async {
-            final famId = _familyId();
-            if (famId != null) {
-              await Navigator.push(
-                context,
-                SereneFadeSlidePageRoute(
-                  page: UserNotificationsPage(
-                    familyId: famId,
-                    announcements: headerData.announcements,
-                  ),
-                ),
-              );
-              if (mounted) setState(() {});
-            }
-          },
-        );
-
-        return FamilyDashboardHeaderWidget(
-          user: user,
-          familyName: familyName,
-          inviteCode: inviteCode,
-          logoUrl: logoUrl,
-          isLoading: state is FamilyTreeLoading,
-          trailingAction: bellButton,
         );
       },
     );
@@ -844,51 +990,5 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
         ),
       ),
     );
-  }
-
-  void _showIncenseDialog(BuildContext context, String targetName) async {
-    final l10n = AppLocalizations.of(context);
-    final result = await showIncenseDialog(
-      context,
-      targetName: targetName,
-      subtitle: l10n.incenseSubtitleRemember,
-    );
-    if (result != null && context.mounted) {
-      final authState = context.read<AuthBloc>().state;
-      UserEntity? userProfile;
-
-      if (authState is Authenticated) {
-        userProfile = authState.user;
-      }
-
-      if (userProfile != null) {
-        final prayerContent = result.trim().isNotEmpty
-            ? result.trim()
-            : l10n.incenseDefaultPrayer;
-
-        final newWish = WishEntity(
-          id: 0,
-          familyId: userProfile.familyId ?? 0,
-          memberId: 0,
-          senderId: userProfile.id,
-          content: prayerContent,
-          eventType: 'anniversary',
-          createdAt: DateTime.now(),
-          senderName: userProfile.fullName,
-          senderAvatar: userProfile.avatarUrl,
-        );
-
-        final wishRepo = sl<WishRepository>();
-        await wishRepo.createWish(newWish);
-      }
-
-      if (context.mounted) {
-        AppSnackBar.show(
-          context,
-          message: l10n.incenseLitFor(targetName),
-          type: SnackBarType.success,
-        );
-      }
-    }
   }
 }

@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -41,6 +47,9 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 
   final TransformationController _transformationController =
       TransformationController();
+  final _fabKey = GlobalKey<ExpandableFabState>();
+  final _treeBoundaryKey = GlobalKey();
+  bool _isExporting = false;
   AnimationController? _matrixAnimationController;
   Animation<Matrix4>? _matrixAnimation;
 
@@ -139,6 +148,110 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     matrix.setEntry(1, 3, ty);
 
     _animateMatrixTo(matrix);
+  }
+
+  void _goToMyPosition() {
+    final authState = context.read<AuthBloc>().state;
+    final userMemberId =
+        authState is Authenticated ? authState.user.memberId : null;
+    if (userMemberId != null &&
+        _lastPositions != null &&
+        _lastPositions!.containsKey(userMemberId)) {
+      _centerOnNode(userMemberId);
+    } else {
+      AppSnackBar.info(
+          context, 'Tài khoản chưa được liên kết với thành viên trên cây gia phả');
+    }
+  }
+
+  Future<void> _exportTreeImage() async {
+    if (_isExporting) return;
+    setState(() => _isExporting = true);
+    final l10n = AppLocalizations.of(context);
+    try {
+      final boundary = _treeBoundaryKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
+      if (boundary == null) return;
+      final image = await boundary.toImage(pixelRatio: 2.5);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+      final bytes = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final fileName =
+          'cay_gia_pha_${DateTime.now().millisecondsSinceEpoch}.png';
+      final file = await File('${tempDir.path}/$fileName').create();
+      await file.writeAsBytes(bytes);
+
+      await Share.shareXFiles(
+        [XFile(file.path, mimeType: 'image/png')],
+        text: l10n.familyTreeTitle,
+      );
+    } catch (_) {
+      if (mounted) {
+        AppSnackBar.error(context, l10n.qrSaveError);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isExporting = false);
+      }
+    }
+  }
+
+  Widget _buildFabActionItem({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+    Color? iconColor,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: context.surface,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: context.accent.withValues(alpha: 0.15),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            label,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: context.textPrimary,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        FloatingActionButton.small(
+          heroTag: label,
+          backgroundColor: context.surface,
+          elevation: 3,
+          onPressed: () {
+            final state = _fabKey.currentState;
+            if (state != null && state.isOpen) {
+              state.toggle();
+            }
+            onTap();
+          },
+          child: Icon(
+            icon,
+            size: 18,
+            color: iconColor ?? context.primary,
+          ),
+        ),
+      ],
+    );
   }
 
   /// Reload cây gia phả sau khi thêm thành viên/vợ chồng.
@@ -461,46 +574,60 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
         titleWidget: _buildSearchTitleWidget(context, appBarTitle),
         actions: appBarActions,
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: ExpandableFab(
+        key: _fabKey,
+        type: ExpandableFabType.up,
+        distance: 60.0,
+        overlayStyle: ExpandableFabOverlayStyle(
+          color: Colors.black.withValues(alpha: 0.55),
+        ),
+        openButtonBuilder: RotateFloatingActionButtonBuilder(
+          child: const Icon(LucideIcons.layers, size: 22),
+          foregroundColor: Colors.white,
+          backgroundColor: context.primary,
+          shape: const CircleBorder(),
+        ),
+        closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+          child: const Icon(LucideIcons.x, size: 22),
+          foregroundColor: Colors.white,
+          backgroundColor: context.primary,
+          shape: const CircleBorder(),
+        ),
         children: [
-          FloatingActionButton(
-            heroTag: 'toggle_badges_fab',
-            tooltip:
-                _showGenerationBadges ? l10n.hideGenBadges : l10n.showGenBadges,
-            onPressed: () {
+          _buildFabActionItem(
+            label: 'Xuất file gia phả',
+            icon: LucideIcons.share2,
+            onTap: _exportTreeImage,
+          ),
+          _buildFabActionItem(
+            label: 'Vị trí của tôi',
+            icon: LucideIcons.crosshair,
+            onTap: _goToMyPosition,
+          ),
+          _buildFabActionItem(
+            label: l10n.treeOverviewTooltip,
+            icon: LucideIcons.maximize2,
+            onTap: _fitTreeOverview,
+          ),
+          _buildFabActionItem(
+            label: _showGenerationBadges
+                ? l10n.hideGenBadges
+                : l10n.showGenBadges,
+            icon: LucideIcons.tag,
+            iconColor: _showGenerationBadges
+                ? context.primary
+                : context.textSecondary,
+            onTap: () {
               setState(() {
                 _showGenerationBadges = !_showGenerationBadges;
               });
             },
-            backgroundColor:
-                context.resolve(Colors.white, const Color(0xFF2A2A2A)),
-            mini: true,
-            child: Icon(
-              LucideIcons.tag,
-              color: _showGenerationBadges
-                  ? context.primary
-                  : context.textSecondary.withValues(alpha: 0.4),
-              size: 18,
-            ),
-          ),
-          const SizedBox(height: 8),
-          FloatingActionButton(
-            heroTag: 'fit_overview_fab',
-            tooltip: l10n.treeOverviewTooltip,
-            onPressed: _fitTreeOverview,
-            backgroundColor:
-                context.resolve(Colors.white, const Color(0xFF2A2A2A)),
-            mini: true,
-            child: Icon(
-              LucideIcons.maximize2,
-              color: context.primary,
-              size: 18,
-            ),
           ),
         ],
       ),
       body: AppBackgroundBody(
+        enableMaxWidth: false,
         child: Stack(
           children: [
             BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
@@ -609,9 +736,11 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                             child: SizedBox(
                               width: treeSize.width,
                               height: treeSize.height,
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: [
+                              child: RepaintBoundary(
+                                key: _treeBoundaryKey,
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
                                   RepaintBoundary(
                                     child: CustomPaint(
                                       size: treeSize,
@@ -688,7 +817,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                       ),
                                     );
                                   }),
-                                ],
+                                 ],
+                                ),
                               ),
                             ),
                           ),

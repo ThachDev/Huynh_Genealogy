@@ -272,58 +272,62 @@ class FamilyDashboardHeaderWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      l10n.clanCodeLabel,
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        color: context.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: context.textSecondary.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        inviteCode.isNotEmpty ? inviteCode : '---',
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.clanCodeLabel,
                         style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: context.textPrimary,
-                          letterSpacing: 0.5,
+                          fontSize: 11,
+                          color: context.textSecondary,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                    if (inviteCode.isNotEmpty)
-                      InkWell(
-                        borderRadius: BorderRadius.circular(4),
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: inviteCode));
-                          AppSnackBar.success(
-                              context, l10n.inviteCodeCopied(inviteCode));
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color:
-                                context.textSecondary.withValues(alpha: 0.06),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Icon(
-                            LucideIcons.copy,
-                            size: 13,
-                            color: context.textSecondary,
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: context.textSecondary.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          inviteCode.isNotEmpty ? inviteCode : '---',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: context.textPrimary,
+                            letterSpacing: 0.5,
                           ),
                         ),
                       ),
-                  ],
+                      const SizedBox(width: 4),
+                      if (inviteCode.isNotEmpty)
+                        InkWell(
+                          borderRadius: BorderRadius.circular(4),
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: inviteCode));
+                            AppSnackBar.success(
+                                context, l10n.inviteCodeCopied(inviteCode));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color:
+                                  context.textSecondary.withValues(alpha: 0.06),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Icon(
+                              LucideIcons.copy,
+                              size: 13,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -140,7 +140,10 @@ Future<void> showMemberDeleteConfirmation(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 8,
+                              runSpacing: 4,
                               children: [
                                 Text(
                                   l10n.promoteChildrenOption,
@@ -150,7 +153,6 @@ Future<void> showMemberDeleteConfirmation(
                                     color: ctx.textPrimary,
                                   ),
                                 ),
-                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 2),

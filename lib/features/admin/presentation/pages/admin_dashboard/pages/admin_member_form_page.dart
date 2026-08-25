@@ -758,7 +758,7 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                                         .always,
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                        horizontal: 12,
+                                                        horizontal: 8,
                                                         vertical: 10),
                                                 enabledBorder:
                                                     OutlineInputBorder(
@@ -784,43 +784,46 @@ class _AdminMemberFormPageState extends State<AdminMemberFormPage> {
                                               child: AnimatedSwitcher(
                                                 duration: const Duration(
                                                     milliseconds: 200),
-                                                child: Row(
+                                                child: FittedBox(
                                                   key: ValueKey(_isAlive),
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      _isAlive
-                                                          ? LucideIcons.heart
-                                                          : LucideIcons
-                                                              .heartCrack,
-                                                      size: 14,
-                                                      color: _isAlive
-                                                          ? context.primary
-                                                          : context
-                                                              .textSecondary
-                                                              .withValues(
-                                                                  alpha: 0.5),
-                                                    ),
-                                                    const SizedBox(width: 6),
-                                                    Text(
-                                                      _isAlive
-                                                          ? l10n.aliveLabel
-                                                          : l10n.deceasedLabel,
-                                                      style: GoogleFonts
-                                                          .beVietnamPro(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                    children: [
+                                                      Icon(
+                                                        _isAlive
+                                                            ? LucideIcons.heart
+                                                            : LucideIcons
+                                                                .heartCrack,
+                                                        size: 14,
                                                         color: _isAlive
                                                             ? context.primary
                                                             : context
                                                                 .textSecondary
                                                                 .withValues(
                                                                     alpha: 0.5),
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.bold,
                                                       ),
-                                                    ),
-                                                  ],
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        _isAlive
+                                                            ? l10n.aliveLabel
+                                                            : l10n.deceasedLabel,
+                                                        style: GoogleFonts
+                                                            .beVietnamPro(
+                                                          color: _isAlive
+                                                              ? context.primary
+                                                              : context
+                                                                  .textSecondary
+                                                                  .withValues(
+                                                                      alpha: 0.5),
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),

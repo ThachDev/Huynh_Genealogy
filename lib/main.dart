@@ -52,6 +52,7 @@ void main() async {
 
   runApp(
     DevicePreview(
+      enabled: false, // Đổi thành true bất cứ khi nào muốn test đa thiết bị
       builder: (context) => const FamilyTreeApp(),
     ),
   );
@@ -162,7 +163,7 @@ class _FamilyTreeAppState extends State<FamilyTreeApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
-        locale: DevicePreview.locale(context) ?? _locale,
+        locale: _locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         builder: (context, child) {

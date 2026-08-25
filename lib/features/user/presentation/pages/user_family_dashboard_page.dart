@@ -266,182 +266,170 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
           return AppBackgroundBody(
             child: Column(
               children: [
-                // Header đồng bộ với Admin Dashboard
+                // Header đồng bộ với Admin Dashboard (Cố định)
                 _buildHeader(context, state),
-                // Content List
-                Expanded(
-                  child: CustomScrollView(
-                    controller: _scrollController,
-                    slivers: [
-                      if (state is FamilyTreeLoading)
-                        const SliverFillRemaining(
-                          child: UserFamilyDashboardSkeleton(),
-                        ),
-                      if (state is FamilyTreeError)
-                        SliverFillRemaining(
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  LucideIcons.alertCircle,
-                                  size: 64,
-                                  color: context.primary,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(state.message, style: GoogleFonts.inter()),
-                                AppButton(
-                                  label: l10n.retryButton,
-                                  onPressed: () => context
-                                      .read<FamilyTreeBloc>()
-                                      .add(FamilyTreeLoadEvent(
-                                          familyId: _familyId())),
-                                  size: AppButtonSize.small,
-                                ),
-                              ],
-                            ),
+
+                if (state is FamilyTreeLoading)
+                  const Expanded(
+                    child: UserFamilyDashboardSkeleton(),
+                  ),
+
+                if (state is FamilyTreeError)
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            LucideIcons.alertCircle,
+                            size: 64,
+                            color: context.primary,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(state.message, style: GoogleFonts.inter()),
+                          AppButton(
+                            label: l10n.retryButton,
+                            onPressed: () => context
+                                .read<FamilyTreeBloc>()
+                                .add(FamilyTreeLoadEvent(
+                                    familyId: _familyId())),
+                            size: AppButtonSize.small,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                if (state is FamilyTreeLoaded) ...[
+                  const SizedBox(height: 6),
+
+                  // ── 1. Lối tắt hành động nhanh (Quick Actions Hub - Cố định) ──
+                  UserQuickActionsWidget(
+                    onOpenBranches: () {
+                      Navigator.push(
+                        context,
+                        SereneFadeSlidePageRoute(
+                          page: UserBranchListPage(
+                            branches: state.branches,
+                            members: state.members,
                           ),
                         ),
-                      if (state is FamilyTreeLoaded) ...[
-                        const SliverToBoxAdapter(child: SizedBox(height: 6)),
+                      );
+                    },
+                    onGoToAnniversaries: () =>
+                        _openAnniversaryList(state.members),
+                    onOpenInviteCode: () {
+                      final inviteCode = state.family?.inviteCode ?? '';
+                      if (inviteCode.isNotEmpty) {
+                        _showQrDialog(context, inviteCode);
+                      } else {
+                        AppSnackBar.warning(
+                            context, 'Chưa có mã gia tộc');
+                      }
+                    },
+                  ),
 
-                        // ── 1. Lối tắt hành động nhanh (Quick Actions Hub) ──
-                        SliverToBoxAdapter(
-                          child: UserQuickActionsWidget(
-                            onOpenBranches: () {
-                              Navigator.push(
-                                context,
-                                SereneFadeSlidePageRoute(
-                                  page: UserBranchListPage(
-                                    branches: state.branches,
-                                    members: state.members,
-                                  ),
-                                ),
-                              );
-                            },
-                            onGoToAnniversaries: () =>
-                                _openAnniversaryList(state.members),
-                            onOpenInviteCode: () {
-                              final inviteCode = state.family?.inviteCode ?? '';
-                              if (inviteCode.isNotEmpty) {
-                                _showQrDialog(context, inviteCode);
-                              } else {
-                                AppSnackBar.warning(
-                                    context, 'Chưa có mã gia tộc');
-                              }
-                            },
-                          ),
-                        ),
+                  const SizedBox(height: 8),
 
-                        const SliverToBoxAdapter(child: SizedBox(height: 8)),
-
-                        // ── 3. Danh sách Thành viên & Bộ lọc ──
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Header: Tiêu đề + Badge đếm số lượng
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 3.5,
-                                      height: 16,
-                                      decoration: BoxDecoration(
-                                        color: context.primary,
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      l10n.statMembers.toUpperCase(),
-                                      style: GoogleFonts.beVietnamPro(
-                                        fontSize: 13.5,
-                                        fontWeight: FontWeight.bold,
-                                        color: context.textPrimary,
-                                        letterSpacing: 0.8,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: context.primary,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        '${_filter.apply(state.members).length}',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 11.5,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-
-                                // ── Thanh tìm kiếm + Bộ lọc hệ thống ──
-                                AppSearchBar(
-                                  controller: _searchController,
-                                  hintText: l10n.searchMembersHint,
-                                  trailing: [
-                                    _buildFilterMenuButton(
-                                        context, l10n, state.branches),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        const SliverToBoxAdapter(child: SizedBox(height: 8)),
-
-                        // ── Danh sách thành viên ──
-                        Builder(
-                          builder: (context) {
-                            final filteredMembers =
-                                _filter.apply(state.members);
-
-                            if (filteredMembers.isEmpty) {
-                              return SliverToBoxAdapter(
-                                child: AppEmptyState(
-                                  icon: LucideIcons.search,
-                                  message: l10n.emptyMembers,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 36, horizontal: 16),
-                                ),
-                              );
-                            }
-
-                            return SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  final member = filteredMembers[index];
-                                  return MemberItemWidget(
-                                    member: member,
-                                    allMembers: state.members,
-                                    showMenu: false,
-                                  );
-                                },
-                                childCount:
-                                    filteredMembers.length > _memberLimit
-                                        ? _memberLimit
-                                        : filteredMembers.length,
+                  // ── 2. Tiêu đề Thành viên & Thanh tìm kiếm + Bộ lọc (Cố định) ──
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header: Tiêu đề + Badge đếm số lượng
+                        Row(
+                          children: [
+                            Container(
+                              width: 3.5,
+                              height: 16,
+                              decoration: BoxDecoration(
+                                color: context.primary,
+                                borderRadius: BorderRadius.circular(2),
                               ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.statMembers.toUpperCase(),
+                              style: GoogleFonts.beVietnamPro(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.bold,
+                                color: context.textPrimary,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.primary,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                '${_filter.apply(state.members).length}',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Thanh tìm kiếm + Bộ lọc hệ thống
+                        AppSearchBar(
+                          controller: _searchController,
+                          hintText: l10n.searchMembersHint,
+                          trailing: [
+                            _buildFilterMenuButton(
+                                context, l10n, state.branches),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // ── 3. Chỉ cuộn danh sách thành viên (Scrollable List) ──
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        final filteredMembers = _filter.apply(state.members);
+
+                        if (filteredMembers.isEmpty) {
+                          return AppEmptyState(
+                            icon: LucideIcons.search,
+                            message: l10n.emptyMembers,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 36, horizontal: 16),
+                          );
+                        }
+
+                        return ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.only(bottom: 80),
+                          itemCount: filteredMembers.length > _memberLimit
+                              ? _memberLimit
+                              : filteredMembers.length,
+                          itemBuilder: (context, index) {
+                            final member = filteredMembers[index];
+                            return MemberItemWidget(
+                              member: member,
+                              allMembers: state.members,
+                              showMenu: false,
                             );
                           },
-                        ),
-                        const SliverToBoxAdapter(child: SizedBox(height: 80)),
-                      ],
-                    ],
+                        );
+                      },
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           );

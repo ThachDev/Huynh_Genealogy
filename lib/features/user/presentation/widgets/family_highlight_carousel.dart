@@ -8,6 +8,8 @@ import '../../../../resources/app_localizations.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/domain/entities/user_entity.dart';
+import '../bloc/user_bloc.dart';
+import '../bloc/user_state.dart';
 import '../../domain/entities/wish_entity.dart';
 import '../../../events/domain/entities/event_entity.dart';
 import '../../../family_tree/domain/entities/member_entity.dart';
@@ -409,6 +411,11 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
 
     if (authState is Authenticated) {
       userProfile = authState.user;
+    } else {
+      final userBlocState = context.read<UserBloc>().state;
+      if (userBlocState is UserLoadedState) {
+        userProfile = userBlocState.profile;
+      }
     }
 
     if (userProfile == null) {
@@ -467,6 +474,11 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
 
     if (authState is Authenticated) {
       userProfile = authState.user;
+    } else {
+      final userBlocState = context.read<UserBloc>().state;
+      if (userBlocState is UserLoadedState) {
+        userProfile = userBlocState.profile;
+      }
     }
 
     if (userProfile == null) {

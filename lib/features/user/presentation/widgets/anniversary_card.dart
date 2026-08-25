@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../resources/app_localizations.dart';
+import '../../../auth/domain/entities/user_entity.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../domain/entities/wish_entity.dart';
 import '../../domain/repository/wish_repository.dart';
 import '../bloc/user_bloc.dart';
@@ -12,6 +16,7 @@ import '../../../../core/di/injection_container.dart';
 import '../../../../core/widgets/widgets.dart';
 import 'incense_offering_dialog.dart';
 import 'wish_letter_dialog.dart';
+import '../pages/wish_wall_page.dart';
 
 /// Card dùng cho Ngày Giỗ và Sinh Nhật theo phong cách Lịch Khối bên trái + Thông tin bên phải.
 class AnniversaryCard extends StatelessWidget {
@@ -27,9 +32,17 @@ class AnniversaryCard extends StatelessWidget {
 
   Future<void> _openActionDialog(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    final userBlocState = sl<UserBloc>().state;
-    final userProfile =
-        userBlocState is UserLoadedState ? userBlocState.profile : null;
+    final authState = context.read<AuthBloc>().state;
+    UserEntity? userProfile;
+
+    if (authState is Authenticated) {
+      userProfile = authState.user;
+    } else {
+      final userBlocState = context.read<UserBloc>().state;
+      if (userBlocState is UserLoadedState) {
+        userProfile = userBlocState.profile;
+      }
+    }
 
     if (userProfile == null) {
       AppSnackBar.show(
@@ -102,6 +115,18 @@ class AnniversaryCard extends StatelessWidget {
     }
   }
 
+  void _openWishWall(BuildContext context) {
+    Navigator.push(
+      context,
+      SereneFadeSlidePageRoute(
+        page: WishWallPage(
+          data: data,
+          wishRepository: sl<WishRepository>(),
+        ),
+      ),
+    );
+  }
+
   int? _calculateTurningAge() {
     if (data.member.dateOfBirth == null) return null;
     try {
@@ -151,7 +176,7 @@ class AnniversaryCard extends StatelessWidget {
         : l10n.memberBirthdayLabel;
 
     return InkWell(
-      onTap: onTap ?? () => _openActionDialog(context),
+      onTap: onTap ?? () => _openWishWall(context),
       borderRadius: BorderRadius.circular(16),
       child: Container(
         width: fullWidth ? double.infinity : 270,
@@ -300,37 +325,41 @@ class AnniversaryCard extends StatelessWidget {
             const SizedBox(width: 8),
 
             // ── Bên phải: Nút Gửi lời chúc 💌 (Màu Crimson & Text trắng) ──
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-              decoration: BoxDecoration(
-                color: context.primary,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.primary.withValues(alpha: 0.25),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    LucideIcons.heartHandshake,
-                    size: 13,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    l10n.sendWishButton,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _openActionDialog(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                decoration: BoxDecoration(
+                  color: context.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.primary.withValues(alpha: 0.25),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      LucideIcons.heartHandshake,
+                      size: 13,
                       color: Colors.white,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.sendWishButton,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -355,7 +384,7 @@ class AnniversaryCard extends StatelessWidget {
             : data.solarDateLabel;
 
     return InkWell(
-      onTap: onTap ?? () => _openActionDialog(context),
+      onTap: onTap ?? () => _openWishWall(context),
       borderRadius: BorderRadius.circular(16),
       child: Container(
         width: fullWidth ? double.infinity : 270,
@@ -504,37 +533,41 @@ class AnniversaryCard extends StatelessWidget {
             const SizedBox(width: 8),
 
             // ── Bên phải: Nút Dâng hương 🙏 (Màu Crimson & Text trắng) ──
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-              decoration: BoxDecoration(
-                color: context.primary,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.primary.withValues(alpha: 0.25),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    LucideIcons.flame,
-                    size: 13,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    l10n.offerIncenseButton,
-                    style: GoogleFonts.beVietnamPro(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _openActionDialog(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                decoration: BoxDecoration(
+                  color: context.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.primary.withValues(alpha: 0.25),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      LucideIcons.flame,
+                      size: 13,
                       color: Colors.white,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    Text(
+                      l10n.offerIncenseButton,
+                      style: GoogleFonts.beVietnamPro(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

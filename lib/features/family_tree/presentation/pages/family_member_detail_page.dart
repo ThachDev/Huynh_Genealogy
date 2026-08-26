@@ -15,6 +15,8 @@ import '../../../../features/auth/auth.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
 import '../../../admin/presentation/pages/admin_dashboard/pages/admin_link_and_roles_page.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../domain/entities/kinship_result_entity.dart';
+import '../../domain/services/kinship_calculator_service.dart';
 
 class FamilyMemberDetailPage extends StatefulWidget {
   const FamilyMemberDetailPage({
@@ -78,6 +80,30 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
         (authState.user.role == 'OWNER' ||
             authState.user.role == 'EDITOR' ||
             authState.user.role == 'CREATOR');
+
+    // Tìm member node đại diện cho user hiện tại đã liên kết
+    final myMember = (authState is Authenticated)
+        ? (widget.allMembers
+                .where((m) => m.id == authState.user.memberId)
+                .firstOrNull ??
+            widget.allMembers
+                .where((m) =>
+                    m.linkedUserEmail != null &&
+                    m.linkedUserEmail == authState.user.email)
+                .firstOrNull ??
+            widget.allMembers.where((m) => m.isLinked).firstOrNull)
+        : null;
+
+    KinshipResultEntity? kinshipResult;
+    if (myMember != null && widget.allMembers.isNotEmpty) {
+      try {
+        kinshipResult = KinshipCalculatorService().calculate(
+          fromMember: myMember,
+          toMember: widget.member,
+          allMembers: widget.allMembers,
+        );
+      } catch (_) {}
+    }
 
     // Lấy thông tin gia đình
     final parentNode = widget.allMembers
@@ -174,19 +200,43 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Họ và tên
+                          // Họ và tên + (Xưng hô)
                           Center(
                             child: Column(
                               children: [
-                                Text(
-                                  widget.member.fullName.toUpperCase(),
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.beVietnamPro(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: context.primary,
-                                    letterSpacing: 1.0,
+                                Text.rich(
+                                  TextSpan(
+                                    text: widget.member.fullName.toUpperCase(),
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: context.primary,
+                                      letterSpacing: 0.8,
+                                    ),
+                                    children: [
+                                      if (kinshipResult != null &&
+                                          kinshipResult.fromCallsTo.isNotEmpty &&
+                                          kinshipResult.fromCallsTo !=
+                                              'Đồng tộc / Chưa rõ liên kết')
+                                        WidgetSpan(
+                                          alignment: PlaceholderAlignment.top,
+                                          child: Transform.translate(
+                                            offset: const Offset(3, -5),
+                                            child: Text(
+                                              kinshipResult.isSamePerson
+                                                  ? '(Tôi)'
+                                                  : '(${kinshipResult.fromCallsTo})',
+                                              style: GoogleFonts.beVietnamPro(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                color: context.accent,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
                                 if (widget.member.linkedUserEmail != null &&
                                     widget.member.linkedUserEmail!
@@ -229,16 +279,14 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                                       widget.member.isAlive
                                           ? Colors.green
                                           : context.textSecondary,
-                                      icon: widget.member.isAlive
-                                          ? null
-                                          : LucideIcons.flame,
                                     ),
                                   ],
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 24),
+
+                          const SizedBox(height: 16),
                           const Divider(height: 1),
                           const SizedBox(height: 16),
 
@@ -380,30 +428,21 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
     );
   }
 
-  Widget _buildBadge(String label, Color color, {IconData? icon}) {
+  Widget _buildBadge(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4.5),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
         border: Border.all(color: color.withValues(alpha: 0.4)),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 12, color: color),
-            const SizedBox(width: 4),
-          ],
-          Text(
-            label,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ],
+      child: Text(
+        label,
+        style: GoogleFonts.beVietnamPro(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: color,
+        ),
       ),
     );
   }

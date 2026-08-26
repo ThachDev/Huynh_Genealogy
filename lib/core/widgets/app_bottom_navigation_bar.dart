@@ -180,8 +180,13 @@ class _UserMainNavigationPageState extends State<UserMainNavigationPage> {
     final familyId =
         authState is Authenticated ? authState.user.familyId : null;
     if (familyId == null) return;
-    NotificationService.instance
-        .scheduleTodaysAnniversaries(familyId: familyId, members: members);
+    final userMemberId =
+        authState is Authenticated ? authState.user.memberId : null;
+    NotificationService.instance.scheduleTodaysAnniversaries(
+      familyId: familyId,
+      members: members,
+      userMemberId: userMemberId,
+    );
   }
 
   @override

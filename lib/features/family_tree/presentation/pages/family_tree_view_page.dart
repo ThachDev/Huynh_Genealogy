@@ -25,6 +25,7 @@ import '../../../admin/domain/usecase/save_member.dart';
 import '../../../../core/di/injection_container.dart';
 import '../widgets/tree_edge_painter.dart';
 import '../widgets/tree_layout_calculator.dart';
+import '../../domain/services/kinship_calculator_service.dart';
 
 class FamilyTreeViewPage extends StatefulWidget {
   const FamilyTreeViewPage({super.key});
@@ -774,49 +775,79 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                                       ),
                                     ),
                                   ),
-                                  ...state.members.map((member) {
-                                    final pos = positions[member.id];
-                                    if (pos == null) {
-                                      return const SizedBox.shrink();
-                                    }
-                                    return Positioned(
-                                      left: pos.dx - TreeLayoutMetrics.nodeWidth / 2,
-                                      top: pos.dy - _nodeHeight / 2,
-                                      child: FamilyMemberNodeWidget(
-                                        member: member,
-                                        isSelected:
-                                            state.selectedMemberId == member.id,
-                                        isCurrentUser:
-                                            userMemberId == member.id,
-                                        onTap: () async {
-                                          HapticFeedback.lightImpact();
-                                          context.read<FamilyTreeBloc>().add(
-                                              FamilyTreeSelectMemberEvent(
-                                                  member.id));
-                                          final result = await Navigator.push(
-                                            context,
-                                            SereneFadeSlidePageRoute(
-                                              page: FamilyMemberDetailPage(
-                                                member: member,
-                                                allMembers: state.members,
+                                  ...() {
+                                    final myMember = userMemberId != null
+                                        ? state.members
+                                            .where((m) => m.id == userMemberId)
+                                            .firstOrNull
+                                        : null;
+                                    final kinshipService =
+                                        KinshipCalculatorService();
+
+                                    return state.members.map((member) {
+                                      final pos = positions[member.id];
+                                      if (pos == null) {
+                                        return const SizedBox.shrink();
+                                      }
+
+                                      String? kinshipTitle;
+                                      if (userMemberId == member.id) {
+                                        kinshipTitle = 'Tôi';
+                                      } else if (myMember != null) {
+                                        final res = kinshipService.calculate(
+                                          fromMember: myMember,
+                                          toMember: member,
+                                          allMembers: state.members,
+                                        );
+                                        if (res.fromCallsTo.isNotEmpty &&
+                                            res.fromCallsTo !=
+                                                'Đồng tộc / Chưa rõ liên kết') {
+                                          kinshipTitle = res.fromCallsTo;
+                                        }
+                                      }
+
+                                      return Positioned(
+                                        left: pos.dx -
+                                            TreeLayoutMetrics.nodeWidth / 2,
+                                        top: pos.dy - _nodeHeight / 2,
+                                        child: FamilyMemberNodeWidget(
+                                          member: member,
+                                          kinshipTitle: kinshipTitle,
+                                          isSelected: state.selectedMemberId ==
+                                              member.id,
+                                          isCurrentUser:
+                                              userMemberId == member.id,
+                                          onTap: () async {
+                                            HapticFeedback.lightImpact();
+                                            context.read<FamilyTreeBloc>().add(
+                                                FamilyTreeSelectMemberEvent(
+                                                    member.id));
+                                            final result =
+                                                await Navigator.push(
+                                              context,
+                                              SereneFadeSlidePageRoute(
+                                                page: FamilyMemberDetailPage(
+                                                  member: member,
+                                                  allMembers: state.members,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                          if (result == true && mounted) {
-                                            _reloadTree();
-                                          }
-                                        },
-                                        onAddChildTap: canEdit
-                                            ? () => _onAddChild(
-                                                member, state.members)
-                                            : null,
-                                        onAddSpouseTap: canEdit
-                                            ? () => _onAddSpouse(
-                                                member, state.members)
-                                            : null,
-                                      ),
-                                    );
-                                  }),
+                                            );
+                                            if (result == true && mounted) {
+                                              _reloadTree();
+                                            }
+                                          },
+                                          onAddChildTap: canEdit
+                                              ? () => _onAddChild(
+                                                  member, state.members)
+                                              : null,
+                                          onAddSpouseTap: canEdit
+                                              ? () => _onAddSpouse(
+                                                  member, state.members)
+                                              : null,
+                                        ),
+                                      );
+                                    });
+                                  }(),
                                  ],
                                 ),
                               ),

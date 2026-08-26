@@ -4,6 +4,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:vnlunar/vnlunar.dart';
 import '../../data/repository/notification_settings_store.dart';
 import '../../../features/family_tree/domain/entities/member_entity.dart';
+import '../../../features/family_tree/domain/services/kinship_calculator_service.dart';
 import 'notification_content.dart';
 
 /// Lên lịch thông báo cục bộ lúc 08:00 cho các giỗ/sinh nhật hôm nay.
@@ -17,10 +18,12 @@ class AnniversaryScheduler {
 
   final FlutterLocalNotificationsPlugin _local;
   final NotificationContentBuilder _content;
+  final KinshipCalculatorService _kinshipService = KinshipCalculatorService();
 
   Future<void> scheduleTodaysAnniversaries({
     required int familyId,
     required List<MemberEntity> members,
+    int? userMemberId,
   }) async {
     // Luôn xoá lịch cũ trước (kể cả khi đang tắt loại này).
     final id = 80000 + familyId;
@@ -33,6 +36,25 @@ class AnniversaryScheduler {
     final todayLunar = Lunar(createdFromSolar: true, date: today);
     final deaths = <String>[];
     final births = <String>[];
+
+    final myMember = userMemberId != null
+        ? members.where((m) => m.id == userMemberId).firstOrNull
+        : null;
+
+    String formatPersonalizedName(MemberEntity m) {
+      if (myMember != null && myMember.id != m.id) {
+        final res = _kinshipService.calculate(
+          fromMember: myMember,
+          toMember: m,
+          allMembers: members,
+        );
+        if (res.fromCallsTo.isNotEmpty &&
+            res.fromCallsTo != 'Đồng tộc / Chưa rõ liên kết') {
+          return '${res.fromCallsTo} (${m.fullName})';
+        }
+      }
+      return m.fullName;
+    }
 
     for (final m in members) {
       if (!m.isAlive) {
@@ -66,7 +88,7 @@ class AnniversaryScheduler {
             month != null &&
             day == todayLunar.day &&
             month == todayLunar.month) {
-          deaths.add(m.fullName);
+          deaths.add(formatPersonalizedName(m));
         }
       } else {
         final dob = m.dateOfBirth;
@@ -76,7 +98,9 @@ class AnniversaryScheduler {
             if (parts.length == 3) {
               final mo = int.parse(parts[1]);
               final d = int.parse(parts[2]);
-              if (d == today.day && mo == today.month) births.add(m.fullName);
+              if (d == today.day && mo == today.month) {
+                births.add(formatPersonalizedName(m));
+              }
             }
           } catch (_) {}
         }

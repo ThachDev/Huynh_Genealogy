@@ -1,5 +1,6 @@
 import 'package:vnlunar/vnlunar.dart';
 import '../../../family_tree/domain/entities/member_entity.dart';
+import '../../../family_tree/domain/services/kinship_calculator_service.dart';
 import '../../presentation/models/upcoming_anniversary.dart';
 
 /// Service tính toán các sự kiện kỷ niệm (Giỗ, Sinh nhật) từ danh sách thành viên.
@@ -10,10 +11,37 @@ import '../../presentation/models/upcoming_anniversary.dart';
 class AnniversaryCalculator {
   AnniversaryCalculator._();
 
+  static final KinshipCalculatorService _kinshipService =
+      KinshipCalculatorService();
+
+  static String? _resolveKinshipTitle(
+    MemberEntity target,
+    List<MemberEntity> members,
+    int? userMemberId,
+  ) {
+    if (userMemberId != null && userMemberId != target.id) {
+      final myMember =
+          members.where((m) => m.id == userMemberId).firstOrNull;
+      if (myMember != null) {
+        final res = _kinshipService.calculate(
+          fromMember: myMember,
+          toMember: target,
+          allMembers: members,
+        );
+        if (res.fromCallsTo.isNotEmpty &&
+            res.fromCallsTo != 'Đồng tộc / Chưa rõ liên kết') {
+          return res.fromCallsTo;
+        }
+      }
+    }
+    return null;
+  }
+
   /// Tính danh sách [UpcomingAnniversary] cho Ngày Giỗ (thành viên đã mất).
   static List<UpcomingAnniversary> calculateDeathAnniversaries(
-    List<MemberEntity> members,
-  ) {
+    List<MemberEntity> members, {
+    int? userMemberId,
+  }) {
     final today = DateTime.now();
     final todayOnly = DateTime(today.year, today.month, today.day);
     final currentLunarYear = Lunar(createdFromSolar: true, date: today).year;
@@ -40,9 +68,14 @@ class AnniversaryCalculator {
       final lunarLabel =
           '${lunarDate.day.toString().padLeft(2, '0')}/${lunarDate.month.toString().padLeft(2, '0')} ÂL';
 
+      final kinship = _resolveKinshipTitle(member, members, userMemberId);
+      final title =
+          kinship != null ? '$kinship (${member.fullName})' : member.fullName;
+
       anniversaries.add(UpcomingAnniversary(
         member: member,
-        title: member.fullName,
+        title: title,
+        kinshipTitle: kinship,
         solarDateLabel: solarLabel,
         lunarDateLabel: lunarLabel,
         daysRemaining: days,
@@ -57,8 +90,9 @@ class AnniversaryCalculator {
 
   /// Tính danh sách [UpcomingAnniversary] cho Sinh Nhật (thành viên còn sống).
   static List<UpcomingAnniversary> calculateBirthdays(
-    List<MemberEntity> members,
-  ) {
+    List<MemberEntity> members, {
+    int? userMemberId,
+  }) {
     final today = DateTime.now();
     final todayOnly = DateTime(today.year, today.month, today.day);
 
@@ -79,9 +113,13 @@ class AnniversaryCalculator {
         bd = DateTime(today.year + 1, month, day);
       }
       final daysLeft = bd.difference(todayOnly).inDays;
+      final kinship = _resolveKinshipTitle(m, members, userMemberId);
+      final title = kinship != null ? '$kinship (${m.fullName})' : m.fullName;
+
       birthdays.add(UpcomingAnniversary(
         member: m,
-        title: m.fullName,
+        title: title,
+        kinshipTitle: kinship,
         solarDateLabel:
             '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}',
         daysRemaining: daysLeft,

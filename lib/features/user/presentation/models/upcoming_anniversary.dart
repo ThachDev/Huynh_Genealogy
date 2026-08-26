@@ -2,10 +2,10 @@ import '../../../family_tree/domain/entities/member_entity.dart';
 
 /// Sự kiện sắp tới dùng chung cho Ngày Giỗ (isBirthday: false) và Sinh Nhật (isBirthday: true).
 class UpcomingAnniversary {
-
   const UpcomingAnniversary({
     required this.member,
     required this.title,
+    this.kinshipTitle,
     required this.solarDateLabel,
     this.lunarDateLabel,
     required this.daysRemaining,
@@ -14,6 +14,7 @@ class UpcomingAnniversary {
   });
   final MemberEntity member;
   final String title;
+  final String? kinshipTitle;
   final String solarDateLabel;
   final String? lunarDateLabel;
   final int daysRemaining;

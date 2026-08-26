@@ -18,6 +18,7 @@ import '../models/upcoming_anniversary.dart';
 import '../widgets/wish_letter_dialog.dart';
 import '../widgets/incense_offering_dialog.dart';
 import 'family_highlight_card.dart';
+import '../../domain/services/anniversary_calculator.dart';
 
 // ── Data model cho 1 slide ────────────────────────────────────────────────────
 class _HighlightSlide {
@@ -157,7 +158,15 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
     }
 
     // ── Slide 2: Sinh nhật gần nhất (chỉ người còn sống, chưa qua trong năm) ───────
-    final upcomingBirthday = _findNearestBirthday(widget.members, todayDate);
+    final authState = context.read<AuthBloc>().state;
+    final userMemberId =
+        authState is Authenticated ? authState.user.memberId : null;
+    final upcomingBirthdays = AnniversaryCalculator.calculateBirthdays(
+      widget.members,
+      userMemberId: userMemberId,
+    );
+    final upcomingBirthday =
+        upcomingBirthdays.isNotEmpty ? upcomingBirthdays.first : null;
     if (upcomingBirthday != null) {
       final bday = upcomingBirthday.member.dateOfBirth;
       DateTime? bDate;
@@ -191,7 +200,10 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
     }
 
     // ── Slide 3: Lễ giỗ gần nhất ────────────────────────────────────────────
-    final anniversaries = _calculateDeathAnniversaries(widget.members);
+    final anniversaries = AnniversaryCalculator.calculateDeathAnniversaries(
+      widget.members,
+      userMemberId: userMemberId,
+    );
     if (anniversaries.isNotEmpty) {
       final ann = anniversaries.first;
       DateTime? aDate;
@@ -223,139 +235,6 @@ class _FamilyHighlightCarouselState extends State<FamilyHighlightCarousel> {
     }
 
     return slides;
-  }
-
-  // ── Tìm sinh nhật gần nhất trong năm (chỉ người còn sống) ────────────
-  UpcomingAnniversary? _findNearestBirthday(
-    List<MemberEntity> members,
-    DateTime todayDate,
-  ) {
-    final candidates = <UpcomingAnniversary>[];
-
-    for (final member in members) {
-      // Bỏ qua người đã mất
-      if (!member.isAlive) continue;
-      if (member.dateOfBirth == null || member.dateOfBirth!.isEmpty) continue;
-      try {
-        final parts = member.dateOfBirth!.split('-');
-        if (parts.length != 3) continue;
-        final month = int.tryParse(parts[1]);
-        final day = int.tryParse(parts[2]);
-        if (month == null || day == null) continue;
-
-        // Sinh nhật năm nay
-        var birthdayThisYear = DateTime(todayDate.year, month, day);
-
-        // Nếu đã qua rồi → xét năm sau
-        if (birthdayThisYear.isBefore(todayDate)) {
-          birthdayThisYear = DateTime(todayDate.year + 1, month, day);
-        }
-
-        final daysLeft = birthdayThisYear.difference(todayDate).inDays;
-        final dateLabel =
-            '${day.toString().padLeft(2, '0')}/${month.toString().padLeft(2, '0')}';
-
-        String? lunarLabel;
-        try {
-          final lunar = Lunar(createdFromSolar: true, date: birthdayThisYear);
-          lunarLabel =
-              '${lunar.day.toString().padLeft(2, '0')}/${lunar.month.toString().padLeft(2, '0')} ÂL';
-        } catch (_) {}
-
-        candidates.add(UpcomingAnniversary(
-          member: member,
-          title: member.fullName,
-          solarDateLabel: dateLabel,
-          lunarDateLabel: lunarLabel,
-          daysRemaining: daysLeft,
-          isBirthday: true,
-        ));
-      } catch (_) {}
-    }
-
-    if (candidates.isEmpty) return null;
-    candidates.sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
-    return candidates.first;
-  }
-
-  // ── Tính lễ giỗ (âm lịch) ────────────────────────────────────────────────
-  List<UpcomingAnniversary> _calculateDeathAnniversaries(
-      List<MemberEntity> members) {
-    final List<UpcomingAnniversary> anniversaries = [];
-    final today = DateTime.now();
-    final todayDate = DateTime(today.year, today.month, today.day);
-
-    for (final member in members) {
-      if (member.isAlive) continue;
-
-      int? lunarDay;
-      int? lunarMonth;
-
-      if (member.lunarDeathDate != null && member.lunarDeathDate!.isNotEmpty) {
-        final match =
-            RegExp(r'(\d+)\/(\d+)').firstMatch(member.lunarDeathDate!);
-        if (match != null) {
-          lunarDay = int.tryParse(match.group(1) ?? '');
-          lunarMonth = int.tryParse(match.group(2) ?? '');
-        }
-      }
-
-      if (lunarDay == null || lunarMonth == null) {
-        if (member.dateOfDeath != null && member.dateOfDeath!.isNotEmpty) {
-          try {
-            final parts = member.dateOfDeath!.split('-');
-            if (parts.length == 3) {
-              final year = int.tryParse(parts[0]);
-              final month = int.tryParse(parts[1]);
-              final day = int.tryParse(parts[2]);
-              if (year != null && month != null && day != null) {
-                final dt = DateTime(year, month, day);
-                final lunar = Lunar(createdFromSolar: true, date: dt);
-                lunarDay = lunar.day;
-                lunarMonth = lunar.month;
-              }
-            }
-          } catch (_) {}
-        }
-      }
-
-      if (lunarDay != null && lunarMonth != null) {
-        try {
-          final todayLunar = Lunar(createdFromSolar: true, date: today);
-          final currentLunarYear = todayLunar.year;
-
-          final listSolar = convertLunar2Solar(
-              lunarDay, lunarMonth, currentLunarYear, false);
-          var solarAnniversary =
-              DateTime(listSolar[2], listSolar[1], listSolar[0]);
-
-          if (solarAnniversary.isBefore(todayDate)) {
-            final nextListSolar = convertLunar2Solar(
-                lunarDay, lunarMonth, currentLunarYear + 1, false);
-            solarAnniversary =
-                DateTime(nextListSolar[2], nextListSolar[1], nextListSolar[0]);
-          }
-
-          final days = solarAnniversary.difference(todayDate).inDays;
-          final solarLabel =
-              '${solarAnniversary.day.toString().padLeft(2, '0')}/${solarAnniversary.month.toString().padLeft(2, '0')}/${solarAnniversary.year}';
-          final lunarLabel =
-              '${lunarDay.toString().padLeft(2, '0')}/${lunarMonth.toString().padLeft(2, '0')} ÂL';
-
-          anniversaries.add(UpcomingAnniversary(
-            member: member,
-            title: member.fullName,
-            solarDateLabel: solarLabel,
-            lunarDateLabel: lunarLabel,
-            daysRemaining: days,
-            isBirthday: false,
-          ));
-        } catch (_) {}
-      }
-    }
-
-    anniversaries.sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
-    return anniversaries;
   }
 
   @override

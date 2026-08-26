@@ -965,9 +965,17 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
     List<MemberEntity> members, {
     int initialTabIndex = 0,
   }) {
-    final anniversaries =
-        AnniversaryCalculator.calculateDeathAnniversaries(members);
-    final birthdays = AnniversaryCalculator.calculateBirthdays(members);
+    final authState = context.read<AuthBloc>().state;
+    final userMemberId =
+        authState is Authenticated ? authState.user.memberId : null;
+    final anniversaries = AnniversaryCalculator.calculateDeathAnniversaries(
+      members,
+      userMemberId: userMemberId,
+    );
+    final birthdays = AnniversaryCalculator.calculateBirthdays(
+      members,
+      userMemberId: userMemberId,
+    );
     Navigator.push(
       context,
       SereneFadeSlidePageRoute(

@@ -8,10 +8,10 @@ import '../../domain/entities/member_entity.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberNodeWidget extends StatefulWidget {
-
   const FamilyMemberNodeWidget({
     super.key,
     required this.member,
+    this.kinshipTitle,
     this.isSelected = false,
     this.isCurrentUser = false,
     this.onTap,
@@ -19,6 +19,7 @@ class FamilyMemberNodeWidget extends StatefulWidget {
     this.onAddSpouseTap,
   });
   final MemberEntity member;
+  final String? kinshipTitle;
   final bool isSelected;
   final bool isCurrentUser;
   final VoidCallback? onTap;
@@ -284,7 +285,11 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                             const SizedBox(width: 4),
                                             Flexible(
                                               child: Text(
-                                                l10n.memberDiedLabel(DateFormatter.formatForDisplay(widget.member.dateOfDeath) ?? l10n.unknownLabel),
+                                                l10n.memberDiedLabel(DateFormatter
+                                                        .formatForDisplay(widget
+                                                            .member
+                                                            .dateOfDeath) ??
+                                                    l10n.unknownLabel),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.inter(
@@ -424,7 +429,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                     ),
                   ),
 
-                  // ── 6. THẺ RUY BĂNG "TÔI" GẮN GÓC TRÊN BÊN PHẢI ──
+                  // ── 6. THẺ RUY BĂNG / BADGE DANH XƯNG GÓC TRÊN BÊN PHẢI ──
                   if (widget.isCurrentUser)
                     Positioned(
                       top: 0,
@@ -470,6 +475,48 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+                    )
+                  else if (widget.kinshipTitle != null &&
+                      widget.kinshipTitle!.isNotEmpty &&
+                      widget.kinshipTitle != 'Đồng tộc / Chưa rõ liên kết')
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2.5),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              context.primary,
+                              context.primary.withValues(alpha: 0.85),
+                            ],
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(12),
+                            bottomLeft: Radius.circular(8),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.25),
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          widget.kinshipTitle!,
+                          style: GoogleFonts.beVietnamPro(
+                            fontSize: 7.5,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.1,
+                            height: 1.1,
                           ),
                         ),
                       ),

@@ -202,10 +202,12 @@ class NotificationService {
   Future<void> scheduleTodaysAnniversaries({
     required int familyId,
     required List<MemberEntity> members,
+    int? userMemberId,
   }) {
     return _scheduler.scheduleTodaysAnniversaries(
       familyId: familyId,
       members: members,
+      userMemberId: userMemberId,
     );
   }
 }

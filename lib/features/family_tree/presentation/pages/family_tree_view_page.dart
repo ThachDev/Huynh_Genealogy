@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -26,6 +21,8 @@ import '../../../../core/di/injection_container.dart';
 import '../widgets/tree_edge_painter.dart';
 import '../widgets/tree_layout_calculator.dart';
 import '../../domain/services/kinship_calculator_service.dart';
+import 'family_book_config_page.dart';
+import '../../domain/services/family_name_resolver.dart';
 
 class FamilyTreeViewPage extends StatefulWidget {
   const FamilyTreeViewPage({super.key});
@@ -35,7 +32,7 @@ class FamilyTreeViewPage extends StatefulWidget {
 }
 
 class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
-    with TickerProviderStateMixin {
+  with TickerProviderStateMixin {
   double get _nodeHeight {
     final authState = context.read<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
@@ -49,8 +46,6 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
   final TransformationController _transformationController =
       TransformationController();
   final _fabKey = GlobalKey<ExpandableFabState>();
-  final _treeBoundaryKey = GlobalKey();
-  bool _isExporting = false;
   AnimationController? _matrixAnimationController;
   Animation<Matrix4>? _matrixAnimation;
 
@@ -165,38 +160,22 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     }
   }
 
-  Future<void> _exportTreeImage() async {
-    if (_isExporting) return;
-    setState(() => _isExporting = true);
-    final l10n = AppLocalizations.of(context);
-    try {
-      final boundary = _treeBoundaryKey.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
-      if (boundary == null) return;
-      final image = await boundary.toImage(pixelRatio: 2.5);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (byteData == null) return;
-      final bytes = byteData.buffer.asUint8List();
-
-      final tempDir = await getTemporaryDirectory();
-      final fileName =
-          'cay_gia_pha_${DateTime.now().millisecondsSinceEpoch}.png';
-      final file = await File('${tempDir.path}/$fileName').create();
-      await file.writeAsBytes(bytes);
-
-      await Share.shareXFiles(
-        [XFile(file.path, mimeType: 'image/png')],
-        text: l10n.familyTreeTitle,
-      );
-    } catch (_) {
-      if (mounted) {
-        AppSnackBar.error(context, l10n.qrSaveError);
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isExporting = false);
-      }
+  void _openFamilyBookStudio() {
+    final state = context.read<FamilyTreeBloc>().state;
+    if (state is! FamilyTreeLoaded || state.members.isEmpty) {
+      AppSnackBar.error(context, 'Chưa có dữ liệu thành viên để xuất gia phả.');
+      return;
     }
+    final surname = FamilyNameResolver.resolveSurname(state.members);
+    Navigator.push(
+      context,
+      SereneFadeSlidePageRoute(
+        page: FamilyBookConfigPage(
+          members: state.members,
+          initialFamilyName: surname,
+        ),
+      ),
+    );
   }
 
   Widget _buildFabActionItem({
@@ -598,8 +577,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
         children: [
           _buildFabActionItem(
             label: 'Xuất file gia phả',
-            icon: LucideIcons.share2,
-            onTap: _exportTreeImage,
+            icon: LucideIcons.bookOpen,
+            onTap: _openFamilyBookStudio,
           ),
           _buildFabActionItem(
             label: 'Vị trí của tôi',
@@ -738,7 +717,6 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                               width: treeSize.width,
                               height: treeSize.height,
                               child: RepaintBoundary(
-                                key: _treeBoundaryKey,
                                 child: Stack(
                                   clipBehavior: Clip.none,
                                   children: [

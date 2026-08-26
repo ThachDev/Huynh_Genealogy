@@ -251,6 +251,7 @@ class AppOutlineTextField extends StatelessWidget {
     this.enabled = true,
     this.obscureText = false,
     this.fillColor,
+    this.textAlign = TextAlign.start,
   });
   final TextEditingController controller;
   final String label;
@@ -264,6 +265,7 @@ class AppOutlineTextField extends StatelessWidget {
   final bool enabled;
   final bool obscureText;
   final Color? fillColor;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -276,6 +278,7 @@ class AppOutlineTextField extends StatelessWidget {
       obscureText: obscureText,
       validator: validator,
       enabled: enabled,
+      textAlign: textAlign,
       style: GoogleFonts.beVietnamPro(fontSize: 14, color: context.textPrimary),
       decoration: InputDecoration(
         labelText: label,

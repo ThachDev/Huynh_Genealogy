@@ -5,6 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:vnlunar/vnlunar.dart';
 
+import '../entities/family_book_data_entity.dart';
 import '../entities/member_entity.dart';
 import '../models/family_book_config.dart';
 
@@ -12,6 +13,7 @@ class FamilyBookPdfService {
   Future<Uint8List> generateBookPdf({
     required List<MemberEntity> members,
     required FamilyBookConfig config,
+    FamilyBookDataEntity? bookData,
   }) async {
     final pdf = pw.Document();
 
@@ -579,41 +581,67 @@ class FamilyBookPdfService {
 
     // ── CHƯƠNG IV: KỴ NHẬT BIỂU (LỊCH GIỖ 12 THÁNG ÂM LỊCH) ──
     if (config.includeMemorialCalendar) {
-      final deceasedList = members.where((m) => !m.isAlive).toList();
-
       final parsedList = <_MemorialItem>[];
-      for (final m in deceasedList) {
-        int? lDay;
-        int? lMonth;
-        if (m.lunarDeathDate != null && m.lunarDeathDate!.isNotEmpty) {
-          final match = RegExp(r'(\d+)\/(\d+)').firstMatch(m.lunarDeathDate!);
-          if (match != null) {
-            lDay = int.tryParse(match.group(1) ?? '');
-            lMonth = int.tryParse(match.group(2) ?? '');
-          }
-        }
-        if (lDay == null || lMonth == null) {
-          if (m.dateOfDeath != null && m.dateOfDeath!.isNotEmpty) {
-            try {
-              final p = m.dateOfDeath!.split('-');
-              if (p.length == 3) {
-                final y = int.parse(p[0]);
-                final mo = int.parse(p[1]);
-                final d = int.parse(p[2]);
-                final l =
-                    Lunar(createdFromSolar: true, date: DateTime(y, mo, d));
-                lDay = l.day;
-                lMonth = l.month;
-              }
-            } catch (_) {}
-          }
-        }
-        if (lDay != null && lMonth != null) {
+      final memberMap = {for (final m in members) m.id: m};
+
+      if (bookData != null && bookData.memorialCalendar.isNotEmpty) {
+        for (final item in bookData.memorialCalendar) {
+          final m = memberMap[item.memberId] ??
+              MemberEntity(
+                id: item.memberId,
+                fullName: item.fullName,
+                gender: Gender.values
+                        .where((g) => g.name == item.gender)
+                        .firstOrNull ??
+                    Gender.unknown,
+                generation: item.generation,
+                isAlive: false,
+                dateOfDeath: item.dateOfDeath,
+                lunarDeathDate: item.lunarDeathDate,
+                notes: item.burialPlaceNotes,
+              );
           parsedList.add(_MemorialItem(
             member: m,
-            lunarDay: lDay,
-            lunarMonth: lMonth,
+            lunarDay: item.lunarDay,
+            lunarMonth: item.lunarMonth,
           ));
+        }
+      } else {
+        // Fallback offline calculation
+        final deceasedList = members.where((m) => !m.isAlive).toList();
+        for (final m in deceasedList) {
+          int? lDay;
+          int? lMonth;
+          if (m.lunarDeathDate != null && m.lunarDeathDate!.isNotEmpty) {
+            final match = RegExp(r'(\d+)\/(\d+)').firstMatch(m.lunarDeathDate!);
+            if (match != null) {
+              lDay = int.tryParse(match.group(1) ?? '');
+              lMonth = int.tryParse(match.group(2) ?? '');
+            }
+          }
+          if (lDay == null || lMonth == null) {
+            if (m.dateOfDeath != null && m.dateOfDeath!.isNotEmpty) {
+              try {
+                final p = m.dateOfDeath!.split('-');
+                if (p.length == 3) {
+                  final y = int.parse(p[0]);
+                  final mo = int.parse(p[1]);
+                  final d = int.parse(p[2]);
+                  final l =
+                      Lunar(createdFromSolar: true, date: DateTime(y, mo, d));
+                  lDay = l.day;
+                  lMonth = l.month;
+                }
+              } catch (_) {}
+            }
+          }
+          if (lDay != null && lMonth != null) {
+            parsedList.add(_MemorialItem(
+              member: m,
+              lunarDay: lDay,
+              lunarMonth: lMonth,
+            ));
+          }
         }
       }
 

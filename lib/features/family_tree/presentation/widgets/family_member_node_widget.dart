@@ -5,6 +5,7 @@ import '../../../../resources/app_localizations.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../domain/entities/member_entity.dart';
+import '../../domain/services/kinship_calculator_service.dart';
 import '../../../../core/widgets/widgets.dart';
 
 class FamilyMemberNodeWidget extends StatefulWidget {
@@ -481,7 +482,8 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
                     )
                   else if (widget.kinshipTitle != null &&
                       widget.kinshipTitle!.isNotEmpty &&
-                      widget.kinshipTitle != 'Đồng tộc / Chưa rõ liên kết')
+                      widget.kinshipTitle !=
+                          KinshipCalculatorService.unknownRelation)
                     Positioned(
                       top: 0,
                       right: 0,

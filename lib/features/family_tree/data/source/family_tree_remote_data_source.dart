@@ -6,6 +6,7 @@ import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/features/family_tree/data/models/branch_model.dart';
 import '../models/member_model.dart';
 import '../models/audit_log_model.dart';
+import '../models/family_book_data_model.dart';
 
 abstract class FamilyTreeRemoteDataSource {
   Future<List<MemberModel>> getMembers({int? branchId, int? familyId});
@@ -17,6 +18,11 @@ abstract class FamilyTreeRemoteDataSource {
   Future<bool> deleteMemberPermanently(int id);
   Future<int> purgeTrash({int days = 0});
   Future<List<AuditLogModel>> getAuditLogs({int? familyId, int? limit});
+  Future<FamilyBookDataModel> getFamilyBookData({
+    required int familyId,
+    int? startGeneration,
+    int? endGeneration,
+  });
 
   Future<List<BranchModel>> getBranches({int? familyId});
   Future<BranchModel> getBranchById(int id);
@@ -423,6 +429,38 @@ class FamilyTreeRemoteDataSourceImpl implements FamilyTreeRemoteDataSource {
       throw ServerException(
         message: e.toString(),
       );
+    }
+  }
+
+  @override
+  Future<FamilyBookDataModel> getFamilyBookData({
+    required int familyId,
+    int? startGeneration,
+    int? endGeneration,
+  }) async {
+    try {
+      final Map<String, dynamic> queryParams = {'familyId': familyId};
+      if (startGeneration != null) {
+        queryParams['startGeneration'] = startGeneration;
+      }
+      if (endGeneration != null) {
+        queryParams['endGeneration'] = endGeneration;
+      }
+      final response = await dio.get(
+        AppConstants.familyBookDataEndpoint,
+        queryParameters: queryParams,
+      );
+      final responseData = _parseMapResponse(response.data);
+      return FamilyBookDataModel.fromJson(_parseMapData(responseData));
+    } on DioException catch (e) {
+      throw ServerException(
+        message: e.message ??
+            AppLanguage.current?.errServerConnection ??
+            'Lỗi kết nối máy chủ',
+        statusCode: e.response?.statusCode,
+      );
+    } catch (e) {
+      throw ServerException(message: e.toString());
     }
   }
 }

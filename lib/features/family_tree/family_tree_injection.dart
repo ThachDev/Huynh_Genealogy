@@ -36,6 +36,7 @@ void initFamilyTreeDependencies(GetIt sl) {
   sl.registerLazySingleton(() => RestoreMember(sl()));
   sl.registerLazySingleton(() => PurgeTrash(sl()));
   sl.registerLazySingleton(() => GetAuditLogs(sl()));
+  sl.registerLazySingleton(() => GetFamilyBookData(sl()));
 
   // Repository
   sl.registerLazySingleton<FamilyTreeRepository>(

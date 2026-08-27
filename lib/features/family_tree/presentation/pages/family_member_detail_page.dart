@@ -217,7 +217,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                                       if (kinshipResult != null &&
                                           kinshipResult.fromCallsTo.isNotEmpty &&
                                           kinshipResult.fromCallsTo !=
-                                              'Đồng tộc / Chưa rõ liên kết')
+                                              KinshipCalculatorService.unknownRelation)
                                         WidgetSpan(
                                           alignment: PlaceholderAlignment.top,
                                           child: Transform.translate(

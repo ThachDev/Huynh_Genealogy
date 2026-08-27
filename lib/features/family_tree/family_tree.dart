@@ -3,6 +3,7 @@ export 'domain/entities/member_entity.dart';
 export 'domain/entities/audit_log_entity.dart';
 export 'domain/entities/branch_entity.dart';
 export 'domain/entities/family_entity.dart';
+export 'domain/entities/family_book_data_entity.dart';
 
 // Domain Repositories
 export 'domain/repository/family_tree_repository.dart';
@@ -12,6 +13,7 @@ export 'domain/usecase/get_branches.dart';
 export 'domain/usecase/get_members.dart';
 export 'domain/usecase/get_cached_branches.dart';
 export 'domain/usecase/get_cached_members.dart';
+export 'domain/usecase/get_family_book_data.dart';
 
 // Domain Services
 export 'domain/services/family_name_resolver.dart';

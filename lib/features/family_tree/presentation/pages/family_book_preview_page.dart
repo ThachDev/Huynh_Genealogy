@@ -4,12 +4,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:printing/printing.dart';
 
+import '../../../../core/di/injection_container.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../resources/app_localizations.dart';
+import '../../domain/entities/family_book_data_entity.dart';
 import '../../domain/entities/member_entity.dart';
 import '../../domain/models/family_book_config.dart';
 import '../../domain/services/family_book_pdf_service.dart';
+import '../../domain/usecase/get_family_book_data.dart';
 
 class FamilyBookPreviewPage extends StatefulWidget {
   const FamilyBookPreviewPage({
@@ -57,9 +60,28 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
     });
 
     try {
+      // 1. Tận dụng dữ liệu thống kê & kỵ nhật chuẩn xác từ Backend (nếu có mạng)
+      FamilyBookDataEntity? bookData;
+      final familyId = widget.members.where((m) => m.familyId != null).firstOrNull?.familyId;
+      if (familyId != null) {
+        try {
+          final result = await sl<GetFamilyBookData>()(
+            GetFamilyBookDataParams(
+              familyId: familyId,
+              startGeneration: widget.config.startGeneration,
+              endGeneration: widget.config.endGeneration,
+            ),
+          );
+          result.fold((_) => null, (data) => bookData = data);
+        } catch (_) {
+          // Tự động fallback về tính toán offline từ cache members
+        }
+      }
+
       final bytes = await _pdfService.generateBookPdf(
         members: widget.members,
         config: widget.config,
+        bookData: bookData,
       );
       _pdfBytes = bytes;
 

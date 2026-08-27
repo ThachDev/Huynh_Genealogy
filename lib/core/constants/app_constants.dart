@@ -8,6 +8,7 @@ class AppConstants {
 
   // Endpoints
   static const String membersEndpoint = '/members';
+  static const String familyBookDataEndpoint = '/members/family-book-data';
   static const String branchesEndpoint = '/branches';
   static const String loginEndpoint = '/auth/login';
   static const String forgotPasswordEndpoint = '/auth/forgot-password';

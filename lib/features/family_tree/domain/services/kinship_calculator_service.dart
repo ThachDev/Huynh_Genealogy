@@ -2,6 +2,8 @@ import '../entities/kinship_result_entity.dart';
 import '../entities/member_entity.dart';
 
 class KinshipCalculatorService {
+  static const String unknownRelation = 'Đồng tộc / Chưa rõ liên kết';
+
   /// Tính toán mối quan hệ và danh xưng xưng hô 2 chiều giữa [fromMember] và [toMember]
   KinshipResultEntity calculate({
     required MemberEntity fromMember,

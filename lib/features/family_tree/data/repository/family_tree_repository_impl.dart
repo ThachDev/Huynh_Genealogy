@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/family_book_data_entity.dart';
 import '../../../../core/errors/error_handler.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
@@ -203,6 +204,24 @@ class FamilyTreeRepositoryImpl implements FamilyTreeRepository {
     try {
       final result = await remoteDataSource.deleteBranch(id);
       await localDataSource.clearAll();
+      return Right(result);
+    } catch (e) {
+      return Left(ErrorHandler.map(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, FamilyBookDataEntity>> getFamilyBookData({
+    required int familyId,
+    int? startGeneration,
+    int? endGeneration,
+  }) async {
+    try {
+      final result = await remoteDataSource.getFamilyBookData(
+        familyId: familyId,
+        startGeneration: startGeneration,
+        endGeneration: endGeneration,
+      );
       return Right(result);
     } catch (e) {
       return Left(ErrorHandler.map(e));

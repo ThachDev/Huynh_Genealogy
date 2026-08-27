@@ -3,6 +3,7 @@ import '../../../../core/errors/failures.dart';
 import 'package:giatocviet/features/family_tree/domain/entities/branch_entity.dart';
 import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
 import 'package:giatocviet/features/family_tree/domain/entities/audit_log_entity.dart';
+import 'package:giatocviet/features/family_tree/domain/entities/family_book_data_entity.dart';
 
 abstract class FamilyTreeRepository {
   // ---------- Members ----------
@@ -16,6 +17,11 @@ abstract class FamilyTreeRepository {
   Future<Either<Failure, bool>> deleteMemberPermanently(int id);
   Future<Either<Failure, int>> purgeTrash({int days = 0});
   Future<Either<Failure, List<AuditLogEntity>>> getAuditLogs({int? familyId, int? limit});
+  Future<Either<Failure, FamilyBookDataEntity>> getFamilyBookData({
+    required int familyId,
+    int? startGeneration,
+    int? endGeneration,
+  });
 
   // ---------- Branches ----------
   Future<Either<Failure, List<BranchEntity>>> getBranches({int? familyId});

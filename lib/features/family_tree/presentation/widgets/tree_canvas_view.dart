@@ -72,7 +72,7 @@ class TreeCanvasView extends StatelessWidget {
             allMembers: members,
           );
           if (res.fromCallsTo.isNotEmpty &&
-              res.fromCallsTo != 'Đồng tộc / Chưa rõ liên kết') {
+              res.fromCallsTo != KinshipCalculatorService.unknownRelation) {
             kinshipMap[member.id] = res.fromCallsTo;
           }
         }

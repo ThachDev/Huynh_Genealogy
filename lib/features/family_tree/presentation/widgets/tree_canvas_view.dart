@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/theme/theme_extensions.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../domain/entities/member_entity.dart';
 import '../../domain/services/kinship_calculator_service.dart';
 import 'family_member_node_widget.dart';
@@ -13,6 +14,7 @@ class TreeCanvasView extends StatelessWidget {
     super.key,
     required this.transformationController,
     required this.treeSize,
+    required this.viewportSize,
     required this.nodeHeight,
     required this.members,
     required this.positions,
@@ -30,6 +32,7 @@ class TreeCanvasView extends StatelessWidget {
 
   final TransformationController transformationController;
   final Size treeSize;
+  final Size viewportSize;
   final double nodeHeight;
   final List<MemberEntity> members;
   final Map<int, Offset> positions;
@@ -46,16 +49,40 @@ class TreeCanvasView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    // Precompute Kinship Titles một lần duy nhất
     final myMember = userMemberId != null
         ? members.where((m) => m.id == userMemberId).firstOrNull
         : null;
 
     final kinshipService = KinshipCalculatorService();
+    final kinshipMap = <int, String?>{};
+
+    if (userMemberId != null) {
+      kinshipMap[userMemberId!] =
+          l10n.selfRelationTag.replaceAll('(', '').replaceAll(')', '');
+    }
+    if (myMember != null) {
+      for (final member in members) {
+        if (member.id != userMemberId) {
+          final res = kinshipService.calculate(
+            fromMember: myMember,
+            toMember: member,
+            allMembers: members,
+          );
+          if (res.fromCallsTo.isNotEmpty &&
+              res.fromCallsTo != 'Đồng tộc / Chưa rõ liên kết') {
+            kinshipMap[member.id] = res.fromCallsTo;
+          }
+        }
+      }
+    }
 
     return InteractiveViewer(
       transformationController: transformationController,
       constrained: false,
-      boundaryMargin: const EdgeInsets.all(double.infinity),
+      boundaryMargin: const EdgeInsets.all(1000),
       minScale: 0.1, // Cho phép zoom out xa để xem toàn cảnh cây
       maxScale: 3.0,
       child: SizedBox(
@@ -65,7 +92,7 @@ class TreeCanvasView extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // 1. Tầng vẽ đường nối các thế hệ và hôn nhân
+              // ── 1. TẦNG VẼ ĐƯỜNG NỐI THẾ HỆ VÀ HÔN NHÂN (RepaintBoundary) ──
               RepaintBoundary(
                 child: CustomPaint(
                   size: treeSize,
@@ -97,34 +124,22 @@ class TreeCanvasView extends StatelessWidget {
                 ),
               ),
 
-              // 2. Tầng render các Node thành viên
+              // ── 2. TẦNG RENDER CÁC NODE THÀNH VIÊN ĐẦY ĐỦ (Không bao giờ bị mất card) ──
               ...members.map((member) {
                 final pos = positions[member.id];
                 if (pos == null) {
                   return const SizedBox.shrink();
                 }
 
-                String? kinshipTitle;
-                if (userMemberId == member.id) {
-                  kinshipTitle = 'Tôi';
-                } else if (myMember != null) {
-                  final res = kinshipService.calculate(
-                    fromMember: myMember,
-                    toMember: member,
-                    allMembers: members,
-                  );
-                  if (res.fromCallsTo.isNotEmpty &&
-                      res.fromCallsTo != 'Đồng tộc / Chưa rõ liên kết') {
-                    kinshipTitle = res.fromCallsTo;
-                  }
-                }
+                final nodeLeft = pos.dx - TreeLayoutMetrics.nodeWidth / 2;
+                final nodeTop = pos.dy - nodeHeight / 2;
 
                 return Positioned(
-                  left: pos.dx - TreeLayoutMetrics.nodeWidth / 2,
-                  top: pos.dy - nodeHeight / 2,
+                  left: nodeLeft,
+                  top: nodeTop,
                   child: FamilyMemberNodeWidget(
                     member: member,
-                    kinshipTitle: kinshipTitle,
+                    kinshipTitle: kinshipMap[member.id],
                     isSelected: selectedMemberId == member.id,
                     isCurrentUser: userMemberId == member.id,
                     onTap: () {

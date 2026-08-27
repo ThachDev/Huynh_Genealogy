@@ -383,6 +383,8 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                           TreeCanvasView(
                             transformationController: _transformationController,
                             treeSize: treeSize,
+                            viewportSize:
+                                Size(constraints.maxWidth, constraints.maxHeight),
                             nodeHeight: _nodeHeight,
                             members: state.members,
                             positions: positions,

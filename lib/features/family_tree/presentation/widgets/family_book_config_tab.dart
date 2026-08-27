@@ -203,7 +203,7 @@ class FamilyBookConfigTab extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Phạm vi thế hệ xuất bản',
+                    l10n.familyBookScopeGenerations,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w600,
@@ -218,7 +218,10 @@ class FamilyBookConfigTab extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Đời ${config.startGeneration} - Đời ${config.endGeneration ?? maxGeneration}',
+                      l10n.familyBookScopeGenerationsRange(
+                        config.startGeneration,
+                        config.endGeneration ?? maxGeneration,
+                      ),
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,

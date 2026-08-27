@@ -1293,7 +1293,7 @@
   "familyBookFounderHint": "VD: Thủy Tổ: Nguyễn Văn A",
   "familyBookLocationLabel": "Địa danh Từ Đường / Quê quán phát tích",
   "familyBookLocationHint": "VD: Từ Đường Họ Nguyễn, Xã..., Huyện..., Tỉnh...",
-  "familyBookEditorLabel": "Ban / Người biên soạn",
+  "familyBookEditorLabel": "Người biên soạn",
   "familyBookEditorHint": "VD: Hội Đồng Gia Tộc",
   "familyBookYearLabel": "Thời gian biên soạn",
   "familyBookYearHint": "VD: Năm Bính Ngọ 2026",
@@ -1368,5 +1368,55 @@
   "branchNameFieldLabel": "Chi họ",
   "statusLinked": "Đã liên kết",
   "contentLabel": "Nội dung",
-  "writeContentHint": "Nhập nội dung..."
+  "writeContentHint": "Nhập nội dung...",
+  "familyBookTabBook": "Phả Ký (Sách A4)",
+  "familyBookTabPoster": "Phả Đồ (Tranh)",
+  "familyBookScopeGenerations": "Phạm vi thế hệ xuất bản",
+  "familyBookScopeGenerationsRange": "Đời {start} - Đời {end}",
+  "@familyBookScopeGenerationsRange": {
+    "placeholders": {
+      "start": {
+        "type": "int"
+      },
+      "end": {
+        "type": "int"
+      }
+    }
+  },
+  "familyBookStandardSample": "Mẫu chuẩn",
+  "familyBookInputContentHint": "Nhập nội dung...",
+  "familyBookThemePlainShort": "TỐI GIẢN",
+  "familyBookArtBorder": "Viền mỹ thuật",
+  "familyPosterPreviewTitle": "Xem Trước Tranh Phả Đồ",
+  "familyPosterOrientationLandscape": "Khổ ngang",
+  "familyPosterOrientationPortrait": "Khổ dọc",
+  "familyPosterRendering": "Đang dựng tranh Phả Đồ {size}...",
+  "@familyPosterRendering": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "familyPosterPrintQuality": "Độ nét cao chuẩn in ấn",
+  "familyPosterNoData": "Không có dữ liệu tranh",
+  "familyPosterFitScreen": "Vừa màn hình",
+  "familyPosterSectionPaper": "1. Khổ In & Hướng Tranh",
+  "familyPosterPaperSize": "Kích thước khổ giấy",
+  "familyPosterOrientation": "Hướng bố cục tranh",
+  "familyPosterSectionStyle": "2. Phong Cách Nền & Khung Tranh",
+  "familyPosterSectionTitleCouplet": "3. Tiêu Đề & Câu Đối Nhà Thờ Họ",
+  "familyPosterTitleLabel": "Tiêu đề Tranh Phả Đồ",
+  "familyPosterTitleHint": "VD: PHẢ HỆ ĐỒ ĐẠI TÔN HỌ NGUYỄN",
+  "familyPosterCoupletLeftLabel": "Câu đối vế trái (Thượng liên)",
+  "familyPosterCoupletLeftHint": "VD: Tổ tông công đức thiên niên thịnh",
+  "familyPosterCoupletRightLabel": "Câu đối vế phải (Hạ liên)",
+  "familyPosterCoupletRightHint": "VD: Tử hiếu tôn hiền vạn đại vinh",
+  "familyPosterSectionScope": "4. Phạm Vi & Tùy Chọn Hiển Thị",
+  "familyPosterScopeGenerations": "Phạm vi thế hệ trên tranh",
+  "familyPosterPaperA0Desc": "Khổ A0 (84.1 × 118.9 cm) • Khổ đại cho Từ Đường, Nhà Thờ Họ",
+  "familyPosterPaperA1Desc": "Khổ A1 (59.4 × 84.1 cm) • Kích thước chuẩn treo tường đẹp nhất",
+  "familyPosterPaperA2Desc": "Khổ A2 (42.0 × 59.4 cm) • Phù hợp không gian phòng khách vừa",
+  "familyPosterPaperA3Desc": "Khổ A3 (29.7 × 42.0 cm) • Khổ nhỏ đóng khung để bàn / treo tường",
+  "familyPosterPaperA4Desc": "Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả"
 }

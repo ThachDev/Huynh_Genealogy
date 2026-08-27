@@ -32,6 +32,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
   Uint8List? _pdfBytes;
   List<Uint8List> _pageImages = [];
   bool _isLoading = true;
+  bool _isRasterizingMore = false;
   int _currentPage = 0;
   String? _errorMessage;
 
@@ -50,7 +51,9 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
   Future<void> _generateAndRasterizePdf() async {
     setState(() {
       _isLoading = true;
+      _isRasterizingMore = false;
       _errorMessage = null;
+      _pageImages = [];
     });
 
     try {
@@ -61,15 +64,24 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
       _pdfBytes = bytes;
 
       final List<Uint8List> images = [];
-      await for (final page in Printing.raster(bytes, dpi: 130)) {
+
+      // ── PROGRESSIVE STREAMING: Hiển thị ngay trang 1 không phải chờ 100% tài liệu ──
+      await for (final page in Printing.raster(bytes, dpi: 120)) {
         final pngBytes = await page.toPng();
         images.add(pngBytes);
+
+        if (mounted) {
+          setState(() {
+            _pageImages = List.from(images);
+            _isLoading = false;
+            _isRasterizingMore = true;
+          });
+        }
       }
 
       if (mounted) {
         setState(() {
-          _pageImages = images;
-          _isLoading = false;
+          _isRasterizingMore = false;
         });
       }
     } catch (e) {
@@ -77,6 +89,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
         setState(() {
           _errorMessage = 'Không thể hiển thị bản xem trước: $e';
           _isLoading = false;
+          _isRasterizingMore = false;
         });
       }
     }
@@ -88,6 +101,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppAppBar(
         title: l10n.familyBookPreviewTitle,
@@ -128,7 +142,10 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(color: context.primary),
+            CircularProgressIndicator(
+              strokeWidth: 3,
+              color: context.primary,
+            ),
             const SizedBox(height: 16),
             Text(
               l10n.familyBookRendering,
@@ -222,7 +239,8 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: InteractiveViewer(
-                          maxScale: 3.5,
+                          minScale: 1.0,
+                          maxScale: 4.0,
                           child: Image.memory(
                             _pageImages[index],
                             fit: BoxFit.contain,
@@ -238,14 +256,15 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
 
           // ── FLOATING BOTTOM CONTROLLER BAR ──
           Positioned(
-            left: 24,
-            right: 24,
+            left: 20,
+            right: 20,
             bottom: 16,
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: context.surface.withValues(alpha: 0.92),
+                  color: context.surface.withValues(alpha: 0.95),
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
                     color: context.accent.withValues(alpha: 0.25),
@@ -264,15 +283,16 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
                     IconButton(
                       icon: const Icon(LucideIcons.chevronLeft, size: 18),
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
                       color: _currentPage > 0
                           ? context.textPrimary
                           : context.textSecondary.withValues(alpha: 0.3),
                       onPressed: _currentPage > 0
                           ? () {
                               _pageController.previousPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
+                                duration: const Duration(milliseconds: 250),
+                                curve: Curves.easeOutCubic,
                               );
                             }
                           : null,
@@ -285,28 +305,45 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
                         color: context.primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Text(
-                        'Trang ${_currentPage + 1} / ${_pageImages.length}',
-                        style: GoogleFonts.beVietnamPro(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.bold,
-                          color: context.primary,
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Trang ${_currentPage + 1} / ${_pageImages.length}',
+                            style: GoogleFonts.beVietnamPro(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.bold,
+                              color: context.primary,
+                            ),
+                          ),
+                          if (_isRasterizingMore) ...[
+                            const SizedBox(width: 6),
+                            SizedBox(
+                              width: 10,
+                              height: 10,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.8,
+                                color: context.primary,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                     const SizedBox(width: 8),
                     IconButton(
                       icon: const Icon(LucideIcons.chevronRight, size: 18),
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                      constraints:
+                          const BoxConstraints(minWidth: 32, minHeight: 32),
                       color: _currentPage < _pageImages.length - 1
                           ? context.textPrimary
                           : context.textSecondary.withValues(alpha: 0.3),
                       onPressed: _currentPage < _pageImages.length - 1
                           ? () {
                               _pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut,
+                                duration: const Duration(milliseconds: 250),
+                                curve: Curves.easeOutCubic,
                               );
                             }
                           : null,

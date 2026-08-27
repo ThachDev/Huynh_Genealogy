@@ -187,7 +187,9 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage>
         title: l10n.familyBookConfigTitle,
         actions: [
           IconButton(
-            tooltip: isPhaKyTab ? 'Xem trước Phả Ký' : 'Xem trước Phả Đồ',
+            tooltip: isPhaKyTab
+                ? l10n.familyBookPreviewTitle
+                : l10n.familyPosterPreviewTitle,
             icon: const Icon(LucideIcons.eye, size: 20),
             onPressed: _goToPreview,
           ),
@@ -207,14 +209,14 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage>
             fontSize: 13.5,
             fontWeight: FontWeight.w500,
           ),
-          tabs: const [
+          tabs: [
             Tab(
-              icon: Icon(LucideIcons.bookOpen, size: 18),
-              text: 'Phả Ký (Sách A4)',
+              icon: const Icon(LucideIcons.bookOpen, size: 18),
+              text: l10n.familyBookTabBook,
             ),
             Tab(
-              icon: Icon(LucideIcons.image, size: 18),
-              text: 'Phả Đồ (Tranh)',
+              icon: const Icon(LucideIcons.image, size: 18),
+              text: l10n.familyBookTabPoster,
             ),
           ],
         ),

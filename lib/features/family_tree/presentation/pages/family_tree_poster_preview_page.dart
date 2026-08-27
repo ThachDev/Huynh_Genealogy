@@ -111,12 +111,12 @@ class _FamilyTreePosterPreviewPageState
     final sizeName = widget.config.paperSize.name.toUpperCase();
     final orientName =
         widget.config.orientation == PosterOrientation.landscape
-            ? 'Khổ ngang'
-            : 'Khổ dọc';
+            ? l10n.familyPosterOrientationLandscape
+            : l10n.familyPosterOrientationPortrait;
 
     return Scaffold(
       appBar: AppAppBar(
-        title: 'Xem Trước Tranh Phả Đồ',
+        title: l10n.familyPosterPreviewTitle,
         actions: [
           if (_pdfBytes != null) ...[
             IconButton(
@@ -163,7 +163,7 @@ class _FamilyTreePosterPreviewPageState
             ),
             const SizedBox(height: 16),
             Text(
-              'Đang dựng tranh Phả Đồ $sizeName...',
+              l10n.familyPosterRendering(sizeName),
               style: GoogleFonts.beVietnamPro(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -172,7 +172,7 @@ class _FamilyTreePosterPreviewPageState
             ),
             const SizedBox(height: 4),
             Text(
-              'Độ nét cao chuẩn in ấn',
+              l10n.familyPosterPrintQuality,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 12,
                 color: context.textSecondary,
@@ -213,7 +213,7 @@ class _FamilyTreePosterPreviewPageState
     }
 
     if (_posterImage == null) {
-      return const Center(child: Text('Không có dữ liệu tranh'));
+      return Center(child: Text(l10n.familyPosterNoData));
     }
 
     return SafeArea(
@@ -315,7 +315,7 @@ class _FamilyTreePosterPreviewPageState
                     const SizedBox(width: 4),
                     IconButton(
                       icon: const Icon(LucideIcons.maximize2, size: 16),
-                      tooltip: 'Vừa màn hình',
+                      tooltip: l10n.familyPosterFitScreen,
                       visualDensity: VisualDensity.compact,
                       onPressed: _resetZoom,
                     ),

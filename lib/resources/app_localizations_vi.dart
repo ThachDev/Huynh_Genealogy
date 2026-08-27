@@ -2851,7 +2851,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'VD: Từ Đường Họ Nguyễn, Xã..., Huyện..., Tỉnh...';
 
   @override
-  String get familyBookEditorLabel => 'Ban / Người biên soạn';
+  String get familyBookEditorLabel => 'Người biên soạn';
 
   @override
   String get familyBookEditorHint => 'VD: Hội Đồng Gia Tộc';
@@ -3008,4 +3008,115 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get writeContentHint => 'Nhập nội dung...';
+
+  @override
+  String get familyBookTabBook => 'Phả Ký (Sách A4)';
+
+  @override
+  String get familyBookTabPoster => 'Phả Đồ (Tranh)';
+
+  @override
+  String get familyBookScopeGenerations => 'Phạm vi thế hệ xuất bản';
+
+  @override
+  String familyBookScopeGenerationsRange(int start, int end) {
+    return 'Đời $start - Đời $end';
+  }
+
+  @override
+  String get familyBookStandardSample => 'Mẫu chuẩn';
+
+  @override
+  String get familyBookInputContentHint => 'Nhập nội dung...';
+
+  @override
+  String get familyBookThemePlainShort => 'TỐI GIẢN';
+
+  @override
+  String get familyBookArtBorder => 'Viền mỹ thuật';
+
+  @override
+  String get familyPosterPreviewTitle => 'Xem Trước Tranh Phả Đồ';
+
+  @override
+  String get familyPosterOrientationLandscape => 'Khổ ngang';
+
+  @override
+  String get familyPosterOrientationPortrait => 'Khổ dọc';
+
+  @override
+  String familyPosterRendering(String size) {
+    return 'Đang dựng tranh Phả Đồ $size...';
+  }
+
+  @override
+  String get familyPosterPrintQuality => 'Độ nét cao chuẩn in ấn';
+
+  @override
+  String get familyPosterNoData => 'Không có dữ liệu tranh';
+
+  @override
+  String get familyPosterFitScreen => 'Vừa màn hình';
+
+  @override
+  String get familyPosterSectionPaper => '1. Khổ In & Hướng Tranh';
+
+  @override
+  String get familyPosterPaperSize => 'Kích thước khổ giấy';
+
+  @override
+  String get familyPosterOrientation => 'Hướng bố cục tranh';
+
+  @override
+  String get familyPosterSectionStyle => '2. Phong Cách Nền & Khung Tranh';
+
+  @override
+  String get familyPosterSectionTitleCouplet =>
+      '3. Tiêu Đề & Câu Đối Nhà Thờ Họ';
+
+  @override
+  String get familyPosterTitleLabel => 'Tiêu đề Tranh Phả Đồ';
+
+  @override
+  String get familyPosterTitleHint => 'VD: PHẢ HỆ ĐỒ ĐẠI TÔN HỌ NGUYỄN';
+
+  @override
+  String get familyPosterCoupletLeftLabel => 'Câu đối vế trái (Thượng liên)';
+
+  @override
+  String get familyPosterCoupletLeftHint =>
+      'VD: Tổ tông công đức thiên niên thịnh';
+
+  @override
+  String get familyPosterCoupletRightLabel => 'Câu đối vế phải (Hạ liên)';
+
+  @override
+  String get familyPosterCoupletRightHint =>
+      'VD: Tử hiếu tôn hiền vạn đại vinh';
+
+  @override
+  String get familyPosterSectionScope => '4. Phạm Vi & Tùy Chọn Hiển Thị';
+
+  @override
+  String get familyPosterScopeGenerations => 'Phạm vi thế hệ trên tranh';
+
+  @override
+  String get familyPosterPaperA0Desc =>
+      'Khổ A0 (84.1 × 118.9 cm) • Khổ đại cho Từ Đường, Nhà Thờ Họ';
+
+  @override
+  String get familyPosterPaperA1Desc =>
+      'Khổ A1 (59.4 × 84.1 cm) • Kích thước chuẩn treo tường đẹp nhất';
+
+  @override
+  String get familyPosterPaperA2Desc =>
+      'Khổ A2 (42.0 × 59.4 cm) • Phù hợp không gian phòng khách vừa';
+
+  @override
+  String get familyPosterPaperA3Desc =>
+      'Khổ A3 (29.7 × 42.0 cm) • Khổ nhỏ đóng khung để bàn / treo tường';
+
+  @override
+  String get familyPosterPaperA4Desc =>
+      'Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả';
 }

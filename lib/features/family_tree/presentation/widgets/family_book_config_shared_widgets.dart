@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../../../core/theme/theme_extensions.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../domain/models/family_book_config.dart';
 
 /// Tiêu đề phân đoạn form
@@ -129,6 +130,7 @@ Widget buildBookConfigExpandableEditor(
   required String defaultText,
   bool isInitiallyExpanded = false,
 }) {
+  final l10n = AppLocalizations.of(context);
   return Theme(
     data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
     child: ExpansionTile(
@@ -155,7 +157,7 @@ Widget buildBookConfigExpandableEditor(
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(
-              'Mẫu chuẩn',
+              l10n.familyBookStandardSample,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
@@ -173,7 +175,7 @@ Widget buildBookConfigExpandableEditor(
           style: GoogleFonts.inter(fontSize: 13, height: 1.5),
           decoration: InputDecoration(
             isDense: true,
-            hintText: 'Nhập nội dung...',
+            hintText: l10n.familyBookInputContentHint,
             hintStyle: GoogleFonts.inter(
               fontSize: 12,
               color: context.textSecondary.withValues(alpha: 0.6),
@@ -215,6 +217,7 @@ Widget buildBookConfigThemeCard(
   required FamilyBookCoverTheme currentTheme,
   required ValueChanged<FamilyBookCoverTheme> onSelect,
 }) {
+  final l10n = AppLocalizations.of(context);
   final isSelected = currentTheme == theme;
 
   return Expanded(
@@ -259,54 +262,85 @@ Widget buildBookConfigThemeCard(
                     else
                       Container(
                         decoration: BoxDecoration(
-                          color: context.background,
-                          border: Border.all(
-                            color: context.accent.withValues(alpha: 0.2),
-                            width: 1.2,
+                          color: context.resolve(
+                            const Color(0xFFFBF8F1),
+                            const Color(0xFF232323),
                           ),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                LucideIcons.fileText,
-                                size: 20,
-                                color: context.textSecondary,
+                        padding: const EdgeInsets.all(4),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: context.accent.withValues(alpha: 0.5),
+                              width: 0.8,
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          padding: const EdgeInsets.all(3),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: context.accent.withValues(alpha: 0.25),
+                                width: 0.5,
                               ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'Nền trơn',
-                                style: GoogleFonts.beVietnamPro(
-                                  fontSize: 9.5,
-                                  fontWeight: FontWeight.w500,
-                                  color: context.textSecondary,
-                                ),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    LucideIcons.scroll,
+                                    size: 16,
+                                    color: context.primary,
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    l10n.familyBookThemePlainShort,
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 7.5,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.8,
+                                      color: context.primary,
+                                    ),
+                                  ),
+                                  Text(
+                                    l10n.familyBookArtBorder,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 6.5,
+                                      color: context.textSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     if (isSelected)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: context.primary.withValues(alpha: 0.2),
-                          border: Border.all(
+                      Positioned(
+                        top: 6,
+                        right: 6,
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
                             color: context.primary,
-                            width: 2.0,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 4,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
                           ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: CircleAvatar(
-                            radius: 12,
-                            backgroundColor: context.primary,
-                            child: const Icon(
-                              LucideIcons.check,
-                              size: 14,
-                              color: Colors.white,
-                            ),
+                          child: const Icon(
+                            LucideIcons.check,
+                            color: Colors.white,
+                            size: 12,
                           ),
                         ),
                       ),
@@ -319,10 +353,12 @@ Widget buildBookConfigThemeCard(
               title,
               textAlign: TextAlign.center,
               style: GoogleFonts.beVietnamPro(
-                fontSize: 11.5,
+                fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                 color: isSelected ? context.primary : context.textPrimary,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

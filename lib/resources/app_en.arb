@@ -1281,5 +1281,55 @@
   "branchNameFieldLabel": "Branch",
   "statusLinked": "Linked",
   "contentLabel": "Content",
-  "writeContentHint": "Enter content..."
+  "writeContentHint": "Enter content...",
+  "familyBookTabBook": "Genealogy Book (A4)",
+  "familyBookTabPoster": "Pedigree Poster",
+  "familyBookScopeGenerations": "Generations Scope",
+  "familyBookScopeGenerationsRange": "Gen {start} - Gen {end}",
+  "@familyBookScopeGenerationsRange": {
+    "placeholders": {
+      "start": {
+        "type": "int"
+      },
+      "end": {
+        "type": "int"
+      }
+    }
+  },
+  "familyBookStandardSample": "Standard Sample",
+  "familyBookInputContentHint": "Enter content...",
+  "familyBookThemePlainShort": "MINIMAL",
+  "familyBookArtBorder": "Artistic Border",
+  "familyPosterPreviewTitle": "Preview Pedigree Poster",
+  "familyPosterOrientationLandscape": "Landscape",
+  "familyPosterOrientationPortrait": "Portrait",
+  "familyPosterRendering": "Rendering Pedigree Poster {size}...",
+  "@familyPosterRendering": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "familyPosterPrintQuality": "High resolution print quality",
+  "familyPosterNoData": "No poster data",
+  "familyPosterFitScreen": "Fit to Screen",
+  "familyPosterSectionPaper": "1. Paper Size & Orientation",
+  "familyPosterPaperSize": "Paper size",
+  "familyPosterOrientation": "Orientation",
+  "familyPosterSectionStyle": "2. Background Style & Frame",
+  "familyPosterSectionTitleCouplet": "3. Title & Clan Couplets",
+  "familyPosterTitleLabel": "Poster Title",
+  "familyPosterTitleHint": "e.g. PEDIGREE CHART OF NGUYEN CLAN",
+  "familyPosterCoupletLeftLabel": "Left couplet",
+  "familyPosterCoupletLeftHint": "e.g. Ancestral virtues endure for a thousand years",
+  "familyPosterCoupletRightLabel": "Right couplet",
+  "familyPosterCoupletRightHint": "e.g. Filial descendants prosper for ten thousand generations",
+  "familyPosterSectionScope": "4. Scope & Display Options",
+  "familyPosterScopeGenerations": "Generations on poster",
+  "familyPosterPaperA0Desc": "Size A0 (84.1 × 118.9 cm) • Large format for Ancestral Hall",
+  "familyPosterPaperA1Desc": "Size A1 (59.4 × 84.1 cm) • Best standard wall-hanging size",
+  "familyPosterPaperA2Desc": "Size A2 (42.0 × 59.4 cm) • Suitable for medium living rooms",
+  "familyPosterPaperA3Desc": "Size A3 (29.7 × 42.0 cm) • Desktop framing or wall mounting",
+  "familyPosterPaperA4Desc": "Size A4 (21.0 × 29.7 cm) • Standard binder size"
 }

@@ -5147,7 +5147,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookEditorLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Ban / Người biên soạn'**
+  /// **'Người biên soạn'**
   String get familyBookEditorLabel;
 
   /// No description provided for @familyBookEditorHint.
@@ -5431,6 +5431,204 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhập nội dung...'**
   String get writeContentHint;
+
+  /// No description provided for @familyBookTabBook.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phả Ký (Sách A4)'**
+  String get familyBookTabBook;
+
+  /// No description provided for @familyBookTabPoster.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phả Đồ (Tranh)'**
+  String get familyBookTabPoster;
+
+  /// No description provided for @familyBookScopeGenerations.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phạm vi thế hệ xuất bản'**
+  String get familyBookScopeGenerations;
+
+  /// No description provided for @familyBookScopeGenerationsRange.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đời {start} - Đời {end}'**
+  String familyBookScopeGenerationsRange(int start, int end);
+
+  /// No description provided for @familyBookStandardSample.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mẫu chuẩn'**
+  String get familyBookStandardSample;
+
+  /// No description provided for @familyBookInputContentHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập nội dung...'**
+  String get familyBookInputContentHint;
+
+  /// No description provided for @familyBookThemePlainShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'TỐI GIẢN'**
+  String get familyBookThemePlainShort;
+
+  /// No description provided for @familyBookArtBorder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Viền mỹ thuật'**
+  String get familyBookArtBorder;
+
+  /// No description provided for @familyPosterPreviewTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem Trước Tranh Phả Đồ'**
+  String get familyPosterPreviewTitle;
+
+  /// No description provided for @familyPosterOrientationLandscape.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ ngang'**
+  String get familyPosterOrientationLandscape;
+
+  /// No description provided for @familyPosterOrientationPortrait.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ dọc'**
+  String get familyPosterOrientationPortrait;
+
+  /// No description provided for @familyPosterRendering.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dựng tranh Phả Đồ {size}...'**
+  String familyPosterRendering(String size);
+
+  /// No description provided for @familyPosterPrintQuality.
+  ///
+  /// In vi, this message translates to:
+  /// **'Độ nét cao chuẩn in ấn'**
+  String get familyPosterPrintQuality;
+
+  /// No description provided for @familyPosterNoData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có dữ liệu tranh'**
+  String get familyPosterNoData;
+
+  /// No description provided for @familyPosterFitScreen.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa màn hình'**
+  String get familyPosterFitScreen;
+
+  /// No description provided for @familyPosterSectionPaper.
+  ///
+  /// In vi, this message translates to:
+  /// **'1. Khổ In & Hướng Tranh'**
+  String get familyPosterSectionPaper;
+
+  /// No description provided for @familyPosterPaperSize.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kích thước khổ giấy'**
+  String get familyPosterPaperSize;
+
+  /// No description provided for @familyPosterOrientation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hướng bố cục tranh'**
+  String get familyPosterOrientation;
+
+  /// No description provided for @familyPosterSectionStyle.
+  ///
+  /// In vi, this message translates to:
+  /// **'2. Phong Cách Nền & Khung Tranh'**
+  String get familyPosterSectionStyle;
+
+  /// No description provided for @familyPosterSectionTitleCouplet.
+  ///
+  /// In vi, this message translates to:
+  /// **'3. Tiêu Đề & Câu Đối Nhà Thờ Họ'**
+  String get familyPosterSectionTitleCouplet;
+
+  /// No description provided for @familyPosterTitleLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề Tranh Phả Đồ'**
+  String get familyPosterTitleLabel;
+
+  /// No description provided for @familyPosterTitleHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: PHẢ HỆ ĐỒ ĐẠI TÔN HỌ NGUYỄN'**
+  String get familyPosterTitleHint;
+
+  /// No description provided for @familyPosterCoupletLeftLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu đối vế trái (Thượng liên)'**
+  String get familyPosterCoupletLeftLabel;
+
+  /// No description provided for @familyPosterCoupletLeftHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Tổ tông công đức thiên niên thịnh'**
+  String get familyPosterCoupletLeftHint;
+
+  /// No description provided for @familyPosterCoupletRightLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu đối vế phải (Hạ liên)'**
+  String get familyPosterCoupletRightLabel;
+
+  /// No description provided for @familyPosterCoupletRightHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Tử hiếu tôn hiền vạn đại vinh'**
+  String get familyPosterCoupletRightHint;
+
+  /// No description provided for @familyPosterSectionScope.
+  ///
+  /// In vi, this message translates to:
+  /// **'4. Phạm Vi & Tùy Chọn Hiển Thị'**
+  String get familyPosterSectionScope;
+
+  /// No description provided for @familyPosterScopeGenerations.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phạm vi thế hệ trên tranh'**
+  String get familyPosterScopeGenerations;
+
+  /// No description provided for @familyPosterPaperA0Desc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ A0 (84.1 × 118.9 cm) • Khổ đại cho Từ Đường, Nhà Thờ Họ'**
+  String get familyPosterPaperA0Desc;
+
+  /// No description provided for @familyPosterPaperA1Desc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ A1 (59.4 × 84.1 cm) • Kích thước chuẩn treo tường đẹp nhất'**
+  String get familyPosterPaperA1Desc;
+
+  /// No description provided for @familyPosterPaperA2Desc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ A2 (42.0 × 59.4 cm) • Phù hợp không gian phòng khách vừa'**
+  String get familyPosterPaperA2Desc;
+
+  /// No description provided for @familyPosterPaperA3Desc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ A3 (29.7 × 42.0 cm) • Khổ nhỏ đóng khung để bàn / treo tường'**
+  String get familyPosterPaperA3Desc;
+
+  /// No description provided for @familyPosterPaperA4Desc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả'**
+  String get familyPosterPaperA4Desc;
 }
 
 class _AppLocalizationsDelegate

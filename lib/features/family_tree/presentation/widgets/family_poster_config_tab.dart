@@ -9,7 +9,7 @@ import '../../domain/models/family_book_config.dart';
 import '../../domain/models/family_tree_poster_config.dart';
 import 'family_book_config_shared_widgets.dart';
 
-/// Tab cấu hình Tranh Phả Đồ
+/// Tab cấu hình xuất Phả Đồ (Tranh cỡ lớn treo tường A0-A4)
 class FamilyPosterConfigTab extends StatelessWidget {
   const FamilyPosterConfigTab({
     super.key,
@@ -43,33 +43,26 @@ class FamilyPosterConfigTab extends StatelessWidget {
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? context.primary : context.background,
+            color: isSelected
+                ? context.primary
+                : context.accent.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isSelected
                   ? context.primary
-                  : context.accent.withValues(alpha: 0.22),
-              width: isSelected ? 1.5 : 1.0,
+                  : context.accent.withValues(alpha: 0.15),
             ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: context.primary.withValues(alpha: 0.25),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : [],
           ),
-          child: Text(
-            label,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 13.5,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-              color: isSelected ? Colors.white : context.textPrimary,
+          child: Center(
+            child: Text(
+              label,
+              style: GoogleFonts.beVietnamPro(
+                fontSize: 12.5,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? Colors.white : context.textPrimary,
+              ),
             ),
           ),
         ),
@@ -77,18 +70,19 @@ class FamilyPosterConfigTab extends StatelessWidget {
     );
   }
 
-  String _getPaperSizeDescription(PosterPaperSize size) {
+  String _getPaperSizeDescription(
+      PosterPaperSize size, AppLocalizations l10n) {
     switch (size) {
       case PosterPaperSize.a0:
-        return 'Khổ A0 (84.1 × 118.9 cm) • Khổ đại cho Từ Đường, Nhà Thờ Họ';
+        return l10n.familyPosterPaperA0Desc;
       case PosterPaperSize.a1:
-        return 'Khổ A1 (59.4 × 84.1 cm) • Kích thước chuẩn treo tường đẹp nhất';
+        return l10n.familyPosterPaperA1Desc;
       case PosterPaperSize.a2:
-        return 'Khổ A2 (42.0 × 59.4 cm) • Phù hợp không gian phòng khách vừa';
+        return l10n.familyPosterPaperA2Desc;
       case PosterPaperSize.a3:
-        return 'Khổ A3 (29.7 × 42.0 cm) • Khổ nhỏ đóng khung để bàn / treo tường';
+        return l10n.familyPosterPaperA3Desc;
       case PosterPaperSize.a4:
-        return 'Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả';
+        return l10n.familyPosterPaperA4Desc;
     }
   }
 
@@ -156,14 +150,14 @@ class FamilyPosterConfigTab extends StatelessWidget {
           buildBookConfigSectionHeader(
             context,
             icon: LucideIcons.scaling,
-            title: '1. Khổ In & Hướng Tranh',
+            title: l10n.familyPosterSectionPaper,
           ),
           const SizedBox(height: 12),
           buildBookConfigCardWrapper(
             context,
             children: [
               Text(
-                'Kích thước khổ giấy',
+                l10n.familyPosterPaperSize,
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -202,7 +196,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        _getPaperSizeDescription(posterConfig.paperSize),
+                        _getPaperSizeDescription(posterConfig.paperSize, l10n),
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 11.5,
                           color: context.textPrimary,
@@ -215,7 +209,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
               ),
               buildBookConfigDivider(context),
               Text(
-                'Hướng bố cục tranh',
+                l10n.familyPosterOrientation,
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -229,7 +223,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
                     child: _buildOrientationSegment(
                       context,
                       orientation: PosterOrientation.landscape,
-                      title: 'Khổ Ngang',
+                      title: l10n.familyPosterOrientationLandscape,
                       icon: LucideIcons.layoutGrid,
                     ),
                   ),
@@ -238,7 +232,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
                     child: _buildOrientationSegment(
                       context,
                       orientation: PosterOrientation.portrait,
-                      title: 'Khổ Dọc',
+                      title: l10n.familyPosterOrientationPortrait,
                       icon: LucideIcons.fileText,
                     ),
                   ),
@@ -252,7 +246,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
           buildBookConfigSectionHeader(
             context,
             icon: LucideIcons.palette,
-            title: '2. Phong Cách Nền & Khung Tranh',
+            title: l10n.familyPosterSectionStyle,
           ),
           const SizedBox(height: 12),
           Row(
@@ -300,7 +294,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
           buildBookConfigSectionHeader(
             context,
             icon: LucideIcons.scroll,
-            title: '3. Tiêu Đề & Câu Đối Nhà Thờ Họ',
+            title: l10n.familyPosterSectionTitleCouplet,
           ),
           const SizedBox(height: 12),
           buildBookConfigCardWrapper(
@@ -308,22 +302,22 @@ class FamilyPosterConfigTab extends StatelessWidget {
             children: [
               AppOutlineTextField(
                 controller: posterTitleController,
-                label: 'Tiêu đề Tranh Phả Đồ',
-                hintText: 'VD: PHẢ HỆ ĐỒ ĐẠI TÔN HỌ NGUYỄN',
+                label: l10n.familyPosterTitleLabel,
+                hintText: l10n.familyPosterTitleHint,
                 prefixIcon: const Icon(LucideIcons.type, size: 18),
               ),
               const SizedBox(height: 14),
               AppOutlineTextField(
                 controller: posterLeftCoupletController,
-                label: 'Câu đối vế trái (Thượng liên)',
-                hintText: 'VD: Tổ tông công đức thiên niên thịnh',
+                label: l10n.familyPosterCoupletLeftLabel,
+                hintText: l10n.familyPosterCoupletLeftHint,
                 prefixIcon: const Icon(LucideIcons.alignLeft, size: 18),
               ),
               const SizedBox(height: 14),
               AppOutlineTextField(
                 controller: posterRightCoupletController,
-                label: 'Câu đối vế phải (Hạ liên)',
-                hintText: 'VD: Tử hiếu tôn hiền vạn đại vinh',
+                label: l10n.familyPosterCoupletRightLabel,
+                hintText: l10n.familyPosterCoupletRightHint,
                 prefixIcon: const Icon(LucideIcons.alignRight, size: 18),
               ),
             ],
@@ -334,7 +328,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
           buildBookConfigSectionHeader(
             context,
             icon: LucideIcons.slidersHorizontal,
-            title: '4. Phạm Vi & Tùy Chọn Hiển Thị',
+            title: l10n.familyPosterSectionScope,
           ),
           const SizedBox(height: 12),
           buildBookConfigCardWrapper(
@@ -344,7 +338,7 @@ class FamilyPosterConfigTab extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Phạm vi thế hệ trên tranh',
+                    l10n.familyPosterScopeGenerations,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w600,
@@ -359,7 +353,10 @@ class FamilyPosterConfigTab extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Đời ${posterConfig.startGeneration} - Đời ${posterConfig.endGeneration ?? maxGeneration}',
+                      l10n.familyBookScopeGenerationsRange(
+                        posterConfig.startGeneration,
+                        posterConfig.endGeneration ?? maxGeneration,
+                      ),
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,

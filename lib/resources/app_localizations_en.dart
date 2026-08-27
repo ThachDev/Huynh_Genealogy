@@ -3007,4 +3007,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get writeContentHint => 'Enter content...';
+
+  @override
+  String get familyBookTabBook => 'Genealogy Book (A4)';
+
+  @override
+  String get familyBookTabPoster => 'Pedigree Poster';
+
+  @override
+  String get familyBookScopeGenerations => 'Generations Scope';
+
+  @override
+  String familyBookScopeGenerationsRange(int start, int end) {
+    return 'Gen $start - Gen $end';
+  }
+
+  @override
+  String get familyBookStandardSample => 'Standard Sample';
+
+  @override
+  String get familyBookInputContentHint => 'Enter content...';
+
+  @override
+  String get familyBookThemePlainShort => 'MINIMAL';
+
+  @override
+  String get familyBookArtBorder => 'Artistic Border';
+
+  @override
+  String get familyPosterPreviewTitle => 'Preview Pedigree Poster';
+
+  @override
+  String get familyPosterOrientationLandscape => 'Landscape';
+
+  @override
+  String get familyPosterOrientationPortrait => 'Portrait';
+
+  @override
+  String familyPosterRendering(String size) {
+    return 'Rendering Pedigree Poster $size...';
+  }
+
+  @override
+  String get familyPosterPrintQuality => 'High resolution print quality';
+
+  @override
+  String get familyPosterNoData => 'No poster data';
+
+  @override
+  String get familyPosterFitScreen => 'Fit to Screen';
+
+  @override
+  String get familyPosterSectionPaper => '1. Paper Size & Orientation';
+
+  @override
+  String get familyPosterPaperSize => 'Paper size';
+
+  @override
+  String get familyPosterOrientation => 'Orientation';
+
+  @override
+  String get familyPosterSectionStyle => '2. Background Style & Frame';
+
+  @override
+  String get familyPosterSectionTitleCouplet => '3. Title & Clan Couplets';
+
+  @override
+  String get familyPosterTitleLabel => 'Poster Title';
+
+  @override
+  String get familyPosterTitleHint => 'e.g. PEDIGREE CHART OF NGUYEN CLAN';
+
+  @override
+  String get familyPosterCoupletLeftLabel => 'Left couplet';
+
+  @override
+  String get familyPosterCoupletLeftHint =>
+      'e.g. Ancestral virtues endure for a thousand years';
+
+  @override
+  String get familyPosterCoupletRightLabel => 'Right couplet';
+
+  @override
+  String get familyPosterCoupletRightHint =>
+      'e.g. Filial descendants prosper for ten thousand generations';
+
+  @override
+  String get familyPosterSectionScope => '4. Scope & Display Options';
+
+  @override
+  String get familyPosterScopeGenerations => 'Generations on poster';
+
+  @override
+  String get familyPosterPaperA0Desc =>
+      'Size A0 (84.1 × 118.9 cm) • Large format for Ancestral Hall';
+
+  @override
+  String get familyPosterPaperA1Desc =>
+      'Size A1 (59.4 × 84.1 cm) • Best standard wall-hanging size';
+
+  @override
+  String get familyPosterPaperA2Desc =>
+      'Size A2 (42.0 × 59.4 cm) • Suitable for medium living rooms';
+
+  @override
+  String get familyPosterPaperA3Desc =>
+      'Size A3 (29.7 × 42.0 cm) • Desktop framing or wall mounting';
+
+  @override
+  String get familyPosterPaperA4Desc =>
+      'Size A4 (21.0 × 29.7 cm) • Standard binder size';
 }

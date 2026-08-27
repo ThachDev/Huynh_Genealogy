@@ -43,4 +43,4 @@ export 'presentation/pages/events/admin_event_create_page.dart';
 export 'presentation/pages/events/admin_event_detail_page.dart';
 export 'presentation/widgets/events/swipeable_card.dart';
 export 'presentation/widgets/events/event_calendar_widget.dart';
-export 'presentation/widgets/link_account_email_sheet.dart';
+export 'presentation/widgets/settings/link_account_email_sheet.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../core/theme/theme_extensions.dart';
-import '../../../../core/utils/validators.dart';
-import '../../../../core/widgets/widgets.dart';
-import '../../../../resources/app_localizations.dart';
+import '../../../../../core/theme/theme_extensions.dart';
+import '../../../../../core/utils/validators.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../../../resources/app_localizations.dart';
 
 /// Hiển thị sheet nhập email để liên kết tài khoản / gửi lời mời cho một nút.
 /// Trả về email đã nhập, hoặc `null` nếu người dùng huỷ.
@@ -23,7 +23,6 @@ Future<String?> showLinkAccountEmailSheet(
 }
 
 class _LinkAccountEmailSheetWidget extends StatefulWidget {
-
   const _LinkAccountEmailSheetWidget({required this.memberName});
   final String memberName;
 

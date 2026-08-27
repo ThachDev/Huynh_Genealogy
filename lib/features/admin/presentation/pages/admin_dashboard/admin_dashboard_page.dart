@@ -23,12 +23,11 @@ import '../../widgets/admin_dashboard/member_item_widget.dart';
 import '../../widgets/admin_dashboard/branch_item_widget.dart';
 import '../../widgets/admin_dashboard/pending_request_item_widget.dart';
 import '../../widgets/admin_dashboard/family_dashboard_header_widget.dart';
-import 'admin_delete_dialogs.dart';
+import 'pages/admin_delete_dialogs.dart';
 
 enum AdminDashboardTab { members, branches, pending }
 
 class AdminDashboardPage extends StatefulWidget {
-
   const AdminDashboardPage({
     super.key,
     this.isActive = false,
@@ -515,7 +514,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         physics: const AlwaysScrollableScrollPhysics(),
                         controller: _scrollController,
                         padding: const EdgeInsets.only(bottom: 30),
-                        itemCount: currentMemberCount + (hasMoreMembers ? 1 : 0),
+                        itemCount:
+                            currentMemberCount + (hasMoreMembers ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index >= currentMemberCount) {
                             return const Padding(
@@ -524,7 +524,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 child: SizedBox(
                                   width: 24,
                                   height: 24,
-                                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2.5),
                                 ),
                               ),
                             );
@@ -537,14 +538,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               final result = await Navigator.push(
                                 context,
                                 SereneFadeSlidePageRoute(
-                                  page: AdminMemberFormPage(memberId: member.id),
+                                  page:
+                                      AdminMemberFormPage(memberId: member.id),
                                 ),
                               );
                               if (result == true) {
                                 _loadTree();
                               }
                             },
-                            onDelete: () => showMemberDeleteConfirmation(context, member),
+                            onDelete: () =>
+                                showMemberDeleteConfirmation(context, member),
                           );
                         },
                       ),
@@ -585,7 +588,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         physics: const AlwaysScrollableScrollPhysics(),
                         controller: _scrollController,
                         padding: const EdgeInsets.only(bottom: 30),
-                        itemCount: currentBranchCount + (hasMoreBranches ? 1 : 0),
+                        itemCount:
+                            currentBranchCount + (hasMoreBranches ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index >= currentBranchCount) {
                             return const Padding(
@@ -594,7 +598,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 child: SizedBox(
                                   width: 24,
                                   height: 24,
-                                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2.5),
                                 ),
                               ),
                             );
@@ -602,8 +607,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           final branch = filteredBranches[index];
                           return BranchItemWidget(
                             branch: branch,
-                            memberCount:
-                                members.where((m) => m.branchId == branch.id).length,
+                            memberCount: members
+                                .where((m) => m.branchId == branch.id)
+                                .length,
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -619,7 +625,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 }
                               });
                             },
-                            onEdit: () => _openBranchForm(context, branch: branch),
+                            onEdit: () =>
+                                _openBranchForm(context, branch: branch),
                             onDelete: () =>
                                 showDeleteBranchConfirmation(context, branch),
                           );
@@ -661,7 +668,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         physics: const AlwaysScrollableScrollPhysics(),
                         controller: _scrollController,
                         padding: const EdgeInsets.only(bottom: 30),
-                        itemCount: currentPendingCount + (hasMorePending ? 1 : 0),
+                        itemCount:
+                            currentPendingCount + (hasMorePending ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index >= currentPendingCount) {
                             return const Padding(
@@ -670,7 +678,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 child: SizedBox(
                                   width: 24,
                                   height: 24,
-                                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2.5),
                                 ),
                               ),
                             );
@@ -686,8 +695,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         );
     }
   }
-
-
 
   void _openBranchForm(BuildContext context, {BranchEntity? branch}) async {
     final result = await Navigator.push(

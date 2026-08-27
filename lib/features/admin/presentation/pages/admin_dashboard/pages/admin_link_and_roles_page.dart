@@ -13,14 +13,13 @@ import 'package:giatocviet/features/admin/presentation/bloc/member_account_links
 import 'package:giatocviet/features/admin/presentation/bloc/admin_member_roles/admin_member_roles_bloc.dart';
 import 'package:giatocviet/features/admin/presentation/bloc/admin_transfer_ownership_bloc/admin_transfer_ownership_bloc.dart';
 import 'package:giatocviet/features/admin/presentation/pages/admin_dashboard/admin_dashboard_page.dart';
-import 'package:giatocviet/features/admin/presentation/widgets/link_account_email_sheet.dart';
-import 'package:giatocviet/features/admin/presentation/widgets/member_account_link_item_tile.dart';
-import 'package:giatocviet/features/admin/presentation/widgets/member_role_option_tiles.dart';
+import 'package:giatocviet/features/admin/presentation/widgets/settings/link_account_email_sheet.dart';
+import 'package:giatocviet/features/admin/presentation/widgets/settings/member_account_link_item_tile.dart';
+import 'package:giatocviet/features/admin/presentation/widgets/settings/member_role_option_tiles.dart';
 
 enum LinkStatusFilter { all, linked, unlinked }
 
 class AdminLinkAndRolesPage extends StatefulWidget {
-
   const AdminLinkAndRolesPage({
     super.key,
     this.initialTabIndex = 0,
@@ -638,290 +637,290 @@ class _AdminLinkAndRolesPageState extends State<AdminLinkAndRolesPage>
       ],
       child: BlocBuilder<AdminMemberRolesBloc, AdminMemberRolesState>(
         builder: (context, state) {
-        if (state is AdminMemberRolesLoading ||
-            state is AdminMemberRolesInitial) {
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: ListPageSkeleton(),
-          );
-        }
-
-        if (state is AdminMemberRolesFailure) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                state.message,
-                style: GoogleFonts.beVietnamPro(color: context.error),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-        }
-
-        List<FamilyUserEntity> members = [];
-        if (state is AdminMemberRolesLoaded) {
-          members = state.members;
-        } else {
-          final blocState = context.read<AdminMemberRolesBloc>().state;
-          if (blocState is AdminMemberRolesLoaded) {
-            members = blocState.members;
+          if (state is AdminMemberRolesLoading ||
+              state is AdminMemberRolesInitial) {
+            return const Padding(
+              padding: EdgeInsets.all(16),
+              child: ListPageSkeleton(),
+            );
           }
-        }
 
-        final allMembers = members;
-        final query = _roleSearchController.text.trim().toLowerCase();
-        if (query.isNotEmpty) {
-          members = members
-              .where((m) =>
-                  (m.userFullName ?? '').toLowerCase().contains(query) ||
-                  (m.userEmail ?? '').toLowerCase().contains(query))
-              .toList();
-        }
-
-        if (_roleFilter != null) {
-          members = members.where((m) {
-            final mappedRole = AdminDashboardPage.roleLabel(m.role, context);
-            final filterRole =
-                AdminDashboardPage.roleLabel(_roleFilter!, context);
-            return mappedRole == filterRole;
-          }).toList();
-        }
-
-        if (allMembers.isEmpty) {
-          return Center(
-            child: Text(
-              l10n.noMembers,
-              style: GoogleFonts.beVietnamPro(
-                color: context.textSecondary,
-                fontSize: 14,
+          if (state is AdminMemberRolesFailure) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  state.message,
+                  style: GoogleFonts.beVietnamPro(color: context.error),
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: AppSearchBar(
-                controller: _roleSearchController,
-                hintText: l10n.searchMemberHint,
-                onChanged: (_) => setState(() {}),
-                trailing: [
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                    ),
-                    child: PopupMenuButton<String>(
-                      icon: Icon(
-                        LucideIcons.listFilter,
-                        size: 20,
-                        color: _roleFilter != null
-                            ? context.primary
-                            : context.textSecondary,
+          List<FamilyUserEntity> members = [];
+          if (state is AdminMemberRolesLoaded) {
+            members = state.members;
+          } else {
+            final blocState = context.read<AdminMemberRolesBloc>().state;
+            if (blocState is AdminMemberRolesLoaded) {
+              members = blocState.members;
+            }
+          }
+
+          final allMembers = members;
+          final query = _roleSearchController.text.trim().toLowerCase();
+          if (query.isNotEmpty) {
+            members = members
+                .where((m) =>
+                    (m.userFullName ?? '').toLowerCase().contains(query) ||
+                    (m.userEmail ?? '').toLowerCase().contains(query))
+                .toList();
+          }
+
+          if (_roleFilter != null) {
+            members = members.where((m) {
+              final mappedRole = AdminDashboardPage.roleLabel(m.role, context);
+              final filterRole =
+                  AdminDashboardPage.roleLabel(_roleFilter!, context);
+              return mappedRole == filterRole;
+            }).toList();
+          }
+
+          if (allMembers.isEmpty) {
+            return Center(
+              child: Text(
+                l10n.noMembers,
+                style: GoogleFonts.beVietnamPro(
+                  color: context.textSecondary,
+                  fontSize: 14,
+                ),
+              ),
+            );
+          }
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                child: AppSearchBar(
+                  controller: _roleSearchController,
+                  hintText: l10n.searchMemberHint,
+                  onChanged: (_) => setState(() {}),
+                  trailing: [
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                       ),
-                      offset: const Offset(0, 40),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      color: context.surface,
-                      elevation: 4,
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 'clear_all',
-                          height: 38,
-                          child: Row(
-                            children: [
-                              Icon(LucideIcons.filterX,
-                                  color: context.textPrimary, size: 18),
-                              const SizedBox(width: 8),
-                              Text(
-                                l10n.allLabel,
-                                style: GoogleFonts.beVietnamPro(
-                                    fontSize: 13, color: context.textPrimary),
-                              ),
-                            ],
-                          ),
+                      child: PopupMenuButton<String>(
+                        icon: Icon(
+                          LucideIcons.listFilter,
+                          size: 20,
+                          color: _roleFilter != null
+                              ? context.primary
+                              : context.textSecondary,
                         ),
-                        const PopupMenuDivider(),
-                        ...['BRANCH_ADMIN', 'EDITOR', 'VIEWER'].map((role) {
-                          return PopupMenuItem(
-                            value: role,
+                        offset: const Offset(0, 40),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: context.surface,
+                        elevation: 4,
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'clear_all',
                             height: 38,
                             child: Row(
                               children: [
-                                Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    color: AdminDashboardPage.roleColor(
-                                        role, context),
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
+                                Icon(LucideIcons.filterX,
+                                    color: context.textPrimary, size: 18),
                                 const SizedBox(width: 8),
                                 Text(
-                                  AdminDashboardPage.roleLabel(role, context),
+                                  l10n.allLabel,
                                   style: GoogleFonts.beVietnamPro(
-                                    fontSize: 13,
-                                    color: _roleFilter == role
-                                        ? context.primary
-                                        : context.textPrimary,
-                                    fontWeight: _roleFilter == role
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                  ),
+                                      fontSize: 13, color: context.textPrimary),
                                 ),
                               ],
                             ),
-                          );
-                        }),
-                      ],
-                      onSelected: (value) {
-                        if (value == 'clear_all') {
-                          setState(() {
-                            _roleFilter = null;
-                          });
-                        } else {
-                          setState(() {
-                            _roleFilter = value;
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: members.isEmpty
-                  ? Center(
-                      child: Text(
-                        l10n.emptyMembers,
-                        style: GoogleFonts.beVietnamPro(
-                          color: context.textSecondary,
-                          fontSize: 14,
-                        ),
-                      ),
-                    )
-                  : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                      itemCount: members.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 10),
-                      itemBuilder: (context, index) {
-                        final user = members[index];
-                        final role = user.role;
-
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: context.surface,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: context.accent.withValues(alpha: 0.12),
-                            ),
                           ),
-                          child: Material(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(14),
-                            child: InkWell(
+                          const PopupMenuDivider(),
+                          ...['BRANCH_ADMIN', 'EDITOR', 'VIEWER'].map((role) {
+                            return PopupMenuItem(
+                              value: role,
+                              height: 38,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: AdminDashboardPage.roleColor(
+                                          role, context),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    AdminDashboardPage.roleLabel(role, context),
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 13,
+                                      color: _roleFilter == role
+                                          ? context.primary
+                                          : context.textPrimary,
+                                      fontWeight: _roleFilter == role
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                        onSelected: (value) {
+                          if (value == 'clear_all') {
+                            setState(() {
+                              _roleFilter = null;
+                            });
+                          } else {
+                            setState(() {
+                              _roleFilter = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: members.isEmpty
+                    ? Center(
+                        child: Text(
+                          l10n.emptyMembers,
+                          style: GoogleFonts.beVietnamPro(
+                            color: context.textSecondary,
+                            fontSize: 14,
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                        itemCount: members.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final user = members[index];
+                          final role = user.role;
+
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: context.surface,
                               borderRadius: BorderRadius.circular(14),
-                              onTap: familyId == null
-                                  ? null
-                                  : () {
-                                      final currentUserId =
-                                          authState is Authenticated
-                                              ? authState.user.id
-                                              : null;
-                                      if (user.userId == currentUserId) {
-                                        AppSnackBar.warning(
-                                          context,
-                                          l10n.cannotSelfChange,
-                                        );
-                                      } else {
-                                        _showRoleSelector(user, familyId);
-                                      }
-                                    },
-                              child: Padding(
-                                padding: const EdgeInsets.all(14),
-                                child: Row(
-                                  children: [
-                                    AppAvatar(
-                                      avatarUrl: user.userAvatarUrl,
-                                      fullName: user.userFullName,
-                                      radius: 22,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            user.userFullName ??
-                                                l10n.memberLabel,
-                                            style: GoogleFonts.beVietnamPro(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                              color: context.textPrimary,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            user.userEmail ?? l10n.noEmail,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 12,
-                                              color: context.textSecondary,
-                                            ),
-                                          ),
-                                        ],
+                              border: Border.all(
+                                color: context.accent.withValues(alpha: 0.12),
+                              ),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(14),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: familyId == null
+                                    ? null
+                                    : () {
+                                        final currentUserId =
+                                            authState is Authenticated
+                                                ? authState.user.id
+                                                : null;
+                                        if (user.userId == currentUserId) {
+                                          AppSnackBar.warning(
+                                            context,
+                                            l10n.cannotSelfChange,
+                                          );
+                                        } else {
+                                          _showRoleSelector(user, familyId);
+                                        }
+                                      },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Row(
+                                    children: [
+                                      AppAvatar(
+                                        avatarUrl: user.userAvatarUrl,
+                                        fullName: user.userFullName,
+                                        radius: 22,
                                       ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            AdminDashboardPage.roleColor(
-                                                    role, context)
-                                                .withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        AdminDashboardPage.roleLabel(
-                                            role, context),
-                                        style: GoogleFonts.inter(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: AdminDashboardPage.roleColor(
-                                              role, context),
-                                          letterSpacing: 0.5,
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              user.userFullName ??
+                                                  l10n.memberLabel,
+                                              style: GoogleFonts.beVietnamPro(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                color: context.textPrimary,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              user.userEmail ?? l10n.noEmail,
+                                              style: GoogleFonts.inter(
+                                                fontSize: 12,
+                                                color: context.textSecondary,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Icon(
-                                      LucideIcons.chevronRight,
-                                      color: context.textSecondary
-                                          .withValues(alpha: 0.5),
-                                      size: 16,
-                                    ),
-                                  ],
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: AdminDashboardPage.roleColor(
+                                                  role, context)
+                                              .withValues(alpha: 0.15),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Text(
+                                          AdminDashboardPage.roleLabel(
+                                              role, context),
+                                          style: GoogleFonts.inter(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: AdminDashboardPage.roleColor(
+                                                role, context),
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Icon(
+                                        LucideIcons.chevronRight,
+                                        color: context.textSecondary
+                                            .withValues(alpha: 0.5),
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
-        );
-      },
-    ),
-  );
-}
+                          );
+                        },
+                      ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }

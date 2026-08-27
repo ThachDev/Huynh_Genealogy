@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../../core/theme/theme_extensions.dart';
-import '../../../../../core/widgets/widgets.dart';
-import '../../../../../resources/app_localizations.dart';
-import '../../../../family_tree/family_tree.dart';
-import '../../bloc/admin_member_form/admin_member_form_bloc.dart';
-import '../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
+import '../../../../../../core/theme/theme_extensions.dart';
+import '../../../../../../core/widgets/widgets.dart';
+import '../../../../../../resources/app_localizations.dart';
+import '../../../../../family_tree/family_tree.dart';
+import '../../../bloc/admin_member_form/admin_member_form_bloc.dart';
+import '../../../bloc/admin_branch_form/admin_branch_form_bloc.dart';
 
 /// Xác nhận xoá thành viên. Nếu thành viên có con cháu thì hiện 2 lựa chọn:
 /// đôn con lên thay thế hoặc xoá và tách nhánh.
@@ -65,8 +65,7 @@ Future<void> showMemberDeleteConfirmation(
           decoration: BoxDecoration(
             color: ctx.surface,
             borderRadius: BorderRadius.circular(20),
-            border:
-                Border.all(color: ctx.textSecondary.withValues(alpha: 0.2)),
+            border: Border.all(color: ctx.textSecondary.withValues(alpha: 0.2)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.1),
@@ -194,8 +193,9 @@ Future<void> showMemberDeleteConfirmation(
               InkWell(
                 onTap: () {
                   Navigator.pop(ctx);
-                  context.read<AdminMemberFormBloc>().add(
-                      DeleteAdminMemberFormEvent(member.id));
+                  context
+                      .read<AdminMemberFormBloc>()
+                      .add(DeleteAdminMemberFormEvent(member.id));
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(

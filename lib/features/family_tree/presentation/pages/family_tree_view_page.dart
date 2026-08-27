@@ -1,28 +1,30 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../../../../resources/app_localizations.dart';
+
+import '../../../../core/di/injection_container.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../features/auth/auth.dart';
-import 'package:giatocviet/features/family_tree/domain/entities/member_entity.dart';
+import '../../../../resources/app_localizations.dart';
+import '../../../admin/domain/usecase/save_member.dart';
+import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
+import '../../domain/entities/member_entity.dart';
+import '../../domain/services/family_name_resolver.dart';
 import '../bloc/family_tree_bloc.dart';
-import '../widgets/family_member_node_widget.dart';
 import '../widgets/add_member_option_dialog.dart';
 import '../widgets/select_unlinked_member_sheet.dart';
-import 'family_member_detail_page.dart';
-import '../../../admin/presentation/pages/admin_dashboard/pages/admin_member_form_page.dart';
-import '../../../admin/domain/usecase/save_member.dart';
-import '../../../../core/di/injection_container.dart';
+import '../widgets/tree_action_fab.dart';
+import '../widgets/tree_canvas_view.dart';
 import '../widgets/tree_edge_painter.dart';
+import '../widgets/tree_generation_badges.dart';
 import '../widgets/tree_layout_calculator.dart';
-import '../../domain/services/kinship_calculator_service.dart';
+import '../widgets/tree_search_overlay.dart';
 import 'family_book_config_page.dart';
-import '../../domain/services/family_name_resolver.dart';
+import 'family_member_detail_page.dart';
 
 class FamilyTreeViewPage extends StatefulWidget {
   const FamilyTreeViewPage({super.key});
@@ -32,7 +34,26 @@ class FamilyTreeViewPage extends StatefulWidget {
 }
 
 class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
-  with TickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  final TransformationController _transformationController =
+      TransformationController();
+  final GlobalKey<ExpandableFabState> _fabKey = GlobalKey<ExpandableFabState>();
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+
+  AnimationController? _matrixAnimationController;
+  Animation<Matrix4>? _matrixAnimation;
+  Timer? _searchDebounceTimer;
+
+  bool _hasFitTree = false;
+  bool _showGenerationBadges = true;
+  bool _isSearching = false;
+  String _searchQuery = '';
+
+  Map<int, Offset>? _lastPositions;
+  Size? _lastViewportSize;
+  Size _lastTreeSize = Size.zero;
+
   double get _nodeHeight {
     final authState = context.read<AuthBloc>().state;
     final canEdit = authState is Authenticated &&
@@ -43,26 +64,31 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     return canEdit ? 160.0 : 125.0;
   }
 
-  final TransformationController _transformationController =
-      TransformationController();
-  final _fabKey = GlobalKey<ExpandableFabState>();
-  AnimationController? _matrixAnimationController;
-  Animation<Matrix4>? _matrixAnimation;
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final authState = context.read<AuthBloc>().state;
+      final familyId =
+          authState is Authenticated ? authState.user.familyId : null;
+      context
+          .read<FamilyTreeBloc>()
+          .add(FamilyTreeLoadEvent(familyId: familyId));
+    });
+  }
 
-  bool _hasFitTree = false;
-  bool _showGenerationBadges = true;
-  bool _isSearching = false;
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _searchFocusNode = FocusNode();
-  String _searchQuery = '';
-  Map<int, Offset>? _lastPositions;
-  Size? _lastViewportSize;
-  Size _lastTreeSize = Size.zero;
-
-  Timer? _searchDebounceTimer;
-
-  void _onTransformChanged() {
-    if (mounted) setState(() {});
+  @override
+  void dispose() {
+    _matrixAnimationController?.stop();
+    _matrixAnimationController?.dispose();
+    _transformationController.dispose();
+    _searchDebounceTimer?.cancel();
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
   }
 
   void _onSearchChanged() {
@@ -156,8 +182,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
         _lastPositions!.containsKey(userMemberId)) {
       _centerOnNode(userMemberId);
     } else {
-      AppSnackBar.info(
-          context, l10n.accountNotLinkedWithMember);
+      AppSnackBar.info(context, l10n.accountNotLinkedWithMember);
     }
   }
 
@@ -180,330 +205,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     );
   }
 
-  Widget _buildFabActionItem({
-    required String label,
-    required IconData icon,
-    required VoidCallback onTap,
-    Color? iconColor,
-  }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            color: context.surface,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: context.accent.withValues(alpha: 0.15),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Text(
-            label,
-            style: GoogleFonts.beVietnamPro(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: context.textPrimary,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        FloatingActionButton.small(
-          heroTag: label,
-          backgroundColor: context.surface,
-          elevation: 3,
-          onPressed: () {
-            final state = _fabKey.currentState;
-            if (state != null && state.isOpen) {
-              state.toggle();
-            }
-            onTap();
-          },
-          child: Icon(
-            icon,
-            size: 18,
-            color: iconColor ?? context.primary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Reload cây gia phả sau khi thêm thành viên/vợ chồng.
   void _reloadTree() {
     if (!mounted) return;
     final authState = context.read<AuthBloc>().state;
     final familyId =
         authState is Authenticated ? authState.user.familyId : null;
     context.read<FamilyTreeBloc>().add(FamilyTreeLoadEvent(familyId: familyId));
-  }
-
-  @override
-  void dispose() {
-    _matrixAnimationController?.stop();
-    _matrixAnimationController?.dispose();
-    _transformationController.removeListener(_onTransformChanged);
-    _transformationController.dispose();
-    _searchDebounceTimer?.cancel();
-    _searchController.removeListener(_onSearchChanged);
-    _searchController.dispose();
-    _searchFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _transformationController.addListener(_onTransformChanged);
-    _searchController.addListener(_onSearchChanged);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final authState = context.read<AuthBloc>().state;
-      final familyId =
-          authState is Authenticated ? authState.user.familyId : null;
-      context
-          .read<FamilyTreeBloc>()
-          .add(FamilyTreeLoadEvent(familyId: familyId));
-    });
-  }
-
-  Widget _buildSearchTitleWidget(BuildContext context, String appBarTitle) {
-    final l10n = AppLocalizations.of(context);
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      switchInCurve: Curves.easeOutCubic,
-      switchOutCurve: Curves.easeInCubic,
-      transitionBuilder: (child, animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: SizeTransition(
-            sizeFactor: animation,
-            axis: Axis.horizontal,
-            child: child,
-          ),
-        );
-      },
-      child: _isSearching
-          ? Container(
-              key: const ValueKey('search_input_active'),
-              height: 40,
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              decoration: BoxDecoration(
-                color: context.resolve(
-                  Colors.white.withValues(alpha: 0.95),
-                  context.surface.withValues(alpha: 0.95),
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: context.accent.withValues(alpha: 0.12),
-                ),
-              ),
-              child: TextField(
-                controller: _searchController,
-                focusNode: _searchFocusNode,
-                textAlignVertical: TextAlignVertical.center,
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  color: context.textPrimary,
-                  height: 1.2,
-                ),
-                decoration: InputDecoration(
-                  isDense: true,
-                  hintText: l10n.searchMemberHint,
-                  hintStyle: GoogleFonts.inter(
-                    fontSize: 12.5,
-                    color: context.textSecondary.withValues(alpha: 0.6),
-                    height: 1.2,
-                  ),
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 12, right: 8),
-                    child: Icon(
-                      LucideIcons.search,
-                      size: 16,
-                      color: context.textSecondary,
-                    ),
-                  ),
-                  prefixIconConstraints: const BoxConstraints(
-                    minWidth: 36,
-                    minHeight: 36,
-                  ),
-                  suffixIcon: _searchQuery.isNotEmpty
-                      ? GestureDetector(
-                          onTap: () {
-                            _searchController.clear();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 12, left: 4),
-                            child: Icon(
-                              LucideIcons.x,
-                              size: 16,
-                              color: context.textSecondary,
-                            ),
-                          ),
-                        )
-                      : null,
-                  suffixIconConstraints: const BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-            )
-          : Text(
-              appBarTitle,
-              key: const ValueKey('search_title_inactive'),
-              style: GoogleFonts.beVietnamPro(
-                color: context.textPrimary,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-    );
-  }
-
-  Widget _buildSearchDropdownOverlay(
-      BuildContext context, List<MemberEntity> members) {
-    final l10n = AppLocalizations.of(context);
-    final filteredMembers = members.where((m) {
-      if (_searchQuery.isEmpty) return true;
-      final q = _searchQuery.toLowerCase();
-      final name = m.fullName.toLowerCase();
-      final phone = (m.phone ?? '').toLowerCase();
-      return name.contains(q) || phone.contains(q);
-    }).toList();
-
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeOutCubic,
-      top: _isSearching ? 8 : -45,
-      left: 16,
-      right: 16,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
-        opacity: _isSearching ? 1.0 : 0.0,
-        child: IgnorePointer(
-          ignoring: !_isSearching,
-          child: Material(
-            elevation: 10,
-            borderRadius: BorderRadius.circular(16),
-            color: context.surface,
-            shadowColor: Colors.black.withValues(alpha: 0.3),
-            child: Container(
-              constraints: const BoxConstraints(maxHeight: 340),
-              decoration: BoxDecoration(
-                color: context.surface,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: context.accent.withValues(alpha: 0.12),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (filteredMembers.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            LucideIcons.searchX,
-                            size: 18,
-                            color: context.textSecondary,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.emptyMembers,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: context.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    Flexible(
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        itemCount: filteredMembers.length > 8
-                            ? 8
-                            : filteredMembers.length,
-                        separatorBuilder: (_, __) => Divider(
-                          height: 1,
-                          indent: 16,
-                          endIndent: 16,
-                          color: context.textSecondary.withValues(alpha: 0.1),
-                        ),
-                        itemBuilder: (context, index) {
-                          final m = filteredMembers[index];
-                          final genText = m.generation != null
-                              ? l10n.generationLevelFormat(
-                                  TreeEdgePainter.toRoman(m.generation!))
-                              : '';
-
-                          return ListTile(
-                            dense: true,
-                            leading: AppAvatar(
-                              avatarUrl: m.avatarUrl,
-                              fullName: m.fullName,
-                              radius: 18,
-                            ),
-                            title: Text(
-                              m.fullName,
-                              style: GoogleFonts.beVietnamPro(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: context.textPrimary,
-                              ),
-                            ),
-                            subtitle: Text(
-                              [if (genText.isNotEmpty) genText, if (!m.isAlive) l10n.deceasedLabel]
-                                  .join(' • '),
-                              style: GoogleFonts.inter(
-                                fontSize: 11,
-                                color: context.textSecondary,
-                              ),
-                            ),
-                            trailing: Icon(
-                              LucideIcons.focus,
-                              size: 16,
-                              color: context.textSecondary,
-                            ),
-                            onTap: () {
-                              _centerOnNode(m.id);
-                              context.read<FamilyTreeBloc>().add(
-                                    FamilyTreeSelectMemberEvent(m.id),
-                                  );
-                              setState(() {
-                                _isSearching = false;
-                                _searchQuery = '';
-                                _searchController.clear();
-                              });
-                              _searchFocusNode.unfocus();
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -516,6 +223,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
             authState.user.role == 'CREATOR') &&
         UserMainNavigationPage.adminModeNotifier.value;
     final treeState = context.watch<FamilyTreeBloc>().state;
+
     String appBarTitle = l10n.familyTreeTitle;
     List<Widget> appBarActions = [];
 
@@ -553,60 +261,27 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     return Scaffold(
       backgroundColor: context.appBarBg,
       appBar: AppAppBar(
-        titleWidget: _buildSearchTitleWidget(context, appBarTitle),
+        titleWidget: TreeSearchBarWidget(
+          isSearching: _isSearching,
+          searchController: _searchController,
+          searchFocusNode: _searchFocusNode,
+          searchQuery: _searchQuery,
+          appBarTitle: appBarTitle,
+        ),
         actions: appBarActions,
       ),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
-        key: _fabKey,
-        type: ExpandableFabType.up,
-        distance: 60.0,
-        overlayStyle: ExpandableFabOverlayStyle(
-          color: Colors.black.withValues(alpha: 0.55),
-        ),
-        openButtonBuilder: RotateFloatingActionButtonBuilder(
-          child: const Icon(LucideIcons.layers, size: 22),
-          foregroundColor: Colors.white,
-          backgroundColor: context.primary,
-          shape: const CircleBorder(),
-        ),
-        closeButtonBuilder: DefaultFloatingActionButtonBuilder(
-          child: const Icon(LucideIcons.x, size: 22),
-          foregroundColor: Colors.white,
-          backgroundColor: context.primary,
-          shape: const CircleBorder(),
-        ),
-        children: [
-          _buildFabActionItem(
-            label: l10n.exportFamilyTreeFile,
-            icon: LucideIcons.bookOpen,
-            onTap: _openFamilyBookStudio,
-          ),
-          _buildFabActionItem(
-            label: l10n.myLocationOnTree,
-            icon: LucideIcons.crosshair,
-            onTap: _goToMyPosition,
-          ),
-          _buildFabActionItem(
-            label: l10n.treeOverviewTooltip,
-            icon: LucideIcons.maximize2,
-            onTap: _fitTreeOverview,
-          ),
-          _buildFabActionItem(
-            label: _showGenerationBadges
-                ? l10n.hideGenBadges
-                : l10n.showGenBadges,
-            icon: LucideIcons.tag,
-            iconColor: _showGenerationBadges
-                ? context.primary
-                : context.textSecondary,
-            onTap: () {
-              setState(() {
-                _showGenerationBadges = !_showGenerationBadges;
-              });
-            },
-          ),
-        ],
+      floatingActionButton: TreeActionFabWidget(
+        fabKey: _fabKey,
+        showGenerationBadges: _showGenerationBadges,
+        onExportBook: _openFamilyBookStudio,
+        onGoToMyLocation: _goToMyPosition,
+        onFitOverview: _fitTreeOverview,
+        onToggleGenerationBadges: () {
+          setState(() {
+            _showGenerationBadges = !_showGenerationBadges;
+          });
+        },
       ),
       body: AppBackgroundBody(
         enableMaxWidth: false,
@@ -615,7 +290,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
             BlocBuilder<FamilyTreeBloc, FamilyTreeState>(
               builder: (context, state) {
                 if (state is FamilyTreeLoading) {
-                  _hasFitTree = false; // Reset to auto-fit on next load
+                  _hasFitTree = false;
                   return const Padding(
                     padding: EdgeInsets.all(24),
                     child: FamilyTreeSkeleton(),
@@ -655,10 +330,11 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                     nodeHeight: _nodeHeight,
                   );
 
-                  double maxX = TreeLayoutMetrics.padding * 2,
-                      maxY = TreeLayoutMetrics.padding * 2;
+                  double maxX = TreeLayoutMetrics.padding * 2;
+                  double maxY = TreeLayoutMetrics.padding * 2;
                   for (final entry in positions.entries) {
-                    final right = entry.value.dx + TreeLayoutMetrics.nodeWidth / 2;
+                    final right =
+                        entry.value.dx + TreeLayoutMetrics.nodeWidth / 2;
                     final bottom = entry.value.dy + _nodeHeight / 2;
                     maxX = maxX > right ? maxX : right;
                     maxY = maxY > bottom ? maxY : bottom;
@@ -680,18 +356,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                         return const SizedBox.shrink();
                       }
 
-                      // Update positions & viewport sizes for search node centering
                       _lastPositions = positions;
                       _lastViewportSize =
                           Size(constraints.maxWidth, constraints.maxHeight);
                       _lastTreeSize = treeSize;
 
-                      final authState = context.read<AuthBloc>().state;
                       final userMemberId = authState is Authenticated
                           ? authState.user.memberId
                           : null;
 
-                      // Auto fit or zoom to user's node on load
                       if (!_hasFitTree) {
                         _hasFitTree = true;
                         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -707,175 +380,47 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                       return Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          InteractiveViewer(
+                          TreeCanvasView(
                             transformationController: _transformationController,
-                            constrained: false,
-                            boundaryMargin:
-                                const EdgeInsets.all(double.infinity),
-                            minScale:
-                                0.1, // Allow zooming out further for overview
-                            maxScale: 3.0,
-                            child: SizedBox(
-                              width: treeSize.width,
-                              height: treeSize.height,
-                              child: RepaintBoundary(
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                  RepaintBoundary(
-                                    child: CustomPaint(
-                                      size: treeSize,
-                                      painter: TreeEdgePainter(
-                                        coupleEdges: coupleEdges,
-                                        orphanEdges: orphanEdges,
-                                        spouseEdges: spouseEdges,
-                                        positions: positions,
-                                        generationLevels: generationLevels,
-                                        nodeHeight: _nodeHeight,
-                                        primaryColor: context.primary,
-                                        accentColor: context.accent,
-                                        surfaceColor: context.surface,
-                                        textColor: context.textPrimary,
-                                        linePaint: Paint()
-                                          ..color = context.resolve(
-                                              context.accent,
-                                              Colors.grey.shade700)
-                                          ..strokeWidth = 3.0
-                                          ..strokeCap = StrokeCap.round
-                                          ..style = PaintingStyle.stroke,
-                                        spousePaint: Paint()
-                                          ..color = context.resolve(
-                                              context.primary
-                                                  .withValues(alpha: 0.6),
-                                              Colors.grey.shade700
-                                                  .withValues(alpha: 0.6))
-                                          ..strokeWidth = 2.0
-                                          ..strokeCap = StrokeCap.round
-                                          ..style = PaintingStyle.stroke,
-                                      ),
-                                    ),
+                            treeSize: treeSize,
+                            nodeHeight: _nodeHeight,
+                            members: state.members,
+                            positions: positions,
+                            coupleEdges: coupleEdges,
+                            orphanEdges: orphanEdges,
+                            spouseEdges: spouseEdges,
+                            generationLevels: generationLevels,
+                            selectedMemberId: state.selectedMemberId,
+                            userMemberId: userMemberId,
+                            canEdit: canEdit,
+                            onSelectMember: (member) async {
+                              context.read<FamilyTreeBloc>().add(
+                                    FamilyTreeSelectMemberEvent(member.id),
+                                  );
+                              final result = await Navigator.push(
+                                context,
+                                SereneFadeSlidePageRoute(
+                                  page: FamilyMemberDetailPage(
+                                    member: member,
+                                    allMembers: state.members,
                                   ),
-                                  ...() {
-                                    final myMember = userMemberId != null
-                                        ? state.members
-                                            .where((m) => m.id == userMemberId)
-                                            .firstOrNull
-                                        : null;
-                                    final kinshipService =
-                                        KinshipCalculatorService();
-
-                                    return state.members.map((member) {
-                                      final pos = positions[member.id];
-                                      if (pos == null) {
-                                        return const SizedBox.shrink();
-                                      }
-
-                                      String? kinshipTitle;
-                                      if (userMemberId == member.id) {
-                                        kinshipTitle = 'Tôi';
-                                      } else if (myMember != null) {
-                                        final res = kinshipService.calculate(
-                                          fromMember: myMember,
-                                          toMember: member,
-                                          allMembers: state.members,
-                                        );
-                                        if (res.fromCallsTo.isNotEmpty &&
-                                            res.fromCallsTo !=
-                                                'Đồng tộc / Chưa rõ liên kết') {
-                                          kinshipTitle = res.fromCallsTo;
-                                        }
-                                      }
-
-                                      return Positioned(
-                                        left: pos.dx -
-                                            TreeLayoutMetrics.nodeWidth / 2,
-                                        top: pos.dy - _nodeHeight / 2,
-                                        child: FamilyMemberNodeWidget(
-                                          member: member,
-                                          kinshipTitle: kinshipTitle,
-                                          isSelected: state.selectedMemberId ==
-                                              member.id,
-                                          isCurrentUser:
-                                              userMemberId == member.id,
-                                          onTap: () async {
-                                            HapticFeedback.lightImpact();
-                                            context.read<FamilyTreeBloc>().add(
-                                                FamilyTreeSelectMemberEvent(
-                                                    member.id));
-                                            final result =
-                                                await Navigator.push(
-                                              context,
-                                              SereneFadeSlidePageRoute(
-                                                page: FamilyMemberDetailPage(
-                                                  member: member,
-                                                  allMembers: state.members,
-                                                ),
-                                              ),
-                                            );
-                                            if (result == true && mounted) {
-                                              _reloadTree();
-                                            }
-                                          },
-                                          onAddChildTap: canEdit
-                                              ? () => _onAddChild(
-                                                  member, state.members)
-                                              : null,
-                                          onAddSpouseTap: canEdit
-                                              ? () => _onAddSpouse(
-                                                  member, state.members)
-                                              : null,
-                                        ),
-                                      );
-                                    });
-                                  }(),
-                                 ],
                                 ),
-                              ),
-                            ),
+                              );
+                              if (result == true && mounted) {
+                                _reloadTree();
+                              }
+                            },
+                            onAddChild: (member) =>
+                                _onAddChild(member, state.members),
+                            onAddSpouse: (member) =>
+                                _onAddSpouse(member, state.members),
                           ),
-
-                          // ── Sticky Pinned Floating Generation Badges (Ghim mép trái màn hình) ──
                           if (_showGenerationBadges)
-                            AnimatedBuilder(
-                              animation: _transformationController,
-                              builder: (context, _) {
-                                final matrix = _transformationController.value;
-                                final sortedGens =
-                                    generationLevels.keys.toList()..sort();
-
-                                return Stack(
-                                  clipBehavior: Clip.none,
-                                  children: sortedGens.map((gen) {
-                                    final canvasY = generationLevels[gen]!;
-                                    final screenY = MatrixUtils.transformPoint(
-                                            matrix, Offset(0, canvasY))
-                                        .dy;
-
-                                    // Ẩn badge nếu nằm ngoài khung nhìn màn hình
-                                    if (screenY < -30 ||
-                                        screenY > constraints.maxHeight + 30) {
-                                      return const SizedBox.shrink();
-                                    }
-
-                                    return Positioned(
-                                      left: 14,
-                                      top: screenY - 7,
-                                      child: Text(
-                                        l10n
-                                            .generationLevelFormat(
-                                                TreeEdgePainter.toRoman(gen))
-                                            .toUpperCase(),
-                                        style: GoogleFonts.beVietnamPro(
-                                          fontSize: 11.5,
-                                          fontWeight: FontWeight.bold,
-                                          color: context.accent,
-                                          letterSpacing: 0.8,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                );
-                              },
+                            TreeGenerationBadgesWidget(
+                              transformationController:
+                                  _transformationController,
+                              generationLevels: generationLevels,
+                              viewportHeight: constraints.maxHeight,
                             ),
                         ],
                       );
@@ -886,8 +431,23 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
                 return const SizedBox.shrink();
               },
             ),
-            _buildSearchDropdownOverlay(context,
-                treeState is FamilyTreeLoaded ? treeState.members : []),
+            TreeSearchDropdownOverlay(
+              isSearching: _isSearching,
+              searchQuery: _searchQuery,
+              members: treeState is FamilyTreeLoaded ? treeState.members : [],
+              onSelectMember: (m) {
+                _centerOnNode(m.id);
+                context
+                    .read<FamilyTreeBloc>()
+                    .add(FamilyTreeSelectMemberEvent(m.id));
+                setState(() {
+                  _isSearching = false;
+                  _searchQuery = '';
+                  _searchController.clear();
+                });
+                _searchFocusNode.unfocus();
+              },
+            ),
           ],
         ),
       ),
@@ -1065,4 +625,3 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     }
   }
 }
-

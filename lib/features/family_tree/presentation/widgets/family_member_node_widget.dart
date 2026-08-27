@@ -70,7 +70,7 @@ class _FamilyMemberNodeWidgetState extends State<FamilyMemberNodeWidget>
     final l10n = AppLocalizations.of(context);
 
     final genderText = widget.member.gender == Gender.male
-        ? 'Nam'
+        ? l10n.genderMale
         : widget.member.gender == Gender.female
             ? l10n.genderFemale
             : l10n.unknownLabel;

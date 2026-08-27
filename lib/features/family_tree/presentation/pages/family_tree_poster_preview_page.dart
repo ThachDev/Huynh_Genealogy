@@ -6,6 +6,7 @@ import 'package:printing/printing.dart';
 
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../domain/entities/member_entity.dart';
 import '../../domain/models/family_tree_poster_config.dart';
 import '../../domain/services/family_tree_poster_pdf_service.dart';
@@ -106,6 +107,7 @@ class _FamilyTreePosterPreviewPageState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final sizeName = widget.config.paperSize.name.toUpperCase();
     final orientName =
         widget.config.orientation == PosterOrientation.landscape
@@ -119,7 +121,7 @@ class _FamilyTreePosterPreviewPageState
           if (_pdfBytes != null) ...[
             IconButton(
               icon: const Icon(LucideIcons.share2, size: 20),
-              tooltip: 'Chia sẻ PDF',
+              tooltip: l10n.familyBookSharePdf,
               onPressed: () async {
                 await Printing.sharePdf(
                   bytes: _pdfBytes!,
@@ -129,7 +131,7 @@ class _FamilyTreePosterPreviewPageState
             ),
             IconButton(
               icon: const Icon(LucideIcons.printer, size: 20),
-              tooltip: 'In tranh',
+              tooltip: l10n.familyBookPrint,
               onPressed: () async {
                 await Printing.layoutPdf(
                   onLayout: (format) async => _pdfBytes!,
@@ -143,12 +145,13 @@ class _FamilyTreePosterPreviewPageState
       ),
       body: AppBackgroundBody(
         enableMaxWidth: false,
-        child: _buildBody(sizeName, orientName),
+        child: _buildBody(l10n, sizeName, orientName),
       ),
     );
   }
 
-  Widget _buildBody(String sizeName, String orientName) {
+  Widget _buildBody(
+      AppLocalizations l10n, String sizeName, String orientName) {
     if (_isLoading) {
       return Center(
         child: Column(
@@ -199,7 +202,7 @@ class _FamilyTreePosterPreviewPageState
               ),
               const SizedBox(height: 16),
               AppButton(
-                label: 'Thử lại',
+                label: l10n.retryButton,
                 prefixIcon: const Icon(LucideIcons.rotateCcw, size: 16),
                 onPressed: _generateAndRasterizePoster,
               ),

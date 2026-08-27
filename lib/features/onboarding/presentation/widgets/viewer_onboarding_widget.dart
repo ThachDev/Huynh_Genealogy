@@ -95,12 +95,13 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
   }
 
   void _onJoinFamilyPressed() {
+    final l10n = AppLocalizations.of(context);
     if (_verifiedFamily != null && (_selectedMember != null || _isNotOnTree)) {
       if (!_isNotOnTree && _selectedMember != null && _selectedMember!.isLinked) {
         AppDialog.alert(
           context,
-          title: 'Thành viên đã được liên kết',
-          message: 'Thành viên "${_selectedMember!.fullName}" đã được liên kết với một tài khoản khác.\n\nBạn không thể gửi yêu cầu liên kết vào thành viên này. Vui lòng chọn thành viên khác hoặc tích chọn "Tôi chưa có tên trên cây gia phả".',
+          title: l10n.memberAlreadyLinkedTitle,
+          message: l10n.memberAlreadyLinkedDescFormat(_selectedMember!.fullName),
         );
         return;
       }
@@ -436,7 +437,7 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Text(
-                                        'Đã liên kết',
+                                        l10n.statusLinked,
                                         style: GoogleFonts.inter(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
@@ -452,8 +453,8 @@ class _ViewerOnboardingWidgetState extends State<ViewerOnboardingWidget> {
                         if (val != null && val.isLinked) {
                           AppDialog.alert(
                             context,
-                            title: 'Thành viên đã được liên kết',
-                            message: 'Thành viên "${val.fullName}" đã được liên kết với một tài khoản khác.\n\nBạn không thể gửi yêu cầu liên kết vào thành viên này. Vui lòng chọn thành viên khác hoặc tích chọn "Tôi chưa có tên trên cây gia phả" để điền thông tin mới.',
+                            title: l10n.memberAlreadyLinkedTitle,
+                            message: l10n.memberAlreadyLinkedDescFormat(val.fullName),
                           );
                           setState(() {
                             _selectedMember = null;

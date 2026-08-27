@@ -2512,7 +2512,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get youLabel => 'Bạn';
 
   @override
-  String get clanLabel => 'Gia tộc';
+  String get clanLabel => 'Dòng họ';
 
   @override
   String familyNamePrefix(String name) {
@@ -2694,4 +2694,318 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get imageLinkCopied => 'Đã sao chép liên kết hình ảnh';
+
+  @override
+  String get deleteWishTitle => 'Xóa lời chúc';
+
+  @override
+  String get deleteMemorialTitle => 'Xóa lời tưởng niệm';
+
+  @override
+  String get deleteWishConfirmMessage =>
+      'Bạn có chắc chắn muốn xóa lời chúc này không?';
+
+  @override
+  String get deleteMemorialConfirmMessage =>
+      'Bạn có chắc chắn muốn xóa lời tưởng niệm này không?';
+
+  @override
+  String get deleteWishSuccessMessage => 'Đã xóa lời chúc thành công';
+
+  @override
+  String get deleteMemorialSuccessMessage => 'Đã xóa lời tưởng niệm thành công';
+
+  @override
+  String get timeJustNow => 'Vừa xong';
+
+  @override
+  String minutesAgoFormat(int count) {
+    return '$count phút trước';
+  }
+
+  @override
+  String hoursAgoFormat(int count) {
+    return '$count giờ trước';
+  }
+
+  @override
+  String daysAgoFormat(int count) {
+    return '$count ngày trước';
+  }
+
+  @override
+  String get adminBoardLabel => 'Ban Quản Trị';
+
+  @override
+  String get birthdayWishTitle => 'Chúc mừng sinh nhật';
+
+  @override
+  String get newWishTitle => 'Lời chúc mới';
+
+  @override
+  String get aMemberLabel => 'Một thành viên';
+
+  @override
+  String get allTab => 'Tất cả';
+
+  @override
+  String get unreadTab => 'Chưa đọc';
+
+  @override
+  String get noUnreadNotifications => 'Không có thông báo chưa đọc nào';
+
+  @override
+  String get sentBirthdayWishToYou => 'đã gửi lời chúc mừng sinh nhật đến bạn';
+
+  @override
+  String get sentWishToYou => 'đã gửi một lời chúc đến bạn';
+
+  @override
+  String postedAnAnnouncementFormat(String title) {
+    return 'đã đăng một thông báo: $title';
+  }
+
+  @override
+  String createdNewEventFormat(String title) {
+    return 'đã tạo sự kiện mới: $title';
+  }
+
+  @override
+  String turningAgeFormat(int age) {
+    return '$age tuổi';
+  }
+
+  @override
+  String livingAgeFormat(int age) {
+    return 'Thọ $age tuổi';
+  }
+
+  @override
+  String get kinshipUnknown => 'Đồng tộc / Chưa rõ liên kết';
+
+  @override
+  String get lunarShort => 'ÂL';
+
+  @override
+  String get noClanCode => 'Chưa có mã gia tộc';
+
+  @override
+  String get updateInfoSuccess => 'Cập nhật thông tin thành công';
+
+  @override
+  String get accountNotLinkedWithMember =>
+      'Tài khoản chưa được liên kết với thành viên trên cây gia phả';
+
+  @override
+  String get noMemberDataToExport =>
+      'Chưa có dữ liệu thành viên để xuất gia phả.';
+
+  @override
+  String get exportFamilyTreeFile => 'Xuất file gia phả';
+
+  @override
+  String get myLocationOnTree => 'Vị trí của tôi';
+
+  @override
+  String get selfRelationTag => '(Tôi)';
+
+  @override
+  String get familyBookConfigTitle => 'Thiết Lập Xuất Bản Gia Phả';
+
+  @override
+  String get familyBookPreviewPdf => 'Xem trước PDF';
+
+  @override
+  String get familyBookSectionStyle => '1. Phong Cách Giao Diện & Bìa Sách';
+
+  @override
+  String get themeLightLabel => 'Chủ đề sáng';
+
+  @override
+  String get themeDarkLabel => 'Chủ đề tối';
+
+  @override
+  String get themeBlankLabel => 'Để trống';
+
+  @override
+  String get familyBookSectionInfo => '2. Thông Tin Ấn Phẩm & Tiền Nhân';
+
+  @override
+  String get familyBookTitleLabel => 'Tiêu đề ấn phẩm gia phả';
+
+  @override
+  String get familyBookTitleHint => 'VD: PHẢ HỆ ĐẠI TÔN HỌ NGUYỄN';
+
+  @override
+  String get familyBookFounderLabel => 'Danh tính Cụ Thủy Tổ / Khởi Tổ';
+
+  @override
+  String get familyBookFounderHint => 'VD: Thủy Tổ: Nguyễn Văn A';
+
+  @override
+  String get familyBookLocationLabel =>
+      'Địa danh Từ Đường / Quê quán phát tích';
+
+  @override
+  String get familyBookLocationHint =>
+      'VD: Từ Đường Họ Nguyễn, Xã..., Huyện..., Tỉnh...';
+
+  @override
+  String get familyBookEditorLabel => 'Ban / Người biên soạn';
+
+  @override
+  String get familyBookEditorHint => 'VD: Hội Đồng Gia Tộc';
+
+  @override
+  String get familyBookYearLabel => 'Thời gian biên soạn';
+
+  @override
+  String get familyBookYearHint => 'VD: Năm Bính Ngọ 2026';
+
+  @override
+  String get familyBookSectionPreface => '3. Lời Tựa & Gia Huấn Dòng Tộc';
+
+  @override
+  String get familyBookPrefaceTab => 'Lời Nói Đầu Cội Nguồn';
+
+  @override
+  String get familyBookRulesTab => 'Tộc Ước & Gia Quy Tiên Tổ';
+
+  @override
+  String get familyBookMemorialTab => 'Khắc Ghi Tri Ân Hậu Thế';
+
+  @override
+  String get familyBookSectionContent => '4. Tùy Chọn Nội Dung Xuất Bản';
+
+  @override
+  String get familyBookOptTreeChart => 'Sơ đồ cây gia phả trực quan';
+
+  @override
+  String get familyBookOptTreeChartDesc =>
+      'Sơ đồ phân nhánh thế thứ kết nối các thế hệ dòng họ';
+
+  @override
+  String get familyBookOptStats => 'Bảng thống kê nhân khẩu';
+
+  @override
+  String get familyBookOptStatsDesc =>
+      'Tổng hợp số đời, nam đinh, nữ giới, dâu hiền, sinh tử';
+
+  @override
+  String get familyBookOptAnniversary => 'Lịch giỗ 12 tháng Âm lịch';
+
+  @override
+  String get familyBookOptAnniversaryDesc =>
+      'Bảng tổng hợp ngày kỵ nhật chư vị tôn linh trong năm';
+
+  @override
+  String get familyBookOptTombs => 'Ghi chú mộ phần';
+
+  @override
+  String get familyBookOptTombsDesc =>
+      'Hiển thị thông tin nơi an táng của các bậc tiền nhân';
+
+  @override
+  String get familyBookResetDefault => 'Khôi phục văn mẫu';
+
+  @override
+  String get familyBookPreviewTitle => 'Xem Trước Sách Gia Phả';
+
+  @override
+  String get familyBookSharePdf => 'Chia sẻ PDF';
+
+  @override
+  String get familyBookPrint => 'In sách gia phả';
+
+  @override
+  String get familyBookRendering => 'Đang dàn trang & mở sách gia phả...';
+
+  @override
+  String get familyBookPleaseWait => 'Vui lòng chờ trong giây lát';
+
+  @override
+  String get noPageData => 'Không có dữ liệu trang';
+
+  @override
+  String requestLinkWithFormat(String name) {
+    return 'Xin liên kết với: $name';
+  }
+
+  @override
+  String requestNewMemberFormat(String name) {
+    return 'Thành viên mới: $name';
+  }
+
+  @override
+  String get joinClanRequest => 'Yêu cầu tham gia';
+
+  @override
+  String get memberLinkRequestTitle => 'Yêu cầu liên kết thành viên';
+
+  @override
+  String get newMemberRegistrationTitle => 'Đăng ký thành viên mới';
+
+  @override
+  String get senderAccountLabel => 'Tài khoản người gửi yêu cầu';
+
+  @override
+  String get roleRequestedLabel => 'Vai trò xin cấp';
+
+  @override
+  String get treeMemberInfoLabel => 'Thông tin thành viên trên cây';
+
+  @override
+  String get notCategorizedBranch => 'Chưa phân chi';
+
+  @override
+  String permanentDeleteMemberConfirm(String name) {
+    return 'Bạn có chắc chắn muốn xoá vĩnh viễn thành viên \"$name\"? Hành động này không thể hoàn tác.';
+  }
+
+  @override
+  String get permanentDeleteAllTrashConfirm =>
+      'Xoá vĩnh viễn toàn bộ thành viên trong thùng rác? Hành động này không thể hoàn tác.';
+
+  @override
+  String get permanentDeleteSuccess =>
+      'Đã xoá vĩnh viễn thành viên khỏi thùng rác.';
+
+  @override
+  String get cleanTrashButton => 'Dọn sạch';
+
+  @override
+  String get memberAlreadyLinkedTitle => 'Thành viên đã được liên kết';
+
+  @override
+  String memberAlreadyLinkedDescFormat(String name) {
+    return 'Thành viên \"$name\" đã được liên kết với một tài khoản khác.\n\nBạn không thể gửi yêu cầu liên kết vào thành viên này. Vui lòng chọn thành viên khác hoặc tích chọn \"Tôi chưa có tên trên cây gia phả\".';
+  }
+
+  @override
+  String get unlinkAccountFailed => 'Gỡ liên kết tài khoản thất bại';
+
+  @override
+  String get dissolveClanFailed => 'Không thể giải tán dòng họ';
+
+  @override
+  String get assignRoleFailed => 'Phân quyền thất bại';
+
+  @override
+  String get transferOwnershipFailed =>
+      'Không thể chuyển nhượng quyền Trưởng tộc';
+
+  @override
+  String get notUpdatedLabel => 'Chưa cập nhật';
+
+  @override
+  String get branchNameFieldLabel => 'Chi họ';
+
+  @override
+  String get statusLinked => 'Đã liên kết';
+
+  @override
+  String get contentLabel => 'Nội dung';
+
+  @override
+  String get writeContentHint => 'Nhập nội dung...';
 }

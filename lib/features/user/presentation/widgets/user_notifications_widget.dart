@@ -209,12 +209,12 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
     }
   }
 
-  String _formatTimeAgo(DateTime dt) {
+  String _formatTimeAgo(DateTime dt, AppLocalizations l10n) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inSeconds < 60) return 'Vừa xong';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} phút trước';
-    if (diff.inHours < 24) return '${diff.inHours} giờ trước';
-    if (diff.inDays < 7) return '${diff.inDays} ngày trước';
+    if (diff.inSeconds < 60) return l10n.timeJustNow;
+    if (diff.inMinutes < 60) return l10n.minutesAgoFormat(diff.inMinutes);
+    if (diff.inHours < 24) return l10n.hoursAgoFormat(diff.inHours);
+    if (diff.inDays < 7) return l10n.daysAgoFormat(diff.inDays);
     return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
   }
 
@@ -271,7 +271,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                 title: ev.title,
                 content: ev.description ?? ev.content ?? '',
                 senderName:
-                    ev.organizer ?? (isAnnounce ? 'Ban Quản Trị' : 'Dòng họ'),
+                    ev.organizer ?? (isAnnounce ? l10n.adminBoardLabel : l10n.clanLabel),
                 senderAvatar: null,
                 dateTime: dt,
                 isRead: isRead,
@@ -296,9 +296,9 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                 type: isBday
                     ? NotificationFeedType.birthdayWish
                     : NotificationFeedType.generalWish,
-                title: isBday ? 'Chúc mừng sinh nhật' : 'Lời chúc mới',
+                title: isBday ? l10n.birthdayWishTitle : l10n.newWishTitle,
                 content: wish.content,
-                senderName: wish.senderName ?? 'Một thành viên',
+                senderName: wish.senderName ?? l10n.aMemberLabel,
                 senderAvatar: wish.senderAvatar,
                 dateTime: wish.createdAt,
                 isRead: isRead,
@@ -337,7 +337,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                           children: [
                             _buildFilterChip(
                               context: context,
-                              label: 'Tất cả',
+                              label: l10n.allTab,
                               isSelected: !_filterOnlyUnread,
                               onTap: () =>
                                   setState(() => _filterOnlyUnread = false),
@@ -345,7 +345,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                             const SizedBox(width: 8),
                             _buildFilterChip(
                               context: context,
-                              label: 'Chưa đọc',
+                              label: l10n.unreadTab,
                               count: unreadCount > 0 ? unreadCount : null,
                               isSelected: _filterOnlyUnread,
                               onTap: () =>
@@ -397,7 +397,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                                 child: AppEmptyState(
                                   icon: LucideIcons.bellOff,
                                   message: _filterOnlyUnread
-                                      ? 'Không có thông báo chưa đọc nào'
+                                      ? l10n.noUnreadNotifications
                                       : l10n.noNotificationsMessage,
                                 ),
                               )
@@ -563,7 +563,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                               children: [
                                 TextSpan(
                                   text:
-                                      '${item.senderName ?? 'Một thành viên'} ',
+                                      '${item.senderName ?? l10n.aMemberLabel} ',
                                   style: GoogleFonts.beVietnamPro(
                                     fontWeight: FontWeight.w700,
                                     color: isRead
@@ -573,7 +573,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: _getFeedActionDescription(item),
+                                  text: _getFeedActionDescription(item, l10n),
                                   style: GoogleFonts.beVietnamPro(
                                     fontWeight: isRead
                                         ? FontWeight.w500
@@ -606,7 +606,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
 
                           // Thời gian tương đối
                           Text(
-                            _formatTimeAgo(item.dateTime),
+                            _formatTimeAgo(item.dateTime, l10n),
                             style: GoogleFonts.inter(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
@@ -703,16 +703,16 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
     );
   }
 
-  String _getFeedActionDescription(NotificationFeedItem item) {
+  String _getFeedActionDescription(NotificationFeedItem item, AppLocalizations l10n) {
     switch (item.type) {
       case NotificationFeedType.birthdayWish:
-        return 'đã gửi lời chúc mừng sinh nhật đến bạn';
+        return l10n.sentBirthdayWishToYou;
       case NotificationFeedType.generalWish:
-        return 'đã gửi một lời chúc đến bạn';
+        return l10n.sentWishToYou;
       case NotificationFeedType.announcement:
-        return 'đã đăng một thông báo: ${item.title}';
+        return l10n.postedAnAnnouncementFormat(item.title);
       case NotificationFeedType.event:
-        return 'đã tạo sự kiện mới: ${item.title}';
+        return l10n.createdNewEventFormat(item.title);
     }
   }
 

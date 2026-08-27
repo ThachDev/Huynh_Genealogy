@@ -70,8 +70,8 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
       context,
       title: l10n.trashPurgeTitle,
       message:
-          'Bạn có chắc chắn muốn xoá vĩnh viễn thành viên "${member.fullName}"? Hành động này không thể hoàn tác.',
-      confirmLabel: 'Xoá vĩnh viễn',
+          l10n.permanentDeleteMemberConfirm(member.fullName),
+      confirmLabel: l10n.deleteLabel,
       type: AppDialogType.danger,
       confirmColor: context.error,
     );
@@ -88,8 +88,8 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
       context,
       title: l10n.trashPurgeTitle,
       message:
-          'Xoá vĩnh viễn toàn bộ thành viên trong thùng rác? Hành động này không thể hoàn tác.',
-      confirmLabel: 'Dọn sạch',
+          l10n.permanentDeleteAllTrashConfirm,
+      confirmLabel: l10n.cleanTrashButton,
       type: AppDialogType.danger,
       confirmColor: context.error,
     );
@@ -172,7 +172,7 @@ class _MemberTrashPageState extends State<MemberTrashPage> {
               } else if (state is MemberDeletedPermanentlyState) {
                 AppSnackBar.success(
                   context,
-                  'Đã xoá vĩnh viễn thành viên khỏi thùng rác.',
+                  l10n.permanentDeleteSuccess,
                 );
                 _reload();
               } else if (state is MemberTrashFailure) {
@@ -328,7 +328,7 @@ class _TrashItem extends StatelessWidget {
                     IconButton(
                       icon: Icon(LucideIcons.trash2,
                           size: 18, color: context.error),
-                      tooltip: 'Xoá vĩnh viễn',
+                      tooltip: l10n.deleteLabel,
                       onPressed: onDeletePermanently,
                     ),
                   ],

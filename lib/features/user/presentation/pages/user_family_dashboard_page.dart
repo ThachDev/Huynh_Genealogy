@@ -324,7 +324,7 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                         _showQrDialog(context, inviteCode);
                       } else {
                         AppSnackBar.warning(
-                            context, 'Chưa có mã gia tộc');
+                            context, l10n.noClanCode);
                       }
                     },
                   ),

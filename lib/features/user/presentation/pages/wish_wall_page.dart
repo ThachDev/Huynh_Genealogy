@@ -218,7 +218,7 @@ class _WishWallPageState extends State<WishWallPage> {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
-          widget.data.isBirthday ? 'Xóa lời chúc' : 'Xóa lời tưởng niệm',
+          widget.data.isBirthday ? l10n.deleteWishTitle : l10n.deleteMemorialTitle,
           style: GoogleFonts.beVietnamPro(
             fontWeight: FontWeight.bold,
             fontSize: 16,
@@ -227,8 +227,8 @@ class _WishWallPageState extends State<WishWallPage> {
         ),
         content: Text(
           widget.data.isBirthday
-              ? 'Bạn có chắc chắn muốn xóa lời chúc này không?'
-              : 'Bạn có chắc chắn muốn xóa lời tưởng niệm này không?',
+              ? l10n.deleteWishConfirmMessage
+              : l10n.deleteMemorialConfirmMessage,
           style: GoogleFonts.beVietnamPro(fontSize: 13.5, color: context.textSecondary),
         ),
         actions: [
@@ -273,8 +273,8 @@ class _WishWallPageState extends State<WishWallPage> {
         AppSnackBar.show(
           context,
           message: widget.data.isBirthday
-              ? 'Đã xóa lời chúc thành công'
-              : 'Đã xóa lời tưởng niệm thành công',
+              ? l10n.deleteWishSuccessMessage
+              : l10n.deleteMemorialSuccessMessage,
           type: SnackBarType.success,
         );
       },
@@ -481,7 +481,7 @@ class _WishCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              isBirthday ? 'Xóa lời chúc' : 'Xóa lời tưởng niệm',
+                              isBirthday ? l10n.deleteWishTitle : l10n.deleteMemorialTitle,
                               style: GoogleFonts.beVietnamPro(
                                 fontSize: 13,
                                 color: context.error,

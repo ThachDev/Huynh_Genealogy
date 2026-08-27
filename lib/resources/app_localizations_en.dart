@@ -2695,4 +2695,316 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get imageLinkCopied => 'Image link copied';
+
+  @override
+  String get deleteWishTitle => 'Delete Wish';
+
+  @override
+  String get deleteMemorialTitle => 'Delete Memorial Message';
+
+  @override
+  String get deleteWishConfirmMessage =>
+      'Are you sure you want to delete this wish?';
+
+  @override
+  String get deleteMemorialConfirmMessage =>
+      'Are you sure you want to delete this memorial message?';
+
+  @override
+  String get deleteWishSuccessMessage => 'Wish deleted successfully';
+
+  @override
+  String get deleteMemorialSuccessMessage =>
+      'Memorial message deleted successfully';
+
+  @override
+  String get timeJustNow => 'Just now';
+
+  @override
+  String minutesAgoFormat(int count) {
+    return '$count minutes ago';
+  }
+
+  @override
+  String hoursAgoFormat(int count) {
+    return '$count hours ago';
+  }
+
+  @override
+  String daysAgoFormat(int count) {
+    return '$count days ago';
+  }
+
+  @override
+  String get adminBoardLabel => 'Admin Board';
+
+  @override
+  String get birthdayWishTitle => 'Happy Birthday';
+
+  @override
+  String get newWishTitle => 'New Wish';
+
+  @override
+  String get aMemberLabel => 'A member';
+
+  @override
+  String get allTab => 'All';
+
+  @override
+  String get unreadTab => 'Unread';
+
+  @override
+  String get noUnreadNotifications => 'No unread notifications';
+
+  @override
+  String get sentBirthdayWishToYou => 'sent a birthday wish to you';
+
+  @override
+  String get sentWishToYou => 'sent a wish to you';
+
+  @override
+  String postedAnAnnouncementFormat(String title) {
+    return 'posted an announcement: $title';
+  }
+
+  @override
+  String createdNewEventFormat(String title) {
+    return 'created a new event: $title';
+  }
+
+  @override
+  String turningAgeFormat(int age) {
+    return '$age years old';
+  }
+
+  @override
+  String livingAgeFormat(int age) {
+    return 'Lived to $age years old';
+  }
+
+  @override
+  String get kinshipUnknown => 'Clan member / Unknown relation';
+
+  @override
+  String get lunarShort => 'Lunar';
+
+  @override
+  String get noClanCode => 'No clan code yet';
+
+  @override
+  String get updateInfoSuccess => 'Information updated successfully';
+
+  @override
+  String get accountNotLinkedWithMember =>
+      'Account is not linked to any member on the family tree';
+
+  @override
+  String get noMemberDataToExport =>
+      'No member data available to export family tree.';
+
+  @override
+  String get exportFamilyTreeFile => 'Export family tree';
+
+  @override
+  String get myLocationOnTree => 'My location';
+
+  @override
+  String get selfRelationTag => '(Me)';
+
+  @override
+  String get familyBookConfigTitle => 'Family Book Publishing Settings';
+
+  @override
+  String get familyBookPreviewPdf => 'PDF Preview';
+
+  @override
+  String get familyBookSectionStyle => '1. Theme & Book Cover Style';
+
+  @override
+  String get themeLightLabel => 'Light Theme';
+
+  @override
+  String get themeDarkLabel => 'Dark Theme';
+
+  @override
+  String get themeBlankLabel => 'Leave blank';
+
+  @override
+  String get familyBookSectionInfo => '2. Publication & Ancestors Info';
+
+  @override
+  String get familyBookTitleLabel => 'Family Book Title';
+
+  @override
+  String get familyBookTitleHint => 'Ex: GENEALOGY OF NGUYEN CLAN';
+
+  @override
+  String get familyBookFounderLabel => 'Clan Founder / Progenitor Name';
+
+  @override
+  String get familyBookFounderHint => 'Ex: Founder: Nguyen Van A';
+
+  @override
+  String get familyBookLocationLabel => 'Ancestral Temple / Origin Location';
+
+  @override
+  String get familyBookLocationHint =>
+      'Ex: Nguyen Ancestral Hall, Commune..., District..., Province...';
+
+  @override
+  String get familyBookEditorLabel => 'Compiled By';
+
+  @override
+  String get familyBookEditorHint => 'Ex: Clan Council';
+
+  @override
+  String get familyBookYearLabel => 'Compilation Date/Year';
+
+  @override
+  String get familyBookYearHint => 'Ex: Year 2026';
+
+  @override
+  String get familyBookSectionPreface => '3. Preface & Ancestral Precepts';
+
+  @override
+  String get familyBookPrefaceTab => 'Clan Foreword';
+
+  @override
+  String get familyBookRulesTab => 'Clan Rules & Traditions';
+
+  @override
+  String get familyBookMemorialTab => 'Ancestral Dedication';
+
+  @override
+  String get familyBookSectionContent => '4. Content Publishing Options';
+
+  @override
+  String get familyBookOptTreeChart => 'Visual family tree chart';
+
+  @override
+  String get familyBookOptTreeChartDesc =>
+      'Branch diagram connecting clan generations';
+
+  @override
+  String get familyBookOptStats => 'Demographic statistics table';
+
+  @override
+  String get familyBookOptStatsDesc =>
+      'Summary of generations, males, females, in-laws, living/deceased';
+
+  @override
+  String get familyBookOptAnniversary => '12-month Lunar memorial calendar';
+
+  @override
+  String get familyBookOptAnniversaryDesc =>
+      'Yearly compilation of death anniversaries';
+
+  @override
+  String get familyBookOptTombs => 'Ancestral grave notes';
+
+  @override
+  String get familyBookOptTombsDesc =>
+      'Display burial information of ancestors';
+
+  @override
+  String get familyBookResetDefault => 'Reset to template';
+
+  @override
+  String get familyBookPreviewTitle => 'Family Book Preview';
+
+  @override
+  String get familyBookSharePdf => 'Share PDF';
+
+  @override
+  String get familyBookPrint => 'Print Family Book';
+
+  @override
+  String get familyBookRendering => 'Typesetting & opening family book...';
+
+  @override
+  String get familyBookPleaseWait => 'Please wait a moment';
+
+  @override
+  String get noPageData => 'No page data';
+
+  @override
+  String requestLinkWithFormat(String name) {
+    return 'Request link with: $name';
+  }
+
+  @override
+  String requestNewMemberFormat(String name) {
+    return 'New member: $name';
+  }
+
+  @override
+  String get joinClanRequest => 'Join Clan Request';
+
+  @override
+  String get memberLinkRequestTitle => 'Member Link Request';
+
+  @override
+  String get newMemberRegistrationTitle => 'New Member Registration';
+
+  @override
+  String get senderAccountLabel => 'Requester Account';
+
+  @override
+  String get roleRequestedLabel => 'Requested Role';
+
+  @override
+  String get treeMemberInfoLabel => 'Member info on family tree';
+
+  @override
+  String get notCategorizedBranch => 'No branch assigned';
+
+  @override
+  String permanentDeleteMemberConfirm(String name) {
+    return 'Are you sure you want to permanently delete member \"$name\"? This action cannot be undone.';
+  }
+
+  @override
+  String get permanentDeleteAllTrashConfirm =>
+      'Permanently delete all members in the trash? This action cannot be undone.';
+
+  @override
+  String get permanentDeleteSuccess => 'Member permanently deleted from trash.';
+
+  @override
+  String get cleanTrashButton => 'Empty trash';
+
+  @override
+  String get memberAlreadyLinkedTitle => 'Member Already Linked';
+
+  @override
+  String memberAlreadyLinkedDescFormat(String name) {
+    return 'Member \"$name\" is already linked to another account.\n\nYou cannot send a link request for this member. Please select another member or check \"I am not on the family tree yet\".';
+  }
+
+  @override
+  String get unlinkAccountFailed => 'Failed to unlink account';
+
+  @override
+  String get dissolveClanFailed => 'Failed to dissolve clan';
+
+  @override
+  String get assignRoleFailed => 'Failed to assign role';
+
+  @override
+  String get transferOwnershipFailed => 'Failed to transfer clan ownership';
+
+  @override
+  String get notUpdatedLabel => 'Not updated';
+
+  @override
+  String get branchNameFieldLabel => 'Branch';
+
+  @override
+  String get statusLinked => 'Linked';
+
+  @override
+  String get contentLabel => 'Content';
+
+  @override
+  String get writeContentHint => 'Enter content...';
 }

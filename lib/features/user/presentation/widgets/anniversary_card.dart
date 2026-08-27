@@ -172,7 +172,7 @@ class AnniversaryCard extends StatelessWidget {
 
     // Tuổi mừng thay vào chỗ đời thứ
     final ageText = turningAge != null
-        ? (turningAge >= 60 ? 'Thọ $turningAge tuổi' : '$turningAge tuổi')
+        ? (turningAge >= 60 ? l10n.livingAgeFormat(turningAge) : l10n.turningAgeFormat(turningAge))
         : l10n.memberBirthdayLabel;
 
     return InkWell(
@@ -412,9 +412,9 @@ class AnniversaryCard extends StatelessWidget {
 
     final dateInfo =
         data.lunarDateLabel != null && data.lunarDateLabel!.trim().isNotEmpty
-            ? (data.lunarDateLabel!.contains('ÂL')
+            ? (data.lunarDateLabel!.contains(l10n.lunarShort) || data.lunarDateLabel!.contains('ÂL')
                 ? '${data.lunarDateLabel} • ${data.solarDateLabel}'
-                : '${data.lunarDateLabel} ÂL • ${data.solarDateLabel}')
+                : '${data.lunarDateLabel} ${l10n.lunarShort} • ${data.solarDateLabel}')
             : data.solarDateLabel;
 
     return InkWell(

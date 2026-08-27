@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../domain/entities/member_entity.dart';
 import '../../domain/models/family_book_config.dart';
 import 'family_book_preview_page.dart';
@@ -118,12 +119,13 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppAppBar(
-        title: 'Thiết Lập Xuất Bản Gia Phả',
+        title: l10n.familyBookConfigTitle,
         actions: [
           IconButton(
-            tooltip: 'Xem trước PDF',
+            tooltip: l10n.familyBookPreviewPdf,
             icon: const Icon(LucideIcons.eye, size: 20),
             onPressed: _goToPreview,
           ),
@@ -137,8 +139,8 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── PHẦN 1: CHỌN PHONG CÁCH BÌA ──
-              const AppSectionHeader(
-                title: '1. Phong Cách Giao Diện & Bìa Sách',
+              AppSectionHeader(
+                title: l10n.familyBookSectionStyle,
                 titleSize: 15,
                 indicatorHeight: 16,
               ),
@@ -147,19 +149,19 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
                 children: [
                   _buildThemeCard(
                     theme: FamilyBookCoverTheme.lightTraditional,
-                    title: 'Chủ đề sáng',
+                    title: l10n.themeLightLabel,
                     imageAsset: 'assets/images/bgcard_light.png',
                   ),
                   const SizedBox(width: 8),
                   _buildThemeCard(
                     theme: FamilyBookCoverTheme.darkRoyal,
-                    title: 'Chủ đề tối',
+                    title: l10n.themeDarkLabel,
                     imageAsset: 'assets/images/bgcard_dark.png',
                   ),
                   const SizedBox(width: 8),
                   _buildThemeCard(
                     theme: FamilyBookCoverTheme.plain,
-                    title: 'Để trống',
+                    title: l10n.themeBlankLabel,
                     imageAsset: null,
                   ),
                 ],
@@ -167,8 +169,8 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
               const SizedBox(height: 24),
 
               // ── PHẦN 2: THÔNG TIN TRANG BÌA & TIỀN NHÂN ──
-              const AppSectionHeader(
-                title: '2. Thông Tin Ấn Phẩm & Tiền Nhân',
+              AppSectionHeader(
+                title: l10n.familyBookSectionInfo,
                 titleSize: 15,
                 indicatorHeight: 16,
               ),
@@ -192,39 +194,38 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
                 child: Column(
                   children: [
                     AppOutlineTextField(
-                      label: 'Tiêu đề ấn phẩm gia phả',
+                      label: l10n.familyBookTitleLabel,
                       controller: _titleController,
-                      hintText: 'VD: PHẢ HỆ ĐẠI TÔN HỌ NGUYỄN',
+                      hintText: l10n.familyBookTitleHint,
                     ),
                     const SizedBox(height: 14),
                     AppOutlineTextField(
-                      label: 'Danh tính Cụ Thủy Tổ / Khởi Tổ',
+                      label: l10n.familyBookFounderLabel,
                       controller: _ancestorController,
-                      hintText: 'VD: Thủy Tổ: Nguyễn Văn A',
+                      hintText: l10n.familyBookFounderHint,
                     ),
                     const SizedBox(height: 14),
                     AppOutlineTextField(
-                      label: 'Địa danh Từ Đường / Quê quán phát tích',
+                      label: l10n.familyBookLocationLabel,
                       controller: _addressController,
-                      hintText:
-                          'VD: Từ Đường Họ Nguyễn, Xã..., Huyện..., Tỉnh...',
+                      hintText: l10n.familyBookLocationHint,
                     ),
                     const SizedBox(height: 14),
                     Row(
                       children: [
                         Expanded(
                           child: AppOutlineTextField(
-                            label: 'Ban / Người biên soạn',
+                            label: l10n.familyBookEditorLabel,
                             controller: _compilerController,
-                            hintText: 'VD: Hội Đồng Gia Tộc',
+                            hintText: l10n.familyBookEditorHint,
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: AppOutlineTextField(
-                            label: 'Thời gian biên soạn',
+                            label: l10n.familyBookYearLabel,
                             controller: _yearController,
-                            hintText: 'VD: Năm Bính Ngọ 2026',
+                            hintText: l10n.familyBookYearHint,
                           ),
                         ),
                       ],
@@ -235,34 +236,37 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
               const SizedBox(height: 24),
 
               // ── PHẦN 3: LỜI TỰA & GIA HUẤN ──
-              const AppSectionHeader(
-                title: '3. Lời Tựa & Gia Huấn Dòng Tộc',
+              AppSectionHeader(
+                title: l10n.familyBookSectionPreface,
                 titleSize: 15,
                 indicatorHeight: 16,
               ),
               const SizedBox(height: 10),
               _buildExpandableCard(
-                title: 'Lời Nói Đầu Cội Nguồn',
+                title: l10n.familyBookPrefaceTab,
                 controller: _prefaceController,
                 defaultText: FamilyBookConfig.defaultPreface,
+                l10n: l10n,
               ),
               const SizedBox(height: 10),
               _buildExpandableCard(
-                title: 'Tộc Ước & Gia Quy Tiên Tổ',
+                title: l10n.familyBookRulesTab,
                 controller: _rulesController,
                 defaultText: FamilyBookConfig.defaultClanRules,
+                l10n: l10n,
               ),
               const SizedBox(height: 10),
               _buildExpandableCard(
-                title: 'Khắc Ghi Tri Ân Hậu Thế',
+                title: l10n.familyBookMemorialTab,
                 controller: _epilogueController,
                 defaultText: FamilyBookConfig.defaultEpilogue,
+                l10n: l10n,
               ),
               const SizedBox(height: 24),
 
               // ── PHẦN 4: TÙY CHỌN NỘI DUNG ──
-              const AppSectionHeader(
-                title: '4. Tùy Chọn Nội Dung Xuất Bản',
+              AppSectionHeader(
+                title: l10n.familyBookSectionContent,
                 titleSize: 15,
                 indicatorHeight: 16,
               ),
@@ -341,9 +345,9 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
 
                     // 1. Cây gia phả
                     _buildSwitchTile(
-                      title: 'Sơ đồ cây gia phả trực quan',
+                      title: l10n.familyBookOptTreeChart,
                       subtitle:
-                          'Sơ đồ phân nhánh thế thứ kết nối các thế hệ dòng họ',
+                          l10n.familyBookOptTreeChartDesc,
                       value: _config.includeTreeChart,
                       onChanged: (v) =>
                           setState(() => _config.includeTreeChart = v),
@@ -352,9 +356,9 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
 
                     // 2. Thống kê
                     _buildSwitchTile(
-                      title: 'Bảng thống kê nhân khẩu',
+                      title: l10n.familyBookOptStats,
                       subtitle:
-                          'Tổng hợp số đời, nam đinh, nữ giới, dâu hiền, sinh tử',
+                          l10n.familyBookOptStatsDesc,
                       value: _config.includeStatistics,
                       onChanged: (v) =>
                           setState(() => _config.includeStatistics = v),
@@ -363,9 +367,9 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
 
                     // 3. Lịch giỗ
                     _buildSwitchTile(
-                      title: 'Lịch giỗ 12 tháng Âm lịch',
+                      title: l10n.familyBookOptAnniversary,
                       subtitle:
-                          'Bảng tổng hợp ngày kỵ nhật chư vị tôn linh trong năm',
+                          l10n.familyBookOptAnniversaryDesc,
                       value: _config.includeMemorialCalendar,
                       onChanged: (v) =>
                           setState(() => _config.includeMemorialCalendar = v),
@@ -374,9 +378,9 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
 
                     // 4. Mộ phần
                     _buildSwitchTile(
-                      title: 'Ghi chú mộ phần',
+                      title: l10n.familyBookOptTombs,
                       subtitle:
-                          'Hiển thị thông tin nơi an táng của các bậc tiền nhân',
+                          l10n.familyBookOptTombsDesc,
                       value: _config.includeBurialInfo,
                       onChanged: (v) =>
                           setState(() => _config.includeBurialInfo = v),
@@ -523,6 +527,7 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
     required String title,
     required TextEditingController controller,
     required String defaultText,
+    required AppLocalizations l10n,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -542,22 +547,24 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          shape: const Border(),
+          collapsedShape: const Border(),
           title: Text(
             title,
             style: GoogleFonts.beVietnamPro(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
+              fontSize: 13.5,
+              fontWeight: FontWeight.w600,
               color: context.textPrimary,
             ),
           ),
           childrenPadding: const EdgeInsets.fromLTRB(14, 8, 14, 14),
           children: [
             AppOutlineTextField(
-              label: 'Nội dung',
+              label: l10n.contentLabel,
               controller: controller,
               maxLines: 5,
               textAlign: TextAlign.justify,
-              hintText: 'Nhập nội dung...',
+              hintText: l10n.writeContentHint,
             ),
             const SizedBox(height: 10),
             Align(
@@ -574,7 +581,7 @@ class _FamilyBookConfigPageState extends State<FamilyBookConfigPage> {
                   color: context.primary,
                 ),
                 label: Text(
-                  'Khôi phục văn mẫu',
+                  l10n.familyBookResetDefault,
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

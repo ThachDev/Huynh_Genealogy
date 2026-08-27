@@ -139,10 +139,10 @@ class PendingRequestItemWidget extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   isLinking && targetMemberName != null
-                                      ? 'Xin liên kết với: $targetMemberName'
+                                      ? l10n.requestLinkWithFormat(targetMemberName)
                                       : (targetMemberName != null
-                                          ? 'Thành viên mới: $targetMemberName'
-                                          : 'Yêu cầu tham gia'),
+                                          ? l10n.requestNewMemberFormat(targetMemberName)
+                                          : l10n.joinClanRequest),
                                   style: GoogleFonts.beVietnamPro(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
@@ -301,8 +301,8 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                   const SizedBox(width: 5),
                   Text(
                     isLinking
-                        ? 'Yêu cầu liên kết thành viên'
-                        : 'Đăng ký thành viên mới',
+                        ? l10n.memberLinkRequestTitle
+                        : l10n.newMemberRegistrationTitle,
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -330,18 +330,18 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                 children: [
                   // ── PHẦN 1: TÀI KHOẢN NGƯỜI GỬI YÊU CẦU ──
                   _SectionLabel(
-                      label: 'Tài khoản người gửi yêu cầu', context: context),
+                      label: l10n.senderAccountLabel, context: context),
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.user,
-                    label: 'Tên người dùng',
+                    label: l10n.fullNameLabel,
                     value: userFullName,
                     context: context,
                   ),
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.mail,
-                    label: 'Email liên kết',
+                    label: l10n.emailLabel,
                     value: request.userEmail ?? l10n.noEmail,
                     valueColor: context.primary,
                     context: context,
@@ -349,7 +349,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.shieldCheck,
-                    label: 'Vai trò xin cấp',
+                    label: l10n.roleRequestedLabel,
                     value: _roleName(request.role),
                     valueColor: _roleColor(context, request.role),
                     context: context,
@@ -357,7 +357,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                   const SizedBox(height: 10),
                   _InfoRow(
                     icon: LucideIcons.clock,
-                    label: 'Trạng thái',
+                    label: l10n.statusLabel,
                     value: _statusName(request.status),
                     valueColor: context.accent,
                     context: context,
@@ -368,34 +368,34 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                     const SizedBox(height: 24),
                     _SectionLabel(
                       label: isLinking
-                          ? 'Thông tin thành viên trên cây'
-                          : 'Thông tin thành viên đăng ký',
+                          ? l10n.treeMemberInfoLabel
+                          : l10n.registeredMemberInfoLabel,
                       context: context,
                     ),
                     const SizedBox(height: 10),
                     _InfoRow(
                       icon: LucideIcons.userCheck,
-                      label: 'Họ và tên',
-                      value: request.memberData!.fullName ?? 'Chưa cập nhật',
+                      label: l10n.fullNameLabel,
+                      value: request.memberData!.fullName ?? l10n.notUpdatedLabel,
                       context: context,
                     ),
                     const SizedBox(height: 10),
                     _InfoRow(
                       icon: LucideIcons.layers,
-                      label: 'Đời thứ',
+                      label: l10n.generationFieldLabel,
                       value: request.memberData!.generation != null
-                          ? 'Đời thứ ${request.memberData!.generation}'
-                          : 'Đời thứ 1',
+                          ? l10n.generationLabel(request.memberData!.generation!.toString())
+                          : l10n.generationLabel('1'),
                       context: context,
                     ),
                     const SizedBox(height: 10),
                     _InfoRow(
                       icon: LucideIcons.gitBranch,
-                      label: 'Chi họ',
+                      label: l10n.branchNameFieldLabel,
                       value: (request.memberData!.branchName != null &&
                               request.memberData!.branchName!.isNotEmpty)
                           ? request.memberData!.branchName!
-                          : 'Chưa phân chi',
+                          : l10n.notCategorizedBranch,
                       context: context,
                     ),
                     const SizedBox(height: 10),

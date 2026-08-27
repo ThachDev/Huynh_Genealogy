@@ -4607,7 +4607,7 @@ abstract class AppLocalizations {
   /// No description provided for @clanLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Gia tộc'**
+  /// **'Dòng họ'**
   String get clanLabel;
 
   /// No description provided for @familyNamePrefix.
@@ -4873,6 +4873,564 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã sao chép liên kết hình ảnh'**
   String get imageLinkCopied;
+
+  /// No description provided for @deleteWishTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa lời chúc'**
+  String get deleteWishTitle;
+
+  /// No description provided for @deleteMemorialTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa lời tưởng niệm'**
+  String get deleteMemorialTitle;
+
+  /// No description provided for @deleteWishConfirmMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn xóa lời chúc này không?'**
+  String get deleteWishConfirmMessage;
+
+  /// No description provided for @deleteMemorialConfirmMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn xóa lời tưởng niệm này không?'**
+  String get deleteMemorialConfirmMessage;
+
+  /// No description provided for @deleteWishSuccessMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xóa lời chúc thành công'**
+  String get deleteWishSuccessMessage;
+
+  /// No description provided for @deleteMemorialSuccessMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xóa lời tưởng niệm thành công'**
+  String get deleteMemorialSuccessMessage;
+
+  /// No description provided for @timeJustNow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa xong'**
+  String get timeJustNow;
+
+  /// No description provided for @minutesAgoFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} phút trước'**
+  String minutesAgoFormat(int count);
+
+  /// No description provided for @hoursAgoFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} giờ trước'**
+  String hoursAgoFormat(int count);
+
+  /// No description provided for @daysAgoFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} ngày trước'**
+  String daysAgoFormat(int count);
+
+  /// No description provided for @adminBoardLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban Quản Trị'**
+  String get adminBoardLabel;
+
+  /// No description provided for @birthdayWishTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chúc mừng sinh nhật'**
+  String get birthdayWishTitle;
+
+  /// No description provided for @newWishTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời chúc mới'**
+  String get newWishTitle;
+
+  /// No description provided for @aMemberLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Một thành viên'**
+  String get aMemberLabel;
+
+  /// No description provided for @allTab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get allTab;
+
+  /// No description provided for @unreadTab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đọc'**
+  String get unreadTab;
+
+  /// No description provided for @noUnreadNotifications.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có thông báo chưa đọc nào'**
+  String get noUnreadNotifications;
+
+  /// No description provided for @sentBirthdayWishToYou.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã gửi lời chúc mừng sinh nhật đến bạn'**
+  String get sentBirthdayWishToYou;
+
+  /// No description provided for @sentWishToYou.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã gửi một lời chúc đến bạn'**
+  String get sentWishToYou;
+
+  /// No description provided for @postedAnAnnouncementFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã đăng một thông báo: {title}'**
+  String postedAnAnnouncementFormat(String title);
+
+  /// No description provided for @createdNewEventFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'đã tạo sự kiện mới: {title}'**
+  String createdNewEventFormat(String title);
+
+  /// No description provided for @turningAgeFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'{age} tuổi'**
+  String turningAgeFormat(int age);
+
+  /// No description provided for @livingAgeFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thọ {age} tuổi'**
+  String livingAgeFormat(int age);
+
+  /// No description provided for @kinshipUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đồng tộc / Chưa rõ liên kết'**
+  String get kinshipUnknown;
+
+  /// No description provided for @lunarShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'ÂL'**
+  String get lunarShort;
+
+  /// No description provided for @noClanCode.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có mã gia tộc'**
+  String get noClanCode;
+
+  /// No description provided for @updateInfoSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cập nhật thông tin thành công'**
+  String get updateInfoSuccess;
+
+  /// No description provided for @accountNotLinkedWithMember.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản chưa được liên kết với thành viên trên cây gia phả'**
+  String get accountNotLinkedWithMember;
+
+  /// No description provided for @noMemberDataToExport.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có dữ liệu thành viên để xuất gia phả.'**
+  String get noMemberDataToExport;
+
+  /// No description provided for @exportFamilyTreeFile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xuất file gia phả'**
+  String get exportFamilyTreeFile;
+
+  /// No description provided for @myLocationOnTree.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vị trí của tôi'**
+  String get myLocationOnTree;
+
+  /// No description provided for @selfRelationTag.
+  ///
+  /// In vi, this message translates to:
+  /// **'(Tôi)'**
+  String get selfRelationTag;
+
+  /// No description provided for @familyBookConfigTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiết Lập Xuất Bản Gia Phả'**
+  String get familyBookConfigTitle;
+
+  /// No description provided for @familyBookPreviewPdf.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem trước PDF'**
+  String get familyBookPreviewPdf;
+
+  /// No description provided for @familyBookSectionStyle.
+  ///
+  /// In vi, this message translates to:
+  /// **'1. Phong Cách Giao Diện & Bìa Sách'**
+  String get familyBookSectionStyle;
+
+  /// No description provided for @themeLightLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ đề sáng'**
+  String get themeLightLabel;
+
+  /// No description provided for @themeDarkLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ đề tối'**
+  String get themeDarkLabel;
+
+  /// No description provided for @themeBlankLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Để trống'**
+  String get themeBlankLabel;
+
+  /// No description provided for @familyBookSectionInfo.
+  ///
+  /// In vi, this message translates to:
+  /// **'2. Thông Tin Ấn Phẩm & Tiền Nhân'**
+  String get familyBookSectionInfo;
+
+  /// No description provided for @familyBookTitleLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêu đề ấn phẩm gia phả'**
+  String get familyBookTitleLabel;
+
+  /// No description provided for @familyBookTitleHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: PHẢ HỆ ĐẠI TÔN HỌ NGUYỄN'**
+  String get familyBookTitleHint;
+
+  /// No description provided for @familyBookFounderLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Danh tính Cụ Thủy Tổ / Khởi Tổ'**
+  String get familyBookFounderLabel;
+
+  /// No description provided for @familyBookFounderHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Thủy Tổ: Nguyễn Văn A'**
+  String get familyBookFounderHint;
+
+  /// No description provided for @familyBookLocationLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa danh Từ Đường / Quê quán phát tích'**
+  String get familyBookLocationLabel;
+
+  /// No description provided for @familyBookLocationHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Từ Đường Họ Nguyễn, Xã..., Huyện..., Tỉnh...'**
+  String get familyBookLocationHint;
+
+  /// No description provided for @familyBookEditorLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ban / Người biên soạn'**
+  String get familyBookEditorLabel;
+
+  /// No description provided for @familyBookEditorHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Hội Đồng Gia Tộc'**
+  String get familyBookEditorHint;
+
+  /// No description provided for @familyBookYearLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thời gian biên soạn'**
+  String get familyBookYearLabel;
+
+  /// No description provided for @familyBookYearHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Năm Bính Ngọ 2026'**
+  String get familyBookYearHint;
+
+  /// No description provided for @familyBookSectionPreface.
+  ///
+  /// In vi, this message translates to:
+  /// **'3. Lời Tựa & Gia Huấn Dòng Tộc'**
+  String get familyBookSectionPreface;
+
+  /// No description provided for @familyBookPrefaceTab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lời Nói Đầu Cội Nguồn'**
+  String get familyBookPrefaceTab;
+
+  /// No description provided for @familyBookRulesTab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tộc Ước & Gia Quy Tiên Tổ'**
+  String get familyBookRulesTab;
+
+  /// No description provided for @familyBookMemorialTab.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khắc Ghi Tri Ân Hậu Thế'**
+  String get familyBookMemorialTab;
+
+  /// No description provided for @familyBookSectionContent.
+  ///
+  /// In vi, this message translates to:
+  /// **'4. Tùy Chọn Nội Dung Xuất Bản'**
+  String get familyBookSectionContent;
+
+  /// No description provided for @familyBookOptTreeChart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ đồ cây gia phả trực quan'**
+  String get familyBookOptTreeChart;
+
+  /// No description provided for @familyBookOptTreeChartDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sơ đồ phân nhánh thế thứ kết nối các thế hệ dòng họ'**
+  String get familyBookOptTreeChartDesc;
+
+  /// No description provided for @familyBookOptStats.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảng thống kê nhân khẩu'**
+  String get familyBookOptStats;
+
+  /// No description provided for @familyBookOptStatsDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng hợp số đời, nam đinh, nữ giới, dâu hiền, sinh tử'**
+  String get familyBookOptStatsDesc;
+
+  /// No description provided for @familyBookOptAnniversary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch giỗ 12 tháng Âm lịch'**
+  String get familyBookOptAnniversary;
+
+  /// No description provided for @familyBookOptAnniversaryDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảng tổng hợp ngày kỵ nhật chư vị tôn linh trong năm'**
+  String get familyBookOptAnniversaryDesc;
+
+  /// No description provided for @familyBookOptTombs.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú mộ phần'**
+  String get familyBookOptTombs;
+
+  /// No description provided for @familyBookOptTombsDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiển thị thông tin nơi an táng của các bậc tiền nhân'**
+  String get familyBookOptTombsDesc;
+
+  /// No description provided for @familyBookResetDefault.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khôi phục văn mẫu'**
+  String get familyBookResetDefault;
+
+  /// No description provided for @familyBookPreviewTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem Trước Sách Gia Phả'**
+  String get familyBookPreviewTitle;
+
+  /// No description provided for @familyBookSharePdf.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chia sẻ PDF'**
+  String get familyBookSharePdf;
+
+  /// No description provided for @familyBookPrint.
+  ///
+  /// In vi, this message translates to:
+  /// **'In sách gia phả'**
+  String get familyBookPrint;
+
+  /// No description provided for @familyBookRendering.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang dàn trang & mở sách gia phả...'**
+  String get familyBookRendering;
+
+  /// No description provided for @familyBookPleaseWait.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng chờ trong giây lát'**
+  String get familyBookPleaseWait;
+
+  /// No description provided for @noPageData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có dữ liệu trang'**
+  String get noPageData;
+
+  /// No description provided for @requestLinkWithFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xin liên kết với: {name}'**
+  String requestLinkWithFormat(String name);
+
+  /// No description provided for @requestNewMemberFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên mới: {name}'**
+  String requestNewMemberFormat(String name);
+
+  /// No description provided for @joinClanRequest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu cầu tham gia'**
+  String get joinClanRequest;
+
+  /// No description provided for @memberLinkRequestTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Yêu cầu liên kết thành viên'**
+  String get memberLinkRequestTitle;
+
+  /// No description provided for @newMemberRegistrationTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký thành viên mới'**
+  String get newMemberRegistrationTitle;
+
+  /// No description provided for @senderAccountLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản người gửi yêu cầu'**
+  String get senderAccountLabel;
+
+  /// No description provided for @roleRequestedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò xin cấp'**
+  String get roleRequestedLabel;
+
+  /// No description provided for @treeMemberInfoLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin thành viên trên cây'**
+  String get treeMemberInfoLabel;
+
+  /// No description provided for @notCategorizedBranch.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa phân chi'**
+  String get notCategorizedBranch;
+
+  /// No description provided for @permanentDeleteMemberConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc chắn muốn xoá vĩnh viễn thành viên \"{name}\"? Hành động này không thể hoàn tác.'**
+  String permanentDeleteMemberConfirm(String name);
+
+  /// No description provided for @permanentDeleteAllTrashConfirm.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá vĩnh viễn toàn bộ thành viên trong thùng rác? Hành động này không thể hoàn tác.'**
+  String get permanentDeleteAllTrashConfirm;
+
+  /// No description provided for @permanentDeleteSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xoá vĩnh viễn thành viên khỏi thùng rác.'**
+  String get permanentDeleteSuccess;
+
+  /// No description provided for @cleanTrashButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dọn sạch'**
+  String get cleanTrashButton;
+
+  /// No description provided for @memberAlreadyLinkedTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên đã được liên kết'**
+  String get memberAlreadyLinkedTitle;
+
+  /// No description provided for @memberAlreadyLinkedDescFormat.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên \"{name}\" đã được liên kết với một tài khoản khác.\n\nBạn không thể gửi yêu cầu liên kết vào thành viên này. Vui lòng chọn thành viên khác hoặc tích chọn \"Tôi chưa có tên trên cây gia phả\".'**
+  String memberAlreadyLinkedDescFormat(String name);
+
+  /// No description provided for @unlinkAccountFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gỡ liên kết tài khoản thất bại'**
+  String get unlinkAccountFailed;
+
+  /// No description provided for @dissolveClanFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể giải tán dòng họ'**
+  String get dissolveClanFailed;
+
+  /// No description provided for @assignRoleFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phân quyền thất bại'**
+  String get assignRoleFailed;
+
+  /// No description provided for @transferOwnershipFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể chuyển nhượng quyền Trưởng tộc'**
+  String get transferOwnershipFailed;
+
+  /// No description provided for @notUpdatedLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa cập nhật'**
+  String get notUpdatedLabel;
+
+  /// No description provided for @branchNameFieldLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi họ'**
+  String get branchNameFieldLabel;
+
+  /// No description provided for @statusLinked.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã liên kết'**
+  String get statusLinked;
+
+  /// No description provided for @contentLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nội dung'**
+  String get contentLabel;
+
+  /// No description provided for @writeContentHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập nội dung...'**
+  String get writeContentHint;
 }
 
 class _AppLocalizationsDelegate

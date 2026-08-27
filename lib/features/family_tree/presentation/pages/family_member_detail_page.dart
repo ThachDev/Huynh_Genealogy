@@ -224,7 +224,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                                             offset: const Offset(3, -5),
                                             child: Text(
                                               kinshipResult.isSamePerson
-                                                  ? '(Tôi)'
+                                                  ? l10n.selfRelationTag
                                                   : '(${kinshipResult.fromCallsTo})',
                                               style: GoogleFonts.beVietnamPro(
                                                 fontSize: 13,

@@ -980,7 +980,7 @@
   "qrCodeLabel": "Mã QR",
   "helloLabel": "Xin chào, ",
   "youLabel": "Bạn",
-  "clanLabel": "Gia tộc",
+  "clanLabel": "Dòng họ",
   "familyNamePrefix": "Họ {name}",
   "@familyNamePrefix": {
     "placeholders": {
@@ -1198,5 +1198,175 @@
   "darkModeLabel": "Tối",
   "lightModeLabel": "Sáng",
   "copyImageAction": "Sao chép ảnh",
-  "imageLinkCopied": "Đã sao chép liên kết hình ảnh"
+  "imageLinkCopied": "Đã sao chép liên kết hình ảnh",
+  "deleteWishTitle": "Xóa lời chúc",
+  "deleteMemorialTitle": "Xóa lời tưởng niệm",
+  "deleteWishConfirmMessage": "Bạn có chắc chắn muốn xóa lời chúc này không?",
+  "deleteMemorialConfirmMessage": "Bạn có chắc chắn muốn xóa lời tưởng niệm này không?",
+  "deleteWishSuccessMessage": "Đã xóa lời chúc thành công",
+  "deleteMemorialSuccessMessage": "Đã xóa lời tưởng niệm thành công",
+  "timeJustNow": "Vừa xong",
+  "minutesAgoFormat": "{count} phút trước",
+  "@minutesAgoFormat": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgoFormat": "{count} giờ trước",
+  "@hoursAgoFormat": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgoFormat": "{count} ngày trước",
+  "@daysAgoFormat": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminBoardLabel": "Ban Quản Trị",
+  "birthdayWishTitle": "Chúc mừng sinh nhật",
+  "newWishTitle": "Lời chúc mới",
+  "aMemberLabel": "Một thành viên",
+  "allTab": "Tất cả",
+  "unreadTab": "Chưa đọc",
+  "noUnreadNotifications": "Không có thông báo chưa đọc nào",
+  "sentBirthdayWishToYou": "đã gửi lời chúc mừng sinh nhật đến bạn",
+  "sentWishToYou": "đã gửi một lời chúc đến bạn",
+  "postedAnAnnouncementFormat": "đã đăng một thông báo: {title}",
+  "@postedAnAnnouncementFormat": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "createdNewEventFormat": "đã tạo sự kiện mới: {title}",
+  "@createdNewEventFormat": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "turningAgeFormat": "{age} tuổi",
+  "@turningAgeFormat": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "livingAgeFormat": "Thọ {age} tuổi",
+  "@livingAgeFormat": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "kinshipUnknown": "Đồng tộc / Chưa rõ liên kết",
+  "lunarShort": "ÂL",
+  "noClanCode": "Chưa có mã gia tộc",
+  "updateInfoSuccess": "Cập nhật thông tin thành công",
+  "accountNotLinkedWithMember": "Tài khoản chưa được liên kết với thành viên trên cây gia phả",
+  "noMemberDataToExport": "Chưa có dữ liệu thành viên để xuất gia phả.",
+  "exportFamilyTreeFile": "Xuất file gia phả",
+  "myLocationOnTree": "Vị trí của tôi",
+  "selfRelationTag": "(Tôi)",
+  "familyBookConfigTitle": "Thiết Lập Xuất Bản Gia Phả",
+  "familyBookPreviewPdf": "Xem trước PDF",
+  "familyBookSectionStyle": "1. Phong Cách Giao Diện & Bìa Sách",
+  "themeLightLabel": "Chủ đề sáng",
+  "themeDarkLabel": "Chủ đề tối",
+  "themeBlankLabel": "Để trống",
+  "familyBookSectionInfo": "2. Thông Tin Ấn Phẩm & Tiền Nhân",
+  "familyBookTitleLabel": "Tiêu đề ấn phẩm gia phả",
+  "familyBookTitleHint": "VD: PHẢ HỆ ĐẠI TÔN HỌ NGUYỄN",
+  "familyBookFounderLabel": "Danh tính Cụ Thủy Tổ / Khởi Tổ",
+  "familyBookFounderHint": "VD: Thủy Tổ: Nguyễn Văn A",
+  "familyBookLocationLabel": "Địa danh Từ Đường / Quê quán phát tích",
+  "familyBookLocationHint": "VD: Từ Đường Họ Nguyễn, Xã..., Huyện..., Tỉnh...",
+  "familyBookEditorLabel": "Ban / Người biên soạn",
+  "familyBookEditorHint": "VD: Hội Đồng Gia Tộc",
+  "familyBookYearLabel": "Thời gian biên soạn",
+  "familyBookYearHint": "VD: Năm Bính Ngọ 2026",
+  "familyBookSectionPreface": "3. Lời Tựa & Gia Huấn Dòng Tộc",
+  "familyBookPrefaceTab": "Lời Nói Đầu Cội Nguồn",
+  "familyBookRulesTab": "Tộc Ước & Gia Quy Tiên Tổ",
+  "familyBookMemorialTab": "Khắc Ghi Tri Ân Hậu Thế",
+  "familyBookSectionContent": "4. Tùy Chọn Nội Dung Xuất Bản",
+  "familyBookOptTreeChart": "Sơ đồ cây gia phả trực quan",
+  "familyBookOptTreeChartDesc": "Sơ đồ phân nhánh thế thứ kết nối các thế hệ dòng họ",
+  "familyBookOptStats": "Bảng thống kê nhân khẩu",
+  "familyBookOptStatsDesc": "Tổng hợp số đời, nam đinh, nữ giới, dâu hiền, sinh tử",
+  "familyBookOptAnniversary": "Lịch giỗ 12 tháng Âm lịch",
+  "familyBookOptAnniversaryDesc": "Bảng tổng hợp ngày kỵ nhật chư vị tôn linh trong năm",
+  "familyBookOptTombs": "Ghi chú mộ phần",
+  "familyBookOptTombsDesc": "Hiển thị thông tin nơi an táng của các bậc tiền nhân",
+  "familyBookResetDefault": "Khôi phục văn mẫu",
+  "familyBookPreviewTitle": "Xem Trước Sách Gia Phả",
+  "familyBookSharePdf": "Chia sẻ PDF",
+  "familyBookPrint": "In sách gia phả",
+  "familyBookRendering": "Đang dàn trang & mở sách gia phả...",
+  "familyBookPleaseWait": "Vui lòng chờ trong giây lát",
+  "noPageData": "Không có dữ liệu trang",
+  "requestLinkWithFormat": "Xin liên kết với: {name}",
+  "@requestLinkWithFormat": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "requestNewMemberFormat": "Thành viên mới: {name}",
+  "@requestNewMemberFormat": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "joinClanRequest": "Yêu cầu tham gia",
+  "memberLinkRequestTitle": "Yêu cầu liên kết thành viên",
+  "newMemberRegistrationTitle": "Đăng ký thành viên mới",
+  "senderAccountLabel": "Tài khoản người gửi yêu cầu",
+  "roleRequestedLabel": "Vai trò xin cấp",
+  "treeMemberInfoLabel": "Thông tin thành viên trên cây",
+  "notCategorizedBranch": "Chưa phân chi",
+  "permanentDeleteMemberConfirm": "Bạn có chắc chắn muốn xoá vĩnh viễn thành viên \"{name}\"? Hành động này không thể hoàn tác.",
+  "@permanentDeleteMemberConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "permanentDeleteAllTrashConfirm": "Xoá vĩnh viễn toàn bộ thành viên trong thùng rác? Hành động này không thể hoàn tác.",
+  "permanentDeleteSuccess": "Đã xoá vĩnh viễn thành viên khỏi thùng rác.",
+  "cleanTrashButton": "Dọn sạch",
+  "memberAlreadyLinkedTitle": "Thành viên đã được liên kết",
+  "memberAlreadyLinkedDescFormat": "Thành viên \"{name}\" đã được liên kết với một tài khoản khác.\n\nBạn không thể gửi yêu cầu liên kết vào thành viên này. Vui lòng chọn thành viên khác hoặc tích chọn \"Tôi chưa có tên trên cây gia phả\".",
+  "@memberAlreadyLinkedDescFormat": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unlinkAccountFailed": "Gỡ liên kết tài khoản thất bại",
+  "dissolveClanFailed": "Không thể giải tán dòng họ",
+  "assignRoleFailed": "Phân quyền thất bại",
+  "transferOwnershipFailed": "Không thể chuyển nhượng quyền Trưởng tộc",
+  "notUpdatedLabel": "Chưa cập nhật",
+  "branchNameFieldLabel": "Chi họ",
+  "statusLinked": "Đã liên kết",
+  "contentLabel": "Nội dung",
+  "writeContentHint": "Nhập nội dung..."
 }

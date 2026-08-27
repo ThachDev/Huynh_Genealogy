@@ -6,6 +6,7 @@ import 'package:printing/printing.dart';
 
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../domain/entities/member_entity.dart';
 import '../../domain/models/family_book_config.dart';
 import '../../domain/services/family_book_pdf_service.dart';
@@ -86,14 +87,15 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppAppBar(
-        title: 'Xem Trước Sách Gia Phả',
+        title: l10n.familyBookPreviewTitle,
         actions: [
           if (_pdfBytes != null) ...[
             IconButton(
               icon: const Icon(LucideIcons.share2, size: 20),
-              tooltip: 'Chia sẻ PDF',
+              tooltip: l10n.familyBookSharePdf,
               onPressed: () async {
                 await Printing.sharePdf(
                   bytes: _pdfBytes!,
@@ -103,7 +105,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
             ),
             IconButton(
               icon: const Icon(LucideIcons.printer, size: 20),
-              tooltip: 'In sách gia phả',
+              tooltip: l10n.familyBookPrint,
               onPressed: () async {
                 await Printing.layoutPdf(
                   onLayout: (_) => _pdfBytes!,
@@ -115,12 +117,12 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
         ],
       ),
       body: AppBackgroundBody(
-        child: _buildBody(),
+        child: _buildBody(l10n),
       ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(AppLocalizations l10n) {
     if (_isLoading) {
       return Center(
         child: Column(
@@ -129,7 +131,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
             CircularProgressIndicator(color: context.primary),
             const SizedBox(height: 16),
             Text(
-              'Đang dàn trang & mở sách gia phả...',
+              l10n.familyBookRendering,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
@@ -138,7 +140,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Vui lòng chờ trong giây lát',
+              l10n.familyBookPleaseWait,
               style: GoogleFonts.beVietnamPro(
                 fontSize: 12,
                 color: context.textSecondary,
@@ -168,7 +170,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
               ),
               const SizedBox(height: 16),
               AppButton(
-                label: 'Thử lại',
+                label: l10n.retryButton,
                 size: AppButtonSize.small,
                 prefixIcon: const Icon(LucideIcons.rotateCcw, size: 14),
                 onPressed: _generateAndRasterizePdf,
@@ -180,7 +182,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
     }
 
     if (_pageImages.isEmpty) {
-      return const Center(child: Text('Không có dữ liệu trang'));
+      return Center(child: Text(l10n.noPageData));
     }
 
     return SafeArea(

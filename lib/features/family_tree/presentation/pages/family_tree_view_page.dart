@@ -147,6 +147,7 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
   }
 
   void _goToMyPosition() {
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     final userMemberId =
         authState is Authenticated ? authState.user.memberId : null;
@@ -156,14 +157,15 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
       _centerOnNode(userMemberId);
     } else {
       AppSnackBar.info(
-          context, 'Tài khoản chưa được liên kết với thành viên trên cây gia phả');
+          context, l10n.accountNotLinkedWithMember);
     }
   }
 
   void _openFamilyBookStudio() {
+    final l10n = AppLocalizations.of(context);
     final state = context.read<FamilyTreeBloc>().state;
     if (state is! FamilyTreeLoaded || state.members.isEmpty) {
-      AppSnackBar.error(context, 'Chưa có dữ liệu thành viên để xuất gia phả.');
+      AppSnackBar.error(context, l10n.noMemberDataToExport);
       return;
     }
     final surname = FamilyNameResolver.resolveSurname(state.members);
@@ -576,12 +578,12 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
         ),
         children: [
           _buildFabActionItem(
-            label: 'Xuất file gia phả',
+            label: l10n.exportFamilyTreeFile,
             icon: LucideIcons.bookOpen,
             onTap: _openFamilyBookStudio,
           ),
           _buildFabActionItem(
-            label: 'Vị trí của tôi',
+            label: l10n.myLocationOnTree,
             icon: LucideIcons.crosshair,
             onTap: _goToMyPosition,
           ),

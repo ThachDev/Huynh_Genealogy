@@ -61,7 +61,7 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
       _pdfBytes = bytes;
 
       final List<Uint8List> images = [];
-      await for (final page in Printing.raster(bytes, dpi: 200)) {
+      await for (final page in Printing.raster(bytes, dpi: 130)) {
         final pngBytes = await page.toPng();
         images.add(pngBytes);
       }

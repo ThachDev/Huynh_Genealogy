@@ -2803,7 +2803,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'No member data available to export family tree.';
 
   @override
-  String get exportFamilyTreeFile => 'Export family tree';
+  String get exportFamilyTreeFile => 'Export Chronicle / Poster';
 
   @override
   String get myLocationOnTree => 'My location';
@@ -2812,13 +2812,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selfRelationTag => '(Me)';
 
   @override
-  String get familyBookConfigTitle => 'Family Book Publishing Settings';
+  String get familyBookConfigTitle => 'Export Chronicle & Poster';
 
   @override
   String get familyBookPreviewPdf => 'PDF Preview';
 
   @override
-  String get familyBookSectionStyle => '1. Theme & Book Cover Style';
+  String get familyBookSectionStyle => '1. Theme & Chronicle Cover Style';
 
   @override
   String get themeLightLabel => 'Light Theme';
@@ -2830,13 +2830,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeBlankLabel => 'Leave blank';
 
   @override
-  String get familyBookSectionInfo => '2. Publication & Ancestors Info';
+  String get familyBookSectionInfo => '2. Cover & Ancestors Information';
 
   @override
-  String get familyBookTitleLabel => 'Family Book Title';
+  String get familyBookTitleLabel => 'Clan Chronicle Title';
 
   @override
-  String get familyBookTitleHint => 'Ex: GENEALOGY OF NGUYEN CLAN';
+  String get familyBookTitleHint => 'Ex: CHRONICLE OF NGUYEN CLAN';
 
   @override
   String get familyBookFounderLabel => 'Clan Founder / Progenitor Name';
@@ -2879,7 +2879,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyBookSectionContent => '4. Content Publishing Options';
 
   @override
-  String get familyBookOptTreeChart => 'Visual family tree chart';
+  String get familyBookOptTreeChart => 'Visual lineage chart (Phả Đồ)';
 
   @override
   String get familyBookOptTreeChartDesc =>
@@ -2893,14 +2893,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Summary of generations, males, females, in-laws, living/deceased';
 
   @override
-  String get familyBookOptAnniversary => '12-month Lunar memorial calendar';
+  String get familyBookOptAnniversary => 'Memorial calendar (Kỵ Nhật Biểu)';
 
   @override
   String get familyBookOptAnniversaryDesc =>
       'Yearly compilation of death anniversaries';
 
   @override
-  String get familyBookOptTombs => 'Ancestral grave notes';
+  String get familyBookOptTombs => 'Ancestral grave notes (Mộ Chí)';
 
   @override
   String get familyBookOptTombsDesc =>
@@ -2910,16 +2910,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyBookResetDefault => 'Reset to template';
 
   @override
-  String get familyBookPreviewTitle => 'Family Book Preview';
+  String get familyBookPreviewTitle => 'Preview Clan Chronicle';
 
   @override
   String get familyBookSharePdf => 'Share PDF';
 
   @override
-  String get familyBookPrint => 'Print Family Book';
+  String get familyBookPrint => 'Print Clan Chronicle';
 
   @override
-  String get familyBookRendering => 'Typesetting & opening family book...';
+  String get familyBookRendering => 'Compiling & opening Clan Chronicle...';
 
   @override
   String get familyBookPleaseWait => 'Please wait a moment';

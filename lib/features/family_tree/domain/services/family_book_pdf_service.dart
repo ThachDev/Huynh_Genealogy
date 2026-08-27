@@ -197,7 +197,7 @@ class FamilyBookPdfService {
       );
     }
 
-    // ── TRANG 2: LỜI TỰA & TỘC ƯỚC (PREFACE & CLAN RULES) ──
+    // ── CHƯƠNG I: PHẢ TỰ (LỜI NÓI ĐẦU & TỘC ƯỚC) ──
     if (config.includePreface || config.includeClanRules) {
       pdf.addPage(
         pw.MultiPage(
@@ -209,7 +209,7 @@ class FamilyBookPdfService {
           build: (context) {
             return [
               if (config.includePreface) ...[
-                _buildSectionHeader('LỜI NÓI ĐẦU', colors),
+                _buildSectionHeader('CHƯƠNG I: PHẢ TỰ - LỜI NÓI ĐẦU', colors),
                 pw.SizedBox(height: 12),
                 pw.Container(
                   padding: const pw.EdgeInsets.all(14),
@@ -232,7 +232,7 @@ class FamilyBookPdfService {
                 pw.SizedBox(height: 24),
               ],
               if (config.includeClanRules) ...[
-                _buildSectionHeader('TỘC ƯỚC & GIA HUẤN', colors),
+                _buildSectionHeader('TỘC ƯỚC & GIA HUẤN TIÊN TỔ', colors),
                 pw.SizedBox(height: 12),
                 pw.Container(
                   padding: const pw.EdgeInsets.all(14),
@@ -259,73 +259,10 @@ class FamilyBookPdfService {
       );
     }
 
-    // ── TRANG 3: THỐNG KÊ NHÂN KHẨU DÒNG HỌ ──
-    if (config.includeStatistics) {
-      final totalMembers = members.length;
-      final aliveMembers = members.where((m) => m.isAlive).length;
-      final deceasedMembers = totalMembers - aliveMembers;
-      final maleMembers = members.where((m) => m.gender == Gender.male).length;
-      final femaleMembers =
-          members.where((m) => m.gender == Gender.female).length;
-      final totalGens = sortedGenerations.length;
+    final memberMap = {for (final m in members) m.id: m};
 
-      pdf.addPage(
-        pw.MultiPage(
-          pageFormat: PdfPageFormat.a4,
-          theme: themeData,
-          margin: const pw.EdgeInsets.fromLTRB(40, 40, 40, 40),
-          header: (context) => _buildPageHeader(config.bookTitle, colors),
-          footer: (context) => _buildPageFooter(context, colors),
-          build: (context) {
-            return [
-              _buildSectionHeader('TỔNG QUAN & THỐNG KÊ DÒNG HỌ', colors),
-              pw.SizedBox(height: 16),
-              pw.Table(
-                border: pw.TableBorder.all(color: colors.accent, width: 0.6),
-                children: [
-                  _buildTableRow(
-                    'Tổng số thế hệ ghi nhận',
-                    '$totalGens đời',
-                    colors,
-                  ),
-                  _buildTableRow(
-                    'Tổng số nhân đinh & dâu rể',
-                    '$totalMembers người',
-                    colors,
-                  ),
-                  _buildTableRow(
-                    'Số thành viên Nam',
-                    '$maleMembers người',
-                    colors,
-                  ),
-                  _buildTableRow(
-                    'Số thành viên Nữ & Dâu',
-                    '$femaleMembers người',
-                    colors,
-                  ),
-                  _buildTableRow(
-                    'Thành viên hiện còn sống',
-                    '$aliveMembers người',
-                    colors,
-                  ),
-                  _buildTableRow(
-                    'Tiền nhân đã quy tiên',
-                    '$deceasedMembers vị',
-                    colors,
-                  ),
-                ],
-              ),
-              pw.SizedBox(height: 20),
-            ];
-          },
-        ),
-      );
-    }
-
-    // ── TRANG: SƠ ĐỒ CÂY GIA PHẢ TRỰC QUAN (FAMILY TREE CHART) ──
+    // ── CHƯƠNG II: PHẢ ĐỒ (SƠ ĐỒ TRỰC HỆ TÔNG CHI) ──
     if (config.includeTreeChart && sortedGenerations.isNotEmpty) {
-      final memberMap = {for (final m in members) m.id: m};
-
       pdf.addPage(
         pw.MultiPage(
           pageFormat: PdfPageFormat.a4,
@@ -336,10 +273,10 @@ class FamilyBookPdfService {
           build: (context) {
             final treeWidgets = <pw.Widget>[
               _buildSectionHeader(
-                  'SƠ ĐỒ CÂY GIA PHẢ - TRỰC HỆ TÔNG CHI', colors),
+                  'CHƯƠNG II: PHẢ ĐỒ - SƠ ĐỒ TRỰC HỆ TÔNG CHI', colors),
               pw.SizedBox(height: 8),
               pw.Text(
-                'Sơ đồ phân nhánh phả hệ theo từng thế hệ truyền thừa từ đời Tiên Tổ',
+                'Lược đồ phân nhánh phả hệ kết nối các thế hệ từ đời Tiên Tổ truyền thừa',
                 style: pw.TextStyle(
                   fontSize: 9.5,
                   fontStyle: pw.FontStyle.italic,
@@ -384,7 +321,7 @@ class FamilyBookPdfService {
                           pw.Text(
                             gen == 1
                                 ? 'Thủy Tổ / Khởi Tổ Phát Tích'
-                                : 'Thế Hệ Đời Thứ $gen (${genMembers.length} thành viên)',
+                                : 'Thế Hệ Đời Thứ $gen (${genMembers.length} vị)',
                             style: pw.TextStyle(
                               fontSize: 10,
                               fontWeight: pw.FontWeight.bold,
@@ -395,7 +332,7 @@ class FamilyBookPdfService {
                       ),
                       pw.SizedBox(height: 8),
 
-                      // Danh sách các node thành viên trong đời
+                      // Danh sách các node phả đồ trong đời
                       pw.Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -437,7 +374,7 @@ class FamilyBookPdfService {
       );
     }
 
-    // ── TRANG 4: PHẢ HỆ CHI TIẾT TỪNG ĐỜI ──
+    // ── CHƯƠNG III: PHẢ KÝ THẾ THỨ (TIỂU SỬ & CÔNG ĐỨC TIỀN NHÂN TỪNG ĐỜI) ──
     if (config.includeGenerations && sortedGenerations.isNotEmpty) {
       pdf.addPage(
         pw.MultiPage(
@@ -447,7 +384,20 @@ class FamilyBookPdfService {
           header: (context) => _buildPageHeader(config.bookTitle, colors),
           footer: (context) => _buildPageFooter(context, colors),
           build: (context) {
-            final content = <pw.Widget>[];
+            final content = <pw.Widget>[
+              _buildSectionHeader(
+                  'CHƯƠNG III: PHẢ KÝ THẾ THỨ - TIỂU SỬ TỪNG ĐỜI', colors),
+              pw.SizedBox(height: 6),
+              pw.Text(
+                'Ký lục chi tiết thân thế, ngày sinh kỵ, hôn phối, hậu tự và công đức của từng bậc tiền nhân',
+                style: pw.TextStyle(
+                  fontSize: 9.5,
+                  fontStyle: pw.FontStyle.italic,
+                  color: colors.textMuted,
+                ),
+              ),
+              pw.SizedBox(height: 14),
+            ];
 
             for (final gen in sortedGenerations) {
               final genMembers = generationMap[gen] ?? [];
@@ -455,7 +405,7 @@ class FamilyBookPdfService {
 
               content.add(
                 pw.Container(
-                  margin: const pw.EdgeInsets.only(top: 14, bottom: 10),
+                  margin: const pw.EdgeInsets.only(top: 10, bottom: 12),
                   padding: const pw.EdgeInsets.symmetric(
                       horizontal: 14, vertical: 6),
                   decoration: pw.BoxDecoration(
@@ -467,9 +417,9 @@ class FamilyBookPdfService {
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
                       pw.Text(
-                        'ĐỜI THỨ $romanGen (THẾ HỆ $gen)',
+                        'THẾ THỨ ĐỜI $romanGen (ĐỜI THỨ $gen)',
                         style: pw.TextStyle(
-                          fontSize: 12,
+                          fontSize: 11.5,
                           fontWeight: pw.FontWeight.bold,
                           color: PdfColors.white,
                           letterSpacing: 1,
@@ -478,7 +428,7 @@ class FamilyBookPdfService {
                       pw.Text(
                         '${genMembers.length} thành viên',
                         style: pw.TextStyle(
-                          fontSize: 9.5,
+                          fontSize: 9,
                           fontStyle: pw.FontStyle.italic,
                           color: PdfColors.white,
                         ),
@@ -495,46 +445,59 @@ class FamilyBookPdfService {
                         child.parentId == m.id || child.motherId == m.id)
                     .toList();
 
-                MemberEntity? spouse;
-                if (m.spouseId != null) {
-                  spouse = sortedMembers
-                      .where((s) => s.id == m.spouseId)
-                      .firstOrNull;
+                final parent =
+                    m.parentId != null ? memberMap[m.parentId!] : null;
+                final mother =
+                    m.motherId != null ? memberMap[m.motherId!] : null;
+                final spouse =
+                    m.spouseId != null ? memberMap[m.spouseId!] : null;
+
+                final isMale = m.gender == Gender.male;
+
+                // Chuẩn bị nội dung sinh / mất
+                String birthDeathText;
+                if (m.isAlive) {
+                  birthDeathText = (m.dateOfBirth != null &&
+                          m.dateOfBirth!.trim().isNotEmpty)
+                      ? 'Sinh ngày ${m.dateOfBirth} (Hiện còn sống)'
+                      : 'Hiện còn sống';
+                } else {
+                  final deathSolar = (m.dateOfDeath != null &&
+                          m.dateOfDeath!.trim().isNotEmpty)
+                      ? ' ngày ${m.dateOfDeath}'
+                      : '';
+                  final deathLunar = (m.lunarDeathDate != null &&
+                          m.lunarDeathDate!.trim().isNotEmpty)
+                      ? ' (Nhằm ngày ${m.lunarDeathDate} Âm lịch)'
+                      : '';
+                  birthDeathText = 'Đã tạ thế$deathSolar$deathLunar';
                 }
 
                 content.add(
                   pw.Container(
-                    margin: const pw.EdgeInsets.only(bottom: 8),
+                    margin: const pw.EdgeInsets.only(bottom: 10),
                     padding: const pw.EdgeInsets.all(10),
                     decoration: pw.BoxDecoration(
-                      color: i.isEven ? colors.backgroundTint : PdfColors.white,
-                      border: pw.Border.all(color: colors.accent, width: 0.5),
+                      color: colors.backgroundTint,
+                      border: pw.Border.all(color: colors.accent, width: 0.6),
                       borderRadius:
-                          const pw.BorderRadius.all(pw.Radius.circular(4)),
+                          const pw.BorderRadius.all(pw.Radius.circular(5)),
                     ),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        // Tên và thông tin cơ bản
+                        // Tiêu đề: Số thứ tự + Danh xưng
                         pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                           children: [
                             pw.Row(
                               children: [
                                 pw.Text(
-                                  '${i + 1}. ${m.fullName.toUpperCase()}',
+                                  '${i + 1}. CỤ ${m.fullName.toUpperCase()}',
                                   style: pw.TextStyle(
                                     fontSize: 11,
                                     fontWeight: pw.FontWeight.bold,
                                     color: colors.primary,
-                                  ),
-                                ),
-                                pw.SizedBox(width: 6),
-                                pw.Text(
-                                  m.gender == Gender.female ? '(Nữ)' : '(Nam)',
-                                  style: pw.TextStyle(
-                                    fontSize: 9.5,
-                                    color: colors.textMuted,
                                   ),
                                 ),
                               ],
@@ -543,102 +506,64 @@ class FamilyBookPdfService {
                               padding: const pw.EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 1.5),
                               decoration: pw.BoxDecoration(
-                                color: m.isAlive
-                                    ? PdfColor.fromHex('#E8F5E9')
-                                    : PdfColor.fromHex('#F5F5F5'),
+                                color: isMale ? colors.primary : colors.accent,
                                 borderRadius: const pw.BorderRadius.all(
                                     pw.Radius.circular(3)),
                               ),
                               child: pw.Text(
-                                m.isAlive ? 'Còn sống' : 'Đã mất',
+                                isMale ? 'Nam phái' : 'Nữ phái',
                                 style: pw.TextStyle(
-                                  fontSize: 8.5,
+                                  fontSize: 7.5,
                                   fontWeight: pw.FontWeight.bold,
-                                  color: m.isAlive
-                                      ? PdfColor.fromHex('#2E7D32')
-                                      : colors.textMuted,
+                                  color: PdfColors.white,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        pw.SizedBox(height: 4),
+                        pw.SizedBox(height: 5),
+                        pw.Container(
+                            height: 0.5, color: colors.accent.flatten()),
+                        pw.SizedBox(height: 5),
 
-                        // Năm sinh / Năm mất
-                        pw.Row(
-                          children: [
-                            if (m.dateOfBirth != null &&
-                                m.dateOfBirth!.isNotEmpty)
-                              pw.Text(
-                                'Sinh: ${m.dateOfBirth}   ',
-                                style: pw.TextStyle(
-                                  fontSize: 9,
-                                  color: colors.textDark,
-                                ),
-                              ),
-                            if (!m.isAlive) ...[
-                              if (m.lunarDeathDate != null &&
-                                  m.lunarDeathDate!.isNotEmpty)
-                                pw.Text(
-                                  'Giỗ ÂL: ${m.lunarDeathDate}   ',
-                                  style: pw.TextStyle(
-                                    fontSize: 9,
-                                    fontWeight: pw.FontWeight.bold,
-                                    color: colors.primary,
-                                  ),
-                                ),
-                              if (m.dateOfDeath != null &&
-                                  m.dateOfDeath!.isNotEmpty)
-                                pw.Text(
-                                  'Mất: ${m.dateOfDeath}',
-                                  style: pw.TextStyle(
-                                    fontSize: 9,
-                                    color: colors.textDark,
-                                  ),
-                                ),
-                            ],
-                          ],
+                        // 1. Thân thế & Nguồn cội
+                        _buildPhaKyRow(
+                          'Thân thế:',
+                          parent != null
+                              ? 'Hậu duệ đời thứ $gen, con của Cụ ${parent.fullName}${mother != null ? ' và Cụ bà ${mother.fullName}' : ''}'
+                              : 'Bậc tiền bối đời thứ $gen của dòng họ',
+                          colors,
                         ),
 
-                        // Vợ / Chồng
-                        if (spouse != null) ...[
-                          pw.SizedBox(height: 3),
-                          pw.Text(
-                            'Phối ngẫu: ${spouse.fullName} ${spouse.isAlive ? "" : "(Đã mất)"}',
-                            style: pw.TextStyle(
-                              fontSize: 9,
-                              fontStyle: pw.FontStyle.italic,
-                              color: colors.textDark,
-                            ),
-                          ),
-                        ],
+                        // 2. Sinh - Mất
+                        _buildPhaKyRow('Sinh - Kỵ:', birthDeathText, colors),
 
-                        // Danh sách con cái
-                        if (children.isNotEmpty) ...[
-                          pw.SizedBox(height: 3),
-                          pw.Text(
-                            'Con cái (${children.length}): ${children.map((c) => c.fullName).join(", ")}',
-                            style: pw.TextStyle(
-                              fontSize: 9,
-                              color: colors.textDark,
-                            ),
+                        // 3. Phối ngẫu
+                        if (spouse != null)
+                          _buildPhaKyRow(
+                            isMale ? 'Chính thất:' : 'Phu quân:',
+                            'Cụ ${spouse.fullName}${spouse.isAlive ? " (Hiện còn sống)" : " (Đã quy tiên)"}',
+                            colors,
+                            isHighlight: true,
                           ),
-                        ],
 
-                        // Ghi chú / Mộ phần
+                        // 4. Hậu tự (Con cái)
+                        if (children.isNotEmpty)
+                          _buildPhaKyRow(
+                            'Hậu tự:',
+                            'Sinh hạ ${children.length} người con: ${children.map((c) => c.fullName).join(", ")}',
+                            colors,
+                          ),
+
+                        // 5. Mộ phần (Mộ chí)
                         if (config.includeBurialInfo &&
                             m.notes != null &&
-                            m.notes!.trim().isNotEmpty) ...[
-                          pw.SizedBox(height: 3),
-                          pw.Text(
-                            'Ghi chú / Mộ phần: ${m.notes!.trim()}',
-                            style: pw.TextStyle(
-                              fontSize: 9,
-                              color: colors.accent,
-                              fontStyle: pw.FontStyle.italic,
-                            ),
+                            m.notes!.trim().isNotEmpty)
+                          _buildPhaKyRow(
+                            'Mộ chí & Ghi chú:',
+                            m.notes!.trim(),
+                            colors,
                           ),
-                        ],
                       ],
                     ),
                   ),
@@ -652,11 +577,10 @@ class FamilyBookPdfService {
       );
     }
 
-    // ── TRANG 5: BẢNG TRA CỨU NGÀY GIỖ TRONG NĂM ──
+    // ── CHƯƠNG IV: KỴ NHẬT BIỂU (LỊCH GIỖ 12 THÁNG ÂM LỊCH) ──
     if (config.includeMemorialCalendar) {
       final deceasedList = members.where((m) => !m.isAlive).toList();
 
-      // Trích xuất và sắp xếp theo ngày tháng âm lịch
       final parsedList = <_MemorialItem>[];
       for (final m in deceasedList) {
         int? lDay;
@@ -711,7 +635,17 @@ class FamilyBookPdfService {
             build: (context) {
               return [
                 _buildSectionHeader(
-                    'BẢNG TRA CỨU NGÀY GIỖ TIỀN NHÂN (ÂM LỊCH)', colors),
+                    'CHƯƠNG IV: KỴ NHẬT BIỂU (LỊCH GIỖ 12 THÁNG ÂM LỊCH)',
+                    colors),
+                pw.SizedBox(height: 6),
+                pw.Text(
+                  'Bảng tra cứu ngày kỵ nhật chư vị tôn linh theo 12 tháng Âm lịch để con cháu phụng thờ trọn đạo hiếu',
+                  style: pw.TextStyle(
+                    fontSize: 9.5,
+                    fontStyle: pw.FontStyle.italic,
+                    color: colors.textMuted,
+                  ),
+                ),
                 pw.SizedBox(height: 12),
                 pw.Table(
                   border: pw.TableBorder.all(color: colors.accent, width: 0.5),
@@ -728,7 +662,7 @@ class FamilyBookPdfService {
                         _buildTableHeaderCell('Ngày Giỗ ÂL', PdfColors.white),
                         _buildTableHeaderCell(
                             'Danh Tính Tiền Nhân', PdfColors.white),
-                        _buildTableHeaderCell('Thế Hệ', PdfColors.white),
+                        _buildTableHeaderCell('Thế Thứ', PdfColors.white),
                         _buildTableHeaderCell(
                             'Ghi Chú / Nơi An Táng', PdfColors.white),
                       ],
@@ -747,7 +681,7 @@ class FamilyBookPdfService {
                             color: colors.primary,
                           ),
                           _buildTableCell(
-                            parsedList[i].member.fullName,
+                            'Cụ ${parsedList[i].member.fullName}',
                             isBold: true,
                             color: colors.textDark,
                           ),
@@ -756,7 +690,7 @@ class FamilyBookPdfService {
                             color: colors.textMuted,
                           ),
                           _buildTableCell(
-                            parsedList[i].member.notes ?? 'Chưa cập nhật',
+                            parsedList[i].member.notes ?? 'Chưa ghi nhận',
                             color: colors.textDark,
                           ),
                         ],
@@ -770,7 +704,71 @@ class FamilyBookPdfService {
       }
     }
 
-    // ── TRANG 6: LỜI BẠT & BÌA SAU (EPILOGUE) ──
+    // ── CHƯƠNG V: PHẢ DƯ & LỜI BẠT (THỐNG KÊ & HẬU KÝ) ──
+    if (config.includeStatistics) {
+      final totalMembers = members.length;
+      final aliveMembers = members.where((m) => m.isAlive).length;
+      final deceasedMembers = totalMembers - aliveMembers;
+      final maleMembers = members.where((m) => m.gender == Gender.male).length;
+      final femaleMembers =
+          members.where((m) => m.gender == Gender.female).length;
+      final totalGens = sortedGenerations.length;
+
+      pdf.addPage(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          theme: themeData,
+          margin: const pw.EdgeInsets.fromLTRB(40, 40, 40, 40),
+          header: (context) => _buildPageHeader(config.bookTitle, colors),
+          footer: (context) => _buildPageFooter(context, colors),
+          build: (context) {
+            return [
+              _buildSectionHeader(
+                  'CHƯƠNG V: PHẢ DƯ - TỔNG HỢP NHÂN KHẨU', colors),
+              pw.SizedBox(height: 16),
+              pw.Table(
+                border: pw.TableBorder.all(color: colors.accent, width: 0.6),
+                children: [
+                  _buildTableRow(
+                    'Tổng số thế hệ ghi nhận',
+                    '$totalGens đời',
+                    colors,
+                  ),
+                  _buildTableRow(
+                    'Tổng số nhân đinh & dâu rể',
+                    '$totalMembers người',
+                    colors,
+                  ),
+                  _buildTableRow(
+                    'Số thành viên Nam',
+                    '$maleMembers người',
+                    colors,
+                  ),
+                  _buildTableRow(
+                    'Số thành viên Nữ & Dâu',
+                    '$femaleMembers người',
+                    colors,
+                  ),
+                  _buildTableRow(
+                    'Thành viên hiện còn sống',
+                    '$aliveMembers người',
+                    colors,
+                  ),
+                  _buildTableRow(
+                    'Tiền nhân đã quy tiên',
+                    '$deceasedMembers vị',
+                    colors,
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 20),
+            ];
+          },
+        ),
+      );
+    }
+
+    // ── TRANG BÌA SAU (LỜI BẠT & HẬU KÝ) ──
     if (config.includeEpilogue && config.epilogue.trim().isNotEmpty) {
       pdf.addPage(
         pw.Page(
@@ -1136,31 +1134,134 @@ class FamilyBookPdfService {
 
           // Cha mẹ (nếu có)
           if (parent != null) ...[
-            pw.SizedBox(height: 2),
-            pw.Text(
-              '└ Con cụ: ${parent.fullName}',
-              style: pw.TextStyle(
-                fontSize: 7.5,
-                color: colors.textMuted,
-                fontStyle: pw.FontStyle.italic,
-              ),
-              maxLines: 1,
+            pw.SizedBox(height: 3),
+            pw.Row(
+              children: [
+                _buildBranchConnectorIcon(colors.accent),
+                pw.Expanded(
+                  child: pw.Text(
+                    'Con cụ: ${parent.fullName}',
+                    style: pw.TextStyle(
+                      fontSize: 7.5,
+                      color: colors.textMuted,
+                      fontStyle: pw.FontStyle.italic,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+              ],
             ),
           ],
 
           // Phối ngẫu (nếu có)
           if (spouse != null) ...[
-            pw.SizedBox(height: 2),
-            pw.Text(
-              '⚭ Phối: ${spouse.fullName}',
-              style: pw.TextStyle(
-                fontSize: 7.5,
-                color: colors.accent,
-                fontWeight: pw.FontWeight.bold,
-              ),
-              maxLines: 1,
+            pw.SizedBox(height: 3),
+            pw.Row(
+              children: [
+                _buildWeddingRingsIcon(colors.accent, size: 6.5),
+                pw.SizedBox(width: 4),
+                pw.Expanded(
+                  child: pw.Text(
+                    spouse.fullName,
+                    style: pw.TextStyle(
+                      fontSize: 7.5,
+                      color: colors.accent,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+              ],
             ),
           ],
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget _buildWeddingRingsIcon(PdfColor color, {double size = 7}) {
+    return pw.SizedBox(
+      width: size * 1.6,
+      height: size,
+      child: pw.Stack(
+        children: [
+          pw.Positioned(
+            left: 0,
+            top: 0,
+            child: pw.Container(
+              width: size,
+              height: size,
+              decoration: pw.BoxDecoration(
+                shape: pw.BoxShape.circle,
+                border: pw.Border.all(color: color),
+              ),
+            ),
+          ),
+          pw.Positioned(
+            right: 0,
+            top: 0,
+            child: pw.Container(
+              width: size,
+              height: size,
+              decoration: pw.BoxDecoration(
+                shape: pw.BoxShape.circle,
+                border: pw.Border.all(color: color),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget _buildBranchConnectorIcon(PdfColor color) {
+    return pw.Container(
+      width: 5,
+      height: 6,
+      margin: const pw.EdgeInsets.only(right: 3, top: 1),
+      decoration: pw.BoxDecoration(
+        border: pw.Border(
+          left: pw.BorderSide(color: color, width: 0.8),
+          bottom: pw.BorderSide(color: color, width: 0.8),
+        ),
+      ),
+    );
+  }
+
+  static pw.Widget _buildPhaKyRow(
+    String label,
+    String value,
+    _ThemeColors colors, {
+    bool isHighlight = false,
+  }) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 3.5),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.SizedBox(
+            width: 80,
+            child: pw.Text(
+              label,
+              style: pw.TextStyle(
+                fontSize: 9,
+                fontWeight: pw.FontWeight.bold,
+                color: isHighlight ? colors.accent : colors.primary,
+              ),
+            ),
+          ),
+          pw.Expanded(
+            child: pw.Text(
+              value,
+              style: pw.TextStyle(
+                fontSize: 9,
+                color: isHighlight ? colors.primary : colors.textDark,
+                fontWeight:
+                    isHighlight ? pw.FontWeight.bold : pw.FontWeight.normal,
+                lineSpacing: 2,
+              ),
+            ),
+          ),
         ],
       ),
     );

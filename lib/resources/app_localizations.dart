@@ -5051,7 +5051,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportFamilyTreeFile.
   ///
   /// In vi, this message translates to:
-  /// **'Xuất file gia phả'**
+  /// **'Xuất Phả Ký / Phả Đồ'**
   String get exportFamilyTreeFile;
 
   /// No description provided for @myLocationOnTree.
@@ -5069,7 +5069,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookConfigTitle.
   ///
   /// In vi, this message translates to:
-  /// **'Thiết Lập Xuất Bản Gia Phả'**
+  /// **'Xuất Phả Ký & Phả Đồ'**
   String get familyBookConfigTitle;
 
   /// No description provided for @familyBookPreviewPdf.
@@ -5081,7 +5081,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookSectionStyle.
   ///
   /// In vi, this message translates to:
-  /// **'1. Phong Cách Giao Diện & Bìa Sách'**
+  /// **'1. Phong Cách Giao Diện & Bìa Phả Ký'**
   String get familyBookSectionStyle;
 
   /// No description provided for @themeLightLabel.
@@ -5105,19 +5105,19 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookSectionInfo.
   ///
   /// In vi, this message translates to:
-  /// **'2. Thông Tin Ấn Phẩm & Tiền Nhân'**
+  /// **'2. Thông Tin Bìa & Tiền Nhân'**
   String get familyBookSectionInfo;
 
   /// No description provided for @familyBookTitleLabel.
   ///
   /// In vi, this message translates to:
-  /// **'Tiêu đề ấn phẩm gia phả'**
+  /// **'Tiêu đề Phả Ký'**
   String get familyBookTitleLabel;
 
   /// No description provided for @familyBookTitleHint.
   ///
   /// In vi, this message translates to:
-  /// **'VD: PHẢ HỆ ĐẠI TÔN HỌ NGUYỄN'**
+  /// **'VD: PHẢ KÝ ĐẠI TÔN HỌ NGUYỄN'**
   String get familyBookTitleHint;
 
   /// No description provided for @familyBookFounderLabel.
@@ -5201,13 +5201,13 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookOptTreeChart.
   ///
   /// In vi, this message translates to:
-  /// **'Sơ đồ cây gia phả trực quan'**
+  /// **'Sơ đồ Phả Đồ trực quan'**
   String get familyBookOptTreeChart;
 
   /// No description provided for @familyBookOptTreeChartDesc.
   ///
   /// In vi, this message translates to:
-  /// **'Sơ đồ phân nhánh thế thứ kết nối các thế hệ dòng họ'**
+  /// **'Lược đồ phân nhánh thế thứ kết nối các thế hệ dòng họ'**
   String get familyBookOptTreeChartDesc;
 
   /// No description provided for @familyBookOptStats.
@@ -5225,7 +5225,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookOptAnniversary.
   ///
   /// In vi, this message translates to:
-  /// **'Lịch giỗ 12 tháng Âm lịch'**
+  /// **'Kỵ Nhật Biểu (Lịch giỗ 12 tháng ÂL)'**
   String get familyBookOptAnniversary;
 
   /// No description provided for @familyBookOptAnniversaryDesc.
@@ -5237,13 +5237,13 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookOptTombs.
   ///
   /// In vi, this message translates to:
-  /// **'Ghi chú mộ phần'**
+  /// **'Mộ chí & Nơi an táng'**
   String get familyBookOptTombs;
 
   /// No description provided for @familyBookOptTombsDesc.
   ///
   /// In vi, this message translates to:
-  /// **'Hiển thị thông tin nơi an táng của các bậc tiền nhân'**
+  /// **'Ghi chép thông tin nơi an táng của các bậc tiền nhân'**
   String get familyBookOptTombsDesc;
 
   /// No description provided for @familyBookResetDefault.
@@ -5255,7 +5255,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookPreviewTitle.
   ///
   /// In vi, this message translates to:
-  /// **'Xem Trước Sách Gia Phả'**
+  /// **'Xem Trước Phả Ký'**
   String get familyBookPreviewTitle;
 
   /// No description provided for @familyBookSharePdf.
@@ -5267,13 +5267,13 @@ abstract class AppLocalizations {
   /// No description provided for @familyBookPrint.
   ///
   /// In vi, this message translates to:
-  /// **'In sách gia phả'**
+  /// **'In Phả Ký'**
   String get familyBookPrint;
 
   /// No description provided for @familyBookRendering.
   ///
   /// In vi, this message translates to:
-  /// **'Đang dàn trang & mở sách gia phả...'**
+  /// **'Đang biên tập & mở Phả Ký...'**
   String get familyBookRendering;
 
   /// No description provided for @familyBookPleaseWait.

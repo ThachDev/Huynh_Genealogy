@@ -2801,7 +2801,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Chưa có dữ liệu thành viên để xuất gia phả.';
 
   @override
-  String get exportFamilyTreeFile => 'Xuất file gia phả';
+  String get exportFamilyTreeFile => 'Xuất Phả Ký / Phả Đồ';
 
   @override
   String get myLocationOnTree => 'Vị trí của tôi';
@@ -2810,13 +2810,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get selfRelationTag => '(Tôi)';
 
   @override
-  String get familyBookConfigTitle => 'Thiết Lập Xuất Bản Gia Phả';
+  String get familyBookConfigTitle => 'Xuất Phả Ký & Phả Đồ';
 
   @override
   String get familyBookPreviewPdf => 'Xem trước PDF';
 
   @override
-  String get familyBookSectionStyle => '1. Phong Cách Giao Diện & Bìa Sách';
+  String get familyBookSectionStyle => '1. Phong Cách Giao Diện & Bìa Phả Ký';
 
   @override
   String get themeLightLabel => 'Chủ đề sáng';
@@ -2828,13 +2828,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get themeBlankLabel => 'Để trống';
 
   @override
-  String get familyBookSectionInfo => '2. Thông Tin Ấn Phẩm & Tiền Nhân';
+  String get familyBookSectionInfo => '2. Thông Tin Bìa & Tiền Nhân';
 
   @override
-  String get familyBookTitleLabel => 'Tiêu đề ấn phẩm gia phả';
+  String get familyBookTitleLabel => 'Tiêu đề Phả Ký';
 
   @override
-  String get familyBookTitleHint => 'VD: PHẢ HỆ ĐẠI TÔN HỌ NGUYỄN';
+  String get familyBookTitleHint => 'VD: PHẢ KÝ ĐẠI TÔN HỌ NGUYỄN';
 
   @override
   String get familyBookFounderLabel => 'Danh tính Cụ Thủy Tổ / Khởi Tổ';
@@ -2878,11 +2878,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get familyBookSectionContent => '4. Tùy Chọn Nội Dung Xuất Bản';
 
   @override
-  String get familyBookOptTreeChart => 'Sơ đồ cây gia phả trực quan';
+  String get familyBookOptTreeChart => 'Sơ đồ Phả Đồ trực quan';
 
   @override
   String get familyBookOptTreeChartDesc =>
-      'Sơ đồ phân nhánh thế thứ kết nối các thế hệ dòng họ';
+      'Lược đồ phân nhánh thế thứ kết nối các thế hệ dòng họ';
 
   @override
   String get familyBookOptStats => 'Bảng thống kê nhân khẩu';
@@ -2892,33 +2892,33 @@ class AppLocalizationsVi extends AppLocalizations {
       'Tổng hợp số đời, nam đinh, nữ giới, dâu hiền, sinh tử';
 
   @override
-  String get familyBookOptAnniversary => 'Lịch giỗ 12 tháng Âm lịch';
+  String get familyBookOptAnniversary => 'Kỵ Nhật Biểu (Lịch giỗ 12 tháng ÂL)';
 
   @override
   String get familyBookOptAnniversaryDesc =>
       'Bảng tổng hợp ngày kỵ nhật chư vị tôn linh trong năm';
 
   @override
-  String get familyBookOptTombs => 'Ghi chú mộ phần';
+  String get familyBookOptTombs => 'Mộ chí & Nơi an táng';
 
   @override
   String get familyBookOptTombsDesc =>
-      'Hiển thị thông tin nơi an táng của các bậc tiền nhân';
+      'Ghi chép thông tin nơi an táng của các bậc tiền nhân';
 
   @override
   String get familyBookResetDefault => 'Khôi phục văn mẫu';
 
   @override
-  String get familyBookPreviewTitle => 'Xem Trước Sách Gia Phả';
+  String get familyBookPreviewTitle => 'Xem Trước Phả Ký';
 
   @override
   String get familyBookSharePdf => 'Chia sẻ PDF';
 
   @override
-  String get familyBookPrint => 'In sách gia phả';
+  String get familyBookPrint => 'In Phả Ký';
 
   @override
-  String get familyBookRendering => 'Đang dàn trang & mở sách gia phả...';
+  String get familyBookRendering => 'Đang biên tập & mở Phả Ký...';
 
   @override
   String get familyBookPleaseWait => 'Vui lòng chờ trong giây lát';

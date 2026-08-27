@@ -7,7 +7,7 @@ enum FamilyBookCoverTheme {
 class FamilyBookConfig {
   FamilyBookConfig({
     this.coverTheme = FamilyBookCoverTheme.lightTraditional,
-    this.bookTitle = 'GIA PHẢ ĐẠI TÔN',
+    this.bookTitle = 'PHẢ KÝ ĐẠI TÔN',
     this.ancestorName = '',
     this.originAddress = '',
     this.compilerName = 'Hội Đồng Gia Tộc',
@@ -54,7 +54,7 @@ class FamilyBookConfig {
   static const String defaultPreface =
       '“Cây có cội mới trổ cành xanh lá, nước có nguồn mới bồi đắp biển sâu.”\n\n'
       'Con người ta sinh ra ở đời, ắt phải có tổ tiên nguồn cội. Công đức sinh thành dưỡng dục của tiền nhân sâu dày như trời bể. '
-      'Cuốn phả hệ này được phụng thảo nhằm khắc ghi công lao tiên tổ, xác lập thế thứ tông chi, răn dạy hậu thế giữ trọn gia phong, '
+      'Tập phả ký này được phụng thảo nhằm khắc ghi công lao tiên tổ, xác lập thế thứ tông chi, răn dạy hậu thế giữ trọn gia phong, '
       'hiếu kính phụng dưỡng, hòa thuận tương thân, tiếp nối truyền thống rạng rỡ của gia tộc.';
 
   static const String defaultClanRules =

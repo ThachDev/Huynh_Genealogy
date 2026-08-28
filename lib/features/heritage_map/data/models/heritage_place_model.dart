@@ -10,17 +10,13 @@ class HeritagePlaceModel {
     required this.latitude,
     required this.longitude,
     this.memberId,
-    this.address,
     this.landmarkGuide,
     this.imageUrls = const [],
-    this.generation,
-    this.description,
     this.createdBy,
     this.createdAt,
     this.updatedAt,
     this.memberFullName,
     this.memberAvatarUrl,
-    this.memberLunarDeathDate,
   });
 
   factory HeritagePlaceModel.fromJson(Map<String, dynamic> json) {
@@ -66,13 +62,8 @@ class HeritagePlaceModel {
       longitude: json['longitude'] is num
           ? (json['longitude'] as num).toDouble()
           : double.tryParse(json['longitude']?.toString() ?? '0.0') ?? 0.0,
-      address: json['address']?.toString(),
       landmarkGuide: json['landmark_guide']?.toString() ?? json['landmarkGuide']?.toString(),
       imageUrls: images,
-      generation: json['generation'] != null
-          ? (json['generation'] is int ? json['generation'] : int.tryParse(json['generation'].toString()))
-          : null,
-      description: json['description']?.toString(),
       createdBy: json['created_by'] != null
           ? (json['created_by'] is int ? json['created_by'] : int.tryParse(json['created_by'].toString()))
           : (json['createdBy'] != null
@@ -86,9 +77,6 @@ class HeritagePlaceModel {
       memberAvatarUrl: memberObj != null
           ? (memberObj['avatarUrl']?.toString() ?? memberObj['avatar_url']?.toString())
           : (json['member_avatar_url']?.toString() ?? json['memberAvatarUrl']?.toString()),
-      memberLunarDeathDate: memberObj != null
-          ? (memberObj['lunarDeathDate']?.toString() ?? memberObj['lunar_death_date']?.toString())
-          : (json['member_lunar_death_date']?.toString() ?? json['memberLunarDeathDate']?.toString()),
     );
   }
 
@@ -101,17 +89,13 @@ class HeritagePlaceModel {
       type: entity.type.toDbString(),
       latitude: entity.latitude,
       longitude: entity.longitude,
-      address: entity.address,
       landmarkGuide: entity.landmarkGuide,
       imageUrls: entity.imageUrls,
-      generation: entity.generation,
-      description: entity.description,
       createdBy: entity.createdBy,
       createdAt: entity.createdAt?.toIso8601String(),
       updatedAt: entity.updatedAt?.toIso8601String(),
       memberFullName: entity.memberFullName,
       memberAvatarUrl: entity.memberAvatarUrl,
-      memberLunarDeathDate: entity.memberLunarDeathDate,
     );
   }
 
@@ -122,18 +106,14 @@ class HeritagePlaceModel {
   final String type;
   final double latitude;
   final double longitude;
-  final String? address;
   final String? landmarkGuide;
   final List<String> imageUrls;
-  final int? generation;
-  final String? description;
   final int? createdBy;
   final String? createdAt;
   final String? updatedAt;
 
   final String? memberFullName;
   final String? memberAvatarUrl;
-  final String? memberLunarDeathDate;
 
   Map<String, dynamic> toJson() {
     return {
@@ -142,11 +122,8 @@ class HeritagePlaceModel {
       'latitude': latitude,
       'longitude': longitude,
       if (memberId != null) 'memberId': memberId,
-      if (address != null) 'address': address,
       if (landmarkGuide != null) 'landmarkGuide': landmarkGuide,
       'imageUrls': imageUrls,
-      if (generation != null) 'generation': generation,
-      if (description != null) 'description': description,
     };
   }
 
@@ -159,17 +136,13 @@ class HeritagePlaceModel {
       type: HeritagePlaceTypeX.fromDbString(type),
       latitude: latitude,
       longitude: longitude,
-      address: address,
       landmarkGuide: landmarkGuide,
       imageUrls: imageUrls,
-      generation: generation,
-      description: description,
       createdBy: createdBy,
       createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
       updatedAt: updatedAt != null ? DateTime.tryParse(updatedAt!) : null,
       memberFullName: memberFullName,
       memberAvatarUrl: memberAvatarUrl,
-      memberLunarDeathDate: memberLunarDeathDate,
     );
   }
 }

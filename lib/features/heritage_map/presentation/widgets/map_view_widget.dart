@@ -55,30 +55,10 @@ class MapViewWidget extends StatelessWidget {
       markers.add(
         Marker(
           point: userLocation!,
-          width: 28,
-          height: 28,
+          width: 56,
+          height: 56,
           alignment: Alignment.center,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.blue.withValues(alpha: 0.25),
-              shape: BoxShape.circle,
-            ),
-            padding: const EdgeInsets.all(4),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.blueAccent,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blue.withValues(alpha: 0.5),
-                    blurRadius: 6,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          child: const _UserLocationRadarMarker(),
         ),
       );
     }
@@ -108,6 +88,7 @@ class MapViewWidget extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildPlaceMarkerIcon(
     BuildContext context,
     HeritagePlaceEntity place,
@@ -160,6 +141,101 @@ class MapViewWidget extends StatelessWidget {
           size: 20,
           color: Colors.white,
         ),
+      ),
+    );
+  }
+}
+
+/// Widget hiển thị chấm xanh vị trí người dùng kiểu Google Maps với sóng radar lan toả liên tục
+class _UserLocationRadarMarker extends StatefulWidget {
+  const _UserLocationRadarMarker();
+
+  @override
+  State<_UserLocationRadarMarker> createState() =>
+      _UserLocationRadarMarkerState();
+}
+
+class _UserLocationRadarMarkerState extends State<_UserLocationRadarMarker>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat();
+
+    _scaleAnimation = Tween<double>(begin: 0.35, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuad),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0.7, end: 0.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutQuad),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 56,
+      height: 56,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 1. Sóng radar lan toả (Expanding Ripple Ring)
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _scaleAnimation.value,
+                child: Opacity(
+                  opacity: _opacityAnimation.value,
+                  child: Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF4285F4).withValues(alpha: 0.35),
+                      border: Border.all(
+                        color: const Color(0xFF4285F4),
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
+          // 2. Chấm xanh trung tâm chuẩn Google Maps (Blue Dot + White Border + Halo Glow)
+          Container(
+            width: 18,
+            height: 18,
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A73E8), // Google Maps Blue
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2.5),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF1A73E8).withValues(alpha: 0.5),
+                  blurRadius: 6,
+                  spreadRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

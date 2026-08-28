@@ -49,17 +49,13 @@ class HeritagePlaceEntity extends Equatable {
     required this.latitude,
     required this.longitude,
     this.memberId,
-    this.address,
     this.landmarkGuide,
     this.imageUrls = const [],
-    this.generation,
-    this.description,
     this.createdBy,
     this.createdAt,
     this.updatedAt,
     this.memberFullName,
     this.memberAvatarUrl,
-    this.memberLunarDeathDate,
   });
 
   final int id;
@@ -69,11 +65,8 @@ class HeritagePlaceEntity extends Equatable {
   final HeritagePlaceType type;
   final double latitude;
   final double longitude;
-  final String? address;
   final String? landmarkGuide;
   final List<String> imageUrls;
-  final int? generation;
-  final String? description;
   final int? createdBy;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -81,7 +74,6 @@ class HeritagePlaceEntity extends Equatable {
   // Extra joined info from Member (nếu là mộ cá nhân)
   final String? memberFullName;
   final String? memberAvatarUrl;
-  final String? memberLunarDeathDate;
 
   HeritagePlaceEntity copyWith({
     int? id,
@@ -91,17 +83,13 @@ class HeritagePlaceEntity extends Equatable {
     HeritagePlaceType? type,
     double? latitude,
     double? longitude,
-    String? address,
     String? landmarkGuide,
     List<String>? imageUrls,
-    int? generation,
-    String? description,
     int? createdBy,
     DateTime? createdAt,
     DateTime? updatedAt,
     String? memberFullName,
     String? memberAvatarUrl,
-    String? memberLunarDeathDate,
   }) {
     return HeritagePlaceEntity(
       id: id ?? this.id,
@@ -111,17 +99,13 @@ class HeritagePlaceEntity extends Equatable {
       type: type ?? this.type,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
-      address: address ?? this.address,
       landmarkGuide: landmarkGuide ?? this.landmarkGuide,
       imageUrls: imageUrls ?? this.imageUrls,
-      generation: generation ?? this.generation,
-      description: description ?? this.description,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       memberFullName: memberFullName ?? this.memberFullName,
       memberAvatarUrl: memberAvatarUrl ?? this.memberAvatarUrl,
-      memberLunarDeathDate: memberLunarDeathDate ?? this.memberLunarDeathDate,
     );
   }
 
@@ -134,16 +118,12 @@ class HeritagePlaceEntity extends Equatable {
         type,
         latitude,
         longitude,
-        address,
         landmarkGuide,
         imageUrls,
-        generation,
-        description,
         createdBy,
         createdAt,
         updatedAt,
         memberFullName,
         memberAvatarUrl,
-        memberLunarDeathDate,
       ];
 }

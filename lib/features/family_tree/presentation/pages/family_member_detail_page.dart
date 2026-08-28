@@ -474,8 +474,6 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                                           assignGraveForMemberId: widget.member.id,
                                           assignGraveForMemberName:
                                               widget.member.fullName,
-                                          assignGraveForGeneration:
-                                              widget.member.generation,
                                         ),
                                       ),
                                     ).then((_) => _loadGraveInfo());

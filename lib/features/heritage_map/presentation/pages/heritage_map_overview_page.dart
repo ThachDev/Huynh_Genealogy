@@ -30,7 +30,6 @@ class HeritageMapOverviewPage extends StatelessWidget {
     this.initialPlaceId,
     this.assignGraveForMemberId,
     this.assignGraveForMemberName,
-    this.assignGraveForGeneration,
     this.placeToEdit,
   });
 
@@ -38,7 +37,6 @@ class HeritageMapOverviewPage extends StatelessWidget {
   final int? initialPlaceId;
   final int? assignGraveForMemberId;
   final String? assignGraveForMemberName;
-  final int? assignGraveForGeneration;
   final HeritagePlaceEntity? placeToEdit;
 
   @override
@@ -54,7 +52,6 @@ class HeritageMapOverviewPage extends StatelessWidget {
         initialPlaceId: initialPlaceId,
         assignGraveForMemberId: assignGraveForMemberId,
         assignGraveForMemberName: assignGraveForMemberName,
-        assignGraveForGeneration: assignGraveForGeneration,
         placeToEdit: placeToEdit,
       ),
     );
@@ -67,7 +64,6 @@ class _HeritageMapOverviewView extends StatefulWidget {
     this.initialPlaceId,
     this.assignGraveForMemberId,
     this.assignGraveForMemberName,
-    this.assignGraveForGeneration,
     this.placeToEdit,
   });
 
@@ -75,7 +71,6 @@ class _HeritageMapOverviewView extends StatefulWidget {
   final int? initialPlaceId;
   final int? assignGraveForMemberId;
   final String? assignGraveForMemberName;
-  final int? assignGraveForGeneration;
   final HeritagePlaceEntity? placeToEdit;
 
   @override
@@ -88,6 +83,8 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _landmarkGuideController =
       TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  final FocusNode _geocodeSearchFocusNode = FocusNode();
   final Dio _dio = Dio();
 
   HeritagePlaceType? _activeFilterType;
@@ -111,6 +108,22 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
     super.initState();
     _isPinningMode = _isAssigningGrave || _isEditing;
 
+    _searchFocusNode.addListener(() {
+      if (_searchFocusNode.hasFocus) {
+        final currentSelected = context.read<HeritageMapBloc>().state;
+        if (currentSelected is HeritageMapLoaded &&
+            currentSelected.selectedPlace != null) {
+          context
+              .read<HeritageMapBloc>()
+              .add(const HeritageMapSelectPlaceEvent(null));
+        }
+      }
+    });
+
+    _geocodeSearchFocusNode.addListener(() {
+      setState(() {});
+    });
+
     if (_isEditing) {
       final p = widget.placeToEdit!;
       _editingPlace = p;
@@ -133,6 +146,8 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
     _geocodeDebounce?.cancel();
     _searchController.dispose();
     _landmarkGuideController.dispose();
+    _searchFocusNode.dispose();
+    _geocodeSearchFocusNode.dispose();
     _mapController.dispose();
     super.dispose();
   }
@@ -366,12 +381,9 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
       type: _pinnedType,
       latitude: _pinnedLocation.latitude,
       longitude: _pinnedLocation.longitude,
-      address: targetPlace?.address,
       landmarkGuide: _landmarkGuideController.text.trim().isNotEmpty
           ? _landmarkGuideController.text.trim()
           : null,
-      generation: targetPlace?.generation ?? widget.assignGraveForGeneration,
-      description: targetPlace?.description,
       imageUrls: targetPlace?.imageUrls ?? [],
     );
 
@@ -590,6 +602,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
                           ),
                           child: TextField(
                             controller: _searchController,
+                            focusNode: _searchFocusNode,
                             style: GoogleFonts.inter(
                               fontSize: 13.5,
                               color: context.textPrimary,
@@ -618,7 +631,19 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 14, vertical: 13),
                             ),
-                            onChanged: (_) => _loadPlaces(),
+                            onTap: () {
+                              if (selectedPlace != null) {
+                                context.read<HeritageMapBloc>().add(
+                                    const HeritageMapSelectPlaceEvent(null));
+                              }
+                            },
+                            onChanged: (_) {
+                              if (selectedPlace != null) {
+                                context.read<HeritageMapBloc>().add(
+                                    const HeritageMapSelectPlaceEvent(null));
+                              }
+                              _loadPlaces();
+                            },
                             onSubmitted: (_) => _loadPlaces(),
                           ),
                         ),
@@ -863,6 +888,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
                           ),
                           child: TextField(
                             controller: _searchController,
+                            focusNode: _geocodeSearchFocusNode,
                             style: GoogleFonts.inter(
                               fontSize: 13.5,
                               color: context.textPrimary,
@@ -958,9 +984,14 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
         ),
 
         // 3. Nút chuyển tầng bản đồ & Nút lấy GPS nổi bên phải
-        Positioned(
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOutCubic,
           right: 16,
-          bottom: 300,
+          bottom:
+              (_geocodeSearchFocusNode.hasFocus || _geocodingResults.isNotEmpty)
+                  ? 28
+                  : 300,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -992,24 +1023,25 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
           ),
         ),
 
-        // 4. Panel nhập & lưu vị trí đẩy lên từ đáy
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: HeritagePlaceBottomSheet.edit(
-            place: _editingPlace ?? widget.placeToEdit,
-            pinnedLocation: _pinnedLocation,
-            landmarkGuideController: _landmarkGuideController,
-            pinnedType: _pinnedType,
-            onTypeChanged: (type) => setState(() => _pinnedType = type),
-            isAssigningGrave: _isAssigningGrave,
-            isEditing: _isEditing || _editingPlace != null,
-            isSaving: isSaving,
-            onClose: _cancelPinningMode,
-            onSave: _savePinnedPlace,
+        // 4. Panel nhập & lưu vị trí đẩy lên từ đáy (ẩn đi khi đang nhập / tìm kiếm địa danh)
+        if (!_geocodeSearchFocusNode.hasFocus && _geocodingResults.isEmpty)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: HeritagePlaceBottomSheet.edit(
+              place: _editingPlace ?? widget.placeToEdit,
+              pinnedLocation: _pinnedLocation,
+              landmarkGuideController: _landmarkGuideController,
+              pinnedType: _pinnedType,
+              onTypeChanged: (type) => setState(() => _pinnedType = type),
+              isAssigningGrave: _isAssigningGrave,
+              isEditing: _isEditing || _editingPlace != null,
+              isSaving: isSaving,
+              onClose: _cancelPinningMode,
+              onSave: _savePinnedPlace,
+            ),
           ),
-        ),
       ],
     );
   }

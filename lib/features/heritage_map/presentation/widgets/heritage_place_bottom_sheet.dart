@@ -318,36 +318,24 @@ class HeritagePlaceBottomSheet extends StatelessWidget {
         // Chỉ dẫn thực địa (nếu có)
         if (targetPlace.landmarkGuide != null &&
             targetPlace.landmarkGuide!.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: context.textSecondary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: context.accent.withValues(alpha: 0.15),
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(LucideIcons.compass, size: 13, color: context.primary),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    targetPlace.landmarkGuide!,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: context.textPrimary,
-                      fontStyle: FontStyle.italic,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Icon(LucideIcons.compass, size: 14, color: context.primary),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  targetPlace.landmarkGuide!,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: context.textPrimary,
+                    fontStyle: FontStyle.italic,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
 
@@ -365,28 +353,10 @@ class HeritagePlaceBottomSheet extends StatelessWidget {
                 onPressed: () => _openGoogleMapsDirections(context),
               ),
             ),
-            const SizedBox(width: 8),
-
-            // Nút Sao chép tọa độ
-            OutlinedButton(
-              onPressed: () => _copyCoordinates(context),
-              style: OutlinedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                side: BorderSide(
-                  color: context.textSecondary.withValues(alpha: 0.25),
-                ),
-              ),
-              child: Icon(LucideIcons.share2,
-                  size: 14, color: context.textPrimary),
-            ),
 
             // Nút Admin Sửa / Xóa
             if (canEdit) ...[
-              const SizedBox(width: 6),
+              const SizedBox(width: 8),
               if (onEdit != null)
                 IconButton(
                   icon: Icon(LucideIcons.edit3,

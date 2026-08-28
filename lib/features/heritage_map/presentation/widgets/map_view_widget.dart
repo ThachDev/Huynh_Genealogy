@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../../../core/theme/theme_extensions.dart';
 import '../../domain/entities/heritage_place_entity.dart';
 
 class MapViewWidget extends StatelessWidget {
@@ -15,12 +14,7 @@ class MapViewWidget extends StatelessWidget {
     this.isSatellite = false,
     this.userLocation,
     required this.onSelectPlace,
-    this.onToggleLayer,
-    this.onLocateMe,
     this.onMapTap,
-    this.draggablePinLocation,
-    this.onPinDragged,
-    this.showControls = true,
   });
 
   final MapController mapController;
@@ -29,12 +23,7 @@ class MapViewWidget extends StatelessWidget {
   final bool isSatellite;
   final LatLng? userLocation;
   final ValueChanged<HeritagePlaceEntity> onSelectPlace;
-  final VoidCallback? onToggleLayer;
-  final VoidCallback? onLocateMe;
   final void Function(LatLng point)? onMapTap;
-  final LatLng? draggablePinLocation;
-  final ValueChanged<LatLng>? onPinDragged;
-  final bool showControls;
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +36,15 @@ class MapViewWidget extends StatelessWidget {
 
     // 1. Marker các địa điểm di tích / mộ phần
     for (final place in places) {
-      final isSelected = selectedPlace?.id == place.id;
       markers.add(
         Marker(
           point: LatLng(place.latitude, place.longitude),
-          width: isSelected ? 52 : 44,
-          height: isSelected ? 52 : 44,
+          width: 44,
+          height: 44,
           alignment: Alignment.topCenter,
           child: GestureDetector(
             onTap: () => onSelectPlace(place),
-            child: _buildPlaceMarkerIcon(context, place, isSelected),
+            child: _buildPlaceMarkerIcon(context, place),
           ),
         ),
       );
@@ -95,92 +83,34 @@ class MapViewWidget extends StatelessWidget {
       );
     }
 
-    // 3. Marker ghim kéo thả (Draggable Pin Marker trong màn hình chọn tọa độ)
-    if (draggablePinLocation != null) {
-      markers.add(
-        Marker(
-          point: draggablePinLocation!,
-          width: 48,
-          height: 48,
-          alignment: Alignment.topCenter,
-          child: const Icon(
-            LucideIcons.mapPin,
-            color: Colors.redAccent,
-            size: 44,
-            shadows: [
-              Shadow(
-                color: Colors.black45,
-                blurRadius: 8,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Stack(
+    return FlutterMap(
+      mapController: mapController,
+      options: MapOptions(
+        initialCenter: defaultCenter,
+        initialZoom: 14.5,
+        minZoom: 4.0,
+        maxZoom: 19.0,
+        onTap: (tapPosition, point) {
+          if (onMapTap != null) {
+            onMapTap!(point);
+          }
+        },
+      ),
       children: [
-        FlutterMap(
-          mapController: mapController,
-          options: MapOptions(
-            initialCenter: defaultCenter,
-            initialZoom: 14.5,
-            minZoom: 4.0,
-            maxZoom: 19.0,
-            onTap: (tapPosition, point) {
-              if (onMapTap != null) {
-                onMapTap!(point);
-              }
-            },
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: isSatellite
-                  ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                  : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.giatocviet.app',
-              maxZoom: 19,
-            ),
-            MarkerLayer(markers: markers),
-          ],
+        TileLayer(
+          urlTemplate: isSatellite
+              ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+              : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+          userAgentPackageName: 'com.giatocviet.app',
+          maxZoom: 19,
         ),
-
-        // Nút điều khiển bản đồ nổi (Lớp Vệ tinh, Định vị GPS)
-        if (showControls)
-          Positioned(
-            top: 16,
-            right: 16,
-            child: Column(
-              children: [
-                if (onToggleLayer != null)
-                  _buildFloatingButton(
-                    context,
-                    icon: isSatellite ? LucideIcons.map : LucideIcons.satellite,
-                    tooltip: isSatellite ? 'Bản đồ giao thông' : 'Ảnh vệ tinh',
-                    color: isSatellite ? context.accent : context.surface,
-                    iconColor: isSatellite ? Colors.black : context.primary,
-                    onTap: onToggleLayer!,
-                  ),
-                const SizedBox(height: 10),
-                if (onLocateMe != null)
-                  _buildFloatingButton(
-                    context,
-                    icon: LucideIcons.crosshair,
-                    tooltip: 'Vị trí của tôi',
-                    onTap: onLocateMe!,
-                  ),
-              ],
-            ),
-          ),
+        MarkerLayer(markers: markers),
       ],
     );
   }
-
   Widget _buildPlaceMarkerIcon(
     BuildContext context,
     HeritagePlaceEntity place,
-    bool isSelected,
   ) {
     IconData icon;
     Color bgColor;
@@ -208,21 +138,18 @@ class MapViewWidget extends StatelessWidget {
         break;
     }
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeInOut,
+    return Container(
+      width: 44,
+      height: 44,
       decoration: BoxDecoration(
         color: bgColor,
         shape: BoxShape.circle,
-        border: Border.all(
-          color: isSelected ? Colors.amberAccent : Colors.white,
-          width: isSelected ? 3.0 : 2.0,
-        ),
+        border: Border.all(color: Colors.white, width: 2.0),
         boxShadow: [
           BoxShadow(
-            color: (isSelected ? Colors.amberAccent : bgColor).withValues(alpha: 0.6),
-            blurRadius: isSelected ? 12 : 6,
-            spreadRadius: isSelected ? 3 : 1,
+            color: bgColor.withValues(alpha: 0.5),
+            blurRadius: 6,
+            spreadRadius: 1,
             offset: const Offset(0, 2),
           ),
         ],
@@ -230,37 +157,9 @@ class MapViewWidget extends StatelessWidget {
       child: Center(
         child: Icon(
           icon,
-          size: isSelected ? 24 : 20,
+          size: 20,
           color: Colors.white,
         ),
-      ),
-    );
-  }
-
-  Widget _buildFloatingButton(
-    BuildContext context, {
-    required IconData icon,
-    required String tooltip,
-    required VoidCallback onTap,
-    Color? color,
-    Color? iconColor,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color ?? context.surface,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: iconColor ?? context.primary, size: 20),
-        tooltip: tooltip,
-        onPressed: onTap,
       ),
     );
   }

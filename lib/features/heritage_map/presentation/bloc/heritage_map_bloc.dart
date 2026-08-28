@@ -28,9 +28,12 @@ class HeritageMapBloc extends Bloc<HeritageMapEvent, HeritageMapState> {
     Emitter<HeritageMapState> emit,
   ) async {
     final currentState = state;
-    final isSatellite = currentState is HeritageMapLoaded ? currentState.isSatellite : false;
-    final userLat = currentState is HeritageMapLoaded ? currentState.userLatitude : null;
-    final userLng = currentState is HeritageMapLoaded ? currentState.userLongitude : null;
+    final isSatellite =
+        currentState is HeritageMapLoaded ? currentState.isSatellite : false;
+    final userLat =
+        currentState is HeritageMapLoaded ? currentState.userLatitude : null;
+    final userLng =
+        currentState is HeritageMapLoaded ? currentState.userLongitude : null;
 
     emit(HeritageMapLoading());
 
@@ -49,7 +52,6 @@ class HeritageMapBloc extends Bloc<HeritageMapEvent, HeritageMapState> {
         HeritageMapLoaded(
           familyId: event.familyId,
           places: places,
-          selectedPlace: places.isNotEmpty ? places.first : null,
           isSatellite: isSatellite,
           userLatitude: userLat,
           userLongitude: userLng,
@@ -146,10 +148,12 @@ class HeritageMapBloc extends Bloc<HeritageMapEvent, HeritageMapState> {
       result.fold(
         (failure) => emit(s.copyWith(isSaving: false)),
         (_) {
-          final updatedList = s.places.where((p) => p.id != event.placeId).toList();
+          final updatedList =
+              s.places.where((p) => p.id != event.placeId).toList();
           emit(s.copyWith(
             places: updatedList,
-            selectedPlace: () => updatedList.isNotEmpty ? updatedList.first : null,
+            selectedPlace: () =>
+                updatedList.isNotEmpty ? updatedList.first : null,
             isSaving: false,
           ));
         },

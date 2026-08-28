@@ -55,6 +55,10 @@
 		<string>Ứng dụng cần quyền này để lưu mã QR vào thư viện ảnh của bạn.</string>
 		<key>NSUserNotificationUsageDescription</key>
 		<string>Ứng dụng gửi thông báo khi có sự kiện mới, lời chúc hoặc ngày giỗ/sinh nhật của dòng họ.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Ứng dụng cần quyền vị trí để định vị GPS của bạn trên Bản đồ Di tích &amp; Mộ phần dòng họ.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Ứng dụng cần quyền vị trí để định vị GPS của bạn trên Bản đồ Di tích &amp; Mộ phần dòng họ.</string>
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>remote-notification</string>

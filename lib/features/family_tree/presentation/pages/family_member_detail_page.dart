@@ -18,8 +18,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../heritage_map/domain/entities/heritage_place_entity.dart';
 import '../../../heritage_map/domain/usecases/get_member_grave.dart';
-import '../../../heritage_map/presentation/pages/heritage_place_form_page.dart';
-import '../../../heritage_map/presentation/pages/heritage_place_detail_page.dart';
+import '../../../heritage_map/presentation/pages/heritage_map_overview_page.dart';
 import '../../domain/entities/kinship_result_entity.dart';
 import '../../domain/services/kinship_calculator_service.dart';
 
@@ -409,130 +408,78 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                             _buildSectionHeader('Vị trí Mộ phần'),
                             const SizedBox(height: 10),
                             if (_gravePlace != null)
-                              Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: context.surface,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: Colors.amber.withValues(alpha: 0.35),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Icon(LucideIcons.flame, color: Colors.amber, size: 20),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            _gravePlace!.name,
-                                            style: GoogleFonts.beVietnamPro(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: context.textPrimary,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                              Center(
+                                child: OutlinedButton.icon(
+                                  icon: const Icon(LucideIcons.map, size: 15),
+                                  label: Text(
+                                    'Xem vị trí mộ trên bản đồ',
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    if (_gravePlace!.landmarkGuide != null &&
-                                        _gravePlace!.landmarkGuide!.isNotEmpty) ...[
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        'Mốc nhận diện: ${_gravePlace!.landmarkGuide}',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12.5,
-                                          fontStyle: FontStyle.italic,
-                                          color: context.textSecondary,
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: context.primary,
+                                    side: BorderSide(
+                                      color: context.primary.withValues(alpha: 0.5),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      SereneFadeSlidePageRoute(
+                                        page: HeritageMapOverviewPage(
+                                          familyId:
+                                              widget.member.familyId ?? 1,
+                                          initialPlaceId: _gravePlace!.id,
                                         ),
                                       ),
-                                    ],
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: OutlinedButton.icon(
-                                            icon: const Icon(LucideIcons.map, size: 15),
-                                            label: Text(
-                                              'Xem trên Bản đồ',
-                                              style: GoogleFonts.beVietnamPro(
-                                                fontSize: 12.5,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            style: OutlinedButton.styleFrom(
-                                              foregroundColor: context.primary,
-                                              side: BorderSide(color: context.primary),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                SereneFadeSlidePageRoute(
-                                                  page: HeritagePlaceDetailPage(place: _gravePlace!),
-                                                ),
-                                              ).then((_) => _loadGraveInfo());
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                    ).then((_) => _loadGraveInfo());
+                                  },
                                 ),
                               )
                             else if (canEdit)
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: context.surface.withValues(alpha: 0.5),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: context.accent.withValues(alpha: 0.2),
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Chưa có dữ liệu vị trí mộ phần của cụ',
-                                      style: GoogleFonts.beVietnamPro(
-                                        fontSize: 12.5,
-                                        color: context.textSecondary,
-                                      ),
+                              Center(
+                                child: OutlinedButton.icon(
+                                  icon: const Icon(LucideIcons.mapPin, size: 15),
+                                  label: Text(
+                                    'Gắn vị trí mộ trên bản đồ',
+                                    style: GoogleFonts.beVietnamPro(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    const SizedBox(height: 8),
-                                    OutlinedButton.icon(
-                                      icon: const Icon(LucideIcons.plus, size: 14),
-                                      label: Text(
-                                        'Gắn vị trí mộ trên Bản đồ',
-                                        style: GoogleFonts.beVietnamPro(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: context.primary,
+                                    side: BorderSide(
+                                      color: context.primary.withValues(alpha: 0.5),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 20),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      SereneFadeSlidePageRoute(
+                                        page: HeritageMapOverviewPage(
+                                          familyId: widget.member.familyId ?? 1,
+                                          assignGraveForMemberId: widget.member.id,
+                                          assignGraveForMemberName:
+                                              widget.member.fullName,
+                                          assignGraveForGeneration:
+                                              widget.member.generation,
                                         ),
                                       ),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: context.primary,
-                                        side: BorderSide(color: context.primary.withValues(alpha: 0.5)),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          SereneFadeSlidePageRoute(
-                                            page: HeritagePlaceFormPage(
-                                              familyId: widget.member.familyId ?? 1,
-                                              initialMemberId: widget.member.id,
-                                              initialMemberName: widget.member.fullName,
-                                              initialGeneration: widget.member.generation,
-                                            ),
-                                          ),
-                                        ).then((_) => _loadGraveInfo());
-                                      },
-                                    ),
-                                  ],
+                                    ).then((_) => _loadGraveInfo());
+                                  },
                                 ),
                               ),
                             const SizedBox(height: 24),

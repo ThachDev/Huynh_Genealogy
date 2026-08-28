@@ -323,7 +323,9 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                       Navigator.push(
                         context,
                         SereneFadeSlidePageRoute(
-                          page: const HeritageMapOverviewPage(),
+                          page: HeritageMapOverviewPage(
+                            familyId: state.family?.id ?? 1,
+                          ),
                         ),
                       );
                     },

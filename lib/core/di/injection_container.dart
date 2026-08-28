@@ -14,6 +14,7 @@ import '../../features/events/events_injection.dart';
 import '../../features/onboarding/onboarding_injection.dart';
 import '../../features/admin/admin_injection.dart';
 import '../../features/user/user_injection.dart';
+import '../../features/heritage_map/heritage_map_injection.dart';
 
 final sl = GetIt.instance;
 
@@ -33,4 +34,5 @@ Future<void> init() async {
   initOnboardingDependencies(sl);
   initAdminDependencies(sl);
   initUserDependencies(sl);
+  initHeritageMapDependencies(sl);
 }

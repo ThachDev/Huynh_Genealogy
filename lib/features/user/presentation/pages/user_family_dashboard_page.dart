@@ -24,6 +24,7 @@ import '../widgets/user_quick_actions_widget.dart';
 import 'user_branch_list_page.dart';
 import '../../../admin/presentation/widgets/admin_dashboard/member_item_widget.dart';
 import 'user_anniversary_list_page.dart';
+import '../../../heritage_map/presentation/pages/heritage_map_overview_page.dart';
 import '../../domain/services/anniversary_calculator.dart';
 import '../../domain/services/member_filter.dart';
 import '../../domain/services/announcement_service.dart';
@@ -318,6 +319,14 @@ class _UserFamilyDashboardPageState extends State<UserFamilyDashboardPage> {
                     },
                     onGoToAnniversaries: () =>
                         _openAnniversaryList(state.members),
+                    onOpenHeritageMap: () {
+                      Navigator.push(
+                        context,
+                        SereneFadeSlidePageRoute(
+                          page: const HeritageMapOverviewPage(),
+                        ),
+                      );
+                    },
                     onOpenInviteCode: () {
                       final inviteCode = state.family?.inviteCode ?? '';
                       if (inviteCode.isNotEmpty) {

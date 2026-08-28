@@ -14,11 +14,13 @@ class UserQuickActionsWidget extends StatelessWidget {
     required this.onOpenBranches,
     required this.onGoToAnniversaries,
     required this.onOpenInviteCode,
+    required this.onOpenHeritageMap,
   });
 
   final VoidCallback onOpenBranches;
   final VoidCallback onGoToAnniversaries;
   final VoidCallback onOpenInviteCode;
+  final VoidCallback onOpenHeritageMap;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,15 @@ class UserQuickActionsWidget extends StatelessWidget {
             onTap: onGoToAnniversaries,
           ),
 
-          // 3. Mã gia tộc
+          // 3. Bản đồ Di tích & Mộ phần
+          _buildActionButton(
+            context: context,
+            icon: LucideIcons.mapPin,
+            label: 'Bản đồ',
+            onTap: onOpenHeritageMap,
+          ),
+
+          // 4. Mã gia tộc
           _buildActionButton(
             context: context,
             icon: LucideIcons.qrCode,

@@ -1372,5 +1372,33 @@
     "placeholders": {
       "coordinates": { "type": "String" }
     }
-  }
+  },
+
+  "heritageMapSearchHint": "Search heritage places, graves...",
+  "heritageMapGeocodeSearchHint": "Enter a place name to search...",
+  "heritageMapBack": "Back",
+  "heritageMapFilterAll": "All",
+  "heritageMapLayerStreet": "Street Map",
+  "heritageMapLayerSatellite": "Satellite Image",
+  "heritageMapMyCurrentLocation": "My Location",
+  "heritageMapDeleteConfirmTitle": "Delete Place?",
+  "heritageMapDeleteConfirmMessage": "Are you sure you want to delete \"{name}\" from the family heritage map?",
+  "@heritageMapDeleteConfirmMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "heritageMapDeleteConfirmBtn": "Delete",
+  "heritageMapGpsTurnOnPrompt": "Please enable GPS location on your device",
+  "heritageMapGpsPermissionDenied": "Location permission denied",
+  "heritageMapGpsPermissionPermanentlyDenied": "Location permission is disabled in Settings. Please open Settings to enable.",
+  "heritageMapGpsLocationFetched": "Current GPS location fetched",
+  "heritageMapGpsCannotIdentify": "Cannot identify GPS coordinates",
+  "heritageMapGpsError": "GPS error: {error}",
+  "@heritageMapGpsError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "heritageMapRelativeGrave": "Relative's Grave"
 }

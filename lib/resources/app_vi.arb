@@ -1459,5 +1459,33 @@
     "placeholders": {
       "coordinates": { "type": "String" }
     }
-  }
+  },
+
+  "heritageMapSearchHint": "Tìm kiếm di tích, mộ phần...",
+  "heritageMapGeocodeSearchHint": "Nhập địa danh để tìm...",
+  "heritageMapBack": "Quay lại",
+  "heritageMapFilterAll": "Tất cả",
+  "heritageMapLayerStreet": "Bản đồ giao thông",
+  "heritageMapLayerSatellite": "Ảnh vệ tinh",
+  "heritageMapMyCurrentLocation": "Vị trí của tôi",
+  "heritageMapDeleteConfirmTitle": "Xóa địa điểm?",
+  "heritageMapDeleteConfirmMessage": "Bạn có chắc muốn xóa \"{name}\" khỏi bản đồ dòng họ?",
+  "@heritageMapDeleteConfirmMessage": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "heritageMapDeleteConfirmBtn": "Xóa",
+  "heritageMapGpsTurnOnPrompt": "Vui lòng bật định vị GPS trên thiết bị",
+  "heritageMapGpsPermissionDenied": "Chưa cấp quyền vị trí",
+  "heritageMapGpsPermissionPermanentlyDenied": "Quyền vị trí bị tắt trong Cài đặt. Vui lòng mở Cài đặt để bật.",
+  "heritageMapGpsLocationFetched": "Đã lấy vị trí GPS hiện tại",
+  "heritageMapGpsCannotIdentify": "Không thể nhận diện tọa độ GPS",
+  "heritageMapGpsError": "Lỗi lấy GPS: {error}",
+  "@heritageMapGpsError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "heritageMapRelativeGrave": "Mộ người thân"
 }

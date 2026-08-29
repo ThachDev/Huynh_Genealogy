@@ -1,16 +1,15 @@
 import 'dart:async';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/services/geocoding_service.dart';
 import '../../../../core/theme/theme_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../resources/app_localizations.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../domain/entities/heritage_place_entity.dart';
@@ -20,10 +19,15 @@ import '../../domain/usecases/save_heritage_place.dart';
 import '../bloc/heritage_map_bloc.dart';
 import '../bloc/heritage_map_event.dart';
 import '../bloc/heritage_map_state.dart';
+import '../widgets/heritage_map_filter_bar.dart';
+import '../widgets/heritage_map_floating_controls.dart';
+import '../widgets/heritage_map_search_bar.dart';
+import '../widgets/heritage_pinning_map_view.dart';
 import '../widgets/heritage_place_edit_sheet.dart';
 import '../widgets/heritage_place_view_sheet.dart';
 import '../widgets/map_view_widget.dart';
 
+/// Trang Bản đồ Di tích dòng họ (Bản đồ tương tác kiểu Google Maps)
 class HeritageMapOverviewPage extends StatelessWidget {
   const HeritageMapOverviewPage({
     super.key,
@@ -86,7 +90,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
       TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   final FocusNode _geocodeSearchFocusNode = FocusNode();
-  final Dio _dio = Dio();
+  final GeocodingService _geocodingService = GeocodingService();
 
   HeritagePlaceType? _activeFilterType;
   bool _handledInitialPlace = false;
@@ -98,7 +102,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   HeritagePlaceEntity? _editingPlace;
   bool _isLocating = false;
   bool _isGeocodingSearching = false;
-  List<_GeocodingItem> _geocodingResults = [];
+  List<GeocodingResult> _geocodingResults = [];
   Timer? _geocodeDebounce;
 
   bool get _isAssigningGrave => widget.assignGraveForMemberId != null;
@@ -152,6 +156,10 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
     _mapController.dispose();
     super.dispose();
   }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 1. LOCATION & GEOCODING SERVICES
+  // ═══════════════════════════════════════════════════════════════════════════
 
   Future<void> _fetchUserLocation() async {
     try {
@@ -210,38 +218,18 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
     if (query.isEmpty) return;
     setState(() => _isGeocodingSearching = true);
     try {
-      final url =
-          'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&limit=5&countrycodes=vn';
-      final response = await _dio.get(
-        url,
-        options: Options(
-          headers: {'User-Agent': 'GiaTocViet-FamilyApp/1.0'},
-          sendTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 5),
-        ),
-      );
-
-      if (response.data is List) {
-        final list = (response.data as List).map((item) {
-          final lat = double.tryParse(item['lat']?.toString() ?? '0') ?? 0.0;
-          final lon = double.tryParse(item['lon']?.toString() ?? '0') ?? 0.0;
-          final name = item['display_name']?.toString() ?? '';
-          return _GeocodingItem(name: name, location: LatLng(lat, lon));
-        }).toList();
-
-        if (mounted) {
-          setState(() {
-            _geocodingResults = list;
-          });
-        }
+      final list = await _geocodingService.search(query);
+      if (mounted) {
+        setState(() {
+          _geocodingResults = list;
+        });
       }
-    } catch (_) {
     } finally {
       if (mounted) setState(() => _isGeocodingSearching = false);
     }
   }
 
-  void _selectGeocodeResult(_GeocodingItem item) {
+  void _selectGeocodeResult(GeocodingResult item) {
     setState(() {
       _pinnedLocation = item.location;
       _geocodingResults = [];
@@ -252,13 +240,13 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   Future<void> _getCurrentGpsLocation() async {
+    final l10n = AppLocalizations.of(context);
     setState(() => _isLocating = true);
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         if (mounted) {
-          AppSnackBar.warning(
-              context, 'Vui lòng bật định vị GPS trên thiết bị');
+          AppSnackBar.warning(context, l10n.heritageMapGpsTurnOnPrompt);
         }
         return;
       }
@@ -267,15 +255,19 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
       if (perm == LocationPermission.denied) {
         perm = await Geolocator.requestPermission();
         if (perm == LocationPermission.denied) {
-          if (mounted) AppSnackBar.error(context, 'Chưa cấp quyền vị trí');
+          if (mounted) {
+            AppSnackBar.error(context, l10n.heritageMapGpsPermissionDenied);
+          }
           return;
         }
       }
 
       if (perm == LocationPermission.deniedForever) {
         if (mounted) {
-          AppSnackBar.error(context,
-              'Quyền vị trí bị tắt trong Cài đặt. Vui lòng mở Cài đặt để bật.');
+          AppSnackBar.error(
+            context,
+            l10n.heritageMapGpsPermissionPermanentlyDenied,
+          );
         }
         return;
       }
@@ -300,18 +292,22 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
                 longitude: pos.longitude,
               ),
             );
-        AppSnackBar.info(context, 'Đã lấy vị trí GPS hiện tại');
+        AppSnackBar.info(context, l10n.heritageMapGpsLocationFetched);
       } else if (mounted) {
-        AppSnackBar.error(context, 'Không thể nhận diện tọa độ GPS');
+        AppSnackBar.error(context, l10n.heritageMapGpsCannotIdentify);
       }
     } catch (e) {
       if (mounted) {
-        AppSnackBar.error(context, 'Lỗi lấy GPS: $e');
+        AppSnackBar.error(context, l10n.heritageMapGpsError(e.toString()));
       }
     } finally {
       if (mounted) setState(() => _isLocating = false);
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 2. USER ACTIONS & NAVIGATION
+  // ═══════════════════════════════════════════════════════════════════════════
 
   void _loadPlaces() {
     context.read<HeritageMapBloc>().add(
@@ -356,6 +352,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   void _savePinnedPlace() {
+    final l10n = AppLocalizations.of(context);
     final targetPlace = _editingPlace ?? widget.placeToEdit;
     final isMemberGrave = _isAssigningGrave ||
         (targetPlace != null &&
@@ -367,11 +364,11 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
       name = targetPlace?.memberFullName ??
           widget.assignGraveForMemberName ??
           targetPlace?.name ??
-          'Mộ người thân';
+          l10n.heritageMapRelativeGrave;
     } else {
       name = targetPlace?.name.isNotEmpty == true
           ? targetPlace!.name
-          : _getPlaceTypeName(_pinnedType);
+          : _pinnedType.getLabel(l10n);
     }
 
     final entity = HeritagePlaceEntity(
@@ -391,21 +388,6 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
     context.read<HeritageMapBloc>().add(HeritageMapSavePlaceEvent(entity));
   }
 
-  String _getPlaceTypeName(HeritagePlaceType type) {
-    switch (type) {
-      case HeritagePlaceType.ancestralHouse:
-        return 'Nhà thờ họ';
-      case HeritagePlaceType.patriarchTomb:
-        return 'Lăng mộ tổ';
-      case HeritagePlaceType.memberGrave:
-        return 'Mộ tiền nhân';
-      case HeritagePlaceType.shrine:
-        return 'Miếu / Đình';
-      case HeritagePlaceType.unknown:
-        return 'Địa điểm di tích';
-    }
-  }
-
   void _editPlace(HeritagePlaceEntity place) {
     setState(() {
       _editingPlace = place;
@@ -418,11 +400,12 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   Future<void> _deletePlace(HeritagePlaceEntity place) async {
+    final l10n = AppLocalizations.of(context);
     final confirm = await AppDialog.confirm(
       context,
-      title: 'Xóa địa điểm?',
-      message: 'Bạn có chắc muốn xóa "${place.name}" khỏi bản đồ dòng họ?',
-      confirmLabel: 'Xóa',
+      title: l10n.heritageMapDeleteConfirmTitle,
+      message: l10n.heritageMapDeleteConfirmMessage(place.name),
+      confirmLabel: l10n.heritageMapDeleteConfirmBtn,
       type: AppDialogType.danger,
     );
 
@@ -436,6 +419,10 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
       _loadPlaces();
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 3. MAIN BUILD METHOD
+  // ═══════════════════════════════════════════════════════════════════════════
 
   @override
   Widget build(BuildContext context) {
@@ -522,18 +509,20 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // 1. CHẾ ĐỘ XEM TỔNG QUAN (OVERVIEW MODE - GOOGLE MAPS STYLE)
+  // 4. OVERVIEW MODE LAYOUT (GOOGLE MAPS STYLE)
   // ═══════════════════════════════════════════════════════════════════════════
+
   Widget _buildOverviewModeLayout(
     HeritageMapLoaded loadedState,
     LatLng? userLoc,
     bool canEdit,
   ) {
+    final l10n = AppLocalizations.of(context);
     final selectedPlace = loadedState.selectedPlace;
 
     return Stack(
       children: [
-        // 1. BẢN ĐỒ TOÀN MÀN HÌNH
+        // 1. Bản đồ tương tác
         MapViewWidget(
           mapController: _mapController,
           places: loadedState.places,
@@ -550,7 +539,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
           },
         ),
 
-        // 2. THANH TÌM KIẾM & NÚT BACK TÍCH HỢP TRÊN ĐẦU + BỘ LỌC CHIP KIỂU GOOGLE MAPS
+        // 2. Header: Nút Back + Thanh tìm kiếm + Bộ lọc Chips
         Positioned(
           top: 0,
           left: 0,
@@ -562,139 +551,41 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    children: [
-                      // Nút Back
-                      Container(
-                        decoration: BoxDecoration(
-                          color: context.surface,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.18),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          icon: Icon(LucideIcons.arrowLeft,
-                              color: context.textPrimary, size: 20),
-                          tooltip: 'Quay lại',
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-
-                      // Thanh tìm kiếm Google Maps
-                      Expanded(
-                        child: Container(
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: context.surface,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.18),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            focusNode: _searchFocusNode,
-                            style: GoogleFonts.inter(
-                              fontSize: 13.5,
-                              color: context.textPrimary,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'Tìm kiếm di tích, mộ phần...',
-                              hintStyle: GoogleFonts.inter(
-                                fontSize: 13,
-                                color: context.textSecondary,
-                              ),
-                              prefixIcon: Icon(
-                                LucideIcons.search,
-                                size: 18,
-                                color: context.primary,
-                              ),
-                              suffixIcon: _searchController.text.isNotEmpty
-                                  ? IconButton(
-                                      icon: const Icon(LucideIcons.x, size: 16),
-                                      onPressed: () {
-                                        _searchController.clear();
-                                        _loadPlaces();
-                                      },
-                                    )
-                                  : null,
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 13),
-                            ),
-                            onTap: () {
-                              if (selectedPlace != null) {
-                                context.read<HeritageMapBloc>().add(
-                                    const HeritageMapSelectPlaceEvent(null));
-                              }
-                            },
-                            onChanged: (_) {
-                              if (selectedPlace != null) {
-                                context.read<HeritageMapBloc>().add(
-                                    const HeritageMapSelectPlaceEvent(null));
-                              }
-                              _loadPlaces();
-                            },
-                            onSubmitted: (_) => _loadPlaces(),
-                          ),
-                        ),
-                      ),
-                    ],
+                  HeritageMapSearchBar(
+                    controller: _searchController,
+                    focusNode: _searchFocusNode,
+                    hintText: l10n.heritageMapSearchHint,
+                    onBack: () => Navigator.pop(context),
+                    onClear: () {
+                      _searchController.clear();
+                      _loadPlaces();
+                    },
+                    onTap: () {
+                      if (selectedPlace != null) {
+                        context
+                            .read<HeritageMapBloc>()
+                            .add(const HeritageMapSelectPlaceEvent(null));
+                      }
+                    },
+                    onChanged: (_) {
+                      if (selectedPlace != null) {
+                        context
+                            .read<HeritageMapBloc>()
+                            .add(const HeritageMapSelectPlaceEvent(null));
+                      }
+                      _loadPlaces();
+                    },
+                    onSubmitted: (_) => _loadPlaces(),
                   ),
                   const SizedBox(height: 8),
 
-                  // Hàng chip phân loại danh mục (Filter Chips kiểu Google Maps)
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: Row(
-                      children: [
-                        _buildFilterChip(
-                          label: 'Tất cả',
-                          icon: LucideIcons.layers,
-                          iconColor: context.textSecondary,
-                          type: null,
-                        ),
-                        const SizedBox(width: 6),
-                        _buildFilterChip(
-                          label: 'Nhà thờ họ',
-                          icon: LucideIcons.landmark,
-                          iconColor: const Color(0xFFD97706),
-                          type: HeritagePlaceType.ancestralHouse,
-                        ),
-                        const SizedBox(width: 6),
-                        _buildFilterChip(
-                          label: 'Lăng mộ tổ',
-                          icon: LucideIcons.crown,
-                          iconColor: const Color(0xFF8B5CF6),
-                          type: HeritagePlaceType.patriarchTomb,
-                        ),
-                        const SizedBox(width: 6),
-                        _buildFilterChip(
-                          label: 'Mộ tiền nhân',
-                          icon: LucideIcons.flame,
-                          iconColor: const Color(0xFFE11D48),
-                          type: HeritagePlaceType.memberGrave,
-                        ),
-                        const SizedBox(width: 6),
-                        _buildFilterChip(
-                          label: 'Miếu / Đình',
-                          icon: LucideIcons.building,
-                          iconColor: const Color(0xFF059669),
-                          type: HeritagePlaceType.shrine,
-                        ),
-                      ],
-                    ),
+                  // Thanh chip phân loại danh mục
+                  HeritageMapFilterBar(
+                    selectedType: _activeFilterType,
+                    onTypeSelected: (type) {
+                      setState(() => _activeFilterType = type);
+                      _loadPlaces();
+                    },
                   ),
                 ],
               ),
@@ -702,50 +593,25 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
           ),
         ),
 
-        // 3. CÁC NÚT ĐIỀU KHIỂN BÊN PHẢI (FLOATING CONTROLS - KHÔNG BAO GIỜ BỊ CHE BỞI BOTTOM SHEET)
+        // 3. Cụm nút điều khiển nổi bên phải
         AnimatedPositioned(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutCubic,
           right: 16,
           bottom: selectedPlace != null ? 230 : 28,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Nút Chuyển tầng Vệ tinh / Giao thông
-              _buildFloatingCircleBtn(
-                icon: loadedState.isSatellite
-                    ? LucideIcons.map
-                    : LucideIcons.satellite,
-                tooltip: loadedState.isSatellite
-                    ? 'Bản đồ giao thông'
-                    : 'Ảnh vệ tinh',
-                color:
-                    loadedState.isSatellite ? context.accent : context.surface,
-                iconColor: loadedState.isSatellite
-                    ? Colors.black
-                    : context.textPrimary,
-                onPressed: () {
-                  context
-                      .read<HeritageMapBloc>()
-                      .add(const HeritageMapToggleLayerEvent());
-                },
-              ),
-              const SizedBox(height: 10),
-
-              // Nút Vị trí của tôi (GPS)
-              _buildFloatingCircleBtn(
-                icon: _isLocating ? LucideIcons.loader2 : LucideIcons.crosshair,
-                tooltip: 'Vị trí của tôi',
-                color: context.surface,
-                iconColor: context.primary,
-                isLoading: _isLocating,
-                onPressed: () => _onLocateMePressed(userLoc),
-              ),
-            ],
+          child: HeritageMapFloatingControls(
+            isSatellite: loadedState.isSatellite,
+            isLocating: _isLocating,
+            onToggleLayer: () {
+              context
+                  .read<HeritageMapBloc>()
+                  .add(const HeritageMapToggleLayerEvent());
+            },
+            onLocateMe: () => _onLocateMePressed(userLoc),
           ),
         ),
 
-        // 4. BOTTOM SHEET GOOGLE MAPS CARD KHI CHỌN ĐỊA ĐIỂM
+        // 4. Bottom Sheet chi tiết địa điểm khi chọn
         if (selectedPlace != null)
           Positioned(
             left: 0,
@@ -769,75 +635,30 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // 3. CHẾ ĐỘ CHẤM GHIM / CHỌN VỊ TRÍ (PINNING MODE - GOOGLE MAPS STYLE)
+  // 5. PINNING / EDIT MODE LAYOUT
   // ═══════════════════════════════════════════════════════════════════════════
+
   Widget _buildPinningModeLayout(HeritageMapLoaded loadedState, bool isSaving) {
+    final l10n = AppLocalizations.of(context);
+
     return Stack(
       children: [
-        // 1. Bản đồ chấm ghim vệ tinh / giao thông
-        FlutterMap(
+        // 1. Bản đồ chấm ghim vị trí
+        HeritagePinningMapView(
           mapController: _mapController,
-          options: MapOptions(
-            initialCenter: _pinnedLocation,
-            initialZoom: 16.5,
-            minZoom: 4.0,
-            maxZoom: 19.0,
-            onTap: (_, point) {
-              setState(() {
-                _pinnedLocation = point;
-                _geocodingResults = [];
-              });
-              FocusScope.of(context).unfocus();
-            },
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: loadedState.isSatellite
-                  ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                  : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-              userAgentPackageName: 'com.giatocviet.app',
-              maxZoom: 19,
-            ),
-            // Các địa điểm đã có sẵn để tham chiếu
-            MarkerLayer(
-              markers: [
-                ...loadedState.places.map((p) {
-                  return Marker(
-                    point: LatLng(p.latitude, p.longitude),
-                    width: 32,
-                    height: 32,
-                    child: const Opacity(
-                      opacity: 0.6,
-                      child: Icon(LucideIcons.mapPin,
-                          color: Colors.amber, size: 28),
-                    ),
-                  );
-                }),
-                // Điểm ghim đang chọn
-                Marker(
-                  point: _pinnedLocation,
-                  width: 52,
-                  height: 52,
-                  alignment: Alignment.topCenter,
-                  child: const Icon(
-                    LucideIcons.mapPin,
-                    color: Colors.redAccent,
-                    size: 48,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black54,
-                        blurRadius: 10,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
+          pinnedLocation: _pinnedLocation,
+          referencePlaces: loadedState.places,
+          isSatellite: loadedState.isSatellite,
+          onMapTap: (point) {
+            setState(() {
+              _pinnedLocation = point;
+              _geocodingResults = [];
+            });
+            FocusScope.of(context).unfocus();
+          },
         ),
 
-        // 2. THANH TÌM KIẾM ĐỊA DANH & NÚT BACK TRÊN CÙNG
+        // 2. Header: Nút Back + Thanh tìm kiếm địa danh kèm gợi ý Nominatim
         Positioned(
           top: 0,
           left: 0,
@@ -846,145 +667,26 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      // Nút Back
-                      Container(
-                        decoration: BoxDecoration(
-                          color: context.surface,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.18),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          icon: Icon(LucideIcons.arrowLeft,
-                              color: context.textPrimary, size: 20),
-                          tooltip: 'Quay lại',
-                          onPressed: _cancelPinningMode,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-
-                      // Thanh tìm kiếm địa danh
-                      Expanded(
-                        child: Container(
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: context.surface,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.18),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            focusNode: _geocodeSearchFocusNode,
-                            style: GoogleFonts.inter(
-                              fontSize: 13.5,
-                              color: context.textPrimary,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'Nhập địa danh để tìm...',
-                              hintStyle: GoogleFonts.inter(
-                                fontSize: 13,
-                                color: context.textSecondary,
-                              ),
-                              prefixIcon: Icon(
-                                LucideIcons.search,
-                                size: 18,
-                                color: context.primary,
-                              ),
-                              suffixIcon: _isGeocodingSearching
-                                  ? const Padding(
-                                      padding: EdgeInsets.all(12),
-                                      child: SizedBox(
-                                        width: 14,
-                                        height: 14,
-                                        child: CircularProgressIndicator(
-                                            strokeWidth: 2),
-                                      ),
-                                    )
-                                  : (_searchController.text.isNotEmpty
-                                      ? IconButton(
-                                          icon: const Icon(LucideIcons.x,
-                                              size: 16),
-                                          onPressed: () {
-                                            _searchController.clear();
-                                            setState(
-                                                () => _geocodingResults = []);
-                                          },
-                                        )
-                                      : null),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 13),
-                            ),
-                            onChanged: _onGeocodeSearchChanged,
-                            onSubmitted: (val) => _searchLocation(val.trim()),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // Gợi ý kết quả tìm kiếm
-                  if (_geocodingResults.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      decoration: BoxDecoration(
-                        color: context.surface,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: _geocodingResults.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
-                        itemBuilder: (context, idx) {
-                          final item = _geocodingResults[idx];
-                          return ListTile(
-                            dense: true,
-                            leading: Icon(LucideIcons.mapPin,
-                                size: 16, color: context.primary),
-                            title: Text(
-                              item.name,
-                              style: GoogleFonts.inter(
-                                fontSize: 12.5,
-                                color: context.textPrimary,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            onTap: () => _selectGeocodeResult(item),
-                          );
-                        },
-                      ),
-                    ),
-                ],
+              child: HeritageMapSearchBar(
+                controller: _searchController,
+                focusNode: _geocodeSearchFocusNode,
+                hintText: l10n.heritageMapGeocodeSearchHint,
+                onBack: _cancelPinningMode,
+                isSearching: _isGeocodingSearching,
+                geocodingResults: _geocodingResults,
+                onClear: () {
+                  _searchController.clear();
+                  setState(() => _geocodingResults = []);
+                },
+                onChanged: _onGeocodeSearchChanged,
+                onSubmitted: (val) => _searchLocation(val.trim()),
+                onSelectGeocodeResult: _selectGeocodeResult,
               ),
             ),
           ),
         ),
 
-        // 3. Nút chuyển tầng bản đồ & Nút lấy GPS nổi bên phải
+        // 3. Cụm nút điều khiển nổi bên phải
         AnimatedPositioned(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutCubic,
@@ -993,38 +695,19 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
               (_geocodeSearchFocusNode.hasFocus || _geocodingResults.isNotEmpty)
                   ? 28
                   : 300,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildFloatingCircleBtn(
-                icon: loadedState.isSatellite
-                    ? LucideIcons.map
-                    : LucideIcons.satellite,
-                tooltip: loadedState.isSatellite
-                    ? 'Bản đồ giao thông'
-                    : 'Ảnh vệ tinh',
-                color: context.surface,
-                iconColor: context.textPrimary,
-                onPressed: () {
-                  context
-                      .read<HeritageMapBloc>()
-                      .add(const HeritageMapToggleLayerEvent());
-                },
-              ),
-              const SizedBox(height: 10),
-              _buildFloatingCircleBtn(
-                icon: _isLocating ? LucideIcons.loader2 : LucideIcons.crosshair,
-                tooltip: 'Vị trí hiện tại',
-                color: context.surface,
-                iconColor: context.primary,
-                isLoading: _isLocating,
-                onPressed: _isLocating ? null : _getCurrentGpsLocation,
-              ),
-            ],
+          child: HeritageMapFloatingControls(
+            isSatellite: loadedState.isSatellite,
+            isLocating: _isLocating,
+            onToggleLayer: () {
+              context
+                  .read<HeritageMapBloc>()
+                  .add(const HeritageMapToggleLayerEvent());
+            },
+            onLocateMe: _getCurrentGpsLocation,
           ),
         ),
 
-        // 4. Panel nhập & lưu vị trí đẩy lên từ đáy (ẩn đi khi đang nhập / tìm kiếm địa danh)
+        // 4. Panel nhập & lưu vị trí đẩy lên từ đáy
         if (!_geocodeSearchFocusNode.hasFocus && _geocodingResults.isEmpty)
           Positioned(
             left: 0,
@@ -1046,101 +729,4 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
       ],
     );
   }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // 4. HELPER WIDGETS
-  // ═══════════════════════════════════════════════════════════════════════════
-  Widget _buildFilterChip({
-    required String label,
-    required IconData icon,
-    required Color iconColor,
-    required HeritagePlaceType? type,
-  }) {
-    final isSelected = _activeFilterType == type;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() => _activeFilterType = type);
-        _loadPlaces();
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected ? context.primary : context.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          border: Border.all(
-            color: isSelected
-                ? context.primary
-                : context.accent.withValues(alpha: 0.15),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 14,
-              color: isSelected ? Colors.white : iconColor,
-            ),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? Colors.white : context.textPrimary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFloatingCircleBtn({
-    required IconData icon,
-    required String tooltip,
-    required Color color,
-    required Color iconColor,
-    required VoidCallback? onPressed,
-    bool isLoading = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: isLoading
-            ? const SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : Icon(icon, color: iconColor, size: 20),
-        tooltip: tooltip,
-        onPressed: onPressed,
-      ),
-    );
-  }
-}
-
-class _GeocodingItem {
-  const _GeocodingItem({required this.name, required this.location});
-  final String name;
-  final LatLng location;
 }

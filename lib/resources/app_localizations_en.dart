@@ -3203,4 +3203,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String heritageMapCoordinatesClipboard(String coordinates) {
     return 'Coordinates: $coordinates';
   }
+
+  @override
+  String get heritageMapSearchHint => 'Search heritage places, graves...';
+
+  @override
+  String get heritageMapGeocodeSearchHint => 'Enter a place name to search...';
+
+  @override
+  String get heritageMapBack => 'Back';
+
+  @override
+  String get heritageMapFilterAll => 'All';
+
+  @override
+  String get heritageMapLayerStreet => 'Street Map';
+
+  @override
+  String get heritageMapLayerSatellite => 'Satellite Image';
+
+  @override
+  String get heritageMapMyCurrentLocation => 'My Location';
+
+  @override
+  String get heritageMapDeleteConfirmTitle => 'Delete Place?';
+
+  @override
+  String heritageMapDeleteConfirmMessage(String name) {
+    return 'Are you sure you want to delete \"$name\" from the family heritage map?';
+  }
+
+  @override
+  String get heritageMapDeleteConfirmBtn => 'Delete';
+
+  @override
+  String get heritageMapGpsTurnOnPrompt =>
+      'Please enable GPS location on your device';
+
+  @override
+  String get heritageMapGpsPermissionDenied => 'Location permission denied';
+
+  @override
+  String get heritageMapGpsPermissionPermanentlyDenied =>
+      'Location permission is disabled in Settings. Please open Settings to enable.';
+
+  @override
+  String get heritageMapGpsLocationFetched => 'Current GPS location fetched';
+
+  @override
+  String get heritageMapGpsCannotIdentify => 'Cannot identify GPS coordinates';
+
+  @override
+  String heritageMapGpsError(String error) {
+    return 'GPS error: $error';
+  }
+
+  @override
+  String get heritageMapRelativeGrave => 'Relative\'s Grave';
 }

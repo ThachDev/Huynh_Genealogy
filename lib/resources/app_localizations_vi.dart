@@ -3206,4 +3206,61 @@ class AppLocalizationsVi extends AppLocalizations {
   String heritageMapCoordinatesClipboard(String coordinates) {
     return 'Tọa độ: $coordinates';
   }
+
+  @override
+  String get heritageMapSearchHint => 'Tìm kiếm di tích, mộ phần...';
+
+  @override
+  String get heritageMapGeocodeSearchHint => 'Nhập địa danh để tìm...';
+
+  @override
+  String get heritageMapBack => 'Quay lại';
+
+  @override
+  String get heritageMapFilterAll => 'Tất cả';
+
+  @override
+  String get heritageMapLayerStreet => 'Bản đồ giao thông';
+
+  @override
+  String get heritageMapLayerSatellite => 'Ảnh vệ tinh';
+
+  @override
+  String get heritageMapMyCurrentLocation => 'Vị trí của tôi';
+
+  @override
+  String get heritageMapDeleteConfirmTitle => 'Xóa địa điểm?';
+
+  @override
+  String heritageMapDeleteConfirmMessage(String name) {
+    return 'Bạn có chắc muốn xóa \"$name\" khỏi bản đồ dòng họ?';
+  }
+
+  @override
+  String get heritageMapDeleteConfirmBtn => 'Xóa';
+
+  @override
+  String get heritageMapGpsTurnOnPrompt =>
+      'Vui lòng bật định vị GPS trên thiết bị';
+
+  @override
+  String get heritageMapGpsPermissionDenied => 'Chưa cấp quyền vị trí';
+
+  @override
+  String get heritageMapGpsPermissionPermanentlyDenied =>
+      'Quyền vị trí bị tắt trong Cài đặt. Vui lòng mở Cài đặt để bật.';
+
+  @override
+  String get heritageMapGpsLocationFetched => 'Đã lấy vị trí GPS hiện tại';
+
+  @override
+  String get heritageMapGpsCannotIdentify => 'Không thể nhận diện tọa độ GPS';
+
+  @override
+  String heritageMapGpsError(String error) {
+    return 'Lỗi lấy GPS: $error';
+  }
+
+  @override
+  String get heritageMapRelativeGrave => 'Mộ người thân';
 }

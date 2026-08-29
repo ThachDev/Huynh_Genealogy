@@ -5791,6 +5791,108 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tọa độ: {coordinates}'**
   String heritageMapCoordinatesClipboard(String coordinates);
+
+  /// No description provided for @heritageMapSearchHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm kiếm di tích, mộ phần...'**
+  String get heritageMapSearchHint;
+
+  /// No description provided for @heritageMapGeocodeSearchHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhập địa danh để tìm...'**
+  String get heritageMapGeocodeSearchHint;
+
+  /// No description provided for @heritageMapBack.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quay lại'**
+  String get heritageMapBack;
+
+  /// No description provided for @heritageMapFilterAll.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tất cả'**
+  String get heritageMapFilterAll;
+
+  /// No description provided for @heritageMapLayerStreet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ giao thông'**
+  String get heritageMapLayerStreet;
+
+  /// No description provided for @heritageMapLayerSatellite.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ảnh vệ tinh'**
+  String get heritageMapLayerSatellite;
+
+  /// No description provided for @heritageMapMyCurrentLocation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vị trí của tôi'**
+  String get heritageMapMyCurrentLocation;
+
+  /// No description provided for @heritageMapDeleteConfirmTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa địa điểm?'**
+  String get heritageMapDeleteConfirmTitle;
+
+  /// No description provided for @heritageMapDeleteConfirmMessage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có chắc muốn xóa \"{name}\" khỏi bản đồ dòng họ?'**
+  String heritageMapDeleteConfirmMessage(String name);
+
+  /// No description provided for @heritageMapDeleteConfirmBtn.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa'**
+  String get heritageMapDeleteConfirmBtn;
+
+  /// No description provided for @heritageMapGpsTurnOnPrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng bật định vị GPS trên thiết bị'**
+  String get heritageMapGpsTurnOnPrompt;
+
+  /// No description provided for @heritageMapGpsPermissionDenied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa cấp quyền vị trí'**
+  String get heritageMapGpsPermissionDenied;
+
+  /// No description provided for @heritageMapGpsPermissionPermanentlyDenied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền vị trí bị tắt trong Cài đặt. Vui lòng mở Cài đặt để bật.'**
+  String get heritageMapGpsPermissionPermanentlyDenied;
+
+  /// No description provided for @heritageMapGpsLocationFetched.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lấy vị trí GPS hiện tại'**
+  String get heritageMapGpsLocationFetched;
+
+  /// No description provided for @heritageMapGpsCannotIdentify.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể nhận diện tọa độ GPS'**
+  String get heritageMapGpsCannotIdentify;
+
+  /// No description provided for @heritageMapGpsError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi lấy GPS: {error}'**
+  String heritageMapGpsError(String error);
+
+  /// No description provided for @heritageMapRelativeGrave.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mộ người thân'**
+  String get heritageMapRelativeGrave;
 }
 
 class _AppLocalizationsDelegate

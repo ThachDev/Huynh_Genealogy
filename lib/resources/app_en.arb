@@ -1331,5 +1331,46 @@
   "familyPosterPaperA1Desc": "Size A1 (59.4 × 84.1 cm) • Best standard wall-hanging size",
   "familyPosterPaperA2Desc": "Size A2 (42.0 × 59.4 cm) • Suitable for medium living rooms",
   "familyPosterPaperA3Desc": "Size A3 (29.7 × 42.0 cm) • Desktop framing or wall mounting",
-  "familyPosterPaperA4Desc": "Size A4 (21.0 × 29.7 cm) • Standard binder size"
+  "familyPosterPaperA4Desc": "Size A4 (21.0 × 29.7 cm) • Standard binder size",
+
+  "heritageTypeAncestralHouse": "Ancestral House",
+  "heritageTypePatriarchTomb": "Patriarch Tomb",
+  "heritageTypeMemberGrave": "Ancestor Grave",
+  "heritageTypeShrine": "Shrine / Temple",
+  "heritageTypeUnknown": "Place",
+  "heritageTypeAncestralHouseShort": "House",
+  "heritageTypePatriarchTombShort": "Tomb",
+  "heritageTypeMemberGraveShort": "Grave",
+  "heritageTypeShrineShort": "Shrine",
+  "heritageTypeUnknownShort": "Other",
+
+  "heritageMapDirections": "Directions",
+  "heritageMapEdit": "Edit",
+  "heritageMapDeletePlace": "Delete place",
+  "heritageMapLocationDescLabel": "Location description & guide.",
+  "heritageMapLocationDescHint": "E.g. Next to the banyan tree, turn right at the 2nd alley...",
+  "heritageMapCancel": "Cancel",
+  "heritageMapSaveGraveLocation": "Save grave location",
+  "heritageMapSaveChanges": "Save changes",
+  "heritageMapSavePlace": "Save place",
+
+  "heritageMapCopiedCoordinates": "Coordinates copied",
+  "heritageMapCannotOpenGoogleMaps": "Cannot open Google Maps",
+
+  "heritageMapSemanticsClose": "Close",
+  "heritageMapSemanticsCopyCoordinates": "Copy coordinates",
+  "heritageMapSemanticsEditPlace": "Edit place",
+  "heritageMapSemanticsDeletePlace": "Delete place",
+  "heritageMapSemanticsSelectType": "Select type: {type}",
+  "@heritageMapSemanticsSelectType": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "heritageMapCoordinatesClipboard": "Coordinates: {coordinates}",
+  "@heritageMapCoordinatesClipboard": {
+    "placeholders": {
+      "coordinates": { "type": "String" }
+    }
+  }
 }

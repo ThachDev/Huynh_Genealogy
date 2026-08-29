@@ -1418,5 +1418,46 @@
   "familyPosterPaperA1Desc": "Khổ A1 (59.4 × 84.1 cm) • Kích thước chuẩn treo tường đẹp nhất",
   "familyPosterPaperA2Desc": "Khổ A2 (42.0 × 59.4 cm) • Phù hợp không gian phòng khách vừa",
   "familyPosterPaperA3Desc": "Khổ A3 (29.7 × 42.0 cm) • Khổ nhỏ đóng khung để bàn / treo tường",
-  "familyPosterPaperA4Desc": "Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả"
+  "familyPosterPaperA4Desc": "Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả",
+
+  "heritageTypeAncestralHouse": "Nhà thờ họ",
+  "heritageTypePatriarchTomb": "Lăng mộ tổ",
+  "heritageTypeMemberGrave": "Mộ tiền nhân",
+  "heritageTypeShrine": "Miếu / Đình",
+  "heritageTypeUnknown": "Địa điểm",
+  "heritageTypeAncestralHouseShort": "Nhà thờ",
+  "heritageTypePatriarchTombShort": "Mộ tổ",
+  "heritageTypeMemberGraveShort": "Mộ tiền nhân",
+  "heritageTypeShrineShort": "Miếu / Đình",
+  "heritageTypeUnknownShort": "Khác",
+
+  "heritageMapDirections": "Chỉ đường",
+  "heritageMapEdit": "Chỉnh sửa",
+  "heritageMapDeletePlace": "Xóa địa điểm",
+  "heritageMapLocationDescLabel": "Mô tả vị trí & chỉ dẫn.",
+  "heritageMapLocationDescHint": "VD: Nằm cạnh cây đa, rẽ ngõ thứ 2 bên phải...",
+  "heritageMapCancel": "Hủy",
+  "heritageMapSaveGraveLocation": "Lưu vị trí mộ",
+  "heritageMapSaveChanges": "Lưu thay đổi",
+  "heritageMapSavePlace": "Lưu địa điểm",
+
+  "heritageMapCopiedCoordinates": "Đã sao chép tọa độ",
+  "heritageMapCannotOpenGoogleMaps": "Không thể mở ứng dụng bản đồ Google Maps",
+
+  "heritageMapSemanticsClose": "Đóng",
+  "heritageMapSemanticsCopyCoordinates": "Sao chép tọa độ",
+  "heritageMapSemanticsEditPlace": "Chỉnh sửa địa điểm",
+  "heritageMapSemanticsDeletePlace": "Xóa địa điểm",
+  "heritageMapSemanticsSelectType": "Chọn loại: {type}",
+  "@heritageMapSemanticsSelectType": {
+    "placeholders": {
+      "type": { "type": "String" }
+    }
+  },
+  "heritageMapCoordinatesClipboard": "Tọa độ: {coordinates}",
+  "@heritageMapCoordinatesClipboard": {
+    "placeholders": {
+      "coordinates": { "type": "String" }
+    }
+  }
 }

@@ -5629,6 +5629,168 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả'**
   String get familyPosterPaperA4Desc;
+
+  /// No description provided for @heritageTypeAncestralHouse.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà thờ họ'**
+  String get heritageTypeAncestralHouse;
+
+  /// No description provided for @heritageTypePatriarchTomb.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lăng mộ tổ'**
+  String get heritageTypePatriarchTomb;
+
+  /// No description provided for @heritageTypeMemberGrave.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mộ tiền nhân'**
+  String get heritageTypeMemberGrave;
+
+  /// No description provided for @heritageTypeShrine.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miếu / Đình'**
+  String get heritageTypeShrine;
+
+  /// No description provided for @heritageTypeUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Địa điểm'**
+  String get heritageTypeUnknown;
+
+  /// No description provided for @heritageTypeAncestralHouseShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhà thờ'**
+  String get heritageTypeAncestralHouseShort;
+
+  /// No description provided for @heritageTypePatriarchTombShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mộ tổ'**
+  String get heritageTypePatriarchTombShort;
+
+  /// No description provided for @heritageTypeMemberGraveShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mộ tiền nhân'**
+  String get heritageTypeMemberGraveShort;
+
+  /// No description provided for @heritageTypeShrineShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Miếu / Đình'**
+  String get heritageTypeShrineShort;
+
+  /// No description provided for @heritageTypeUnknownShort.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khác'**
+  String get heritageTypeUnknownShort;
+
+  /// No description provided for @heritageMapDirections.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉ đường'**
+  String get heritageMapDirections;
+
+  /// No description provided for @heritageMapEdit.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa'**
+  String get heritageMapEdit;
+
+  /// No description provided for @heritageMapDeletePlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa địa điểm'**
+  String get heritageMapDeletePlace;
+
+  /// No description provided for @heritageMapLocationDescLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mô tả vị trí & chỉ dẫn.'**
+  String get heritageMapLocationDescLabel;
+
+  /// No description provided for @heritageMapLocationDescHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'VD: Nằm cạnh cây đa, rẽ ngõ thứ 2 bên phải...'**
+  String get heritageMapLocationDescHint;
+
+  /// No description provided for @heritageMapCancel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy'**
+  String get heritageMapCancel;
+
+  /// No description provided for @heritageMapSaveGraveLocation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu vị trí mộ'**
+  String get heritageMapSaveGraveLocation;
+
+  /// No description provided for @heritageMapSaveChanges.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu thay đổi'**
+  String get heritageMapSaveChanges;
+
+  /// No description provided for @heritageMapSavePlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu địa điểm'**
+  String get heritageMapSavePlace;
+
+  /// No description provided for @heritageMapCopiedCoordinates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã sao chép tọa độ'**
+  String get heritageMapCopiedCoordinates;
+
+  /// No description provided for @heritageMapCannotOpenGoogleMaps.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể mở ứng dụng bản đồ Google Maps'**
+  String get heritageMapCannotOpenGoogleMaps;
+
+  /// No description provided for @heritageMapSemanticsClose.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get heritageMapSemanticsClose;
+
+  /// No description provided for @heritageMapSemanticsCopyCoordinates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sao chép tọa độ'**
+  String get heritageMapSemanticsCopyCoordinates;
+
+  /// No description provided for @heritageMapSemanticsEditPlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chỉnh sửa địa điểm'**
+  String get heritageMapSemanticsEditPlace;
+
+  /// No description provided for @heritageMapSemanticsDeletePlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa địa điểm'**
+  String get heritageMapSemanticsDeletePlace;
+
+  /// No description provided for @heritageMapSemanticsSelectType.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn loại: {type}'**
+  String heritageMapSemanticsSelectType(String type);
+
+  /// No description provided for @heritageMapCoordinatesClipboard.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tọa độ: {coordinates}'**
+  String heritageMapCoordinatesClipboard(String coordinates);
 }
 
 class _AppLocalizationsDelegate

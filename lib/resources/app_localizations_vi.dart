@@ -3119,4 +3119,91 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get familyPosterPaperA4Desc =>
       'Khổ A4 (21.0 × 29.7 cm) • Tiêu chuẩn in ấn kẹp hồ sơ gia phả';
+
+  @override
+  String get heritageTypeAncestralHouse => 'Nhà thờ họ';
+
+  @override
+  String get heritageTypePatriarchTomb => 'Lăng mộ tổ';
+
+  @override
+  String get heritageTypeMemberGrave => 'Mộ tiền nhân';
+
+  @override
+  String get heritageTypeShrine => 'Miếu / Đình';
+
+  @override
+  String get heritageTypeUnknown => 'Địa điểm';
+
+  @override
+  String get heritageTypeAncestralHouseShort => 'Nhà thờ';
+
+  @override
+  String get heritageTypePatriarchTombShort => 'Mộ tổ';
+
+  @override
+  String get heritageTypeMemberGraveShort => 'Mộ tiền nhân';
+
+  @override
+  String get heritageTypeShrineShort => 'Miếu / Đình';
+
+  @override
+  String get heritageTypeUnknownShort => 'Khác';
+
+  @override
+  String get heritageMapDirections => 'Chỉ đường';
+
+  @override
+  String get heritageMapEdit => 'Chỉnh sửa';
+
+  @override
+  String get heritageMapDeletePlace => 'Xóa địa điểm';
+
+  @override
+  String get heritageMapLocationDescLabel => 'Mô tả vị trí & chỉ dẫn.';
+
+  @override
+  String get heritageMapLocationDescHint =>
+      'VD: Nằm cạnh cây đa, rẽ ngõ thứ 2 bên phải...';
+
+  @override
+  String get heritageMapCancel => 'Hủy';
+
+  @override
+  String get heritageMapSaveGraveLocation => 'Lưu vị trí mộ';
+
+  @override
+  String get heritageMapSaveChanges => 'Lưu thay đổi';
+
+  @override
+  String get heritageMapSavePlace => 'Lưu địa điểm';
+
+  @override
+  String get heritageMapCopiedCoordinates => 'Đã sao chép tọa độ';
+
+  @override
+  String get heritageMapCannotOpenGoogleMaps =>
+      'Không thể mở ứng dụng bản đồ Google Maps';
+
+  @override
+  String get heritageMapSemanticsClose => 'Đóng';
+
+  @override
+  String get heritageMapSemanticsCopyCoordinates => 'Sao chép tọa độ';
+
+  @override
+  String get heritageMapSemanticsEditPlace => 'Chỉnh sửa địa điểm';
+
+  @override
+  String get heritageMapSemanticsDeletePlace => 'Xóa địa điểm';
+
+  @override
+  String heritageMapSemanticsSelectType(String type) {
+    return 'Chọn loại: $type';
+  }
+
+  @override
+  String heritageMapCoordinatesClipboard(String coordinates) {
+    return 'Tọa độ: $coordinates';
+  }
 }

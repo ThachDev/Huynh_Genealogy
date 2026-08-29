@@ -20,7 +20,8 @@ import '../../domain/usecases/save_heritage_place.dart';
 import '../bloc/heritage_map_bloc.dart';
 import '../bloc/heritage_map_event.dart';
 import '../bloc/heritage_map_state.dart';
-import '../widgets/heritage_place_bottom_sheet.dart';
+import '../widgets/heritage_place_edit_sheet.dart';
+import '../widgets/heritage_place_view_sheet.dart';
 import '../widgets/map_view_widget.dart';
 
 class HeritageMapOverviewPage extends StatelessWidget {
@@ -750,7 +751,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: HeritagePlaceBottomSheet(
+            child: HeritagePlaceViewSheet(
               place: selectedPlace,
               userLocation: userLoc,
               canEdit: canEdit,
@@ -1029,7 +1030,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: HeritagePlaceBottomSheet.edit(
+            child: HeritagePlaceEditSheet(
               place: _editingPlace ?? widget.placeToEdit,
               pinnedLocation: _pinnedLocation,
               landmarkGuideController: _landmarkGuideController,

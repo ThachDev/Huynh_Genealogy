@@ -1,4 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+
+import '../../../../resources/app_localizations.dart';
 
 enum HeritagePlaceType {
   ancestralHouse, // Nhà thờ họ / Từ đường
@@ -40,6 +44,71 @@ extension HeritagePlaceTypeX on HeritagePlaceType {
   }
 }
 
+/// UI metadata cho mỗi loại địa điểm di sản — icon, label, color.
+/// Tập trung tại đây để tránh hardcode rải rác trong các widget.
+extension HeritagePlaceTypeUI on HeritagePlaceType {
+  IconData get icon {
+    switch (this) {
+      case HeritagePlaceType.ancestralHouse:
+        return LucideIcons.landmark;
+      case HeritagePlaceType.patriarchTomb:
+        return LucideIcons.crown;
+      case HeritagePlaceType.memberGrave:
+        return LucideIcons.flame;
+      case HeritagePlaceType.shrine:
+        return LucideIcons.building;
+      case HeritagePlaceType.unknown:
+        return LucideIcons.mapPin;
+    }
+  }
+
+  String getLabel(AppLocalizations l10n) {
+    switch (this) {
+      case HeritagePlaceType.ancestralHouse:
+        return l10n.heritageTypeAncestralHouse;
+      case HeritagePlaceType.patriarchTomb:
+        return l10n.heritageTypePatriarchTomb;
+      case HeritagePlaceType.memberGrave:
+        return l10n.heritageTypeMemberGrave;
+      case HeritagePlaceType.shrine:
+        return l10n.heritageTypeShrine;
+      case HeritagePlaceType.unknown:
+        return l10n.heritageTypeUnknown;
+    }
+  }
+
+  /// Label ngắn gọn hơn cho chip selector
+  String getShortLabel(AppLocalizations l10n) {
+    switch (this) {
+      case HeritagePlaceType.ancestralHouse:
+        return l10n.heritageTypeAncestralHouseShort;
+      case HeritagePlaceType.patriarchTomb:
+        return l10n.heritageTypePatriarchTombShort;
+      case HeritagePlaceType.memberGrave:
+        return l10n.heritageTypeMemberGraveShort;
+      case HeritagePlaceType.shrine:
+        return l10n.heritageTypeShrineShort;
+      case HeritagePlaceType.unknown:
+        return l10n.heritageTypeUnknownShort;
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case HeritagePlaceType.ancestralHouse:
+        return const Color(0xFFD97706);
+      case HeritagePlaceType.patriarchTomb:
+        return const Color(0xFF8B5CF6);
+      case HeritagePlaceType.memberGrave:
+        return const Color(0xFFE11D48);
+      case HeritagePlaceType.shrine:
+        return const Color(0xFF059669);
+      case HeritagePlaceType.unknown:
+        return Colors.grey;
+    }
+  }
+}
+
 class HeritagePlaceEntity extends Equatable {
   const HeritagePlaceEntity({
     required this.id,
@@ -74,6 +143,18 @@ class HeritagePlaceEntity extends Equatable {
   // Extra joined info from Member (nếu là mộ cá nhân)
   final String? memberFullName;
   final String? memberAvatarUrl;
+
+  /// Tên hiển thị đã xử lý: ưu tiên memberFullName, loại bỏ prefix "Mộ ".
+  static final _gravePrefix = RegExp(r'^[Mm]ộ\s+');
+
+  String get displayName {
+    final rawName = (memberFullName != null && memberFullName!.trim().isNotEmpty)
+        ? memberFullName!.trim()
+        : name.trim();
+    return rawName.contains(_gravePrefix)
+        ? rawName.replaceFirst(_gravePrefix, '')
+        : rawName;
+  }
 
   HeritagePlaceEntity copyWith({
     int? id,

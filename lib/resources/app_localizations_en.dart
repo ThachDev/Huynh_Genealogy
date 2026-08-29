@@ -3117,4 +3117,90 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get familyPosterPaperA4Desc =>
       'Size A4 (21.0 × 29.7 cm) • Standard binder size';
+
+  @override
+  String get heritageTypeAncestralHouse => 'Ancestral House';
+
+  @override
+  String get heritageTypePatriarchTomb => 'Patriarch Tomb';
+
+  @override
+  String get heritageTypeMemberGrave => 'Ancestor Grave';
+
+  @override
+  String get heritageTypeShrine => 'Shrine / Temple';
+
+  @override
+  String get heritageTypeUnknown => 'Place';
+
+  @override
+  String get heritageTypeAncestralHouseShort => 'House';
+
+  @override
+  String get heritageTypePatriarchTombShort => 'Tomb';
+
+  @override
+  String get heritageTypeMemberGraveShort => 'Grave';
+
+  @override
+  String get heritageTypeShrineShort => 'Shrine';
+
+  @override
+  String get heritageTypeUnknownShort => 'Other';
+
+  @override
+  String get heritageMapDirections => 'Directions';
+
+  @override
+  String get heritageMapEdit => 'Edit';
+
+  @override
+  String get heritageMapDeletePlace => 'Delete place';
+
+  @override
+  String get heritageMapLocationDescLabel => 'Location description & guide.';
+
+  @override
+  String get heritageMapLocationDescHint =>
+      'E.g. Next to the banyan tree, turn right at the 2nd alley...';
+
+  @override
+  String get heritageMapCancel => 'Cancel';
+
+  @override
+  String get heritageMapSaveGraveLocation => 'Save grave location';
+
+  @override
+  String get heritageMapSaveChanges => 'Save changes';
+
+  @override
+  String get heritageMapSavePlace => 'Save place';
+
+  @override
+  String get heritageMapCopiedCoordinates => 'Coordinates copied';
+
+  @override
+  String get heritageMapCannotOpenGoogleMaps => 'Cannot open Google Maps';
+
+  @override
+  String get heritageMapSemanticsClose => 'Close';
+
+  @override
+  String get heritageMapSemanticsCopyCoordinates => 'Copy coordinates';
+
+  @override
+  String get heritageMapSemanticsEditPlace => 'Edit place';
+
+  @override
+  String get heritageMapSemanticsDeletePlace => 'Delete place';
+
+  @override
+  String heritageMapSemanticsSelectType(String type) {
+    return 'Select type: $type';
+  }
+
+  @override
+  String heritageMapCoordinatesClipboard(String coordinates) {
+    return 'Coordinates: $coordinates';
+  }
 }

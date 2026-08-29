@@ -95,7 +95,10 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   HeritagePlaceType? _activeFilterType;
   bool _handledInitialPlace = false;
 
-  // Chế độ ghim / thêm / sửa trực tiếp trên bản đồ
+  // Overview Search (Google Maps style Autocomplete)
+  List<HeritagePlaceEntity> _placeSuggestions = [];
+
+  // Pinning / Edit mode geocoding
   late bool _isPinningMode;
   late LatLng _pinnedLocation;
   late HeritagePlaceType _pinnedType;
@@ -306,7 +309,83 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // 2. USER ACTIONS & NAVIGATION
+  // 2. GOOGLE MAPS STYLE OVERVIEW SEARCH (AUTOCOMPLETE + INSTANT FLYTO)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  void _onOverviewSearchChanged(
+    String query,
+    List<HeritagePlaceEntity> allPlaces,
+  ) {
+    final trimmed = query.trim().toLowerCase();
+
+    if (trimmed.isEmpty) {
+      setState(() {
+        _placeSuggestions = [];
+      });
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final matches = allPlaces.where((p) {
+      final nameMatch = p.displayName.toLowerCase().contains(trimmed);
+      final rawNameMatch = p.name.toLowerCase().contains(trimmed);
+      final guideMatch =
+          p.landmarkGuide?.toLowerCase().contains(trimmed) ?? false;
+      final typeMatch = p.type.getLabel(l10n).toLowerCase().contains(trimmed);
+      return nameMatch || rawNameMatch || guideMatch || typeMatch;
+    }).toList();
+
+    setState(() {
+      _placeSuggestions = matches.take(6).toList();
+    });
+  }
+
+  void _onSelectPlaceSuggestion(HeritagePlaceEntity place) {
+    setState(() {
+      _searchController.text = place.displayName;
+      _placeSuggestions = [];
+    });
+    FocusScope.of(context).unfocus();
+    _flyToPlace(place);
+  }
+
+  void _onSubmitOverviewSearch(
+    String query,
+    List<HeritagePlaceEntity> currentPlaces,
+  ) {
+    setState(() {
+      _placeSuggestions = [];
+    });
+    FocusScope.of(context).unfocus();
+
+    if (currentPlaces.isEmpty) {
+      final l10n = AppLocalizations.of(context);
+      AppSnackBar.info(context, l10n.heritageMapNoResultsFound);
+      return;
+    }
+
+    if (currentPlaces.length == 1) {
+      _flyToPlace(currentPlaces.first);
+    } else {
+      final points =
+          currentPlaces.map((p) => LatLng(p.latitude, p.longitude)).toList();
+      final bounds = LatLngBounds.fromPoints(points);
+      _mapController.fitCamera(
+        CameraFit.bounds(
+          bounds: bounds,
+          padding: const EdgeInsets.only(
+            top: 140,
+            bottom: 80,
+            left: 40,
+            right: 40,
+          ),
+        ),
+      );
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 3. USER ACTIONS & NAVIGATION
   // ═══════════════════════════════════════════════════════════════════════════
 
   void _loadPlaces() {
@@ -345,6 +424,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
         _isPinningMode = false;
         _editingPlace = null;
         _geocodingResults = [];
+        _placeSuggestions = [];
         _searchController.clear();
       });
       _loadPlaces();
@@ -421,7 +501,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // 3. MAIN BUILD METHOD
+  // 4. MAIN BUILD METHOD
   // ═══════════════════════════════════════════════════════════════════════════
 
   @override
@@ -509,7 +589,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // 4. OVERVIEW MODE LAYOUT (GOOGLE MAPS STYLE)
+  // 5. OVERVIEW MODE LAYOUT (GOOGLE MAPS STYLE)
   // ═══════════════════════════════════════════════════════════════════════════
 
   Widget _buildOverviewModeLayout(
@@ -531,11 +611,15 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
           userLocation: userLoc,
           onSelectPlace: (p) => _flyToPlace(p),
           onMapTap: (_) {
+            if (_placeSuggestions.isNotEmpty) {
+              setState(() => _placeSuggestions = []);
+            }
             if (selectedPlace != null) {
               context
                   .read<HeritageMapBloc>()
                   .add(const HeritageMapSelectPlaceEvent(null));
             }
+            FocusScope.of(context).unfocus();
           },
         ),
 
@@ -555,9 +639,16 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
                     controller: _searchController,
                     focusNode: _searchFocusNode,
                     hintText: l10n.heritageMapSearchHint,
+                    userLocation: userLoc,
+                    placeSuggestions: _placeSuggestions,
+                    onSelectPlace: _onSelectPlaceSuggestion,
                     onBack: () => Navigator.pop(context),
                     onClear: () {
                       _searchController.clear();
+                      setState(() => _placeSuggestions = []);
+                      context
+                          .read<HeritageMapBloc>()
+                          .add(const HeritageMapSelectPlaceEvent(null));
                       _loadPlaces();
                     },
                     onTap: () {
@@ -566,27 +657,37 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
                             .read<HeritageMapBloc>()
                             .add(const HeritageMapSelectPlaceEvent(null));
                       }
+                      if (_searchController.text.isNotEmpty) {
+                        _onOverviewSearchChanged(
+                          _searchController.text,
+                          loadedState.places,
+                        );
+                      }
                     },
-                    onChanged: (_) {
+                    onChanged: (val) {
                       if (selectedPlace != null) {
                         context
                             .read<HeritageMapBloc>()
                             .add(const HeritageMapSelectPlaceEvent(null));
                       }
-                      _loadPlaces();
+                      _onOverviewSearchChanged(val, loadedState.places);
                     },
-                    onSubmitted: (_) => _loadPlaces(),
+                    onSubmitted: (val) => _onSubmitOverviewSearch(
+                      val,
+                      loadedState.places,
+                    ),
                   ),
                   const SizedBox(height: 8),
 
-                  // Thanh chip phân loại danh mục
-                  HeritageMapFilterBar(
-                    selectedType: _activeFilterType,
-                    onTypeSelected: (type) {
-                      setState(() => _activeFilterType = type);
-                      _loadPlaces();
-                    },
-                  ),
+                  // Thanh chip phân loại danh mục (ẩn khi đang hiện gợi ý)
+                  if (_placeSuggestions.isEmpty)
+                    HeritageMapFilterBar(
+                      selectedType: _activeFilterType,
+                      onTypeSelected: (type) {
+                        setState(() => _activeFilterType = type);
+                        _loadPlaces();
+                      },
+                    ),
                 ],
               ),
             ),
@@ -612,7 +713,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
         ),
 
         // 4. Bottom Sheet chi tiết địa điểm khi chọn
-        if (selectedPlace != null)
+        if (selectedPlace != null && _placeSuggestions.isEmpty)
           Positioned(
             left: 0,
             right: 0,
@@ -635,7 +736,7 @@ class _HeritageMapOverviewViewState extends State<_HeritageMapOverviewView> {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // 5. PINNING / EDIT MODE LAYOUT
+  // 6. PINNING / EDIT MODE LAYOUT
   // ═══════════════════════════════════════════════════════════════════════════
 
   Widget _buildPinningModeLayout(HeritageMapLoaded loadedState, bool isSaving) {

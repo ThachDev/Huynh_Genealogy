@@ -5893,6 +5893,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Mộ người thân'**
   String get heritageMapRelativeGrave;
+
+  /// No description provided for @heritageMapNoResultsFound.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy địa điểm phù hợp'**
+  String get heritageMapNoResultsFound;
 }
 
 class _AppLocalizationsDelegate

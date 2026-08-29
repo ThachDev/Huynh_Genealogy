@@ -40,6 +40,11 @@ class AppConfig {
     defaultValue: true,
   );
 
+  /// Google Maps API Key for Geocoding & Places search
+  static const String googleMapsApiKey = String.fromEnvironment(
+    'GOOGLE_MAPS_API_KEY',
+  );
+
   /// Current active environment enum
   static Environment get currentEnvironment {
     switch (environmentName.toLowerCase()) {

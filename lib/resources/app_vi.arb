@@ -1487,5 +1487,6 @@
       "error": { "type": "String" }
     }
   },
-  "heritageMapRelativeGrave": "Mộ người thân"
+  "heritageMapRelativeGrave": "Mộ người thân",
+  "heritageMapNoResultsFound": "Không tìm thấy địa điểm phù hợp"
 }

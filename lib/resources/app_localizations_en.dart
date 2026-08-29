@@ -3260,4 +3260,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get heritageMapRelativeGrave => 'Relative\'s Grave';
+
+  @override
+  String get heritageMapNoResultsFound => 'No matching places found';
 }

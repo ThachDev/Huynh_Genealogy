@@ -34,8 +34,9 @@ class HeritageMapBloc extends Bloc<HeritageMapEvent, HeritageMapState> {
         currentState is HeritageMapLoaded ? currentState.userLatitude : null;
     final userLng =
         currentState is HeritageMapLoaded ? currentState.userLongitude : null;
-
-    emit(HeritageMapLoading());
+    if (currentState is! HeritageMapLoaded) {
+      emit(HeritageMapLoading());
+    }
 
     final result = await getHeritagePlaces(
       GetHeritagePlacesParams(

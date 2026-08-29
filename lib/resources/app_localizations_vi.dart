@@ -3263,4 +3263,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get heritageMapRelativeGrave => 'Mộ người thân';
+
+  @override
+  String get heritageMapNoResultsFound => 'Không tìm thấy địa điểm phù hợp';
 }

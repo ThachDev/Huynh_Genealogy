@@ -75,8 +75,9 @@ class _FamilyTreePosterPreviewPageState
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         setState(() {
-          _errorMessage = 'Không thể dựng bản xem trước: $e';
+          _errorMessage = l10n.familyPosterPreviewError(e.toString());
           _isLoading = false;
         });
       }

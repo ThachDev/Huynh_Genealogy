@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/errors/failures.dart';
 import '../../domain/usecases/delete_heritage_place.dart';
 import '../../domain/usecases/get_heritage_places.dart';
 import '../../domain/usecases/save_heritage_place.dart';
@@ -124,7 +125,9 @@ class HeritageMapBloc extends Bloc<HeritageMapEvent, HeritageMapState> {
             places: updatedList,
             selectedPlace: () => savedPlace,
             isSaving: false,
-            saveSuccessMessage: () => 'Đã lưu thông tin địa điểm thành công',
+            saveSuccessMessage: () =>
+                AppLanguage.current?.heritageMapSaveSuccess ??
+                'Đã lưu thông tin địa điểm thành công',
           ));
         },
       );

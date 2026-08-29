@@ -70,7 +70,7 @@ class UserQuickActionsWidget extends StatelessWidget {
           _buildActionButton(
             context: context,
             icon: LucideIcons.mapPin,
-            label: 'Bản đồ',
+            label: l10n.heritageMapQuickActionTitle,
             onTap: onOpenHeritageMap,
           ),
 

@@ -172,12 +172,13 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
         }
       }
 
+      final l10n = AppLocalizations.of(context);
       if (targetMember == null) {
         final authState = context.read<AuthBloc>().state;
         final user = authState is Authenticated ? authState.user : null;
         targetMember = MemberEntity(
           id: wish.memberId,
-          fullName: user?.fullName ?? 'Tôi',
+          fullName: user?.fullName ?? l10n.meLabel,
           gender: Gender.unknown,
           avatarUrl: user?.avatarUrl,
           familyId: widget.familyId,
@@ -189,7 +190,7 @@ class _UserNotificationsPageState extends State<UserNotificationsPage> {
 
       final upcomingData = UpcomingAnniversary(
         member: targetMember,
-        title: isBday ? 'Sinh nhật' : 'Lời chúc',
+        title: isBday ? l10n.birthdayTab : l10n.notifWishTitle,
         solarDateLabel:
             '${wish.createdAt.day.toString().padLeft(2, '0')}/${wish.createdAt.month.toString().padLeft(2, '0')}/${wish.createdAt.year}',
         daysRemaining: 0,

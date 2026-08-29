@@ -62,8 +62,7 @@ import 'app_localizations_vi.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,8 +82,7 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -5899,10 +5896,123 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Không tìm thấy địa điểm phù hợp'**
   String get heritageMapNoResultsFound;
+
+  /// No description provided for @heritageMapSaveSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu thông tin địa điểm thành công'**
+  String get heritageMapSaveSuccess;
+
+  /// No description provided for @heritageMapQuickActionTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bản đồ'**
+  String get heritageMapQuickActionTitle;
+
+  /// No description provided for @familyMemberGraveLocationSection.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vị trí Mộ phần'**
+  String get familyMemberGraveLocationSection;
+
+  /// No description provided for @familyMemberViewGraveOnMap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem vị trí mộ trên bản đồ'**
+  String get familyMemberViewGraveOnMap;
+
+  /// No description provided for @familyMemberPinGraveOnMap.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gắn vị trí mộ trên bản đồ'**
+  String get familyMemberPinGraveOnMap;
+
+  /// No description provided for @familyPosterIncludeSpouse.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiển thị Phối ngẫu (Vợ / Chồng)'**
+  String get familyPosterIncludeSpouse;
+
+  /// No description provided for @familyPosterIncludeSpouseDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kèm tên phu nhân hoặc phu quân trong từng thẻ'**
+  String get familyPosterIncludeSpouseDesc;
+
+  /// No description provided for @familyPosterIncludeDates.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiển thị Năm Sinh & Năm Mất'**
+  String get familyPosterIncludeDates;
+
+  /// No description provided for @familyPosterIncludeDatesDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi chú niên đại sinh tử của các bậc tiền nhân'**
+  String get familyPosterIncludeDatesDesc;
+
+  /// No description provided for @familyPosterPreviewError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể dựng bản xem trước: {error}'**
+  String familyPosterPreviewError(String error);
+
+  /// No description provided for @familyBookPreviewError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể hiển thị bản xem trước: {error}'**
+  String familyBookPreviewError(String error);
+
+  /// No description provided for @errLoadHeritagePlaces.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi khi lấy danh sách di tích & mộ phần'**
+  String get errLoadHeritagePlaces;
+
+  /// No description provided for @errHeritagePlaceNotFound.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không tìm thấy thông tin địa điểm'**
+  String get errHeritagePlaceNotFound;
+
+  /// No description provided for @errLoadHeritagePlaceDetail.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi khi lấy thông tin chi tiết di tích'**
+  String get errLoadHeritagePlaceDetail;
+
+  /// No description provided for @errFindMemberGrave.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi khi tra cứu vị trí mộ phần'**
+  String get errFindMemberGrave;
+
+  /// No description provided for @errNoResponseData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không nhận được dữ liệu phản hồi sau khi tạo'**
+  String get errNoResponseData;
+
+  /// No description provided for @errSaveHeritagePlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi khi lưu thông tin địa điểm / mộ phần'**
+  String get errSaveHeritagePlace;
+
+  /// No description provided for @errDeleteHeritagePlace.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi khi xóa địa điểm'**
+  String get errDeleteHeritagePlace;
+
+  /// No description provided for @defaultMemberName.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành viên'**
+  String get defaultMemberName;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -5911,25 +6021,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'vi'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'vi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'vi':
-      return AppLocalizationsVi();
+    case 'en': return AppLocalizationsEn();
+    case 'vi': return AppLocalizationsVi();
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

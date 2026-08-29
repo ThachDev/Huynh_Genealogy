@@ -388,8 +388,8 @@ class FamilyPosterConfigTab extends StatelessWidget {
               // Hiển thị phối ngẫu
               buildBookConfigSwitchTile(
                 context,
-                title: 'Hiển thị Phối ngẫu (Vợ / Chồng)',
-                subtitle: 'Kèm tên phu nhân hoặc phu quân trong từng thẻ',
+                title: l10n.familyPosterIncludeSpouse,
+                subtitle: l10n.familyPosterIncludeSpouseDesc,
                 value: posterConfig.includeSpouse,
                 onChanged: (v) {
                   posterConfig.includeSpouse = v;
@@ -401,8 +401,8 @@ class FamilyPosterConfigTab extends StatelessWidget {
               // Hiển thị năm sinh / mất
               buildBookConfigSwitchTile(
                 context,
-                title: 'Hiển thị Năm Sinh & Năm Mất',
-                subtitle: 'Ghi chú niên đại sinh tử của các bậc tiền nhân',
+                title: l10n.familyPosterIncludeDates,
+                subtitle: l10n.familyPosterIncludeDatesDesc,
                 value: posterConfig.includeDates,
                 onChanged: (v) {
                   posterConfig.includeDates = v;

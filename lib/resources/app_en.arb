@@ -1401,5 +1401,35 @@
     }
   },
   "heritageMapRelativeGrave": "Relative's Grave",
-  "heritageMapNoResultsFound": "No matching places found"
+  "heritageMapNoResultsFound": "No matching places found",
+
+  "heritageMapSaveSuccess": "Place information saved successfully",
+  "heritageMapQuickActionTitle": "Map",
+  "familyMemberGraveLocationSection": "Grave Location",
+  "familyMemberViewGraveOnMap": "View grave on map",
+  "familyMemberPinGraveOnMap": "Pin grave on map",
+  "familyPosterIncludeSpouse": "Display Spouses (Husband / Wife)",
+  "familyPosterIncludeSpouseDesc": "Include spouse name in each card",
+  "familyPosterIncludeDates": "Display Birth & Death Years",
+  "familyPosterIncludeDatesDesc": "Note birth and death dates of ancestors",
+  "familyPosterPreviewError": "Cannot render preview: {error}",
+  "@familyPosterPreviewError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "familyBookPreviewError": "Cannot display preview: {error}",
+  "@familyBookPreviewError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "errLoadHeritagePlaces": "Failed to load heritage places and graves",
+  "errHeritagePlaceNotFound": "Heritage place not found",
+  "errLoadHeritagePlaceDetail": "Failed to load heritage place details",
+  "errFindMemberGrave": "Failed to find member grave location",
+  "errNoResponseData": "No response data received after creation",
+  "errSaveHeritagePlace": "Failed to save heritage place information",
+  "errDeleteHeritagePlace": "Failed to delete heritage place",
+  "defaultMemberName": "Member"
 }

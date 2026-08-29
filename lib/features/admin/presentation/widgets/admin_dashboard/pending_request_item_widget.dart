@@ -414,7 +414,7 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                       value: (request.memberData!.dateOfBirth != null &&
                               request.memberData!.dateOfBirth!.isNotEmpty)
                           ? request.memberData!.dateOfBirth!
-                          : 'Chưa cập nhật',
+                          : l10n.notUpdatedLabel,
                       context: context,
                     ),
                     const SizedBox(height: 10),
@@ -424,17 +424,17 @@ class _PendingRequestDetailSheet extends StatelessWidget {
                       value: (request.memberData!.placeOfBirth != null &&
                               request.memberData!.placeOfBirth!.isNotEmpty)
                           ? request.memberData!.placeOfBirth!
-                          : 'Chưa cập nhật',
+                          : l10n.notUpdatedLabel,
                       context: context,
                     ),
                     const SizedBox(height: 10),
                     _InfoRow(
                       icon: LucideIcons.phone,
-                      label: 'Số điện thoại',
+                      label: l10n.phoneLabel,
                       value: (request.memberData!.phone != null &&
                               request.memberData!.phone!.isNotEmpty)
                           ? request.memberData!.phone!
-                          : 'Chưa cập nhật',
+                          : l10n.notUpdatedLabel,
                       context: context,
                     ),
                   ],

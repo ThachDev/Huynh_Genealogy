@@ -1,3 +1,5 @@
+import '../../../../core/errors/failures.dart';
+
 /// Mô hình biểu diễn một tương tác (bình luận) với sự kiện.
 class EventInteractionModel {
   EventInteractionModel({
@@ -21,7 +23,7 @@ class EventInteractionModel {
       authorName: json['authorName'] as String? ??
           json['author_name'] as String? ??
           json['userName'] as String? ??
-          'Thành viên',
+          (AppLanguage.current?.defaultMemberName ?? 'Thành viên'),
       content: json['content'] as String? ?? '',
       createdAt: json['createdAt'] as String? ?? json['created_at'] as String? ?? '',
     );

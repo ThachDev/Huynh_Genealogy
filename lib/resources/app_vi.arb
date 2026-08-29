@@ -1488,5 +1488,35 @@
     }
   },
   "heritageMapRelativeGrave": "Mộ người thân",
-  "heritageMapNoResultsFound": "Không tìm thấy địa điểm phù hợp"
+  "heritageMapNoResultsFound": "Không tìm thấy địa điểm phù hợp",
+
+  "heritageMapSaveSuccess": "Đã lưu thông tin địa điểm thành công",
+  "heritageMapQuickActionTitle": "Bản đồ",
+  "familyMemberGraveLocationSection": "Vị trí Mộ phần",
+  "familyMemberViewGraveOnMap": "Xem vị trí mộ trên bản đồ",
+  "familyMemberPinGraveOnMap": "Gắn vị trí mộ trên bản đồ",
+  "familyPosterIncludeSpouse": "Hiển thị Phối ngẫu (Vợ / Chồng)",
+  "familyPosterIncludeSpouseDesc": "Kèm tên phu nhân hoặc phu quân trong từng thẻ",
+  "familyPosterIncludeDates": "Hiển thị Năm Sinh & Năm Mất",
+  "familyPosterIncludeDatesDesc": "Ghi chú niên đại sinh tử của các bậc tiền nhân",
+  "familyPosterPreviewError": "Không thể dựng bản xem trước: {error}",
+  "@familyPosterPreviewError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "familyBookPreviewError": "Không thể hiển thị bản xem trước: {error}",
+  "@familyBookPreviewError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "errLoadHeritagePlaces": "Lỗi khi lấy danh sách di tích & mộ phần",
+  "errHeritagePlaceNotFound": "Không tìm thấy thông tin địa điểm",
+  "errLoadHeritagePlaceDetail": "Lỗi khi lấy thông tin chi tiết di tích",
+  "errFindMemberGrave": "Lỗi khi tra cứu vị trí mộ phần",
+  "errNoResponseData": "Không nhận được dữ liệu phản hồi sau khi tạo",
+  "errSaveHeritagePlace": "Lỗi khi lưu thông tin địa điểm / mộ phần",
+  "errDeleteHeritagePlace": "Lỗi khi xóa địa điểm",
+  "defaultMemberName": "Thành viên"
 }

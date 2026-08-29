@@ -405,14 +405,14 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                           ),
                           // Section 3: Vị trí Mộ phần & Dẫn đường (Dành cho thành viên đã khuất)
                           if (!widget.member.isAlive) ...[
-                            _buildSectionHeader('Vị trí Mộ phần'),
+                            _buildSectionHeader(l10n.familyMemberGraveLocationSection),
                             const SizedBox(height: 10),
                             if (_gravePlace != null)
                               Center(
                                 child: OutlinedButton.icon(
                                   icon: const Icon(LucideIcons.map, size: 15),
                                   label: Text(
-                                    'Xem vị trí mộ trên bản đồ',
+                                    l10n.familyMemberViewGraveOnMap,
                                     style: GoogleFonts.beVietnamPro(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
@@ -448,7 +448,7 @@ class _FamilyMemberDetailPageState extends State<FamilyMemberDetailPage> {
                                 child: OutlinedButton.icon(
                                   icon: const Icon(LucideIcons.mapPin, size: 15),
                                   label: Text(
-                                    'Gắn vị trí mộ trên bản đồ',
+                                    l10n.familyMemberPinGraveOnMap,
                                     style: GoogleFonts.beVietnamPro(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,

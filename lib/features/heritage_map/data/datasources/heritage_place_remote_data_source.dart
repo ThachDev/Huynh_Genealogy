@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/errors/failures.dart';
 import '../models/heritage_place_model.dart';
 
 abstract class HeritagePlaceRemoteDataSource {
@@ -31,7 +32,7 @@ abstract class HeritagePlaceRemoteDataSource {
 
 class HeritagePlaceRemoteDataSourceImpl
     implements HeritagePlaceRemoteDataSource {
-  HeritagePlaceRemoteDataSourceImpl({required this.dio});
+  const HeritagePlaceRemoteDataSourceImpl({required this.dio});
   final Dio dio;
 
   @override
@@ -64,7 +65,9 @@ class HeritagePlaceRemoteDataSourceImpl
     } on DioException catch (e) {
       final message = e.response?.data is Map && e.response?.data['message'] != null
           ? e.response?.data['message'].toString()
-          : (e.message ?? 'Lỗi kết nối máy chủ khi lấy danh sách di tích & mộ phần');
+          : (e.message ??
+              AppLanguage.current?.errLoadHeritagePlaces ??
+              'Lỗi kết nối máy chủ khi lấy danh sách di tích & mộ phần');
       throw ServerException(message: message!, statusCode: e.response?.statusCode);
     } catch (e) {
       throw ServerException(message: e.toString());
@@ -84,11 +87,16 @@ class HeritagePlaceRemoteDataSourceImpl
       if (data != null && data['data'] != null) {
         return HeritagePlaceModel.fromJson(data['data'] as Map<String, dynamic>);
       }
-      throw const ServerException(message: 'Không tìm thấy thông tin địa điểm');
+      throw ServerException(
+        message: AppLanguage.current?.errHeritagePlaceNotFound ??
+            'Không tìm thấy thông tin địa điểm',
+      );
     } on DioException catch (e) {
       final message = e.response?.data is Map && e.response?.data['message'] != null
           ? e.response?.data['message'].toString()
-          : (e.message ?? 'Lỗi máy chủ khi lấy thông tin chi tiết di tích');
+          : (e.message ??
+              AppLanguage.current?.errLoadHeritagePlaceDetail ??
+              'Lỗi máy chủ khi lấy thông tin chi tiết di tích');
       throw ServerException(message: message!, statusCode: e.response?.statusCode);
     } catch (e) {
       throw ServerException(message: e.toString());
@@ -115,7 +123,9 @@ class HeritagePlaceRemoteDataSourceImpl
       }
       final message = e.response?.data is Map && e.response?.data['message'] != null
           ? e.response?.data['message'].toString()
-          : (e.message ?? 'Lỗi khi tra cứu vị trí mộ phần');
+          : (e.message ??
+              AppLanguage.current?.errFindMemberGrave ??
+              'Lỗi khi tra cứu vị trí mộ phần');
       throw ServerException(message: message!, statusCode: e.response?.statusCode);
     } catch (e) {
       throw ServerException(message: e.toString());
@@ -126,7 +136,6 @@ class HeritagePlaceRemoteDataSourceImpl
   Future<HeritagePlaceModel> saveHeritagePlace(HeritagePlaceModel place) async {
     try {
       if (place.id > 0) {
-        // Cập nhật địa điểm đã có (PUT)
         final response = await dio.put(
           '${AppConstants.familiesEndpoint}/${place.familyId}/heritage-places/${place.id}',
           data: place.toJson(),
@@ -137,7 +146,6 @@ class HeritagePlaceRemoteDataSourceImpl
         }
         return place;
       } else {
-        // Thêm mới địa điểm (POST)
         final response = await dio.post(
           '${AppConstants.familiesEndpoint}/${place.familyId}/heritage-places',
           data: place.toJson(),
@@ -146,12 +154,17 @@ class HeritagePlaceRemoteDataSourceImpl
         if (data != null && data['data'] != null) {
           return HeritagePlaceModel.fromJson(data['data'] as Map<String, dynamic>);
         }
-        throw const ServerException(message: 'Không nhận được dữ liệu phản hồi sau khi tạo');
+        throw ServerException(
+          message: AppLanguage.current?.errNoResponseData ??
+              'Không nhận được dữ liệu phản hồi sau khi tạo',
+        );
       }
     } on DioException catch (e) {
       final message = e.response?.data is Map && e.response?.data['message'] != null
           ? e.response?.data['message'].toString()
-          : (e.message ?? 'Lỗi khi lưu thông tin địa điểm / mộ phần');
+          : (e.message ??
+              AppLanguage.current?.errSaveHeritagePlace ??
+              'Lỗi khi lưu thông tin địa điểm / mộ phần');
       throw ServerException(message: message!, statusCode: e.response?.statusCode);
     } catch (e) {
       throw ServerException(message: e.toString());
@@ -171,7 +184,9 @@ class HeritagePlaceRemoteDataSourceImpl
     } on DioException catch (e) {
       final message = e.response?.data is Map && e.response?.data['message'] != null
           ? e.response?.data['message'].toString()
-          : (e.message ?? 'Lỗi khi xóa địa điểm');
+          : (e.message ??
+              AppLanguage.current?.errDeleteHeritagePlace ??
+              'Lỗi khi xóa địa điểm');
       throw ServerException(message: message!, statusCode: e.response?.statusCode);
     } catch (e) {
       throw ServerException(message: e.toString());

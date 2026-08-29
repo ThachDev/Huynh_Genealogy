@@ -108,8 +108,9 @@ class _FamilyBookPreviewPageState extends State<FamilyBookPreviewPage> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         setState(() {
-          _errorMessage = 'Không thể hiển thị bản xem trước: $e';
+          _errorMessage = l10n.familyBookPreviewError(e.toString());
           _isLoading = false;
           _isRasterizingMore = false;
         });

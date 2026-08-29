@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,7 +26,8 @@ import 'core/network/dio_client.dart';
 import 'core/services/notification_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // Catch Flutter framework errors
   FlutterError.onError = (details) {
@@ -46,16 +48,18 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await di.init();
 
-  // Khởi tạo hệ thống thông báo (FCM token + hiển thị + điều hướng).
-  await NotificationService.instance.initialize();
-  NotificationService.instance.setupBackgroundHandler();
-
   runApp(
     DevicePreview(
       enabled: false, // Đổi thành true bất cứ khi nào muốn test đa thiết bị
       builder: (context) => const FamilyTreeApp(),
     ),
   );
+
+  // Khởi tạo hệ thống thông báo ngầm sau khi UI đã render
+  Future.delayed(const Duration(seconds: 2), () {
+    NotificationService.instance.initialize();
+    NotificationService.instance.setupBackgroundHandler();
+  });
 }
 
 class FamilyTreeApp extends StatefulWidget {

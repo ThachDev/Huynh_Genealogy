@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../features/auth/auth.dart';
 import '../../features/onboarding/onboarding.dart';
@@ -17,8 +16,12 @@ class AppRouter {
       refreshListenable: _GoRouterRefreshStream(authBloc.stream),
       redirect: (context, state) {
         final authState = authBloc.state;
+        final isSplash = state.matchedLocation == '/';
         final isLoggingIn = state.matchedLocation == '/login' ||
             state.matchedLocation == '/register';
+
+        // Cho phép SplashPage chạy trọn vẹn animation khi vừa mở app
+        if (isSplash) return null;
 
         if (authState is Unauthenticated || authState is AuthInitial) {
           return isLoggingIn ? null : '/login';
@@ -28,9 +31,11 @@ class AppRouter {
           final isPending = authState.user.pendingStatus == 'PENDING';
           final hasFamily = authState.user.familyId != null;
           if (!hasFamily || isPending) {
-            return state.matchedLocation == '/onboarding' ? null : '/onboarding';
+            return state.matchedLocation == '/onboarding'
+                ? null
+                : '/onboarding';
           }
-          if (isLoggingIn || state.matchedLocation == '/' || state.matchedLocation == '/onboarding') {
+          if (isLoggingIn || state.matchedLocation == '/onboarding') {
             return '/main';
           }
         }
@@ -40,15 +45,7 @@ class AppRouter {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => Scaffold(
-            body: Center(
-              child: Lottie.asset(
-                'assets/json/loading.json',
-                width: 150,
-                height: 150,
-              ),
-            ),
-          ),
+          builder: (context, state) => const SplashPage(),
         ),
         GoRoute(
           path: '/login',

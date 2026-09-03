@@ -24,8 +24,6 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     super.initState();
-    FlutterNativeSplash.remove();
-
     _controller = AnimationController(vsync: this);
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -84,19 +82,20 @@ class _SplashPageState extends State<SplashPage>
       ),
       child: Scaffold(
         backgroundColor: context.background,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Lottie.asset(
-              'assets/json/splash_logo.json',
-              controller: _controller,
-              fit: BoxFit.contain,
-              onLoaded: (composition) {
-                _controller
-                  ..duration = composition.duration
-                  ..forward();
-              },
-            ),
+        body: SizedBox.expand(
+          child: Lottie.asset(
+            'assets/json/Splash.json',
+            controller: _controller,
+            fit: BoxFit.cover,
+            filterQuality: FilterQuality.high,
+            width: double.infinity,
+            height: double.infinity,
+            onLoaded: (composition) {
+              FlutterNativeSplash.remove();
+              _controller
+                ..duration = composition.duration
+                ..forward();
+            },
           ),
         ),
       ),
@@ -117,5 +116,3 @@ class _SplashPageState extends State<SplashPage>
     return content;
   }
 }
-
-

@@ -100,23 +100,11 @@ class MemberFormOptions {
       if (currentGeneration != null && m.generation != null) {
         if (m.generation != currentGeneration) return false;
       }
-      // Lọc ngược giới tính
-      if (gender == Gender.male && m.gender == Gender.male) {
-        return false;
-      }
-      if (gender == Gender.female && m.gender == Gender.female) {
-        return false;
-      }
       // Bỏ những người đã có vợ/chồng khác
       if (m.spouseId != null &&
           m.spouseId != existingMember?.id &&
           m.spouseId != spouseId) {
-        // Cho phép Đa thê: Nếu Nữ đang chọn chồng, thì cho phép chọn Nam dù Nam đã có vợ
-        if (gender == Gender.female && m.gender == Gender.male) {
-          // allow
-        } else {
-          return false;
-        }
+        return false;
       }
       // Không được cưới anh/chị/em ruột (chung parentId)
       if (parentId != null &&

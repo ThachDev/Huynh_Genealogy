@@ -461,7 +461,26 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     final l10n = AppLocalizations.of(context);
     final candidateMembers = allMembers.where((m) {
       if (m.id == parentMember.id) return false;
-      return m.parentId == null && m.motherId == null;
+      // Không phải vợ/chồng của parentMember
+      if (parentMember.spouseId != null && m.id == parentMember.spouseId) {
+        return false;
+      }
+      if (m.spouseId != null && m.spouseId == parentMember.id) {
+        return false;
+      }
+      // Phải là thành viên tự do / chưa liên kết vào cây
+      final isUnlinked = m.parentId == null &&
+          m.motherId == null &&
+          m.spouseId == null &&
+          m.generation != 1;
+      if (!isUnlinked) return false;
+
+      // Ràng buộc thế hệ: con không thể có đời <= đời cha mẹ
+      if (parentMember.generation != null && m.generation != null) {
+        if (m.generation! <= parentMember.generation!) return false;
+      }
+
+      return true;
     }).toList();
 
     AddMemberOption? option;
@@ -513,9 +532,14 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
 
       if (confirm == true && mounted) {
         final isMother = parentMember.gender == Gender.female;
+        final otherParentId = parentMember.spouseId;
         final updatedMember = selectedMember.copyWith(
-          parentId: isMother ? selectedMember.parentId : parentMember.id,
-          motherId: isMother ? parentMember.id : selectedMember.motherId,
+          parentId: isMother
+              ? (otherParentId ?? selectedMember.parentId)
+              : parentMember.id,
+          motherId: isMother
+              ? parentMember.id
+              : (otherParentId ?? selectedMember.motherId),
           generation: (parentMember.generation ?? 0) + 1,
         );
 
@@ -543,7 +567,19 @@ class _FamilyTreeViewPageState extends State<FamilyTreeViewPage>
     final l10n = AppLocalizations.of(context);
     final candidateMembers = allMembers.where((m) {
       if (m.id == spouseMember.id) return false;
-      return m.spouseId == null;
+      // Phải là thành viên tự do / chưa liên kết vào cây
+      final isUnlinked = m.parentId == null &&
+          m.motherId == null &&
+          m.spouseId == null &&
+          (spouseMember.generation == 1 || m.generation != 1);
+      if (!isUnlinked) return false;
+
+      // Cùng thế hệ (nếu cả 2 đã có thông tin đời)
+      if (spouseMember.generation != null && m.generation != null) {
+        if (m.generation != spouseMember.generation) return false;
+      }
+
+      return true;
     }).toList();
 
     AddMemberOption? option;
